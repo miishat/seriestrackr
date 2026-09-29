@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF--8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SeriesTrackr</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Apply theme from localStorage on initial load to prevent FOUC
+      if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+    </script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              'brand': 'hsl(260, 65%, 55%)', // Vibrant Purple
+              'brand-hover': 'hsl(260, 65%, 50%)',
+              
+              // Light mode
+              'bg-primary': 'hsl(45, 40%, 94%)', // Pale Yellow/Cream
+              'bg-secondary': 'hsl(0, 0%, 100%)',   // White
+              'text-primary': 'hsl(0, 0%, 8%)',    // Near Black
+              'text-secondary': 'hsl(0, 0%, 40%)',   // Dark Gray
+              'border-primary': 'hsl(0, 0%, 8%)',   // Near Black
+              
+              // Dark mode
+              'dark-brand': 'hsl(260, 85%, 75%)',
+              'dark-brand-hover': 'hsl(260, 85%, 70%)',
+              'dark-bg-primary': 'hsl(240, 10%, 10%)',
+              'dark-bg-secondary': 'hsl(240, 10%, 15%)',
+              'dark-text-primary': 'hsl(0, 0%, 98%)',
+              'dark-text-secondary': 'hsl(0, 0%, 70%)',
+              'dark-border-primary': 'hsl(0, 0%, 98%)',
+            },
+            keyframes: {
+              'shimmer': {
+                '100%': { transform: 'translateX(100%)' },
+              },
+            },
+            animation: {
+              'shimmer': 'shimmer 1.5s infinite',
+            },
+          },
+        },
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.27.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="font-sans bg-bg-primary text-text-primary dark:bg-dark-bg-primary dark:text-dark-text-primary transition-colors duration-300">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
