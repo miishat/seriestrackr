@@ -9,7 +9,9 @@ export function CoverPicker({ series, onSelect }: { series: Series; onSelect: (u
   const find = async () => {
     setBusy(true); setError(null); setUrls(null);
     try { setUrls(await fetchCoverImageUrls(series.name, series.author, series.lastFinished?.title ?? '', series.next.title)); }
-    catch { setUrls(null); setError('Cover search failed. Check your connection and try again.'); }
+    catch (cause) { setUrls(null); setError(cause instanceof Error && cause.message.includes('incomplete')
+      ? 'Cover search incomplete. Some sources could not be checked. Try again or add a URL manually.'
+      : 'Cover search failed. Check your connection and try again.'); }
     finally { setBusy(false); }
   };
   return <div className="cover-picker"><button type="button" onClick={find} disabled={busy}>{busy ? 'Searching...' : 'Find cover'}</button>

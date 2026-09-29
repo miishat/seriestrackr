@@ -59,6 +59,48 @@ test('blank name stays in editor with a labeled error', async () => {
   expect(screen.getByText(/series name.*required/i)).toBeVisible();
 });
 
+test('create rejects Completed without Last finished, then saves coherent completion', async () => {
+  const user = userEvent.setup(); seed([]); render(<App />);
+  await user.click(screen.getByRole('button', { name: 'Add series' }));
+  await user.type(screen.getByLabelText('Series name'), 'Finished Cycle');
+  await user.type(screen.getByLabelText('Author'), 'Writer');
+  await user.selectOptions(within(screen.getByRole('dialog', { name: 'Add series' })).getByLabelText('Reading status'), 'completed');
+  await user.click(screen.getByText('Optional progress and series details'));
+  await user.click(screen.getByLabelText('Publication run complete'));
+  await user.click(screen.getByRole('button', { name: 'Save series' }));
+  expect(screen.getByRole('alert')).toHaveTextContent(/last finished/i);
+  expect(JSON.parse(localStorage.getItem(key)!).series).toHaveLength(0);
+  fireEvent.change(screen.getByLabelText('Last finished book number'), { target: { value: '2' } });
+  await user.type(screen.getByLabelText('Last finished title'), 'Finale');
+  fireEvent.change(screen.getByLabelText('Latest published book number'), { target: { value: '2' } });
+  await user.click(screen.getByRole('button', { name: 'Save series' }));
+  expect(screen.getByText('Series completed')).toBeVisible();
+  expect(JSON.parse(localStorage.getItem(key)!).series[0].lastFinished).toEqual({ position: 2, title: 'Finale' });
+});
+
+test('edit rejects Completed while a known published book remains unread', async () => {
+  const user = userEvent.setup(); seed([seriesFixture({ publicationRunComplete: true, latestPublishedPosition: 2 })]); render(<App />);
+  await user.click(screen.getByRole('button', { name: 'Edit details' }));
+  await user.selectOptions(within(screen.getByRole('dialog', { name: 'Edit series' })).getByLabelText('Reading status'), 'completed');
+  await user.click(screen.getByRole('button', { name: 'Save series' }));
+  expect(screen.getByRole('alert')).toHaveTextContent(/last finished.*latest published/i);
+  expect(JSON.parse(localStorage.getItem(key)!).series[0].readingStatus).toBe('active');
+  expect(within(screen.getByRole('article')).getByText('Next unread · Book 2')).toBeVisible();
+});
+
+test('custom market stays selected and Other copy never shows the internal placeholder', async () => {
+  const user = userEvent.setup(); seed([seriesFixture({ marketOverride: 'DE' })]); render(<App />);
+  await user.click(screen.getByRole('button', { name: 'Edit details' }));
+  const marketSelect = screen.getByLabelText('Release market') as HTMLSelectElement;
+  expect(marketSelect.value).toBe('DE');
+  expect(marketSelect.selectedOptions[0]).toHaveTextContent('DE');
+  await user.selectOptions(marketSelect, 'XX');
+  await user.clear(screen.getByLabelText('Other market code'));
+  expect(screen.getByText(/Release dates refer to/)).not.toHaveTextContent('XX');
+  await user.type(screen.getByLabelText('Other market code'), 'AU');
+  expect(screen.getByText(/Release dates refer to/)).toHaveTextContent('AU');
+});
+
 test('editor focuses the first field and returns focus to its opener', async () => {
   const user = userEvent.setup(); seed([]); render(<App />);
   const opener = screen.getByRole('button', { name: 'Add series' });
@@ -126,6 +168,18 @@ test('cover lookup failure gives retry feedback while manual editor stays usable
   expect(await screen.findByRole('alert')).toHaveTextContent(/cover search failed/i);
   expect(screen.getByRole('button', { name: 'Save series' })).toBeEnabled();
   expect(screen.getByRole('button', { name: 'Find cover' })).toBeEnabled();
+});
+
+test('partial cover provider failure with no results warns that lookup was incomplete', async () => {
+  const user = userEvent.setup(); seed();
+  vi.stubGlobal('fetch', vi.fn((url: string) => url.includes('openlibrary')
+    ? Promise.reject(new Error('offline'))
+    : Promise.resolve({ ok: true, json: async () => ({ items: [] }) })));
+  render(<App />);
+  await user.click(screen.getByRole('button', { name: 'Edit details' }));
+  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  expect(await screen.findByRole('alert')).toHaveTextContent(/incomplete/i);
+  expect(screen.queryByText(/No covers found/)).toBeNull();
 });
 
 test.each(['success', 'empty'] as const)('a later failed cover lookup clears %s results', async (firstResult) => {

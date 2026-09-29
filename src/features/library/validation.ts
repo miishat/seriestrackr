@@ -85,13 +85,19 @@ function series(value: unknown, path: string): Series {
   const readingStatus = oneOf<ReadingStatus>(input.readingStatus, ['active', 'paused', 'dropped', 'completed'], `${path}.readingStatus`);
   const publicationRunComplete = boolean(input.publicationRunComplete, `${path}.publicationRunComplete`);
   if (readingStatus === 'completed' && !publicationRunComplete) throw new Error(`${path}.publicationRunComplete must be true for a completed series.`);
+  const lastFinished = nullable(input.lastFinished, (value) => bookRef(value, `${path}.lastFinished`));
+  const latestPublishedPosition = nullable(input.latestPublishedPosition, (value) => position(value, `${path}.latestPublishedPosition`));
+  if (readingStatus === 'completed' && lastFinished === null) throw new Error(`${path}.lastFinished is required for a completed series.`);
+  if (readingStatus === 'completed' && latestPublishedPosition !== null && lastFinished !== null && lastFinished.position < latestPublishedPosition) {
+    throw new Error(`${path}.lastFinished must reach the latest published position before completing this series.`);
+  }
 
   return {
     id: string(input.id, `${path}.id`, true),
     name: string(input.name, `${path}.name`, true),
     author: string(input.author, `${path}.author`, true),
     readingStatus,
-    lastFinished: nullable(input.lastFinished, (value) => bookRef(value, `${path}.lastFinished`)),
+    lastFinished,
     currentBook: nullable(input.currentBook, (value) => bookRef(value, `${path}.currentBook`)),
     next: {
       positionOverride: nullable(next.positionOverride, (value) => position(value, `${path}.next.positionOverride`)),
@@ -99,7 +105,7 @@ function series(value: unknown, path: string): Series {
       orderNote: string(next.orderNote, `${path}.next.orderNote`),
     },
     publicationRunComplete,
-    latestPublishedPosition: nullable(input.latestPublishedPosition, (value) => position(value, `${path}.latestPublishedPosition`)),
+    latestPublishedPosition,
     formats: { book: bookEnabled, audio: audioEnabled } satisfies Record<Format, boolean>,
     marketOverride: nullable(input.marketOverride, (value) => country(value, `${path}.marketOverride`)),
     coverUrl: nullable(input.coverUrl, (value) => httpUrl(value, `${path}.coverUrl`)),

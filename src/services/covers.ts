@@ -23,5 +23,7 @@ export async function fetchCoverImageUrls(seriesName: string, author: string, la
   const results = await Promise.allSettled(searches);
   const successes = results.filter((result): result is PromiseFulfilledResult<string[]> => result.status === 'fulfilled');
   if (!successes.length) throw new Error('Cover search failed for all providers.');
-  return [...new Set(successes.flatMap((result) => result.value))].slice(0, 9);
+  const urls = [...new Set(successes.flatMap((result) => result.value))].slice(0, 9);
+  if (!urls.length && successes.length < results.length) throw new Error('Cover search incomplete because a provider failed.');
+  return urls;
 }

@@ -24,6 +24,8 @@ export function SeriesForm({ series, market, onCreate, onUpdate, onCancel, onDel
   const [latest, setLatest] = useState(series?.latestPublishedPosition?.toString() ?? '');
   const [otherMarket, setOtherMarket] = useState(series?.marketOverride && !['CA','US','GB'].includes(series.marketOverride) ? series.marketOverride : '');
   const [localError, setLocalError] = useState<string | null>(null);
+  const customMarket = value.marketOverride && !['CA', 'US', 'GB', 'XX'].includes(value.marketOverride) ? value.marketOverride : null;
+  const displayMarket = value.marketOverride === 'XX' ? otherMarket.trim().toUpperCase() || 'your chosen market' : value.marketOverride ?? market;
   const update = (patch: Partial<Input>) => setValue((old) => ({ ...old, ...patch }));
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -34,6 +36,8 @@ export function SeriesForm({ series, market, onCreate, onUpdate, onCancel, onDel
     if (!!currentPosition !== !!currentTitle.trim()) return setLocalError('Current book needs both book number and title.');
     if (!value.formats.book && !value.formats.audio) return setLocalError('Track at least one format.');
     if (value.readingStatus === 'completed' && !value.publicationRunComplete) return setLocalError('Confirm the publication run is complete before marking this series completed.');
+    if (value.readingStatus === 'completed' && !lastPosition) return setLocalError('Last finished is required before marking this series completed.');
+    if (value.readingStatus === 'completed' && latest && Number(lastPosition) < Number(latest)) return setLocalError('Last finished must reach the latest published book before marking this series completed.');
     const marketOverride = value.marketOverride === 'XX' ? otherMarket.trim().toUpperCase() : value.marketOverride;
     if (marketOverride && !/^[A-Z]{2}$/.test(marketOverride)) return setLocalError('Market must be a two-letter country code.');
     const changed = {
@@ -49,7 +53,7 @@ export function SeriesForm({ series, market, onCreate, onUpdate, onCancel, onDel
   const effective: Series = { id: series?.id ?? '', ...value };
   const position = override ? override : String(nextPosition(effective));
   return <form onSubmit={submit} noValidate>
-    <p>Keep your place. Release dates refer to {value.marketOverride ?? market}.</p>
+    <p>Keep your place. Release dates refer to {displayMarket}.</p>
     <div className="form-grid">
       <label>Series name<input required value={value.name} onChange={(event) => update({ name: event.target.value })} /></label>
       <label>Author<input required value={value.author} onChange={(event) => update({ author: event.target.value })} /></label>
@@ -57,7 +61,7 @@ export function SeriesForm({ series, market, onCreate, onUpdate, onCancel, onDel
         <option value="active">Active</option><option value="paused">Paused</option><option value="dropped">Dropped</option><option value="completed">Completed</option>
       </select></label>
       <label>Release market<select value={value.marketOverride ?? ''} onChange={(event) => update({ marketOverride: event.target.value || null })}>
-        <option value="">Use default: {market}</option><option value="CA">Canada</option><option value="US">United States</option><option value="GB">United Kingdom</option><option value="XX">Other country</option>
+        <option value="">Use default: {market}</option><option value="CA">Canada</option><option value="US">United States</option><option value="GB">United Kingdom</option>{customMarket && <option value={customMarket}>Other country: {customMarket}</option>}<option value="XX">Other country</option>
       </select></label>
       {value.marketOverride === 'XX' && <label>Other market code<input maxLength={2} value={otherMarket} onChange={(event) => setOtherMarket(event.target.value)} /></label>}
     </div>

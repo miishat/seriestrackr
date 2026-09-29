@@ -16,3 +16,10 @@ test('distinguishes no matching cover from all providers failing', async () => {
   vi.stubGlobal('fetch', vi.fn(() => Promise.reject(new Error('offline'))));
   await expect(fetchCoverImageUrls('Example', 'Writer', '', 'Next Title')).rejects.toThrow(/failed/i);
 });
+
+test('partial provider failure with no surviving covers reports an incomplete search', async () => {
+  vi.stubGlobal('fetch', vi.fn((url: string) => url.includes('openlibrary')
+    ? Promise.reject(new Error('offline'))
+    : Promise.resolve({ ok: true, json: async () => ({ items: [] }) })));
+  await expect(fetchCoverImageUrls('Example', 'Writer', '', 'Next Title')).rejects.toThrow(/incomplete/i);
+});

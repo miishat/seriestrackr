@@ -133,3 +133,11 @@ test('parser requires publication completion before reading status completed', (
   expect(parsed({ ...valid(), series: [seriesFixture({ readingStatus: 'completed' })] })).toBe(false);
   expect(parsed({ ...valid(), series: [seriesFixture({ readingStatus: 'completed', publicationRunComplete: true })] })).toBe(true);
 });
+
+test('completed status requires finished progress through the known final published book', () => {
+  const completed = { readingStatus: 'completed' as const, publicationRunComplete: true };
+  expect(parsed({ ...valid(), series: [seriesFixture({ ...completed, lastFinished: null })] })).toBe(false);
+  expect(parsed({ ...valid(), series: [seriesFixture({ ...completed, latestPublishedPosition: 2 })] })).toBe(false);
+  expect(parsed({ ...valid(), series: [seriesFixture({ ...completed, latestPublishedPosition: 1 })] })).toBe(true);
+  expect(parsed({ ...valid(), series: [seriesFixture({ ...completed, lastFinished: { position: 2, title: 'Second' }, latestPublishedPosition: 2 })] })).toBe(true);
+});

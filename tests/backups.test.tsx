@@ -104,6 +104,16 @@ test('invalid and oversized files never replace the stored document', async () =
   expect(localStorage.getItem(key)).toBe(JSON.stringify(original));
 });
 
+test('import rejects a completed series with unread published books', async () => {
+  const user = userEvent.setup(); const original = documentWithSeries(); seed(original); render(<App />);
+  await user.click(screen.getByRole('button', { name: 'Backups' }));
+  const invalid = { ...original, series: [seriesFixture({ readingStatus: 'completed', publicationRunComplete: true, latestPublishedPosition: 2 })] };
+  chooseFile(JSON.stringify(invalid));
+  expect(await screen.findByRole('alert')).toHaveTextContent(/lastFinished.*latest published/i);
+  expect(screen.queryByRole('button', { name: 'Confirm replacement' })).toBeNull();
+  expect(localStorage.getItem(key)).toBe(JSON.stringify(original));
+});
+
 test('the most recently selected file remains the preview when reads finish out of order', async () => {
   const user = userEvent.setup(); seed();
   const readers: Array<{ result: string | null; onload: null | (() => void); onerror: null | (() => void); readAsText: () => void; finish: (text: string) => void }> = [];
