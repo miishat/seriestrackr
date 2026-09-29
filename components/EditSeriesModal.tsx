@@ -126,7 +126,7 @@ const EditSeriesModal: React.FC<EditSeriesModalProps> = ({ isOpen, onClose, onSa
 
               {formData.nextBookInfo.sources && formData.nextBookInfo.sources.length > 0 && (
                 <div>
-                    <h4 className="block text-sm font-bold text-text-primary dark:text-dark-text-primary mb-1">Sources (from last refresh)</h4>
+                    <h4 className="block text-sm font-bold text-text-primary dark:text-dark-text-primary mb-1">Sources</h4>
                     <div className="mt-2 space-y-2 bg-bg-primary dark:bg-dark-bg-primary p-3 rounded-md border-2 border-text-primary dark:border-dark-text-primary">
                         {formData.nextBookInfo.sources.map((source, index) => (
                             <div key={index} className="truncate flex items-center gap-2 text-sm">

@@ -10,7 +10,15 @@ type Theme = 'light' | 'dark';
 type ViewMode = 'grid' | 'compact' | 'list';
 
 const App: React.FC = () => {
-  const [bookSeries, setBookSeries] = useState<BookSeries[]>([]);
+  const [bookSeries, setBookSeries] = useState<BookSeries[]>(() => {
+    try {
+      const storedSeries = localStorage.getItem('bookSeries');
+      return storedSeries ? JSON.parse(storedSeries) : [];
+    } catch (error) {
+      console.error('Failed to parse book series from localStorage', error);
+      return [];
+    }
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSeries, setEditingSeries] = useState<BookSeries | null>(null);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
@@ -48,20 +56,6 @@ const App: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('viewMode', viewMode);
   }, [viewMode]);
-
-  useEffect(() => {
-    try {
-        const storedSeries = localStorage.getItem('bookSeries');
-        if (storedSeries) {
-            setBookSeries(JSON.parse(storedSeries));
-        } else {
-            setBookSeries([]);
-        }
-    } catch (error) {
-        console.error("Failed to parse book series from localStorage", error);
-        setBookSeries([]);
-    }
-  }, []);
 
   useEffect(() => {
       if(bookSeries && bookSeries.length > 0) {
