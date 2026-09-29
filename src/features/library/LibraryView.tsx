@@ -21,6 +21,7 @@ export function LibraryView({ doc, today, onEdit, onFinish, onAdd, onView }: {
   const [book, setBook] = useState<ReleaseState[]>([]);
   const [audio, setAudio] = useState<ReleaseState[]>([]);
   const filtered = doc.series.filter((s) => {
+    if ((book.length > 0 || audio.length > 0) && s.readingStatus === 'completed') return false;
     const matchQuery = `${s.name} ${s.author}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase());
     const matchReading = !reading.length || reading.includes(s.readingStatus);
     const matchBook = !book.length || (s.formats.book && book.includes(displayRelease(s.releases.book, today)));

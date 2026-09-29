@@ -7,9 +7,9 @@ export function CoverPicker({ series, onSelect }: { series: Series; onSelect: (u
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const find = async () => {
-    setBusy(true); setError(null);
+    setBusy(true); setError(null); setUrls(null);
     try { setUrls(await fetchCoverImageUrls(series.name, series.author, series.lastFinished?.title ?? '', series.next.title)); }
-    catch { setError('Cover search failed. Check your connection and try again.'); }
+    catch { setUrls(null); setError('Cover search failed. Check your connection and try again.'); }
     finally { setBusy(false); }
   };
   return <div className="cover-picker"><button type="button" onClick={find} disabled={busy}>{busy ? 'Searching...' : 'Find cover'}</button>

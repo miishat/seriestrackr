@@ -128,6 +128,26 @@ test('cover lookup failure gives retry feedback while manual editor stays usable
   expect(screen.getByRole('button', { name: 'Find cover' })).toBeEnabled();
 });
 
+test.each(['success', 'empty'] as const)('a later failed cover lookup clears %s results', async (firstResult) => {
+  const user = userEvent.setup(); seed();
+  let fail = false;
+  vi.stubGlobal('fetch', vi.fn((url: string) => fail
+    ? Promise.reject(new Error('offline'))
+    : Promise.resolve({ ok: true, json: async () => url.includes('openlibrary')
+      ? { docs: firstResult === 'success' ? [{ cover_i: 42 }] : [] }
+      : { items: [] } })));
+  render(<App />);
+  await user.click(screen.getByRole('button', { name: 'Edit details' }));
+  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  if (firstResult === 'success') expect(await screen.findByRole('img', { name: 'Possible book cover' })).toBeVisible();
+  else expect(await screen.findByText(/No covers found/)).toBeVisible();
+  fail = true;
+  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  expect(await screen.findByRole('alert')).toHaveTextContent(/cover search failed/i);
+  expect(screen.queryByRole('img', { name: 'Possible book cover' })).toBeNull();
+  expect(screen.queryByText(/No covers found/)).toBeNull();
+});
+
 test('broken cover falls back while keeping its saved URL', () => {
   seed([seriesFixture({ coverUrl: 'https://example.com/broken.jpg' })]); render(<App />);
   fireEvent.error(screen.getByRole('img', { name: /cover/i }));
@@ -189,6 +209,19 @@ test('multiple reading choices are OR while release group narrows the result', (
   expect(screen.queryByText('Gray Cycle')).toBeNull();
   fireEvent.click(screen.getByText('All book statuses'));
   fireEvent.click(screen.getByRole('checkbox', { name: 'Book availability: Available' }));
+  expect(screen.getByRole('heading', { name: 'No matching series' })).toBeVisible();
+});
+
+test.each(['Book availability', 'Audiobook availability'] as const)('completed series do not match a %s filter when releases are hidden', (group) => {
+  seed([
+    seriesFixture({ name: 'Completed Cycle', readingStatus: 'completed', publicationRunComplete: true,
+      releases: { book: { ...emptyRelease(), state: 'released' }, audio: { ...emptyRelease(), state: 'released' } } }),
+    seriesFixture({ id: 's2', name: 'Active Cycle' }),
+  ]);
+  render(<App />);
+  expect(screen.getByText('Completed Cycle')).toBeVisible();
+  fireEvent.click(screen.getByText(group === 'Book availability' ? 'All book statuses' : 'All audiobook statuses'));
+  fireEvent.click(screen.getByRole('checkbox', { name: `${group}: Available` }));
   expect(screen.getByRole('heading', { name: 'No matching series' })).toBeVisible();
 });
 
