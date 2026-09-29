@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Dialog } from '../components/Dialog';
 import { BookIcon } from '../components/Icons';
+import { BackupDialog } from '../features/backups/BackupDialog';
 import { LibraryView } from '../features/library/LibraryView';
 import { SeriesForm } from '../features/library/SeriesForm';
 import type { LibraryDocument, Series } from '../features/library/model';
 import { localToday } from '../features/library/releases';
 import { useLibrary } from '../features/library/useLibrary';
 import { MarketSelect, SettingsDialog } from '../features/settings/SettingsDialog';
+import { downloadJson, encodeBackup } from '../storage/backup';
 
 function useToday() {
   const [today, setToday] = useState(localToday);
@@ -35,6 +37,7 @@ export function App() {
   const [dialogError, setDialogError] = useState<string | null>(null);
   const [pending, setPending] = useState<Pending | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [backupsOpen, setBackupsOpen] = useState(false);
   const [setupMarket, setSetupMarket] = useState('');
   const [setupError, setSetupError] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Series | null>(null);
@@ -83,10 +86,10 @@ export function App() {
   const scheduledAudioCount = library.doc.series.filter((s) => s.readingStatus !== 'completed' && s.formats.audio && s.releases.audio.state === 'scheduled' && !!s.releases.audio.date && s.releases.audio.date > today).length;
   return <div className="app-shell">
     <header className="site-header"><div className="brand"><BookIcon /><div><strong>Series<span>Trackr</span></strong><div className="small">Your reading, one series at a time</div></div></div>
-      <nav aria-label="Library tools"><button onClick={() => setSettingsOpen(true)}>Market: {library.doc.settings.market ?? 'Choose'}</button><button onClick={() => library.updateSettings({ ...library.doc.settings, theme: library.doc.settings.theme === 'dark' ? 'light' : 'dark' }, false)}>{library.doc.settings.theme === 'dark' ? 'Light theme' : 'Dark theme'}</button></nav></header>
+      <nav aria-label="Library tools"><button onClick={() => setSettingsOpen(true)}>Market: {library.doc.settings.market ?? 'Choose'}</button><button onClick={() => library.updateSettings({ ...library.doc.settings, theme: library.doc.settings.theme === 'dark' ? 'light' : 'dark' }, false)}>{library.doc.settings.theme === 'dark' ? 'Light theme' : 'Dark theme'}</button><button onClick={() => setBackupsOpen(true)}>Backups</button></nav></header>
     {library.mode === 'recovery' && <div className="warning" role="alert"><strong>Stored library needs recovery.</strong> {library.error} Download the original data, restore a backup, or reset explicitly.
-      {library.recoveryRaw && <button onClick={() => download('seriestrackr-recovery.txt', library.recoveryRaw!, 'text/plain')}>Download original data</button>}<button onClick={() => library.resetLibrary()}>Reset library</button></div>}
-    {library.mode === 'unsaved' && <div className="warning" role="alert"><strong>Changes are in memory and may be lost.</strong> {library.error} <button onClick={() => download('seriestrackr-unsaved.json', JSON.stringify(library.doc, null, 2), 'application/json')}>Export now</button></div>}
+      <button onClick={() => setBackupsOpen(true)}>Open backups</button></div>}
+    {library.mode === 'unsaved' && <div className="warning" role="alert"><strong>Changes are in memory and may be lost.</strong> {library.error} <button onClick={() => downloadJson(encodeBackup(library.doc), 'seriestrackr-unsaved.json')}>Export now</button></div>}
     <section className="intro"><div><div className="eyebrow">Your library</div><h1>What comes next?</h1><p>A bookshelf for the stories you are following. Your next read stays in focus.</p></div>
       {library.doc.series.length > 0 && <div className="summary"><div><b>{library.doc.series.length}</b><span>Tracked series</span></div><div><b>{availableCount}</b><span>Next book available</span></div><div><b>{scheduledAudioCount}</b><span>Audiobook scheduled</span></div></div>}</section>
     {library.doc.settings.market && library.mode !== 'recovery' && <LibraryView doc={library.doc} today={today} onEdit={(s) => { setDialogError(null); setEditor(s); }} onFinish={finish} onAdd={() => { setDialogError(null); setEditor('new'); }} onView={(view) => library.updateSettings({ ...library.doc.settings, view }, false)} />}
@@ -99,11 +102,6 @@ export function App() {
     <Dialog open={deleteTarget !== null} title="Delete series" onClose={() => setDeleteTarget(null)}><p>Delete {deleteTarget?.name}? This removes its progress and release details.</p><div className="actions"><button onClick={() => setDeleteTarget(null)}>Cancel delete</button><button className="danger" onClick={() => { if (deleteTarget) { const result = library.deleteSeries(deleteTarget.id); if (result.ok === true) { setDeleteTarget(null); closeEditor(); } else setDialogError(result.error); } }}>Delete {deleteTarget?.name}</button></div></Dialog>
     <Dialog open={finishTarget !== null} title="Finish next book" onClose={() => setFinishTarget(null)}><p>Enter the title before moving this book to Last finished.</p><label>Finished book title<input value={finishTitle} onChange={(event) => setFinishTitle(event.target.value)} /></label>{dialogError && <p role="alert">{dialogError}</p>}<div className="actions"><button onClick={() => setFinishTarget(null)}>Cancel</button><button className="primary" onClick={finishWithTitle}>Finish book</button></div></Dialog>
     <Dialog open={settingsOpen} title="Settings" onClose={() => setSettingsOpen(false)}><SettingsDialog settings={library.doc.settings} onSave={handleSettings} onCancel={() => setSettingsOpen(false)} error={dialogError} /></Dialog>
+    {backupsOpen && <BackupDialog doc={library.doc} mode={library.mode} recoveryRaw={library.recoveryRaw} onReplace={library.replaceLibrary} onReset={library.resetLibrary} onClose={() => setBackupsOpen(false)} />}
   </div>;
-}
-
-function download(name: string, contents: string, type: string) {
-  const url = URL.createObjectURL(new Blob([contents], { type }));
-  const link = document.createElement('a'); link.href = url; link.download = name; link.click();
-  setTimeout(() => URL.revokeObjectURL(url), 0);
 }
