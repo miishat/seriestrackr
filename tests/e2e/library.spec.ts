@@ -176,4 +176,11 @@ test('corrupted storage offers the original bytes and requires explicit reset', 
   await page.getByRole('button', { name: 'Reset library' }).click();
   await page.getByRole('button', { name: 'Confirm reset' }).click();
   await expect(page.getByRole('dialog', { name: 'Which releases should we track?' })).toBeVisible();
+  const stored = await page.evaluate((storageKey) => localStorage.getItem(storageKey), key);
+  expect(stored).not.toBeNull();
+  expect(JSON.parse(stored ?? '{}')).toMatchObject({ version: 1, settings: { market: null }, series: [] });
+  const freshPage = await page.context().newPage();
+  await freshPage.goto('/');
+  await expect(freshPage.getByRole('dialog', { name: 'Which releases should we track?' })).toBeVisible();
+  await expect(freshPage.getByRole('alert')).toHaveCount(0);
 });

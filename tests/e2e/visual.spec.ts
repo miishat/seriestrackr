@@ -21,6 +21,26 @@ const seedDocument = {
   ],
 };
 
+async function clippedElements(page: import('@playwright/test').Page): Promise<string[]> {
+  const viewport = await page.evaluate(() => window.innerWidth);
+  const outsideViewport = await page.locator('.brand, .site-header nav button, .library-tools input, .library-tools summary, .library-tools button, .series-card, .series-card button, .next-phase').evaluateAll((elements, viewport) =>
+    elements.flatMap((element) => {
+      const rect = element.getBoundingClientRect();
+      return rect.left < -1 || rect.right > viewport + 1 ? [`${element.tagName.toLowerCase()} ${element.textContent?.trim().slice(0, 32) ?? ''}: ${Math.round(rect.left)}..${Math.round(rect.right)} outside 0..${viewport}`] : [];
+    }), viewport);
+  const clippedText = await page.locator('.brand, .intro, .filter-menu summary, .series-card h2, .release-summary, .next-phase p').evaluateAll((elements) =>
+    elements.flatMap((element) => element.clientWidth > 0 && element.scrollWidth > element.clientWidth + 1
+      ? [`${element.tagName.toLowerCase()} ${element.textContent?.trim().slice(0, 32) ?? ''}: content ${element.scrollWidth}px exceeds ${element.clientWidth}px`]
+      : []));
+  return [...outsideViewport, ...clippedText];
+}
+
+async function setTheme(page: import('@playwright/test').Page, theme: 'light' | 'dark') {
+  const toggle = page.getByRole('button', { name: theme === 'light' ? 'Light theme' : 'Dark theme' });
+  if (await toggle.count()) await toggle.click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+}
+
 test('approved desktop card states fit both widths, themes and 200% effective zoom', async ({ page }) => {
   await page.route('https://covers.example.test/cover.svg', (route) => route.fulfill({
     status: 200, contentType: 'image/svg+xml',
@@ -38,24 +58,30 @@ test('approved desktop card states fit both widths, themes and 200% effective zo
   for (const width of [1440, 1024]) {
     await page.setViewportSize({ width, height: 900 });
     for (const theme of ['light', 'dark'] as const) {
-      await page.evaluate((selected) => { document.documentElement.dataset.theme = selected; }, theme);
+      await setTheme(page, theme);
       await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+      await expect.poll(() => clippedElements(page)).toEqual([]);
       await page.screenshot({ path: `${output}/cards-${width}-${theme}.png`, fullPage: true });
     }
   }
-  const cdp = await page.context().newCDPSession(page);
   for (const width of [1440, 1024]) {
-    await cdp.send('Emulation.setDeviceMetricsOverride', { width: width / 2, height: 900, deviceScaleFactor: 2, mobile: false, screenWidth: width, screenHeight: 900 });
+    // Browser zoom halves the effective CSS viewport at 200%. Set that viewport
+    // directly so screenshots and element bounds use the same dimensions.
+    await page.setViewportSize({ width: width / 2, height: 900 });
     await expect.poll(() => page.evaluate(() => window.innerWidth)).toBe(width / 2);
-    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
-    await page.screenshot({ path: `${output}/cards-${width}-zoom-200.png`, fullPage: true });
+    for (const theme of ['light', 'dark'] as const) {
+      await setTheme(page, theme);
+      await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+      await expect.poll(() => clippedElements(page)).toEqual([]);
+      await page.screenshot({ path: `${output}/cards-${width}-${theme}-zoom-200.png`, fullPage: true });
+    }
   }
-  await cdp.send('Emulation.clearDeviceMetricsOverride');
   await page.setViewportSize({ width: 1024, height: 900 });
   await page.getByLabel('Search series or author').fill('no result for this query');
   await expect(page.getByText('No matching series')).toBeVisible();
   await page.screenshot({ path: `${output}/empty-search.png`, fullPage: true });
   await page.getByLabel('Search series or author').fill('');
+  await setTheme(page, 'light');
   await page.evaluate(() => {
     const original = Storage.prototype.setItem;
     Storage.prototype.setItem = function (key, value) {

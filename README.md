@@ -11,7 +11,7 @@ npm install
 npm run dev
 ```
 
-Open `http://127.0.0.1:3000` in a desktop Chromium browser. The development server listens on localhost. This version is intended for one browser tab at a time because tabs do not synchronize edits. Once the app has loaded, manual tracking does not need a network connection. A network connection is needed only when you choose to search for a cover.
+Open `http://127.0.0.1:3000` in a desktop Chromium browser. The development server listens on localhost. This version is intended for one browser tab at a time because tabs do not synchronize edits. Once the app has loaded, manual tracking works without external network access. Cover search and display of saved or manually pasted remote cover images need connectivity.
 
 The first launch asks for a default release market. You can override it for a series. Book and audiobook availability are separate manual records. Marking a next book finished advances shared reading progress, and Undo is available until another library change or reload.
 
