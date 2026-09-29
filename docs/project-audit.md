@@ -2,13 +2,15 @@
 
 Date: 2026-09-28
 
-Status: source inspection complete. Proposed scope below is for discussion, not an approved implementation specification. No product code changed and no runtime/build checks performed. Dependencies are not installed in this workspace. This directory is not currently a Git repository.
+Status at initial inspection: source inspection complete, dependencies absent, no Git repository, and no runtime/build checks performed. The findings below describe that original snapshot.
+
+Follow-up: Git was initialized on main with baseline commit d1fa629. The requirements interview is complete. The current design and phase-one implementation plan are in docs/superpowers/specs/2026-09-28-personal-tracker-design.md and docs/superpowers/plans/2026-09-28-personal-tracker.md. Those documents supersede the exploratory proposals below, including legacy-data migration: the user chose a clean slate. Product code is still unchanged.
 
 ## Intended outcome
 
 Move the AI Studio prototype into an independently maintained personal book-series tracker. Remove Gemini and unnecessary export scaffolding, retain useful tracking behavior, and establish a practical path to a reliable app.
 
-Still to decide: whether the first version needs synchronized data across devices, and whether automatic release discovery is essential to the first usable version.
+Decisions now settled: desktop-only local data in phase one, followed by mandatory discovery in phase two. No existing AI Studio library needs migration.
 
 ## What exists
 
