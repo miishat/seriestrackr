@@ -25,13 +25,13 @@ Phase one delivers a useful manual tracker. Phase two adds mandatory discovery; 
 
 ### Library and progress
 
-Add, edit, remove, search and filter series. Store series name, author, optional cover URL, reading status (active, paused, dropped or completed), last finished book, optional current book, format preferences and market override.
+Add, edit, remove, search and filter series. Store series name, author, optional next-book cover URL, reading status (active, paused, dropped or completed), last finished book, optional current book, format preferences and market override.
 
 New series may have no finished books. Last finished uses a positive integer for main sequence position and a nonblank title; absence means position zero. Main sequence order is the default. An optional explicit next-book override supports alternate orders and side stories without implementing a complete series catalog. Override positions may be positive decimals; a human label can describe an interlude. Returning from an override to the main sequence defaults to floor(lastFinished.position) + 1 and remains editable.
 
 The next unread book defaults to lastFinished.position + 1 for integer main positions. Optional current-book information never advances Last finished and never changes which book is next unread. This resolves the earlier current-reading suggestion in favor of the user's emphasis on finished progress.
 
-Changing series identity, last finished or next-book identity clears next-book release metadata on submit, after a visible warning in the form. Cancellation changes nothing. Cosmetic changes, reading status, cover and optional current-book changes do not clear metadata. Changing the effective market resets release metadata for the affected series after warning; do not carry dates into a different market silently.
+Changing series identity, last finished or next-book identity clears next-book release metadata and its cover URL on submit, after a visible warning in the form. Cancellation changes nothing. Cosmetic changes, reading status, cover and optional current-book changes do not clear metadata. Changing the effective market resets release metadata for the affected series after warning; do not carry dates into a different market silently.
 
 Mark as finished moves the displayed next book into Last finished, clears current-book information if it refers to that book, removes the override and creates an unchecked next-book record. If the next title is unknown, request it before completing the action. Finishing one format is sufficient. Users can manually mark a book finished even if its availability is unchecked.
 
@@ -107,17 +107,17 @@ Use React state and pure domain functions; no global-state framework or backend.
 
 Use native dialog showModal/close with accessible name, initial focus, Escape and return-focus handling. Use text labels for consequential actions. External links accept HTTP(S) only; never render imported HTML. React handles text escaping. Date and position rules belong in domain functions shared by views and filters.
 
-Preserve the existing cover API capability behind an explicit Find cover action; the library must remain usable if it fails. Cover lookup errors are different from an empty result. No silent retries or automatic requests on rendering. Keep a manual HTTP(S) image URL option. Any provider-key requirement discovered during implementation is not permission to introduce a browser secret.
+Preserve the existing cover API capability behind an explicit Find cover action; the library must remain usable if it fails. Search for the next-unread title first. Cover lookup errors are different from an empty result. No silent retries or automatic requests on rendering. Keep a manual HTTP(S) image URL option. A chosen cover remains until the next-book identity changes or the user replaces it. Failed image loading shows a neutral placeholder without deleting the saved URL. Any provider-key requirement discovered during implementation is not permission to introduce a browser secret.
 
 ## Visual proposal, awaiting selection
 
 Mockup: docs/mockups/seriestrackr-directions.html. It is a standalone review artifact with fictional release data and no production persistence.
 
-Direction A, recommended: compact table. Series and Last finished on the left, Next unread in the middle, separate book/audio availability to the right. This favors scanning many ongoing series.
+Direction A: compact table. Series and Last finished on the left, Next unread in the middle, separate book/audio availability to the right. This favors scanning many ongoing series.
 
-Direction B: compact cards. More visual separation per series, less information on screen. Use modest artwork placeholders rather than full-height covers. Preserve a list option if cards are chosen as the default.
+Direction B, approved default: bookshelf cards. Show the next-unread book cover when a usable URL is available. Give the jacket a 2:3 region large enough to recognize at desktop size, while preserving the complete image with object-fit: contain. Keep title, author, Last finished, next-unread position and separate book/audio states readable. Show a neutral placeholder when there is no cover. Preserve compact and table alternatives.
 
-Both include search, reading-status filter, light/dark preview, an editor preview, setup preview, empty state and backup preview. The final app retains grid/compact/list and cover visibility preferences from the prototype, adapted to the approved direction. Desktop layouts should remain usable at 1024 px width and 200% zoom, with horizontal scrolling confined to a labeled table region when necessary.
+Both include search, reading-status filter, light/dark preview, an editor preview, setup preview, empty state and backup preview. The final app retains grid/compact/list and cover visibility preferences from the prototype, with cards as the default and covers shown by default. Desktop layouts should remain usable at 1024 px width and 200% zoom, with horizontal scrolling confined to a labeled table region when necessary.
 
 ## Phase-two discovery brief
 

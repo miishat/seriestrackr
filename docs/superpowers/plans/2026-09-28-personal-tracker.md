@@ -10,7 +10,7 @@
 
 **Spec:** [Personal tracker design](../specs/2026-09-28-personal-tracker-design.md)
 
-**Status:** Ready for user review, not executed. User explicitly requested this plan alongside the written design. Mockup selection and execution method remain open.
+**Status:** Approved for subagent-driven execution. The user selected Direction B as the default and required proper book covers when available. The spec has been updated before implementation.
 
 ## Global Constraints
 
@@ -132,7 +132,7 @@ export interface Series {
   latestPublishedPosition: number | null;
   formats: Record<Format, boolean>;
   marketOverride: string | null;
-  coverUrl: string | null;
+  coverUrl: string | null; // Next-unread book cover, cleared when its identity changes
   releases: Record<Format, Release>;
 }
 export interface LibraryDocument {
@@ -225,8 +225,8 @@ const commit = (next: LibraryDocument): void => {
 };
 ```
 
-- [ ] Keep one undo snapshot only for a successful markFinished domain operation; a storage failure still permits undo in memory. Undo commits the snapshot and clears itself. Ordinary successful library/settings mutation clears undo. Never use a timer that silently expires an available undo action.
-- [ ] Implement metadata reset based on identity and effective-market comparison. For changed name/author, Last finished, next position/title/order note or effective market, reject with a readable confirmation-required error unless confirmReset is true; then clear both releases. Preserve override fields when deliberately edited, rather than replacing the entire form. Default-market changes reset only inherited-market records. Format toggles retain hidden values.
+- [ ] Keep one undo snapshot only for a successful markFinished domain operation; a storage failure still permits undo in memory. Undo commits the snapshot and clears itself. Ordinary successful library/settings mutation clears undo. Never use a timer that silently expires an available undo action. Marking finished clears the cover with the previous next-book metadata.
+- [ ] Implement metadata reset based on identity and effective-market comparison. For changed name/author, Last finished, next position/title/order note or effective market, reject with a readable confirmation-required error unless confirmReset is true; then clear both releases. Clear coverUrl for changed name/author, Last finished, next position/title/order note, but preserve it for market-only changes. Preserve override fields when deliberately edited, rather than replacing the entire form. Default-market changes reset only inherited-market records. Format toggles retain hidden values.
 - [ ] Add assertions that an override-market record retains dates when the default changes, an inheriting record resets, a cover-only edit retains dates, and Last finished change cannot leave old releases. Setting completed requires publicationRunComplete; it clears currentBook. Add two synchronous command calls in one act to ensure the second does not overwrite the first.
 - [ ] Run focused tests and typecheck. Commit `feat: add library commands and safe progress undo`.
 
@@ -236,7 +236,7 @@ const commit = (next: LibraryDocument): void => {
 
 **Interfaces:** `SeriesForm({series, onSubmit, onCancel})` edits Series or creates Omit<Series,'id'> through separate typed callbacks/props; `ReleaseFields({value,onChange})` edits one Release; `LibraryView({doc,onEdit,onDelete,onFinish})` receives the domain document and command callbacks; `Dialog({open,title,onClose,children})` manages native dialog focus. UI errors display the Result error without closing the form. Existing cover service retains task 1 signature.
 
-- [ ] Record the approved mockup direction in the spec. If approval is missing, stop before visual changes and link the review artifact. Do not infer approval from permission to write the plan.
+- [ ] Implement approved Direction B as the default card view. User approval was given after the first mockup: show proper next-book covers when available. Update the mockup and inspect it before product UI changes; preserve cards as default and table/compact as alternate views.
 - [ ] Add failing user-event tests for setup country selection, add series with no finished book, whitespace validation, Last finished entry, book/audio status and dates, manual next title, optional override, reading-status changes, cover URL, search/filter and mark-finished/undo. Example:
 
 ```tsx
@@ -259,10 +259,10 @@ test('adding a series starts with unchecked releases and survives reload', async
 
 - [ ] Run `npm test -- tests/library-ui.test.tsx` to observe failures. In jsdom provide minimal native dialog method shims; real focus behavior is verified in browser tests, not assumed from shims.
 - [ ] Wire useLibrary into App with recovery/unsaved banners. Setup requires CA/US/GB or user-entered two-letter code; settings allow theme/view/showCovers and default market. Forms use a shared editor for add/edit, expose optional current book in secondary details, and keep Last finished prominent. Validate on submit using task 2 rules, with inline labeled errors.
-- [ ] Render table and card variants from the same data, with grid/compact/list preference and optional modest covers. Filter by reading status and enabled-format displayRelease results; multiple statuses are OR within one filter group, groups combine with AND. Search trims/case-folds name and author. Completed entries display completion instead of a fabricated next book.
+- [ ] Render table and card variants from the same data, with grid/compact/list preference and covers shown by default. In the default card give the next-unread book jacket a recognizable 2:3 region, use object-fit: contain, preserve the source aspect ratio, and keep the rest of the card readable. A missing or failed image renders a neutral placeholder without changing the saved URL. Filter by reading status and enabled-format displayRelease results; multiple statuses are OR within one filter group, groups combine with AND. Search trims/case-folds name and author. Completed entries display completion instead of a fabricated next book.
 - [ ] Show localToday-driven status; refresh today on tab focus and at the next local midnight so a page left open does not display yesterday's status. Tear down listeners/timer. Neither callback triggers discovery. Add a test advancing fake time across local midnight and verify cards and filters agree.
 - [ ] Dialog uses showModal on open, close on state change, onCancel -> onClose, initial focus on first editable field and focus return to opener. Add labeled delete and metadata-reset confirmations, with cancel preserving state. Use required text/date/select controls and safe source links. Unknown title when finishing opens a title prompt before markFinished.
-- [ ] Split cover picker, call the provider only after a click, and distinguish network failure from no results. Return provider success results even if another provider fails; if all requested providers fail, throw an error to show retry. Tests stub fetch for success/empty/failure and verify core library actions remain enabled. No artwork is required for a usable series.
+- [ ] Split cover picker, search by next-unread book title first, call the provider only after a click, and distinguish network failure from no results. Return provider success results even if another provider fails; if all requested providers fail, throw an error to show retry. Tests stub fetch for success/empty/failure and verify core library actions remain enabled. Test a valid cover, missing cover, broken cover URL and book advancement. Cover selection must be explicit and must not overwrite a chosen URL. No artwork is required for a usable series.
 - [ ] Move source entry to src/main.tsx, alias @ to src, update tsconfig paths and Tailwind content globs. Update no-ai test import and visible-empty-state selector to the approved UI. Remove the old types/components only when unused. Run UI/domain/command tests, typecheck and build.
 - [ ] Commit `feat: build personal series tracking interface`.
 
@@ -316,7 +316,7 @@ test('an intentionally empty library stays empty', async ({ page }) => {
 ```
 
 - [ ] Verify a populated record with independent audio/book states, finish/undo, reload, disabled-format filter exclusion, export/import preview/cancel/confirm, and corrupted-storage recovery. Block remote requests and repeat manual tracking. Verify Escape closes the editor without saving, focus returns to opener and keyboard can reach every consequential action.
-- [ ] Inspect the approved layout at 1440 and 1024 px, light/dark, and 200% browser zoom. Check long titles, no cover, both formats, one format, empty search results and unsaved banner. Fix defects without unapproved redesign.
+- [ ] Inspect the approved card layout at 1440 and 1024 px, light/dark, and 200% browser zoom. Check a real proportioned cover image, a missing/broken cover, long titles, both formats, one format, empty search results and unsaved banner. Fix defects without unapproved redesign.
 - [ ] Run `npm test`, `npm run typecheck`, `npm run build`, `npm run test:e2e`. Record actual outcomes in README verification notes or a task completion note. A failed command must be fixed or explicitly reported; do not label it passing from source inspection.
 - [ ] Document supported single-tab localhost usage, npm setup, data location, backups, no automatic discovery and no existing-data migration. Write docs/discovery-evaluation.md with the eight named acceptance series and a blank-results-free research brief: questions to answer, evidence required, and the fact that no providers are evaluated yet. Do not present unresearched provider coverage as fact.
 - [ ] Update audit status with the new implementation state and remaining discovery work. Commit `test: verify personal tracker workflows and document use`.
@@ -332,10 +332,8 @@ test('an intentionally empty library stays empty', async ({ page }) => {
 | Export/import/recovery and replacement safeguards | Task 5 |
 | End-to-end verification, accessibility and discovery handoff | Task 6 |
 
-Self-review: interfaces use one Series/Release/LibraryDocument contract; transitional old model exists only during task 1; all five Review Focus conditions have assigned tests. No provider-dependent discovery implementation is hidden inside phase one. Visual approval remains an explicit prerequisite to task 4.
+Self-review: interfaces use one Series/Release/LibraryDocument contract; transitional old model exists only during task 1; all five Review Focus conditions have assigned tests. No provider-dependent discovery implementation is hidden inside phase one. Direction B and next-book covers were explicitly approved before task 4.
 
 ## Review and execution choice
 
-Review the spec, plan and both mockup directions. Choose Native (same agent implements tasks in order, followed by independent whole-branch review) or Subagent-driven (task implementer and reviewers per task). Native is recommended because all six tasks share a small domain model and the desktop app has no server or deployment changes. Respect the no-Astra instruction for any reviewer.
-
-The writing-plans workflow requires plan review and execution-method selection before implementation. After review, invoke the selected execution skill. This plan does not itself start product changes.
+The user chose subagent-driven development. Execute tasks sequentially with a fresh implementer and task review, then a broad final review. Respect the no-Astra instruction for every subagent.

@@ -2,8 +2,8 @@
 
 Open seriestrackr-directions.html directly in a desktop browser. It is self-contained and does not require npm, external assets, credentials or a server. The current review session also serves it at http://127.0.0.1:4173 while that local process is running.
 
-- A: release table, recommended default for comparing many series.
-- B: compact bookshelf cards, an alternate visual direction.
+- A: release table, an alternate view for comparing many series.
+- B: bookshelf cards, the approved default. Sample jacket artwork shows the space for actual next-book covers when available; an absent cover uses a neutral placeholder.
 - Toggle theme or empty state, search by series, filter by reading status, and open the editor, setup and backup previews.
 
 All release metadata is fictional. Controls demonstrate presentation only; edits, backups and market selection do not save data. These records are not a proposed initial library. The final product starts empty.
