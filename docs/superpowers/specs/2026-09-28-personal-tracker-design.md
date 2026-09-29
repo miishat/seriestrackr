@@ -1,6 +1,6 @@
 # SeriesTrackr personal tracker design
 
-Status: written design for review. Requirements were confirmed in conversation; visual direction and implementation plan await review. No product implementation is authorized by the mockup alone.
+Status: Direction B and the phase-one implementation plan were approved after review. Phase-one implementation is underway. The mockup alone does not authorize later visual redesign or phase-two discovery implementation.
 
 ## Purpose and phases
 

@@ -6,6 +6,8 @@ Status at initial inspection: source inspection complete, dependencies absent, n
 
 Follow-up: Git was initialized on main with baseline commit d1fa629. The requirements interview is complete. The current design and phase-one implementation plan are in docs/superpowers/specs/2026-09-28-personal-tracker-design.md and docs/superpowers/plans/2026-09-28-personal-tracker.md. Those documents supersede the exploratory proposals below, including legacy-data migration: the user chose a clean slate. Product code is still unchanged.
 
+Follow-up, 2026-09-29: Phase-one product code now implements an empty-start, manual desktop library with validated versioned storage, separate book and audiobook release records, guarded progress changes and undo, market settings, explicit cover search, and backup import, export, and recovery controls. The earlier findings and proposals below are retained as the historical baseline; statements such as “Product code is still unchanged” describe the 2026-09-28 snapshot. Verification passed with 77 unit and component tests, TypeScript, a production build, and 10 Chromium browser tests. Automatic title and release discovery remains phase-two work. No provider has been evaluated; `docs/discovery-evaluation.md` sets out the research questions and eight acceptance examples without claiming results.
+
 ## Intended outcome
 
 Move the AI Studio prototype into an independently maintained personal book-series tracker. Remove Gemini and unnecessary export scaffolding, retain useful tracking behavior, and establish a practical path to a reliable app.
