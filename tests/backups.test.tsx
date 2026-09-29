@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { App } from '../src/app/App';
@@ -104,6 +104,32 @@ test('invalid and oversized files never replace the stored document', async () =
   expect(localStorage.getItem(key)).toBe(JSON.stringify(original));
 });
 
+test('the most recently selected file remains the preview when reads finish out of order', async () => {
+  const user = userEvent.setup(); seed();
+  const readers: Array<{ result: string | null; onload: null | (() => void); onerror: null | (() => void); readAsText: () => void; finish: (text: string) => void }> = [];
+  class DeferredReader {
+    result: string | null = null;
+    onload: null | (() => void) = null;
+    onerror: null | (() => void) = null;
+    readAsText() {}
+    finish(text: string) { this.result = text; this.onload?.(); }
+    constructor() { readers.push(this); }
+  }
+  vi.stubGlobal('FileReader', DeferredReader);
+  render(<App />);
+  await user.click(screen.getByRole('button', { name: 'Backups' }));
+  const older = { ...documentWithSeries(), settings: { ...documentWithSeries().settings, market: 'US' as const }, series: [seriesFixture({ id: 'older', name: 'Older file' })] };
+  const newer = { ...documentWithSeries(), settings: { ...documentWithSeries().settings, market: 'GB' as const }, series: [seriesFixture({ id: 'newer', name: 'Newer file' })] };
+  chooseFile(JSON.stringify(older), 'older.json');
+  chooseFile(JSON.stringify(newer), 'newer.json');
+  act(() => readers[1].finish(JSON.stringify(newer)));
+  expect(screen.getByText(/1 series.*GB/)).toBeVisible();
+  act(() => readers[0].finish(JSON.stringify(older)));
+  expect(screen.getByText(/1 series.*GB/)).toBeVisible();
+  await user.click(screen.getByRole('button', { name: 'Confirm replacement' }));
+  expect(JSON.parse(localStorage.getItem(key)!)).toEqual(newer);
+});
+
 test('recovery downloads original malformed text and requires reset confirmation', async () => {
   const user = userEvent.setup(); localStorage.setItem(key, '{broken');
   const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
@@ -132,6 +158,7 @@ test('failed recovery reset still exposes original raw data for download', async
   await user.click(screen.getByRole('button', { name: 'Reset library' }));
   await user.click(screen.getByRole('button', { name: 'Confirm reset' }));
   expect(screen.getByRole('alert')).toHaveTextContent(/quota exceeded/i);
+  expect(screen.queryByRole('dialog', { name: /which releases should we track/i })).toBeNull();
   await user.click(screen.getByRole('button', { name: 'Backups' }));
   expect(screen.getByRole('button', { name: 'Download stored data' })).toBeEnabled();
   expect(screen.getByRole('button', { name: 'Export current library' })).toBeEnabled();

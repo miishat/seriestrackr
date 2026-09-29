@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent } from 'react';
+import { useRef, useState, type ChangeEvent } from 'react';
 import { Dialog } from '../../components/Dialog';
 import type { LibraryDocument, Result } from '../library/model';
 import type { LibraryMode } from '../library/useLibrary';
@@ -17,6 +17,7 @@ export function BackupDialog({ doc, mode, recoveryRaw, onReplace, onReset, onClo
   const [preview, setPreview] = useState<LibraryDocument | null>(null);
   const [confirmingReset, setConfirmingReset] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const selectionId = useRef(0);
 
   const download = (text: string, name: string) => {
     try { downloadJson(text, name); setError(null); }
@@ -24,6 +25,7 @@ export function BackupDialog({ doc, mode, recoveryRaw, onReplace, onReset, onClo
   };
 
   const chooseFile = (event: ChangeEvent<HTMLInputElement>) => {
+    const selected = ++selectionId.current;
     const file = event.target.files?.[0];
     event.target.value = '';
     setPreview(null);
@@ -31,8 +33,9 @@ export function BackupDialog({ doc, mode, recoveryRaw, onReplace, onReset, onClo
     if (!file) return;
     if (file.size > MAX_BACKUP_BYTES) { setError('Backup exceeds the 5 MiB limit.'); return; }
     const reader = new FileReader();
-    reader.onerror = () => setError('Could not read the backup file.');
+    reader.onerror = () => { if (selected === selectionId.current) setError('Could not read the backup file.'); };
     reader.onload = () => {
+      if (selected !== selectionId.current) return;
       if (typeof reader.result !== 'string') { setError('Could not read the backup file.'); return; }
       const decoded = decodeBackup(reader.result);
       if (decoded.ok === false) setError(decoded.error);
@@ -69,7 +72,7 @@ export function BackupDialog({ doc, mode, recoveryRaw, onReplace, onReset, onClo
       <p>{preview.series.length} series in backup. Default market: {preview.settings.market ?? 'not chosen'}.</p>
       <p>Confirming will replace the current library and settings, including all series and preferences.</p>
       {mode !== 'recovery' && <button type="button" onClick={() => download(encodeBackup(doc), 'seriestrackr-before-import.json')}>Download current backup</button>}
-      <div className="actions"><button type="button" onClick={() => setPreview(null)}>Cancel replacement</button><button className="danger" type="button" onClick={replace}>Confirm replacement</button></div>
+      <div className="actions"><button type="button" onClick={() => { selectionId.current++; setPreview(null); }}>Cancel replacement</button><button className="danger" type="button" onClick={replace}>Confirm replacement</button></div>
     </section>}
   </Dialog>;
 }
