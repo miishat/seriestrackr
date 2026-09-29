@@ -103,12 +103,13 @@ export function useLibrary() {
     return { ok: true, value: undefined };
   };
 
-  const markFinished = (id: string): Result<void> => {
+  const markFinished = (id: string, suppliedTitle?: string): Result<void> => {
     const allowed = requireReady();
     if (allowed.ok === false) return allowed;
     const before = current.current.series.find((item) => item.id === id);
     if (!before) return invalid('Series not found.');
-    const finished = finishNext(before);
+    const finishing = suppliedTitle === undefined ? before : { ...before, next: { ...before.next, title: suppliedTitle } };
+    const finished = finishNext(finishing);
     if (finished.ok === false) return invalid(finished.error);
     const candidate = validated({ ...current.current, series: current.current.series.map((item) => item.id === id ? finished.value : item) });
     if (candidate.ok === false) return invalid(candidate.error);

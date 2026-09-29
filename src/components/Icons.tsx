@@ -1,0 +1,1 @@
+export function BookIcon() { return <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path fill="none" stroke="currentColor" strokeWidth="1.7" d="M12 5c-2.5-1.5-5-1.8-9-1v15c4-.8 6.5-.5 9 1 2.5-1.5 5-1.8 9-1V4c-4-.8-6.5-.5-9 1Zm0 0v15" /></svg>; }
