@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { PlusIcon, BooksStackIcon, EyeIcon, EyeSlashIcon, RefreshIcon, FunnelIcon, SunIcon, MoonIcon, ViewGridIcon, ViewCompactIcon, ViewListIcon, MagnifyingGlassIcon } from './Icons';
+import { PlusIcon, EyeIcon, EyeSlashIcon, FunnelIcon, SunIcon, MoonIcon, ViewGridIcon, ViewCompactIcon, ViewListIcon, MagnifyingGlassIcon } from './Icons';
 
 type Theme = 'light' | 'dark';
 type ViewMode = 'grid' | 'compact' | 'list';
@@ -8,8 +8,6 @@ interface HeaderProps {
   onAddSeries: () => void;
   showCovers: boolean;
   onToggleCovers: () => void;
-  onRefreshAll: () => void;
-  isRefreshingAll: boolean;
   activeFilters: string[];
   onFilterChange: (filters: string[]) => void;
   theme: Theme;
@@ -24,8 +22,6 @@ const Header: React.FC<HeaderProps> = ({
   onAddSeries, 
   showCovers, 
   onToggleCovers, 
-  onRefreshAll, 
-  isRefreshingAll, 
   activeFilters, 
   onFilterChange,
   theme,
@@ -162,14 +158,6 @@ const Header: React.FC<HeaderProps> = ({
               )}
             </div>
 
-            <button
-              onClick={onRefreshAll}
-              disabled={isRefreshingAll}
-              title="Refresh All Series"
-              className="p-2 text-text-secondary dark:text-dark-text-secondary hover:bg-brand/20 dark:hover:bg-dark-brand/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed border-l-2 border-text-primary dark:border-dark-text-primary"
-            >
-              <RefreshIcon className={`w-5 h-5 ${isRefreshingAll ? 'animate-spin' : ''}`} />
-            </button>
           </div>
           
           <button

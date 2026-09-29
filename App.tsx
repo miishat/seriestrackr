@@ -5,31 +5,6 @@ import AddSeriesModal from './components/AddSeriesModal';
 import EditSeriesModal from './components/EditSeriesModal';
 import BookSeriesCard from './components/BookSeriesCard';
 import { BooksStackIcon, FunnelIcon } from './components/Icons';
-import { fetchNextBookInfo } from './services/geminiService';
-
-const initialData: BookSeries[] = [
-    {
-      id: '1',
-      seriesName: 'Chrysalis',
-      author: 'RinoZ',
-      lastBookReadTitle: "Fated Antagonist",
-      lastBookReadNumber: 7,
-    },
-    {
-      id: '2',
-      seriesName: 'The Hierarchy',
-      author: 'James Islington',
-      lastBookReadTitle: 'The Will of the Many',
-      lastBookReadNumber: 1,
-    },
-    {
-      id: '3',
-      seriesName: 'The Witness Trilogy',
-      author: 'Steven Erikson',
-      lastBookReadTitle: 'The God is Not Willing',
-      lastBookReadNumber: 1,
-    },
-];
 
 type Theme = 'light' | 'dark';
 type ViewMode = 'grid' | 'compact' | 'list';
@@ -38,7 +13,6 @@ const App: React.FC = () => {
   const [bookSeries, setBookSeries] = useState<BookSeries[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSeries, setEditingSeries] = useState<BookSeries | null>(null);
-  const [isRefreshingAll, setIsRefreshingAll] = useState(false);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   
@@ -81,11 +55,11 @@ const App: React.FC = () => {
         if (storedSeries) {
             setBookSeries(JSON.parse(storedSeries));
         } else {
-            setBookSeries(initialData);
+            setBookSeries([]);
         }
     } catch (error) {
         console.error("Failed to parse book series from localStorage", error);
-        setBookSeries(initialData);
+        setBookSeries([]);
     }
   }, []);
 
@@ -105,14 +79,6 @@ const App: React.FC = () => {
     const getComputedStatus = (series: BookSeries): string => {
         const nextBookInfo = series.nextBookInfo;
         if (!nextBookInfo) return 'Unknown';
-        
-        const isEffectivelyUnannounced =
-            nextBookInfo.nextBookTitle?.toLowerCase().includes('to be announced') ||
-            nextBookInfo.releaseDate?.toLowerCase() === 'tba';
-
-        if (isEffectivelyUnannounced) {
-            return 'Unannounced';
-        }
         
         let status = nextBookInfo.status;
         if (status === 'Announced') {
@@ -182,40 +148,6 @@ const App: React.FC = () => {
       setShowCovers(prev => !prev);
   }
   
-  const handleRefreshAll = async () => {
-    if (isRefreshingAll) return;
-    setIsRefreshingAll(true);
-    
-    const refreshPromises = bookSeries.map(series =>
-      fetchNextBookInfo(series.seriesName, series.author, series.lastBookReadNumber)
-        .then(info => ({ id: series.id, nextBookInfo: info }))
-        .catch(error => {
-          console.error(`Failed to refresh series: ${series.seriesName}`, error);
-          return null;
-        })
-    );
-
-    const results = await Promise.all(refreshPromises);
-
-    setBookSeries(prevSeries => {
-      const updates = new Map<string, BookSeries['nextBookInfo']>();
-      results.forEach(result => {
-        if (result) {
-          updates.set(result.id, result.nextBookInfo);
-        }
-      });
-
-      return prevSeries.map(series => {
-        if (updates.has(series.id)) {
-          return { ...series, nextBookInfo: updates.get(series.id) };
-        }
-        return series;
-      });
-    });
-
-    setIsRefreshingAll(false);
-  };
-
   const gridClassName = useMemo(() => {
     if (viewMode === 'list') {
       return 'grid-cols-1 gap-4';
@@ -232,8 +164,6 @@ const App: React.FC = () => {
         onAddSeries={() => setIsModalOpen(true)}
         showCovers={showCovers}
         onToggleCovers={handleToggleCovers}
-        onRefreshAll={handleRefreshAll}
-        isRefreshingAll={isRefreshingAll}
         activeFilters={activeFilters}
         onFilterChange={setActiveFilters}
         theme={theme}

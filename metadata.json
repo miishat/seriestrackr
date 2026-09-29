@@ -1,6 +1,0 @@
-{
-  "name": "Copy of SeriesTrackr",
-  "description": "An application to track the books you are reading and get notified about the release dates of upcoming books in the same series, powered by the Gemini API.",
-  "requestFramePermissions": [],
-  "majorCapabilities": []
-}

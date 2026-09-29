@@ -1,20 +1,13 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# SeriesTrackr
 
-# Run and deploy your AI Studio app
+A local book series tracker. Add and edit series, record the next book and its release dates manually, search and filter your library, and choose cover images from Open Library or Google Books. Data is stored in your browser's local storage.
 
-This contains everything you need to run your app locally.
+## Run locally
 
-View your app in AI Studio: https://ai.studio/apps/ef76741e-8b75-43ca-adc7-1dd4a0309933
+1. Install Node.js and run `npm install`.
+2. Start the local development server with `npm run dev`.
+3. Open the localhost address printed by Vite.
 
-## Run Locally
+Use `npm run build` to create a production bundle. Run `npm test` and `npm run typecheck` for checks.
 
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+The app does not discover next-book release information automatically. Enter that information in the series editor.

@@ -1,15 +1,9 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { BookSeries, NextBookInfo, FetchStatus } from '../types';
-import { fetchNextBookInfo, fetchCoverImageUrls } from '../services/geminiService';
+import React, { useState, useCallback, useMemo } from 'react';
+import { BookSeries, NextBookInfo } from '../types';
+import { fetchCoverImageUrls } from '../src/services/covers';
 import { RefreshIcon, TrashIcon, PencilIcon, ArrowUpRightIcon, PhotoIcon, XMarkIcon, MagnifyingGlassIcon } from './Icons';
 
 type ViewMode = 'grid' | 'compact' | 'list';
-
-const SkeletonBlock = ({ className }: { className?: string }) => (
-    <div className={`relative overflow-hidden bg-bg-primary dark:bg-dark-bg-primary/50 rounded-md ${className}`}>
-        <div className="absolute inset-0 transform-gpu translate-x-[-100%] animate-shimmer bg-gradient-to-r from-transparent via-black/10 dark:via-white/10 to-transparent"></div>
-    </div>
-);
 
 interface CoverSelectionModalProps {
   isOpen: boolean;
@@ -111,46 +105,15 @@ const getStatusColor = (status: NextBookInfo['status'] | 'Unknown' | undefined) 
 };
 
 const BookSeriesCard: React.FC<BookSeriesCardProps> = ({ series, onDelete, onUpdate, onEdit, showCovers, viewMode }) => {
-  const [status, setStatus] = useState<FetchStatus>('idle');
-  const [error, setError] = useState<string | null>(null);
   const [isCoverModalOpen, setIsCoverModalOpen] = useState(false);
   const [coverOptions, setCoverOptions] = useState<string[]>([]);
   const [isFindingCover, setIsFindingCover] = useState(false);
 
   const nextBookInfo = series.nextBookInfo;
 
-  const fetchInfo = useCallback(async () => {
-    setStatus('loading');
-    setError(null);
-    try {
-      const info = await fetchNextBookInfo(series.seriesName, series.author, series.lastBookReadNumber);
-      onUpdate(series.id, { nextBookInfo: info });
-      setStatus('success');
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'An unknown error occurred.');
-      setStatus('error');
-    }
-  }, [series.seriesName, series.author, series.lastBookReadNumber, series.id, onUpdate]);
-
-  useEffect(() => {
-    if (!nextBookInfo) {
-      fetchInfo();
-    } else {
-      setStatus('success');
-    }
-  }, [nextBookInfo, fetchInfo]);
-
   const computedStatus = useMemo(() => {
     if (!nextBookInfo) return 'Unknown';
     
-    const isEffectivelyUnannounced =
-      nextBookInfo.nextBookTitle?.toLowerCase().includes('to be announced') ||
-      nextBookInfo.releaseDate?.toLowerCase() === 'tba';
-
-    if (isEffectivelyUnannounced) {
-      return 'Unannounced';
-    }
-
     if (nextBookInfo.status === 'Announced') {
         const today = new Date();
         today.setHours(0, 0, 0, 0); // Normalize to start of day
@@ -185,30 +148,6 @@ const BookSeriesCard: React.FC<BookSeriesCardProps> = ({ series, onDelete, onUpd
 
 
   const renderContent = () => {
-    if (status === 'loading' && !nextBookInfo) {
-      return (
-        <div className="space-y-3">
-          <SkeletonBlock className="h-6 w-3/4" />
-          <SkeletonBlock className="h-4 w-1/2" />
-          <div className="pt-2 space-y-2">
-            <SkeletonBlock className="h-4 w-full" />
-            <SkeletonBlock className="h-4 w-5/6" />
-          </div>
-        </div>
-      );
-    }
-
-    if (status === 'error') {
-      return (
-        <div className="text-center text-red-500 font-bold">
-          <p>{error}</p>
-          <button onClick={fetchInfo} className="mt-2 text-brand dark:text-dark-brand hover:underline">
-            Try Again
-          </button>
-        </div>
-      );
-    }
-    
     if (nextBookInfo) {
       return (
         <>
@@ -245,7 +184,7 @@ const BookSeriesCard: React.FC<BookSeriesCardProps> = ({ series, onDelete, onUpd
       );
     }
     
-    return null;
+    return <p className="text-text-secondary dark:text-dark-text-secondary">Next book details not entered yet.</p>;
   };
 
   const ImagePlaceholder = () => (
@@ -268,7 +207,7 @@ const BookSeriesCard: React.FC<BookSeriesCardProps> = ({ series, onDelete, onUpd
                 <div className='flex items-center justify-between'>
                     <h2 className="text-lg font-bold text-brand dark:text-dark-brand truncate" title={series.seriesName}>{series.seriesName}</h2>
                     <span className={`inline-flex items-center px-3 py-1 text-xs font-bold rounded-md border-2 ${getStatusColor(computedStatus)}`}>
-                      {status === 'loading' && !nextBookInfo ? 'Checking...' : (computedStatus || 'Unknown')}
+                      {computedStatus || 'Unknown'}
                     </span>
                 </div>
                 <p className="text-text-secondary dark:text-dark-text-secondary text-sm mb-2">{series.author}</p>
@@ -290,9 +229,6 @@ const BookSeriesCard: React.FC<BookSeriesCardProps> = ({ series, onDelete, onUpd
             <div className="flex flex-col items-center gap-2 border-l-2 border-text-primary dark:border-dark-text-primary pl-4">
                 <button onClick={() => onEdit(series)} className="p-1.5 text-text-secondary dark:text-dark-text-secondary hover:bg-brand/20 dark:hover:bg-dark-brand/20 rounded-sm" aria-label="Edit series">
                     <PencilIcon className="w-5 h-5" />
-                </button>
-                <button onClick={fetchInfo} disabled={status === 'loading'} className="p-1.5 text-text-secondary dark:text-dark-text-secondary hover:bg-brand/20 dark:hover:bg-dark-brand/20 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Refresh series data">
-                    <RefreshIcon className={`w-5 h-5 ${status === 'loading' ? 'animate-spin' : ''}`} />
                 </button>
                 <button onClick={() => onDelete(series.id)} className="p-1.5 text-text-secondary dark:text-dark-text-secondary hover:text-red-500 hover:bg-red-500/10 rounded-sm" aria-label="Delete series">
                     <TrashIcon className="w-5 h-5" />
@@ -344,14 +280,11 @@ const BookSeriesCard: React.FC<BookSeriesCardProps> = ({ series, onDelete, onUpd
         <div className="p-4 md:p-5 flex-grow flex flex-col">
             <div className="flex justify-between items-start mb-2 gap-2">
                 <span className={`inline-flex items-center px-3 py-1 text-xs font-bold rounded-md border-2 ${getStatusColor(computedStatus)}`}>
-                  {status === 'loading' && !nextBookInfo ? 'Checking...' : (computedStatus || 'Unknown')}
+                  {computedStatus || 'Unknown'}
                 </span>
                 <div className="flex items-center gap-1 flex-shrink-0">
                   <button onClick={() => onEdit(series)} className="p-1.5 text-text-secondary dark:text-dark-text-secondary hover:bg-brand/20 dark:hover:bg-dark-brand/20 rounded-md" aria-label="Edit series">
                       <PencilIcon className="w-5 h-5" />
-                  </button>
-                  <button onClick={fetchInfo} disabled={status === 'loading'} className="p-1.5 text-text-secondary dark:text-dark-text-secondary hover:bg-brand/20 dark:hover:bg-dark-brand/20 rounded-md disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Refresh series data">
-                      <RefreshIcon className={`w-5 h-5 ${status === 'loading' ? 'animate-spin' : ''}`} />
                   </button>
                   <button onClick={() => onDelete(series.id)} className="p-1.5 text-text-secondary dark:text-dark-text-secondary hover:text-red-500 hover:bg-red-500/10 rounded-md" aria-label="Delete series">
                       <TrashIcon className="w-5 h-5" />

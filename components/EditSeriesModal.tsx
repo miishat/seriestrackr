@@ -10,13 +10,23 @@ interface EditSeriesModalProps {
 }
 
 const EditSeriesModal: React.FC<EditSeriesModalProps> = ({ isOpen, onClose, onSave, series }) => {
-  const [formData, setFormData] = useState(series);
+  const withEditableNextBook = (value: BookSeries): BookSeries => ({
+    ...value,
+    nextBookInfo: value.nextBookInfo ?? {
+      nextBookTitle: '',
+      releaseDate: 'TBA',
+      audiobookReleaseDate: 'TBA',
+      status: 'Unknown',
+      summary: '',
+    },
+  });
+  const [formData, setFormData] = useState(() => withEditableNextBook(series));
 
   useEffect(() => {
-    setFormData(series);
+    setFormData(withEditableNextBook(series));
   }, [series]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     const type = e.target.getAttribute('type');
     
@@ -98,6 +108,15 @@ const EditSeriesModal: React.FC<EditSeriesModalProps> = ({ isOpen, onClose, onSa
                 <label htmlFor="audiobookReleaseDate" className="block text-sm font-bold text-text-primary dark:text-dark-text-primary mb-1">Audiobook Release Date (e.g., YYYY-MM-DD or TBA)</label>
                 <input type="text" id="audiobookReleaseDate" name="nextBookInfo.audiobookReleaseDate" value={formData.nextBookInfo.audiobookReleaseDate || ''} onChange={handleChange}
                   className="mt-1 block w-full bg-bg-primary dark:bg-dark-bg-primary border-2 border-text-primary dark:border-dark-text-primary rounded-md py-2 px-3 text-text-primary dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-brand dark:focus:ring-dark-brand" />
+              </div>
+              <div>
+                <label htmlFor="nextBookStatus" className="block text-sm font-bold text-text-primary dark:text-dark-text-primary mb-1">Status</label>
+                <select id="nextBookStatus" name="nextBookInfo.status" value={formData.nextBookInfo.status} onChange={handleChange}
+                  className="mt-1 block w-full bg-bg-primary dark:bg-dark-bg-primary border-2 border-text-primary dark:border-dark-text-primary rounded-md py-2 px-3 text-text-primary dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-brand dark:focus:ring-dark-brand">
+                  {(['Unknown', 'Unannounced', 'Announced', 'Released', 'Series Complete'] as NextBookInfo['status'][]).map(status => (
+                    <option key={status} value={status}>{status}</option>
+                  ))}
+                </select>
               </div>
                <div>
                 <label htmlFor="summary" className="block text-sm font-bold text-text-primary dark:text-dark-text-primary mb-1">Summary</label>
