@@ -3,6 +3,7 @@ import { request as httpRequest, type Server } from 'node:http';
 import { connect } from 'node:net';
 import { afterEach, expect, test, vi } from 'vitest';
 import { createDiscoveryServer } from '../../server/discovery/server';
+import type { DiscoveryConfig } from '../../server/discovery/config';
 import type { DiscoveryDependencies } from '../../server/discovery/runDiscovery';
 import { emptyUsage } from '../../shared/discovery';
 import { parseCheckResponse } from '../../shared/discoveryValidation';
@@ -15,7 +16,7 @@ function dependencies(): DiscoveryDependencies {
   return { catalogs: vi.fn(async () => ({ evidence: { sources: [], identities: [], editions: [] }, usage: emptyUsage(), reasons: [] })),
     search: vi.fn(), extract: vi.fn(), now: () => '2026-09-29T12:00:00Z', canSearch: false, canExtract: false };
 }
-async function start(deps = dependencies(), cfg = config) {
+async function start(deps = dependencies(), cfg: DiscoveryConfig = config) {
   const server = createDiscoveryServer(cfg, deps); servers.push(server);
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
   const address = server.address();
@@ -40,13 +41,22 @@ test('creates an unbound server without starting provider work', () => {
   expect(server.listening).toBe(false); expect(deps.catalogs).not.toHaveBeenCalled();
 });
 test('capabilities expose only presence, caps, model and dated estimate without provider work', async () => {
-  const { url, deps } = await start(dependencies(), { ...config, tavilyKey: 'fake-search-secret', deepseekKey: 'fake-ai-secret' });
+  const { url, deps } = await start(dependencies(), { ...config, tavilyKey: 'fake-search-secret', deepseekKey: 'fake-ai-secret', googleBooksKey: 'fake-google-secret' });
   const response = await fetch(`${url}/api/discovery/capabilities`);
   expect(response.status).toBe(200);
-  expect(await response.json()).toEqual({ search: true, ai: true, model: 'deepseek-flash',
-    limits: { search: 3, ai: 1, outputTokens: 2048, inputBytes: 20000 }, pricingAsOf: '2026-09-29', estimatedMaxAiUsd: 0.0084576 });
+  const body = await response.json();
+  expect(body).toEqual({ search: true, ai: true, googleBooks: true, model: 'deepseek-flash',
+    limits: { search: 3, ai: 1, googleBooks: 2, outputTokens: 2048, inputBytes: 20000 }, pricingAsOf: '2026-09-29', estimatedMaxAiUsd: 0.0084576 });
+  for (const key of ['fake-search-secret', 'fake-ai-secret', 'fake-google-secret']) expect(JSON.stringify(body)).not.toContain(key);
   expect(response.headers.get('cache-control')).toBe('no-store');
   expect(response.headers.has('access-control-allow-origin')).toBe(false);
+  expect(deps.catalogs).not.toHaveBeenCalled(); expect(deps.search).not.toHaveBeenCalled(); expect(deps.extract).not.toHaveBeenCalled();
+});
+
+test.each([null, '', ' ', undefined])('Google capabilities disable absent or blank optional keys %s without provider work', async googleBooksKey => {
+  const { url, deps } = await start(dependencies(), googleBooksKey === undefined ? config : { ...config, googleBooksKey });
+  const response = await fetch(`${url}/api/discovery/capabilities`);
+  expect(await response.json()).toMatchObject({ googleBooks: false, limits: { googleBooks: 2 } });
   expect(deps.catalogs).not.toHaveBeenCalled(); expect(deps.search).not.toHaveBeenCalled(); expect(deps.extract).not.toHaveBeenCalled();
 });
 test.each(['localhost', 'example.com', '127.0.0.1:3001', '127.0.0.1'])('rejects nonmatching Host %s', async host => {

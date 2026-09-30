@@ -86,7 +86,7 @@ function source(input: unknown, path: string): Source {
   const value = object(input, path, ['id', 'title', 'url', 'provider', 'market', 'retrievedAt', 'text']);
   return {
     id: string(value.id, `${path}.id`, 100), title: string(value.title, `${path}.title`, 300), url: url(value.url, `${path}.url`),
-    provider: oneOf(value.provider, `${path}.provider`, ['apple', 'openlibrary', 'tavily', 'deepseek']),
+    provider: oneOf(value.provider, `${path}.provider`, ['apple', 'openlibrary', 'googlebooks', 'tavily', 'deepseek']),
     market: nullableCountry(value.market, `${path}.market`), retrievedAt: timestamp(value.retrievedAt, `${path}.retrievedAt`),
     text: string(value.text, `${path}.text`, 20000),
   };
@@ -194,8 +194,9 @@ function conflict(input: unknown, path: string): Conflict {
   return { format: oneOf(value.format, `${path}.format`, ['book', 'audio']), evidenceIds, reason: string(value.reason, `${path}.reason`, 500) };
 }
 function usage(input: unknown, path: string): Usage {
-  const value = object(input, path, ['apple', 'openlibrary', 'tavily', 'deepseek', 'inputTokens', 'outputTokens']);
+  const value = object(input, path, ['apple', 'openlibrary', 'googlebooks', 'tavily', 'deepseek', 'inputTokens', 'outputTokens']);
   return { apple: count(value.apple, `${path}.apple`), openlibrary: count(value.openlibrary, `${path}.openlibrary`),
+    googlebooks: count(value.googlebooks, `${path}.googlebooks`),
     tavily: count(value.tavily, `${path}.tavily`), deepseek: count(value.deepseek, `${path}.deepseek`),
     inputTokens: value.inputTokens === null ? null : count(value.inputTokens, `${path}.inputTokens`),
     outputTokens: value.outputTokens === null ? null : count(value.outputTokens, `${path}.outputTokens`) };

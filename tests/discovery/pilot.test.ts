@@ -17,6 +17,7 @@ function tempRoot() {
   writeFileSync(resolve(root, 'tests/discovery/data/pilot-expected.json'), 'ORACLE_ONLY_SECRET_TITLE_THIS_IS_NOT_JSON');
   writeFileSync(resolve(root, '.env.discovery.local'), 'TAVILY_API_KEY=fake-tavily-secret');
   writeFileSync(resolve(root, '.env.deepseek.local'), 'DEEPSEEK_API_KEY=fake-deepseek-secret\nDEEPSEEK_MODEL=deepseek-flash');
+  writeFileSync(resolve(root, '.env.google-books.local'), 'GOOGLE_BOOKS_API_KEY=fake-google-secret');
   return root;
 }
 afterEach(() => { vi.useRealTimers(); for (const root of roots.splice(0)) rmSync(root, { recursive: true }); });
@@ -46,15 +47,26 @@ test('dry run validates presence and planned bounds with zero requests, no secre
   await runPilot(['--dry-run', '--ai'], { root, fetcher, runtime: deps, print });
   const output = print.mock.calls.map(call => call[0]).join(''); const report = JSON.parse(output);
   expect(report.requestsMade).toBe(0); expect(report.liveGate).toBe('pending'); expect(report.plan).toHaveLength(14);
-  expect(report.plan[0].queries).toEqual({ appleMax: 12, openlibraryMax: 3, tavilyMax: 3, deepseekMax: 1 });
-  expect(report.keyPresence).toEqual({ search: true, ai: true });
+  expect(report.plan[0].queries).toEqual({ appleMax: 12, openlibraryMax: 3, googleBooksMax: 2, tavilyMax: 3, deepseekMax: 1 });
+  expect(report.keyPresence).toEqual({ search: true, ai: true, googleBooks: true });
+  expect(output).not.toContain('fake-google-secret');
   expect(output).not.toContain('fake-tavily-secret'); expect(output).not.toContain('fake-deepseek-secret'); expect(output).not.toContain('ORACLE_ONLY');
   expect(fetcher).not.toHaveBeenCalled(); expect(deps.catalogs).not.toHaveBeenCalled();
+  expect(deps.search).not.toHaveBeenCalled(); expect(deps.extract).not.toHaveBeenCalled();
 });
-test('blank or absent ignored env files produce absent key presence without requests', async () => {
+test.each(['blank', 'absent'])('Google %s ignored env file produces absent key presence without requests', async mode => {
   const root = tempRoot(); writeFileSync(resolve(root, '.env.discovery.local'), 'TAVILY_API_KEY=');
   writeFileSync(resolve(root, '.env.deepseek.local'), 'DEEPSEEK_API_KEY='); const print = vi.fn();
-  await runPilot([], { root, print }); expect(JSON.parse(print.mock.calls[0][0]).keyPresence).toEqual({ search: false, ai: false });
+  if (mode === 'blank') writeFileSync(resolve(root, '.env.google-books.local'), 'GOOGLE_BOOKS_API_KEY=" "');
+  else rmSync(resolve(root, '.env.google-books.local'));
+  const fetcher = vi.fn(); const deps = runtime();
+  await runPilot([], { root, print, fetcher, runtime: deps });
+  const output = print.mock.calls[0][0]; const report = JSON.parse(output);
+  expect(report.keyPresence).toEqual({ search: false, ai: false, googleBooks: false });
+  expect(report.plan.every((item: { queries: { googleBooksMax: number } }) => item.queries.googleBooksMax === 0)).toBe(true);
+  expect(report.requestsMade).toBe(0); expect(output).not.toContain('fake-google-secret');
+  expect(fetcher).not.toHaveBeenCalled(); expect(deps.catalogs).not.toHaveBeenCalled();
+  expect(deps.search).not.toHaveBeenCalled(); expect(deps.extract).not.toHaveBeenCalled();
 });
 test('explicit run invokes one production pipeline and excludes source text and quotes from output', async () => {
   const root = tempRoot(); const req = readPilotCases(root).mistborn;
@@ -66,6 +78,7 @@ test('explicit run invokes one production pipeline and excludes source text and 
   expect(deps.catalogs).toHaveBeenCalledOnce(); expect(vi.mocked(deps.catalogs).mock.calls[0][0].target.title).toBe('');
   const output = print.mock.calls[0][0]; const report = JSON.parse(output);
   expect(report.caseId).toBe('mistborn'); expect(report.proposals.identity.title).toBe(identity.title);
+  expect(report.summary.usage.googlebooks).toBe(0); expect(output).not.toContain('fake-google-secret');
   expect(output).not.toContain('quote'); expect(output).not.toContain('English ebook in Canada');
   expect(output).not.toContain('ORACLE_ONLY'); expect(output).not.toContain('fake-tavily-secret');
   expect(deps.extract).not.toHaveBeenCalled();
@@ -88,7 +101,8 @@ test('production transport uses only one input case and never loads the oracle o
   expect(bodies).toContain('Mistborn Brandon Sanderson book 2');
   expect(bodies).not.toContain('ORACLE_ONLY'); expect(bodies).not.toContain('fake-tavily-secret'); expect(bodies).not.toContain('fake-deepseek-secret');
   expect(bodies).not.toContain('The Well of Ascension');
-  const report = JSON.parse(print.mock.calls[0][0]); expect(report.summary.usage).toMatchObject({ apple: 6, openlibrary: 1, tavily: 3, deepseek: 0 });
+  const report = JSON.parse(print.mock.calls[0][0]); expect(report.summary.usage).toMatchObject({ apple: 6, openlibrary: 1, googlebooks: 0, tavily: 3, deepseek: 0 });
+  expect(print.mock.calls[0][0]).not.toContain('fake-google-secret');
 });
 test('withheld CA control selects independent US factual editions without relabeling', async () => {
   const req = readPilotCases(process.cwd())['ana-and-din-withheld-ca'];

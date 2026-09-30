@@ -2,6 +2,7 @@ import type { Provider, Reason } from '../../shared/discovery';
 
 const bases = {
   apple: 'https://itunes.apple.com', openlibrary: 'https://openlibrary.org',
+  googlebooks: 'https://www.googleapis.com',
   tavily: 'https://api.tavily.com', deepseek: 'https://api.deepseek.com',
 } as const;
 
@@ -17,6 +18,7 @@ function endpoint(provider: Provider, path: string): URL {
   const pathname = queryStart < 0 ? path : path.slice(0, queryStart);
   const allowed = provider === 'apple' || provider === 'tavily' ? pathname === '/search'
     : provider === 'deepseek' ? pathname === '/chat/completions'
+    : provider === 'googlebooks' ? pathname === '/books/v1/volumes'
     : provider === 'openlibrary' && (pathname === '/search.json' || /^\/books\/OL[0-9]+M\.json$/.test(pathname));
   if (!allowed || path.includes('#')) throw new ProviderError(provider, 'provider-error');
   const params = new URLSearchParams(queryStart < 0 ? '' : path.slice(queryStart + 1));

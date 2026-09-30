@@ -9,15 +9,32 @@ const signal = () => new AbortController().signal;
 const json = (body = '{"ok":true}', status = 200) => new Response(body, {
   status, headers: { 'content-type': 'application/json; charset=utf-8' },
 });
+const boundedProviders = [
+  ['tavily', '/search'],
+  ['googlebooks', '/books/v1/volumes?q=Example&key=fake-google-secret'],
+] as const;
 
-test('never follows a credential-bearing redirect or echoes response bodies', async () => {
+test.each([['deepseek', '/chat/completions'], boundedProviders[1]] as const)('never follows a credential-bearing redirect or echoes response bodies for %s', async (provider, path) => {
   const fetcher = vi.fn<typeof fetch>(async () => new Response('secret-value', {
     status: 302, headers: { location: 'https://elsewhere.example/' },
   }));
-  const result = fetchProviderJson('deepseek', '/chat/completions', {}, signal(), fetcher);
-  await expect(result).rejects.toMatchObject({ provider: 'deepseek', reason: 'provider-error', message: 'provider-error' });
+  const result = fetchProviderJson(provider, path, {}, signal(), fetcher);
+  await expect(result).rejects.toMatchObject({ provider, reason: 'provider-error', message: 'provider-error' });
   expect(fetcher.mock.calls).toHaveLength(1);
   expect(fetcher.mock.calls[0][1]?.redirect).toBe('error');
+});
+
+test.each([
+  '/books/v1/volumes/Fictional01', '/volumes',
+  'https://elsewhere.example/books/v1/volumes',
+  '//elsewhere.example/books/v1/volumes',
+  '/books/v1/volumes#secret', '/books/v1/../volumes',
+  '/books/v1/volumes/extra', '/books%2fv1/volumes',
+])('Google rejects destination %s before fetch', async path => {
+  const fetcher = vi.fn<typeof fetch>(async () => json());
+  await expect(fetchProviderJson('googlebooks', path, {}, signal(), fetcher))
+    .rejects.toMatchObject({ reason: 'provider-error', message: 'provider-error' });
+  expect(fetcher).not.toHaveBeenCalled();
 });
 
 test.each([
@@ -36,6 +53,7 @@ test.each([
   ['openlibrary', '/books/OL123M.json', 'https://openlibrary.org/books/OL123M.json'],
   ['tavily', '/search', 'https://api.tavily.com/search'],
   ['deepseek', '/chat/completions', 'https://api.deepseek.com/chat/completions'],
+  ['googlebooks', '/books/v1/volumes?q=Example&key=fake-google-secret', 'https://www.googleapis.com/books/v1/volumes?q=Example&key=fake-google-secret'],
 ] as const)('routes %s only to its fixed host', async (provider, path, expected) => {
   const fetcher = vi.fn<typeof fetch>(async () => json());
   await expect(fetchProviderJson(provider, path, { redirect: 'follow' }, signal(), fetcher)).resolves.toEqual({ ok: true });
@@ -56,20 +74,24 @@ test('accepts actual Apple text/javascript JSON using JSON parsing', async () =>
   await expect(fetchProviderJson('apple', '/search', {}, signal(), fetcher)).resolves.toEqual({ results: [] });
 });
 
-test.each(['tavily', 'openlibrary', 'deepseek'] as const)('rejects JavaScript MIME for %s', async (provider) => {
+test.each(['tavily', 'openlibrary', 'deepseek', 'googlebooks'] as const)('rejects JavaScript MIME for %s', async (provider) => {
   const fetcher: typeof fetch = async () => new Response('{"ok":true}', { headers: { 'content-type': 'text/javascript' } });
-  const path = provider === 'openlibrary' ? '/search.json' : provider === 'deepseek' ? '/chat/completions' : '/search';
+  const path = provider === 'openlibrary' ? '/search.json' : provider === 'deepseek' ? '/chat/completions' : provider === 'googlebooks' ? boundedProviders[1][1] : '/search';
   await expect(fetchProviderJson(provider, path, {}, signal(), fetcher)).rejects.toMatchObject({ reason: 'provider-error' });
 });
 
-test.each([undefined, 'text/html', 'application/jsonp'])('rejects non-JSON response MIME %s', async (mime) => {
-  const fetcher: typeof fetch = async () => new Response('secret-value', { headers: mime ? { 'content-type': mime } : {} });
-  await expect(fetchProviderJson('tavily', '/search', {}, signal(), fetcher)).rejects.toMatchObject({ reason: 'provider-error', message: 'provider-error' });
+test.each(boundedProviders)('rejects non-JSON response MIME for %s', async (provider, path) => {
+  for (const mime of [undefined, 'text/html', 'application/jsonp']) {
+    const fetcher: typeof fetch = async () => new Response('secret-value', { headers: mime ? { 'content-type': mime } : {} });
+    await expect(fetchProviderJson(provider, path, {}, signal(), fetcher)).rejects.toMatchObject({ reason: 'provider-error', message: 'provider-error' });
+  }
 });
 
-test.each([[429, 'quota'], [502, 'provider-error']] as const)('sanitizes status %s', async (status, reason) => {
-  const fetcher: typeof fetch = async () => json('secret-value', status);
-  await expect(fetchProviderJson('deepseek', '/chat/completions', {}, signal(), fetcher)).rejects.toMatchObject({ reason, message: reason });
+test.each([['deepseek', '/chat/completions'], boundedProviders[1]] as const)('sanitizes quota and server errors for %s', async (provider, path) => {
+  for (const [status, reason] of [[429, 'quota'], [502, 'provider-error']] as const) {
+    const fetcher: typeof fetch = async () => json('secret-value', status);
+    await expect(fetchProviderJson(provider, path, {}, signal(), fetcher)).rejects.toMatchObject({ provider, reason, message: reason });
+  }
 });
 
 test('sanitizes invalid JSON and never evaluates Apple JSONP', async () => {
@@ -79,16 +101,16 @@ test('sanitizes invalid JSON and never evaluates Apple JSONP', async () => {
   }
 });
 
-test('sanitizes fetch and stream errors containing credentials', async () => {
+test.each(boundedProviders)('sanitizes fetch and stream errors containing credentials for %s', async (provider, path) => {
   const fetcher: typeof fetch = async () => { throw new Error('secret-value'); };
-  await expect(fetchProviderJson('tavily', '/search', {}, signal(), fetcher)).rejects.toMatchObject({ message: 'provider-error' });
+  await expect(fetchProviderJson(provider, path, {}, signal(), fetcher)).rejects.toMatchObject({ message: 'provider-error' });
   const streamFetcher: typeof fetch = async () => new Response(new ReadableStream({
     start(controller) { controller.error(new Error('secret-value')); },
   }), { headers: { 'content-type': 'application/json' } });
-  await expect(fetchProviderJson('tavily', '/search', {}, signal(), streamFetcher)).rejects.toMatchObject({ message: 'provider-error' });
+  await expect(fetchProviderJson(provider, path, {}, signal(), streamFetcher)).rejects.toMatchObject({ message: 'provider-error' });
 });
 
-test('stops at 1 MiB without Content-Length and cancels the reader', async () => {
+test.each(boundedProviders)('stops %s at 1 MiB without Content-Length and cancels the reader', async (provider, path) => {
   let read = 0;
   let cancelled = false;
   const stream = new ReadableStream<Uint8Array>({
@@ -96,15 +118,15 @@ test('stops at 1 MiB without Content-Length and cancels the reader', async () =>
     cancel() { cancelled = true; },
   }, { highWaterMark: 0 });
   const fetcher: typeof fetch = async () => new Response(stream, { headers: { 'content-type': 'application/json' } });
-  await expect(fetchProviderJson('tavily', '/search', {}, signal(), fetcher)).rejects.toMatchObject({ reason: 'budget', message: 'budget' });
+  await expect(fetchProviderJson(provider, path, {}, signal(), fetcher)).rejects.toMatchObject({ reason: 'budget', message: 'budget' });
   expect(read).toBe(3);
   expect(cancelled).toBe(true);
 });
 
-test('accepts JSON exactly at the 1 MiB limit', async () => {
+test.each(boundedProviders)('accepts JSON exactly at the 1 MiB limit for %s', async (provider, path) => {
   const body = '"' + 'a'.repeat(1048574) + '"';
   const fetcher: typeof fetch = async () => json(body);
-  const result = await fetchProviderJson('tavily', '/search', {}, signal(), fetcher);
+  const result = await fetchProviderJson(provider, path, {}, signal(), fetcher);
   expect(typeof result).toBe('string');
   expect((result as string).length).toBe(1048574);
 });
@@ -132,6 +154,7 @@ const abortingFetcher: typeof fetch = async (_url, init) => new Promise<Response
 test.each([
   ['apple', '/search', 20000], ['openlibrary', '/search.json', 20000],
   ['tavily', '/search', 20000], ['deepseek', '/chat/completions', 45000],
+  ['googlebooks', '/books/v1/volumes?q=Example&key=fake-google-secret', 20000],
 ] as const)('bounds the %s request %s at %s ms', async (provider, path, ms) => {
   vi.useFakeTimers();
   vi.spyOn(AbortSignal, 'timeout').mockImplementation((delay) => {
@@ -139,26 +162,39 @@ test.each([
     setTimeout(() => controller.abort(new DOMException('secret-value', 'TimeoutError')), delay);
     return controller.signal;
   });
-  const outcome = fetchProviderJson(provider, path, {}, signal(), abortingFetcher);
-  const assertion = expect(outcome).rejects.toMatchObject({ provider, reason: 'timeout', message: 'timeout' });
+  const outcome = fetchProviderJson(provider, path, {}, signal(), abortingFetcher).catch(error => error);
   await vi.advanceTimersByTimeAsync(ms);
-  await assertion;
+  expect(await outcome).toMatchObject({ provider, reason: 'timeout', message: 'timeout' });
 });
 
-test('cancels an in-flight request using the caller signal', async () => {
+test.each(boundedProviders)('cancels an in-flight %s request using the caller signal', async (provider, path) => {
   const controller = new AbortController();
-  const outcome = fetchProviderJson('tavily', '/search', {}, controller.signal, abortingFetcher);
+  const outcome = fetchProviderJson(provider, path, {}, controller.signal, abortingFetcher);
   const assertion = expect(outcome).rejects.toMatchObject({ reason: 'cancelled', message: 'cancelled' });
   controller.abort(new Error('secret-value'));
   await assertion;
 });
 
-test('an already cancelled request never fetches', async () => {
+test.each(boundedProviders)('an already cancelled %s request never fetches', async (provider, path) => {
   const controller = new AbortController();
   controller.abort(new Error('secret-value'));
   const fetcher = vi.fn<typeof fetch>(async () => json());
-  await expect(fetchProviderJson('tavily', '/search', {}, controller.signal, fetcher)).rejects.toMatchObject({ reason: 'cancelled', message: 'cancelled' });
+  await expect(fetchProviderJson(provider, path, {}, controller.signal, fetcher)).rejects.toMatchObject({ reason: 'cancelled', message: 'cancelled' });
   expect(fetcher).not.toHaveBeenCalled();
+});
+
+test.each(['redirected', 'off-origin', 'invalid-json'] as const)('Google sanitizes %s responses without exposing key, body or URL', async mode => {
+  const response = json(mode === 'invalid-json' ? 'fake-google-secret response-body' : '{"ok":true}');
+  if (mode === 'redirected') Object.defineProperty(response, 'redirected', { value: true });
+  if (mode === 'off-origin') Object.defineProperty(response, 'url', { value: 'https://elsewhere.example/?key=fake-google-secret' });
+  const fetcher: typeof fetch = async () => response;
+  const error = await fetchProviderJson('googlebooks', boundedProviders[1][1], {}, signal(), fetcher).catch(error => error);
+  expect(error).toMatchObject({ provider: 'googlebooks', reason: 'provider-error', message: 'provider-error' });
+  if (!(error instanceof Error)) throw new Error('expected-provider-error');
+  const serialized = JSON.stringify({ ...error, message: error.message, stack: error.stack });
+  for (const secret of ['fake-google-secret', 'response-body', 'https://elsewhere.example', 'https://www.googleapis.com']) {
+    expect(serialized).not.toContain(secret);
+  }
 });
 
 test.each([[3100, 'Apple'], [1100, 'Open Library']] as const)('spaces %s ms queue starts for %s', async (interval, _provider) => {

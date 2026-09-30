@@ -1,9 +1,31 @@
 import { expect, test } from 'vitest';
+import { emptyUsage } from '../../shared/discovery';
 import { parseCheckRequest, parseCheckResponse, parseExtraction } from '../../shared/discoveryValidation';
 import { bundle, edition, request, response } from './fixtures';
 import { selectProposals } from '../../shared/discoveryPolicy';
 
 const at = '2026-09-29T12:00:00Z';
+
+test('Google usage is required and rejects unsafe counts', () => {
+  const valid = response();
+  expect(emptyUsage().googlebooks).toBe(0);
+  expect(parseCheckResponse(valid).ok).toBe(true);
+  const { googlebooks: omitted, ...withoutGoogle } = valid.summary.usage;
+  expect(omitted).toBe(0);
+  expect(parseCheckResponse({ ...valid, summary: {
+    ...valid.summary, usage: withoutGoogle,
+  } }).ok).toBe(false);
+  for (const count of [-1, 0.5, null, '1', Number.MAX_SAFE_INTEGER + 1]) {
+    expect(parseCheckResponse({ ...valid, summary: { ...valid.summary,
+      usage: { ...valid.summary.usage, googlebooks: count },
+    } }).ok).toBe(false);
+  }
+});
+test('Google is a supported source provider', () => {
+  const evidence = bundle([edition()]);
+  evidence.sources[0].provider = 'googlebooks';
+  expect(parseExtraction(evidence, evidence.sources).ok).toBe(true);
+});
 
 test('rejects invalid calendar days in extracted editions', () => {
   const evidence = bundle([edition({ date: '2027-02-30' })]);

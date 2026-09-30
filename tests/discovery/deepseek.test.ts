@@ -150,7 +150,7 @@ test('uses one fixed JSON extraction request without thinking, tools or retries'
   expect(result.evidence.editions).toEqual([edition()]);
   expect(result.evidence.identities).toEqual([]);
   expect(result.reasons ?? []).toEqual([]);
-  expect(result.usage).toEqual({ apple: 0, openlibrary: 0, tavily: 0, deepseek: 1, inputTokens: 100, outputTokens: 50 });
+  expect(result.usage).toEqual({ apple: 0, openlibrary: 0, googlebooks: 0, tavily: 0, deepseek: 1, inputTokens: 100, outputTokens: 50 });
   expect(fetcher).toHaveBeenCalledTimes(1);
   const [url, init] = fetcher.mock.calls[0];
   expect(String(url)).toBe('https://api.deepseek.com/chat/completions');
@@ -165,7 +165,7 @@ test('AI disabled performs zero calls and retains the original evidence', async 
   const fetcher = vi.fn<typeof fetch>(async () => response(empty));
   const evidence = bundle([edition()]);
   await expect(extractEvidence(request(), evidence, { ...config, deepseekKey: null }, signal(), fetcher))
-    .resolves.toEqual({ evidence, usage: { apple: 0, openlibrary: 0, tavily: 0, deepseek: 0, inputTokens: 0, outputTokens: 0 } });
+    .resolves.toEqual({ evidence, usage: { apple: 0, openlibrary: 0, googlebooks: 0, tavily: 0, deepseek: 0, inputTokens: 0, outputTokens: 0 } });
   expect(fetcher).not.toHaveBeenCalled();
 });
 

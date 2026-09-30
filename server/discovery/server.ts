@@ -52,8 +52,9 @@ function body(req: IncomingMessage, res: ServerResponse): Promise<unknown> {
 export function createDiscoveryServer(config: DiscoveryConfig, dependencies: DiscoveryDependencies = createDiscoveryRuntime(config)): Server {
   const controllers = new Set<AbortController>();
   const estimate = estimatedMaxAiUsd();
-  const capabilities: Capabilities = { search: Boolean(config.tavilyKey?.trim()), ai: Boolean(config.deepseekKey?.trim()), model: config.model,
-    limits: { search: 3, ai: 1, outputTokens: 2048, inputBytes: 20000 }, pricingAsOf: estimate.pricingAsOf, estimatedMaxAiUsd: estimate.usd };
+  const capabilities: Capabilities = { search: Boolean(config.tavilyKey?.trim()), ai: Boolean(config.deepseekKey?.trim()),
+    googleBooks: Boolean(config.googleBooksKey?.trim()), model: config.model,
+    limits: { search: 3, ai: 1, googleBooks: 2, outputTokens: 2048, inputBytes: 20000 }, pricingAsOf: estimate.pricingAsOf, estimatedMaxAiUsd: estimate.usd };
   const server = createServer((req, res) => { void dispatch(req, res); });
   // Closing the service must cancel work before waiting for HTTP connections.
   const close = server.close.bind(server);
