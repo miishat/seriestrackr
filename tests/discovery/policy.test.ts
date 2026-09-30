@@ -45,3 +45,19 @@ test.each([
 ])('rejects mismatched evidence %j', (patch) => {
   expect(selectProposals(request(), bundle([edition(patch)]), at).releases.book).toBeNull();
 });
+
+test.each([
+  { label: 'distinct title prefix', title: 'Second Wind', author: 'Example Author',
+    otherTitle: 'Second Windfall', otherAuthor: 'Example Author' },
+  { label: 'punctuation-distinct author', title: 'Second', author: 'Example-Author',
+    otherTitle: 'Second', otherAuthor: 'Example Author' },
+])('$label cannot replace an exact work match with an earlier date', ({ title, author, otherTitle, otherAuthor }) => {
+  const req = request({ target: { ...request().target, title, author } });
+  const exact = edition({ title, author, id: 'exact', editionKey: 'isbn:exact' });
+  const other = edition({ title: otherTitle, author: otherAuthor, id: 'other', editionKey: 'isbn:other', date: '2027-02-01' });
+  expect(selectProposals(req, bundle([other]), at).releases.book).toBeNull();
+  const proposals = selectProposals(req, bundle([other, exact]), at);
+  expect(proposals.releases.book).toMatchObject({ title, date: '2027-03-01',
+    provenance: { editionKey: 'isbn:exact' } });
+  expect(proposals.conflicts).toEqual([]);
+});

@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { afterEach, expect, test, vi } from 'vitest';
 import type { EvidenceBundle, Source } from '../../shared/discovery';
+import { selectProposals } from '../../shared/discoveryPolicy';
 import { extractEvidence, estimatedMaxAiUsd } from '../../server/discovery/deepseek';
 import { buildExtractionMessages } from '../../server/discovery/prompt';
 import { request, bundle, edition } from './fixtures';
@@ -19,6 +20,42 @@ const fromSources = (sources: Source[]): EvidenceBundle => ({ sources, ...empty 
 const identity = () => ({ title: 'Second', author: 'Example Author', position: 2,
   citations: [{ sourceId: 's1', quote: 'Second by Example Author. Book 2.' }] });
 afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
+
+test('explicit canonical prose supports identity and edition despite decorated display metadata', async () => {
+  const text = 'Second by Example Author. Book 2. English audiobook in Canada: 2027-03-01.';
+  const supplied = source({ title: 'Second: Example, Book 2 (Unabridged)', text });
+  const audio = edition({ format: 'audio', citations: [{ sourceId: 's1', quote: text }] });
+  const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [identity()], editions: [audio] }));
+  const req = request({ useAi: true, target: { ...enabled().target, title: '' } });
+  const result = await extractEvidence(req, fromSources([supplied]), config, signal(), fetcher);
+  expect(result.evidence.identities).toEqual([identity()]);
+  expect(result.evidence.editions).toEqual([audio]);
+  expect(result.reasons ?? []).toEqual([]);
+  expect(result.evidence.sources[0].title).toBe(supplied.title);
+  const proposals = selectProposals(req, result.evidence, supplied.retrievedAt, true);
+  expect(proposals.identity).toEqual(identity());
+  expect(proposals.releases.audio).toMatchObject({ title: 'Second', date: '2027-03-01' });
+  expect(fetcher).toHaveBeenCalledOnce();
+});
+
+test('a decorated edition without canonical relationship keeps identity but proposes no AI release', async () => {
+  const order = source({ text: 'Second by Example Author. Book 2.' });
+  const displayTitle = 'Second: Example, Book 2 (Unabridged)';
+  const storefront = source({ id: 'storefront', title: displayTitle,
+    text: `${displayTitle} by Example Author. English audiobook in Canada: 2027-03-01.` });
+  const audio = edition({ title: displayTitle, format: 'audio',
+    citations: [{ sourceId: storefront.id, quote: storefront.text }] });
+  const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [identity()], editions: [audio] }));
+  const req = request({ useAi: true, target: { ...enabled().target, title: '' } });
+  const result = await extractEvidence(req, fromSources([order, storefront]), config, signal(), fetcher);
+  expect(result.evidence.identities).toEqual([identity()]);
+  expect(result.evidence.editions).toEqual([]);
+  expect(result.reasons).toEqual(['invalid-evidence']);
+  const proposals = selectProposals(req, result.evidence, order.retrievedAt, true);
+  expect(proposals.identity).toEqual(identity());
+  expect(proposals.releases).toEqual({ book: null, audio: null });
+  expect(fetcher).toHaveBeenCalledOnce();
+});
 
 test('valid unknown-title identity survives a wrong-title edition with safe usage and one call', async () => {
   const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [identity()], editions: [edition({ title: 'Third' })] }));
@@ -215,7 +252,7 @@ test('rejects a false literal quotation', async () => {
   expect(fetcher).toHaveBeenCalledOnce();
 });
 
-test.each([{ position: 3 }, { author: 'Other Author' }, { title: 'Other Title' }])('rejects mismatched edition identity %j', async (change) => {
+test.each([{ position: 3 }, { author: 'Example-Author' }, { title: 'Second Wind' }])('rejects mismatched edition identity %j', async (change) => {
   const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [], editions: [edition(change)] }));
   await expect(extractEvidence(enabled(), bundle([edition()]), config, signal(), fetcher))
     .resolves.toMatchObject({ evidence: { identities: [], editions: [] }, reasons: ['invalid-evidence'] });
