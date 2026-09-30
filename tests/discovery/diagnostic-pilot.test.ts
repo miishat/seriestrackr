@@ -3,7 +3,22 @@ import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync, symlinkSyn
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { afterEach, expect, test, vi } from 'vitest';
-import { runDiagnosticPilot, createDiagnosticFetch } from '../../scripts/discovery-diagnostic-pilot';
+import { runDiagnosticPilot, createDiagnosticFetch, createDiagnosticSink } from '../../scripts/discovery-diagnostic-pilot';
+import { runPilot } from '../../scripts/discovery-pilot';
+
+test('persistence sink validates fixed fields, caps events and exposes immutable snapshots', () => {
+  const sink = createDiagnosticSink();
+  const valid = { stage: 'edition', category: 'accepted', sources: 1, identities: 1, editions: 1 };
+  for (const bad of [null, {}, { ...valid, stage: 'FAKE_SECRET' }, { ...valid, category: 'FAKE_SECRET' },
+    { ...valid, sources: -1 }, { ...valid, sources: 31 }, { ...valid, identities: NaN }, { ...valid, editions: 101 }]) sink.observe(bad);
+  for (let i = 0; i < 140; i++) sink.observe({ ...valid, FAKE_SECRET: 'never emit' });
+  const snapshot = sink.snapshot();
+  expect(snapshot.events).toHaveLength(128); expect(snapshot.droppedEvents).toBe(12);
+  expect(snapshot.events.every(event => Object.keys(event).sort().join(',') === 'category,editions,identities,sources,stage')).toBe(true);
+  expect(JSON.stringify(snapshot)).not.toContain('FAKE_SECRET');
+  snapshot.events.length = 0;
+  expect(sink.snapshot().events).toHaveLength(128);
+});
 
 const roots: string[] = [];
 const workspace = '.superpowers/sdd/2026-09-30-discovery-retrieval-diagnostics';
@@ -103,6 +118,13 @@ test.each([false, true])('run reserves before fetch, rejects invalid sibling=%s,
   expect(report.events).toContainEqual({ stage: 'edition', category: badSibling ? 'date-precision' : 'accepted', sources: 3, identities: 1, editions: badSibling ? 0 : 2 });
   const allText = readdirSync(directory).map(file => readFileSync(resolve(directory, file), 'utf8')).join('');
   for (const forbidden of [sourceText, 'fake-deepseek', 'fake-google', 'fake-tavily', 'quote', 'messages']) expect(allText).not.toContain(forbidden);
+  const baseline: string[] = [];
+  const baselineRun = runPilot(['--run', '--case', 'example', '--ai'], { root: path, fetcher, print: value => baseline.push(value) });
+  await vi.runAllTimersAsync(); await baselineRun;
+  const legacy = JSON.parse(baseline[0]);
+  const withoutCheckTimes = (value: unknown) => JSON.parse(JSON.stringify(value, (key, item) => key === 'checkedAt' ? undefined : item));
+  expect(withoutCheckTimes(result.proposals)).toEqual(withoutCheckTimes(legacy.proposals));
+  expect(result.sources).toEqual(legacy.sources);
   const count = fetcher.mock.calls.length;
   await expect(runDiagnosticPilot(args, { root: path, fetcher })).rejects.toThrow('output-already-reserved');
   expect(fetcher).toHaveBeenCalledTimes(count);
@@ -115,4 +137,20 @@ test('failed config after reservation stays closed and emits only fixed failure'
   expect(JSON.parse(readFileSync(resolve(directory, 'diagnostics.json'), 'utf8')).complete).toBe(false);
   await expect(runDiagnosticPilot(args, { root: path, fetcher })).rejects.toThrow('output-already-reserved');
   expect(fetcher).not.toHaveBeenCalled();
+});
+
+test('failure after started requests persists counts and cannot replay or expose raw error', async () => {
+  vi.useFakeTimers(); const path = root(); const fetcher = vi.fn<typeof fetch>(async input => Response.json(
+    new URL(String(input)).hostname === 'www.googleapis.com' ? { totalItems: 0 } : { results: [], docs: [] }));
+  const pending = runDiagnosticPilot(args, { root: path, fetcher, print: () => { throw new Error('FAKE_SECRET raw-output-error'); } });
+  const assertion = expect(pending).rejects.toThrow('diagnostic-pilot-failed');
+  await vi.runAllTimersAsync(); await assertion;
+  const directory = resolve(path, workspace, 'first');
+  const reportText = readFileSync(resolve(directory, 'diagnostics.json'), 'utf8'); const report = JSON.parse(reportText);
+  expect(report.complete).toBe(false); expect(report.counts.googlebooks).toBeGreaterThan(0);
+  expect(Object.values(report.counts).reduce((sum: number, value: number) => sum + value, 0)).toBe(fetcher.mock.calls.length);
+  expect(reportText).not.toContain('FAKE_SECRET');
+  const before = fetcher.mock.calls.length;
+  await expect(runDiagnosticPilot(args, { root: path, fetcher })).rejects.toThrow('output-already-reserved');
+  expect(fetcher).toHaveBeenCalledTimes(before);
 });

@@ -14,6 +14,19 @@ const origins: Record<string, keyof Counts> = {
 };
 const workspaceParts = ['.superpowers', 'sdd', '2026-09-30-discovery-retrieval-diagnostics'];
 
+export function createDiagnosticSink() {
+  const events: DiagnosticEvent[] = []; let droppedEvents = 0;
+  return {
+    observe(event: unknown): void {
+      if (!event || typeof event !== 'object' || Array.isArray(event)) return;
+      emitDiagnostic(safe => {
+        if (events.length < 128) events.push(safe); else droppedEvents = Math.min(1000000, droppedEvents + 1);
+      }, event as DiagnosticEvent);
+    },
+    snapshot: () => ({ events: [...events], droppedEvents }),
+  };
+}
+
 export function createDiagnosticFetch(fetcher: typeof fetch, counts: Counts, onCounts: () => void): typeof fetch {
   return async (input, init) => {
     const url = new URL(input instanceof Request ? input.url : String(input));
@@ -70,24 +83,24 @@ export async function runDiagnosticPilot(args: string[], options: {
     return;
   }
   const output = reserve(root, name!); const counts = zeroCounts();
-  const events: DiagnosticEvent[] = []; let droppedEvents = 0; let complete = false;
+  const sink = createDiagnosticSink(); let complete = false;
   writeFileSync(resolve(output, 'reservation.json'), JSON.stringify({ caseId, caps, retries: 0 }), { flag: 'wx' });
   const saveCounts = () => writeFileSync(resolve(output, 'counts.json'), JSON.stringify(counts, null, 2));
   saveCounts();
   try {
     await runPilot(['--run', '--case', caseId, '--ai'], {
       root, fetcher: createDiagnosticFetch(options.fetcher ?? fetch, counts, saveCounts),
-      onDiagnostic: event => emitDiagnostic(safe => {
-        if (events.length < 128) events.push(safe); else droppedEvents = Math.min(1000000, droppedEvents + 1);
-      }, event),
+      onDiagnostic: sink.observe,
       print: result => { writeFileSync(resolve(output, 'result.json'), result, { flag: 'wx' }); print(result); },
     });
     complete = true;
   } catch { throw new Error('diagnostic-pilot-failed'); }
   finally {
-    const report = { caseId, complete, caps, counts, events, droppedEvents };
-    writeFileSync(resolve(output, 'diagnostics.json'), JSON.stringify(report, null, 2), { flag: 'wx' });
-    print(JSON.stringify(report, null, 2));
+    const report = { caseId, complete, caps, counts, ...sink.snapshot() };
+    try {
+      writeFileSync(resolve(output, 'diagnostics.json'), JSON.stringify(report, null, 2), { flag: 'wx' });
+      print(JSON.stringify(report, null, 2));
+    } catch { throw new Error('diagnostic-pilot-failed'); }
   }
 }
 

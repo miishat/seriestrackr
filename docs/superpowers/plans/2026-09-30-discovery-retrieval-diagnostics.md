@@ -62,8 +62,8 @@ export function classifyExtractionFailure(error: string): DiagnosticCategory;
 
 Add optional `onDiagnostic?: DiagnosticObserver` to `DiscoveryDependencies` and collector options. Add an optional sixth observer argument to `extractEvidence`; runtime accepts optional third `{ onDiagnostic?: DiagnosticObserver }` argument and passes it through. Existing call sites remain valid. No observer field goes in `CheckResponse`, `Usage` or configuration/key files.
 
-- [ ] **Step 1:** Read the owned production boundaries and existing tests once. Confirm where `invalid-evidence` and `budget` originate. Record a boundary map in the plan workspace, without actual input values. Do not attribute the four live failures to a specific boundary yet.
-- [ ] **Step 2:** Write failing real-boundary tests for malformed outer reply, invalid identity shape, target mismatch, duplicate edition ID, inconsistent date precision, missing source/literal quote, valid identity plus bad edition batch, and known-title empty identity plus valid editions. Use fictional evidence with hand-written expected events and existing acceptance assertions.
+- [x] **Step 1:** Read the owned production boundaries and existing tests once. Confirm where `invalid-evidence` and `budget` originate. Record a boundary map in the plan workspace, without actual input values. Do not attribute the four live failures to a specific boundary yet.
+- [x] **Step 2:** Write failing real-boundary tests for malformed outer reply, invalid identity shape, target mismatch, duplicate edition ID, inconsistent date precision, missing source/literal quote, valid identity plus bad edition batch, and known-title empty identity plus valid editions. Use fictional evidence with hand-written expected events and existing acceptance assertions.
 
 The classifier test pins fixed categories independently of model text:
 
@@ -77,9 +77,9 @@ test.each([
   expect(classifyExtractionFailure(error)).toBe(expected);
 });
 ```
-- [ ] **Step 3:** Add a malicious unknown-field fixture and throwing-observer fixture. Assert events contain only the declared keys and fixed enums, results match observer-disabled behavior, and neither diagnostic JSON nor public replies include the fictional secret. Add quote-after-trimming and oversize catalog/allocation tests at their actual owning boundaries. An event for catalog bounds does not establish provider quota exhaustion.
-- [ ] **Step 4:** Run focused Vitest checks and save their meaningful failures. Expected: existing acceptance behavior passes, missing observer/classifier assertions fail. Do not weaken acceptance assertions to manufacture RED.
-- [ ] **Step 5:** Implement the fixed enum classifier. Match only known parser-generated rejection patterns; unknown/novel paths map to `shape`. Never emit parser error text. Validate counts as safe nonnegative integers bounded by existing input array caps. Catch observer exceptions. Keep events immutable so an observer cannot mutate production evidence.
+- [x] **Step 3:** Add a malicious unknown-field fixture and throwing-observer fixture. Assert events contain only the declared keys and fixed enums, results match observer-disabled behavior, and neither diagnostic JSON nor public replies include the fictional secret. Add quote-after-trimming and oversize catalog/allocation tests at their actual owning boundaries. An event for catalog bounds does not establish provider quota exhaustion.
+- [x] **Step 4:** Run focused Vitest checks and save their meaningful failures. Expected: existing acceptance behavior passes, missing observer/classifier assertions fail. Do not weaken acceptance assertions to manufacture RED.
+- [x] **Step 5:** Implement the fixed enum classifier. Match only known parser-generated rejection patterns; unknown/novel paths map to `shape`. Never emit parser error text. Validate counts as safe nonnegative integers bounded by existing input array caps. Catch observer exceptions. Keep events immutable so an observer cannot mutate production evidence.
 
 ```ts
 export function classifyExtractionFailure(error: string): DiagnosticCategory {
@@ -101,9 +101,9 @@ export function emitDiagnostic(observer: DiagnosticObserver | undefined, event: 
 ```
 
 Only typed internal producers may call the emitter. Add runtime enum checks if accepting events from an untyped boundary; the diagnostic pilot must validate before persistence. Use bounded counts of the actually parsed/sent arrays, not untrusted raw array lengths or text-derived numbers.
-- [ ] **Step 6:** Emit one event at the relevant failed stage before current return/throw, without adding provider calls. Emit accepted identity/edition counts after existing validation and actual sent-source count at prompt trimming. Preserve malformed-envelope failure and token usage semantics. Avoid freeform details and reasons inferred from optional fields.
-- [ ] **Step 7:** Run `npm.cmd test -- --run tests/discovery/diagnostics.test.ts tests/discovery/deepseek.test.ts tests/discovery/pipeline.test.ts tests/discovery/catalogs.test.ts tests/discovery/runtime.test.ts`. Prompt tests are currently in `deepseek.test.ts`; add the trimming regression there. Run `npm.cmd run typecheck`. Expected: all pass, fake provider call counts unchanged. Save commands/counts/exits.
-- [ ] **Step 8:** Commit only owned files: `feat(discovery): add bounded server-only rejection diagnostics`. Obtain independent spec/quality review at medium or lower. Resolve findings with focused regressions and scoped re-review before Task 2.
+- [x] **Step 6:** Emit one event at the relevant failed stage before current return/throw, without adding provider calls. Emit accepted identity/edition counts after existing validation and actual sent-source count at prompt trimming. Preserve malformed-envelope failure and token usage semantics. Avoid freeform details and reasons inferred from optional fields.
+- [x] **Step 7:** Run `npm.cmd test -- --run tests/discovery/diagnostics.test.ts tests/discovery/deepseek.test.ts tests/discovery/pipeline.test.ts tests/discovery/catalogs.test.ts tests/discovery/runtime.test.ts`. Prompt tests are currently in `deepseek.test.ts`; add the trimming regression there. Run `npm.cmd run typecheck`. Expected: all pass, fake provider call counts unchanged. Save commands/counts/exits.
+- [x] **Step 8:** Commit only owned files: `feat(discovery): add bounded server-only rejection diagnostics`. Obtain independent spec/quality review at medium or lower. Resolve findings with focused regressions and scoped re-review before Task 2.
 
 ### Task 2: Prepare a replay-safe diagnostic pilot
 
@@ -121,13 +121,13 @@ export async function runDiagnosticPilot(args: string[], options: {
 // onDiagnostic?: DiagnosticObserver
 ```
 
-- [ ] **Step 1:** Write fake-fetch tests proving dry run reads no credentials and makes zero requests, unknown case rejects before network, output reservation happens before requests, and an existing reservation rejects a second run even when the first failed. Use temporary directories and fictional case input only.
-- [ ] **Step 2:** Add fake-fetch tests enforcing per-case ceilings of Google 2, Apple 12, Open Library 3, Tavily 3 and DeepSeek 1. Count a started failed request, reject unknown origins, refuse a call beyond a ceiling before fetch, and assert no retries. Use fixed provider mapping without printing URLs or headers.
-- [ ] **Step 3:** Add diagnostic persistence tests for no source text/quotes/model content/prompt/secret in files or output. Assert non-diagnostic proposal/source-link fields retain the same shape as `runPilot`. A supported fictional English ebook day and separate GB audio fallback must survive; an invalid sibling edition must still suppress the entire AI edition batch.
-- [ ] **Step 4:** Run the new tests before implementing. Expected: missing runner/reservation/diagnostic assertions fail. Add minimal observer wiring to `runPilot` options and reuse its sanitizer rather than constructing another leaking response shape.
-- [ ] **Step 5:** Implement bounded runner and reservation. Persist only authorized case ID, ceilings, started counts, fixed diagnostic events and the existing sanitized result. Load real config only inside explicit live mode. Catch raw provider/CLI errors and emit a fixed failure marker. An incomplete reservation stays closed; no resume or overwrite option.
+- [x] **Step 1:** Write fake-fetch tests proving dry run reads no credentials and makes zero requests, unknown case rejects before network, output reservation happens before requests, and an existing reservation rejects a second run even when the first failed. Use temporary directories and fictional case input only.
+- [x] **Step 2:** Add fake-fetch tests enforcing per-case ceilings of Google 2, Apple 12, Open Library 3, Tavily 3 and DeepSeek 1. Count a started failed request, reject unknown origins including ports/credentials, force redirect:error regardless of injected init, refuse a call beyond a ceiling before fetch, and assert no retries or uncounted redirect request. Use fixed provider mapping without printing URLs or headers.
+- [x] **Step 3:** Add diagnostic persistence tests for no source text/quotes/model content/prompt/secret in files or output. Assert non-diagnostic proposal/source-link fields retain the same shape as `runPilot`. A supported fictional English ebook day and separate GB audio fallback must survive; an invalid sibling edition must still suppress the entire AI edition batch.
+- [x] **Step 4:** Run the new tests before implementing. Expected: missing runner/reservation/diagnostic assertions fail. Add minimal observer wiring to `runPilot` options and reuse its sanitizer rather than constructing another leaking response shape.
+- [x] **Step 5:** Implement bounded runner and reservation. Persist only authorized case ID, ceilings, started counts, fixed diagnostic events and the existing sanitized result. Load real config only inside explicit live mode. Catch raw provider/CLI errors and emit a fixed failure marker. An incomplete reservation stays closed; no resume or overwrite option.
 
-Use literal ceilings and exclusive creation before calling `runPilot`; parse the one case ID through `readPilotCases` first. Require `--output <relative-directory>` in live mode; resolve it beneath the ignored `.superpowers/sdd/2026-09-30-discovery-retrieval-diagnostics/` workspace and reject paths outside that root before creating anything. Dry run does not reserve a directory, load config, read key files or invoke `runPilot`.
+Use literal ceilings and exclusive creation before calling `runPilot`; parse the one case ID through `readPilotCases` first. Require `--output <relative-directory>` in live mode; resolve it beneath the ignored `.superpowers/sdd/2026-09-30-discovery-retrieval-diagnostics/` workspace and reject paths outside that root before creating anything. Require a single leaf directory name matching /^[a-z0-9][a-z0-9-]{0,69}$/; validate existing ancestors with lstat/realpath and reject symlinks or Windows junctions before reservation. Add redirected-ancestor regression. Dry run does not reserve a directory, load config, read key files or invoke `runPilot`.
 
 ```ts
 const caps = { googlebooks: 2, apple: 12, openlibrary: 3, tavily: 3, deepseek: 1 };
@@ -145,8 +145,8 @@ await runPilot(['--run', '--case', caseId, '--ai'], {
 ```
 
 `boundedFetcher` is the local wrapper described in Step 2, typed as `typeof fetch`; `diagnosticEvents` is a bounded list of at most 128 validated events. Drop further diagnostics without affecting discovery and persist a bounded numeric dropped-event count. Final report generation happens in `finally`; never stringify a caught error. `runPilot` must pass `onDiagnostic` to `createDiscoveryRuntime` when no injected runtime exists.
-- [ ] **Step 6:** Run `npm.cmd test -- --run tests/discovery/pilot.test.ts tests/discovery/diagnostic-pilot.test.ts` and `npm.cmd run typecheck`. Expected: pass. Commit only owned files: `feat(discovery): prepare replay-safe diagnostic pilot`. Obtain independent review and scoped fixes.
-- [ ] **Step 7:** Run full unit tests, typecheck and build after the last source fix. Scan changed public artifacts and built frontend for actual configured keys in memory, printing counts only. Obtain independent integration review. Do not claim new date coverage.
+- [x] **Step 6:** Run `npm.cmd test -- --run tests/discovery/pilot.test.ts tests/discovery/diagnostic-pilot.test.ts` and `npm.cmd run typecheck`. Expected: pass. Commit only owned files: `feat(discovery): prepare replay-safe diagnostic pilot`. Obtain independent review and scoped fixes.
+- [ ] **Step 7:** Run full unit tests, typecheck and build after the last source fix. Workers scan fictional secret sentinels and frontend imports only. The controller may separately audit real-key exclusion in memory, printing counts only, under existing credential authorization. Obtain independent integration review. Do not claim new date coverage.
 - [ ] **Step 8:** Run the zero-request dry run for `hierarchy`. Prepare a concrete one-case allowance of at most 2 Google, 12 Apple, 3 Open Library, 3 free Tavily and 1 DeepSeek call, no retries. Refresh the capped cost estimate from existing configured pricing; do not run a live request without new user consent.
 
 ## Evidence checkpoint before repair or Tasks 8 through 11
@@ -160,3 +160,7 @@ The gate remains the original acceptance requirement: traceable identity/positio
 ## Planning self-review
 
 Task 1's observer and event enums are Task 2's only new interface. Both share the same exceptions-isolated emitter and fixed event schema; no duplicate sanitizer or public-schema change is planned. Existing collector options remain backward compatible. Five review-focus classes are assigned tests. Live authorization is a deliberate evidence checkpoint, not a plan to exceed the closed four-case allowance. Independent preflight remains required before implementation.
+
+Preflight amendments: fixed exact-origin/no-redirect wrapper enforcement, controller-only real-key scan, and filesystem-aware output ancestor checks. All preserve approved scope; independent preflight otherwise found interfaces consistent.
+
+Execution checkpoint: human plan approval and live-testing authorization received. Task1 commits2a11ca5/bed9b57 independently approved after count/cancellation regression fixes;235focused checks/typecheck pass. Task2 replay-safe runner and39focused checks/typecheck pass; scoped review after persistence/output-failure fixes is pending. Expanded testing authorization is explicit in the human conversation, while this runner keeps per-case ceilings and no retries. Whole-integration review and live diagnostic remain pending. Original date gate and UI visual review remain unpassed.
