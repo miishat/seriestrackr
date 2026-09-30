@@ -1,0 +1,260 @@
+// @vitest-environment node
+import { afterEach, expect, test, vi } from 'vitest';
+import { fetchProviderJson } from '../../server/discovery/http';
+import { createRateQueue } from '../../server/discovery/rateQueue';
+
+afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
+
+const signal = () => new AbortController().signal;
+const json = (body = '{"ok":true}', status = 200) => new Response(body, {
+  status, headers: { 'content-type': 'application/json; charset=utf-8' },
+});
+
+test('never follows a credential-bearing redirect or echoes response bodies', async () => {
+  const fetcher = vi.fn<typeof fetch>(async () => new Response('secret-value', {
+    status: 302, headers: { location: 'https://elsewhere.example/' },
+  }));
+  const result = fetchProviderJson('deepseek', '/chat/completions', {}, signal(), fetcher);
+  await expect(result).rejects.toMatchObject({ provider: 'deepseek', reason: 'provider-error', message: 'provider-error' });
+  expect(fetcher.mock.calls).toHaveLength(1);
+  expect(fetcher.mock.calls[0][1]?.redirect).toBe('error');
+});
+
+test.each([
+  'https://elsewhere.example/chat/completions', '//elsewhere.example/chat/completions',
+  '/chat/completions#fragment', '/chat/../chat/completions', '/chat%2fcompletions',
+  '/chat/completions/extra', '/search', '\\elsewhere.example\\chat\\completions',
+])('rejects unsupported or off-provider destination %s before fetching', async (path) => {
+  const fetcher = vi.fn<typeof fetch>(async () => json());
+  await expect(fetchProviderJson('deepseek', path, {}, signal(), fetcher)).rejects.toMatchObject({ reason: 'provider-error' });
+  expect(fetcher).not.toHaveBeenCalled();
+});
+
+test.each([
+  ['apple', '/search?term=A%26B&country=US', 'https://itunes.apple.com/search?term=A%26B&country=US'],
+  ['openlibrary', '/search.json?q=A%26B', 'https://openlibrary.org/search.json?q=A%26B'],
+  ['openlibrary', '/books/OL123M.json', 'https://openlibrary.org/books/OL123M.json'],
+  ['tavily', '/search', 'https://api.tavily.com/search'],
+  ['deepseek', '/chat/completions', 'https://api.deepseek.com/chat/completions'],
+] as const)('routes %s only to its fixed host', async (provider, path, expected) => {
+  const fetcher = vi.fn<typeof fetch>(async () => json());
+  await expect(fetchProviderJson(provider, path, { redirect: 'follow' }, signal(), fetcher)).resolves.toEqual({ ok: true });
+  expect(String(fetcher.mock.calls[0][0])).toBe(expected);
+  expect(fetcher.mock.calls[0][1]?.redirect).toBe('error');
+});
+
+test('rejects Apple JSONP callbacks before fetching', async () => {
+  const fetcher = vi.fn<typeof fetch>(async () => json());
+  await expect(fetchProviderJson('apple', '/search?%63allback=secret-value', {}, signal(), fetcher)).rejects.toMatchObject({ reason: 'provider-error' });
+  expect(fetcher).not.toHaveBeenCalled();
+});
+
+test('accepts actual Apple text/javascript JSON using JSON parsing', async () => {
+  const fetcher: typeof fetch = async () => new Response('{"results":[]}', {
+    headers: { 'content-type': 'text/javascript; charset=utf-8' },
+  });
+  await expect(fetchProviderJson('apple', '/search', {}, signal(), fetcher)).resolves.toEqual({ results: [] });
+});
+
+test.each(['tavily', 'openlibrary', 'deepseek'] as const)('rejects JavaScript MIME for %s', async (provider) => {
+  const fetcher: typeof fetch = async () => new Response('{"ok":true}', { headers: { 'content-type': 'text/javascript' } });
+  const path = provider === 'openlibrary' ? '/search.json' : provider === 'deepseek' ? '/chat/completions' : '/search';
+  await expect(fetchProviderJson(provider, path, {}, signal(), fetcher)).rejects.toMatchObject({ reason: 'provider-error' });
+});
+
+test.each([undefined, 'text/html', 'application/jsonp'])('rejects non-JSON response MIME %s', async (mime) => {
+  const fetcher: typeof fetch = async () => new Response('secret-value', { headers: mime ? { 'content-type': mime } : {} });
+  await expect(fetchProviderJson('tavily', '/search', {}, signal(), fetcher)).rejects.toMatchObject({ reason: 'provider-error', message: 'provider-error' });
+});
+
+test.each([[429, 'quota'], [502, 'provider-error']] as const)('sanitizes status %s', async (status, reason) => {
+  const fetcher: typeof fetch = async () => json('secret-value', status);
+  await expect(fetchProviderJson('deepseek', '/chat/completions', {}, signal(), fetcher)).rejects.toMatchObject({ reason, message: reason });
+});
+
+test('sanitizes invalid JSON and never evaluates Apple JSONP', async () => {
+  for (const body of ['secret-value', 'callback({"ok":true})']) {
+    const fetcher: typeof fetch = async () => new Response(body, { headers: { 'content-type': 'text/javascript' } });
+    await expect(fetchProviderJson('apple', '/search', {}, signal(), fetcher)).rejects.toMatchObject({ reason: 'provider-error', message: 'provider-error' });
+  }
+});
+
+test('sanitizes fetch and stream errors containing credentials', async () => {
+  const fetcher: typeof fetch = async () => { throw new Error('secret-value'); };
+  await expect(fetchProviderJson('tavily', '/search', {}, signal(), fetcher)).rejects.toMatchObject({ message: 'provider-error' });
+  const streamFetcher: typeof fetch = async () => new Response(new ReadableStream({
+    start(controller) { controller.error(new Error('secret-value')); },
+  }), { headers: { 'content-type': 'application/json' } });
+  await expect(fetchProviderJson('tavily', '/search', {}, signal(), streamFetcher)).rejects.toMatchObject({ message: 'provider-error' });
+});
+
+test('stops at 1 MiB without Content-Length and cancels the reader', async () => {
+  let read = 0;
+  let cancelled = false;
+  const stream = new ReadableStream<Uint8Array>({
+    pull(controller) { read++; controller.enqueue(new Uint8Array(524288)); },
+    cancel() { cancelled = true; },
+  }, { highWaterMark: 0 });
+  const fetcher: typeof fetch = async () => new Response(stream, { headers: { 'content-type': 'application/json' } });
+  await expect(fetchProviderJson('tavily', '/search', {}, signal(), fetcher)).rejects.toMatchObject({ reason: 'budget', message: 'budget' });
+  expect(read).toBe(3);
+  expect(cancelled).toBe(true);
+});
+
+test('accepts JSON exactly at the 1 MiB limit', async () => {
+  const body = '"' + 'a'.repeat(1048574) + '"';
+  const fetcher: typeof fetch = async () => json(body);
+  const result = await fetchProviderJson('tavily', '/search', {}, signal(), fetcher);
+  expect(typeof result).toBe('string');
+  expect((result as string).length).toBe(1048574);
+});
+
+test('accepts JSON request bodies and rejects non-JSON bodies before fetching', async () => {
+  const fetcher = vi.fn<typeof fetch>(async () => json());
+  await expect(fetchProviderJson('tavily', '/search', {
+    method: 'POST', headers: { 'content-type': 'application/json' }, body: '{"query":"book"}',
+  }, signal(), fetcher)).resolves.toEqual({ ok: true });
+  fetcher.mockClear();
+  for (const init of [
+    { method: 'POST', body: 'secret-value' },
+    { method: 'POST', headers: { 'content-type': 'application/json' }, body: 'secret-value' },
+    { method: 'POST', body: new URLSearchParams({ key: 'secret-value' }) },
+  ]) {
+    await expect(fetchProviderJson('tavily', '/search', init, signal(), fetcher)).rejects.toMatchObject({ message: 'provider-error' });
+  }
+  expect(fetcher).not.toHaveBeenCalled();
+});
+
+const abortingFetcher: typeof fetch = async (_url, init) => new Promise<Response>((_resolve, reject) => {
+  init!.signal!.addEventListener('abort', () => reject(init!.signal!.reason), { once: true });
+});
+
+test.each([
+  ['apple', '/search', 20000], ['openlibrary', '/search.json', 20000],
+  ['tavily', '/search', 20000], ['deepseek', '/chat/completions', 45000],
+] as const)('bounds the %s request %s at %s ms', async (provider, path, ms) => {
+  vi.useFakeTimers();
+  vi.spyOn(AbortSignal, 'timeout').mockImplementation((delay) => {
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(new DOMException('secret-value', 'TimeoutError')), delay);
+    return controller.signal;
+  });
+  const outcome = fetchProviderJson(provider, path, {}, signal(), abortingFetcher);
+  const assertion = expect(outcome).rejects.toMatchObject({ provider, reason: 'timeout', message: 'timeout' });
+  await vi.advanceTimersByTimeAsync(ms);
+  await assertion;
+});
+
+test('cancels an in-flight request using the caller signal', async () => {
+  const controller = new AbortController();
+  const outcome = fetchProviderJson('tavily', '/search', {}, controller.signal, abortingFetcher);
+  const assertion = expect(outcome).rejects.toMatchObject({ reason: 'cancelled', message: 'cancelled' });
+  controller.abort(new Error('secret-value'));
+  await assertion;
+});
+
+test('an already cancelled request never fetches', async () => {
+  const controller = new AbortController();
+  controller.abort(new Error('secret-value'));
+  const fetcher = vi.fn<typeof fetch>(async () => json());
+  await expect(fetchProviderJson('tavily', '/search', {}, controller.signal, fetcher)).rejects.toMatchObject({ reason: 'cancelled', message: 'cancelled' });
+  expect(fetcher).not.toHaveBeenCalled();
+});
+
+test.each([[3100, 'Apple'], [1100, 'Open Library']] as const)('spaces %s ms queue starts for %s', async (interval, _provider) => {
+  vi.useFakeTimers();
+  vi.setSystemTime(0);
+  const queue = createRateQueue(interval);
+  const starts: number[] = [];
+  const job = async () => { starts.push(Date.now()); return starts.length; };
+  const first = queue.run(job, signal());
+  const second = queue.run(job, signal());
+  const third = queue.run(job, signal());
+  await vi.advanceTimersByTimeAsync(0);
+  expect(starts).toEqual([0]);
+  await vi.advanceTimersByTimeAsync(interval - 1);
+  expect(starts).toEqual([0]);
+  await vi.advanceTimersByTimeAsync(1);
+  expect(starts).toEqual([0, interval]);
+  await vi.advanceTimersByTimeAsync(interval);
+  expect(starts).toEqual([0, interval, interval * 2]);
+  await expect(Promise.all([first, second, third])).resolves.toEqual([1, 2, 3]);
+});
+
+test('a rejected queue job does not poison the next job', async () => {
+  vi.useFakeTimers();
+  const queue = createRateQueue(1100);
+  const failed = queue.run(async () => { throw new Error('failed job'); }, signal());
+  const assertion = expect(failed).rejects.toThrow('failed job');
+  const next = queue.run(async () => 'next', signal());
+  await vi.advanceTimersByTimeAsync(1100);
+  await assertion;
+  await expect(next).resolves.toBe('next');
+});
+
+test('aborting work while it waits behind a running job prevents its start', async () => {
+  const queue = createRateQueue(1100);
+  let finish!: () => void;
+  const first = queue.run(() => new Promise<void>((resolve) => { finish = resolve; }), signal());
+  await Promise.resolve();
+  const controller = new AbortController();
+  let started = false;
+  const cancelled = queue.run(async () => { started = true; }, controller.signal);
+  const assertion = expect(cancelled).rejects.toMatchObject({ name: 'AbortError', message: 'cancelled' });
+  controller.abort(new Error('secret-value'));
+  await assertion;
+  finish();
+  await first;
+  expect(started).toBe(false);
+});
+
+test('aborting a queue delay clears its timer and listener', async () => {
+  vi.useFakeTimers();
+  const queue = createRateQueue(3100);
+  await queue.run(async () => 'first', signal());
+  const controller = new AbortController();
+  const add = vi.spyOn(controller.signal, 'addEventListener');
+  const remove = vi.spyOn(controller.signal, 'removeEventListener');
+  let started = false;
+  const cancelled = queue.run(async () => { started = true; }, controller.signal);
+  const assertion = expect(cancelled).rejects.toMatchObject({ name: 'AbortError', message: 'cancelled' });
+  await vi.advanceTimersByTimeAsync(0);
+  expect(vi.getTimerCount()).toBe(1);
+  controller.abort();
+  await assertion;
+  await vi.advanceTimersByTimeAsync(0);
+  expect(vi.getTimerCount()).toBe(0);
+  expect(started).toBe(false);
+  for (const [, callback] of add.mock.calls) expect(remove.mock.calls.some(([, removed]) => removed === callback)).toBe(true);
+});
+
+test('completed queue delays remove every abort listener', async () => {
+  vi.useFakeTimers();
+  const queue = createRateQueue(1100);
+  await queue.run(async () => 'first', signal());
+  const controller = new AbortController();
+  const add = vi.spyOn(controller.signal, 'addEventListener');
+  const remove = vi.spyOn(controller.signal, 'removeEventListener');
+  const second = queue.run(async () => 'second', controller.signal);
+  await vi.advanceTimersByTimeAsync(1100);
+  await expect(second).resolves.toBe('second');
+  for (const [, callback] of add.mock.calls) expect(remove.mock.calls.some(([, removed]) => removed === callback)).toBe(true);
+  expect(vi.getTimerCount()).toBe(0);
+});
+
+test('a wall-clock jump does not bypass elapsed queue spacing', async () => {
+  vi.useFakeTimers();
+  vi.setSystemTime(0);
+  const queue = createRateQueue(3100);
+  let started = 0;
+  await queue.run(async () => { started++; }, signal());
+  vi.setSystemTime(1000000);
+  const second = queue.run(async () => { started++; }, signal());
+  await vi.advanceTimersByTimeAsync(0);
+  expect(started).toBe(1);
+  await vi.advanceTimersByTimeAsync(3099);
+  expect(started).toBe(1);
+  await vi.advanceTimersByTimeAsync(1);
+  await second;
+  expect(started).toBe(2);
+});
