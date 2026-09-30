@@ -68,12 +68,12 @@ test('prompt includes only the target, market, formats and inert source ID/title
   }
 });
 
-test('prioritizes target order then selected market then other markets without mutating evidence', () => {
+test('retains input order for prompt allocation without mutating evidence', () => {
   const order = source({ id: 'order', title: 'Example reading order', text: 'Second by Example Author. Book 2.' });
   const evidence = fromSources([source({ id: 'other', market: 'US' }), source({ id: 'local', market: 'CA' }), order]);
   const before = structuredClone(evidence);
   expect(JSON.parse(buildExtractionMessages(enabled(), evidence)[1].content).sources.map((item: Source) => item.id))
-    .toEqual(['order', 'local', 'other']);
+    .toEqual(['other', 'local', 'order']);
   expect(evidence).toEqual(before);
 });
 
@@ -82,16 +82,18 @@ test('caps the entire serialized messages at 20000 UTF-8 bytes and trims at code
   const messages = buildExtractionMessages(enabled(), evidence);
   expect(Buffer.byteLength(JSON.stringify(messages), 'utf8')).toBeLessThanOrEqual(20000);
   const sent = JSON.parse(messages[1].content).sources;
-  expect(sent).toHaveLength(1);
+  expect(sent).toHaveLength(2);
   expect(sent[0].id).toBe('s1');
   expect(sent[0].text.length).toBeGreaterThan(0);
   expect(sent[0].text).not.toMatch(/[\uD800-\uDBFF]$/);
   expect(evidence.sources[0].text.length).toBeGreaterThan(sent[0].text.length);
 });
 
-test('rejects quotes in trimmed-away text and sources omitted from the prompt', async () => {
-  const evidence = fromSources([source({ text: 'x'.repeat(19000) + ' trimmed-tail' }), source({ id: 'omitted' })]);
-  for (const citations of [[{ sourceId: 's1', quote: 'trimmed-tail' }], [{ sourceId: 'omitted', quote: 'Book 2' }]]) {
+test('rejects quotes in trimmed-away text and sources omitted at the source cap', async () => {
+  const evidence = fromSources([source({ text: 'x'.repeat(19000) + ' trimmed-tail' }),
+    ...Array.from({ length: 29 }, (_, i) => source({ id: `other-${i}`, provider: 'apple', text: 'x'.repeat(19000) })),
+    source({ id: 'omitted', provider: 'apple', text: 'omitted-proof' })]);
+  for (const citations of [[{ sourceId: 's1', quote: 'trimmed-tail' }], [{ sourceId: 'omitted', quote: 'omitted-proof' }]]) {
     const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [], editions: [edition({ citations })] }));
     await expect(extractEvidence(enabled(), evidence, config, signal(), fetcher)).rejects.toMatchObject({ reason: 'invalid-evidence' });
     expect(fetcher).toHaveBeenCalledTimes(1);
@@ -215,4 +217,81 @@ test('an already aborted signal prevents a call', async () => {
 
 test('approximate maximum uses 20000 input tokens as a byte bound plus 2048 output tokens at dated peak rates', () => {
   expect(estimatedMaxAiUsd()).toEqual({ usd: 0.0084576, pricingAsOf: '2026-09-29' });
+});
+
+test.each(['catalog-flood', 'escaped-flood'])('prompt pruning preserves cited order and GB audio under saturated %s evidence', variant => {
+  const quote = 'Second by Example Author. Book 2.';
+  const order = source({ id: 'order-proof', title: 'Bibliography', text: quote });
+  const audio = source({ id: 'gb-audio', market: 'GB', text: 'Second by Example Author. English audiobook in GB: 2028-04-02.' });
+  const large = variant === 'catalog-flood' ? 'Catalog detail '.repeat(1100) : '📚"\\é'.repeat(3000);
+  const evidence: EvidenceBundle = { sources: [
+    ...Array.from({ length: 28 }, (_, i) => source({ id: `ca-${i}`, provider: 'apple', market: 'CA', text: large })), order, audio,
+  ], identities: [{ title: 'Second', author: 'Example Author', position: 2, citations: [{ sourceId: order.id, quote }] }], editions: [] };
+  const before = structuredClone(evidence);
+  const req = request({ target: { ...enabled().target, title: '' } });
+  const messages = buildExtractionMessages(req, evidence);
+  const sent = JSON.parse(messages[1].content).sources as Source[];
+  expect(sent.find(item => item.id === 'order-proof')?.text).toContain(quote);
+  expect(sent.find(item => item.id === 'gb-audio')?.text).toBe(audio.text);
+  expect(Buffer.byteLength(JSON.stringify(messages), 'utf8')).toBeLessThanOrEqual(20000);
+  expect(buildExtractionMessages(req, evidence)).toEqual(messages);
+  expect(evidence).toEqual(before);
+});
+
+test('protected identity quotes beyond initial prefixes and both conflict sides survive prompt pruning', () => {
+  const identityQuote = 'Second by Example Author. Book 2.📚';
+  const late = source({ id: 'late', text: 'x'.repeat(5000) + identityQuote + 'z'.repeat(13000) });
+  const conflicting = [edition({ id: 'left', citations: [{ sourceId: 'left', quote: '2027-03-01' }] }),
+    edition({ id: 'right', date: '2028-03-01', citations: [{ sourceId: 'right', quote: '2028-03-01' }] })];
+  const evidence: EvidenceBundle = { sources: [source({ id: 'large', provider: 'apple', text: 'filler '.repeat(2000) }),
+    late, source({ id: 'left', text: 'a'.repeat(600) + '2027-03-01' }), source({ id: 'right', text: 'b'.repeat(600) + '2028-03-01' })],
+  identities: [{ title: 'Second', author: 'Example Author', position: 2, citations: [{ sourceId: 'late', quote: identityQuote }] }], editions: conflicting };
+  const sent = JSON.parse(buildExtractionMessages(enabled(), evidence)[1].content).sources as Source[];
+  expect(sent.find(item => item.id === 'late')?.text).toContain(identityQuote);
+  expect(sent.find(item => item.id === 'left')?.text).toContain('2027-03-01');
+  expect(sent.find(item => item.id === 'right')?.text).toContain('2028-03-01');
+});
+
+test('impossible protected prompt prefix rejects with budget before any provider call', async () => {
+  const quote = 'Second by Example Author. Book 2.';
+  const evidence: EvidenceBundle = { sources: [source({ text: 'x'.repeat(19000) + quote })],
+    identities: [{ title: 'Second', author: 'Example Author', position: 2, citations: [{ sourceId: 's1', quote }] }], editions: [] };
+  const fetcher = vi.fn<typeof fetch>(async () => response(empty));
+  await expect(extractEvidence(enabled(), evidence, config, signal(), fetcher)).rejects.toMatchObject({ reason: 'budget' });
+  expect(fetcher).not.toHaveBeenCalled();
+});
+
+test('structured format reservation protects the whole selected citation closure in the prompt', () => {
+  const evidence: EvidenceBundle = { sources: [source({ id: 'crowd', provider: 'apple', text: 'filler '.repeat(2000) }),
+    source({ id: 'proof-a', text: 'a'.repeat(4000) + 'English ebook' }),
+    source({ id: 'proof-b', text: 'b'.repeat(4000) + 'Canada 2027-03-01' })], identities: [], editions: [
+    edition({ citations: [{ sourceId: 'proof-a', quote: 'English ebook' }, { sourceId: 'proof-b', quote: 'Canada 2027-03-01' }] }),
+  ] };
+  const sent = JSON.parse(buildExtractionMessages(enabled(), evidence)[1].content).sources as Source[];
+  expect(sent.find(item => item.id === 'proof-a')?.text).toContain('English ebook');
+  expect(sent.find(item => item.id === 'proof-b')?.text).toContain('Canada 2027-03-01');
+});
+
+test('optional source metadata is dropped before a protected-fit failure', () => {
+  const quote = 'Second by Example Author. Book 2.';
+  const evidence: EvidenceBundle = { sources: [source({ id: 'proof', text: 'p'.repeat(15400) + quote }),
+    ...Array.from({ length: 29 }, (_, i) => source({ id: `optional-${i}`, title: 'Metadata '.repeat(30), provider: 'apple', text: 'Optional '.repeat(100) }))],
+    identities: [{ title: 'Second', author: 'Example Author', position: 2, citations: [{ sourceId: 'proof', quote }] }], editions: [] };
+  const messages = buildExtractionMessages(enabled(), evidence);
+  const sent = JSON.parse(messages[1].content).sources as Source[];
+  expect(sent.find(item => item.id === 'proof')?.text).toContain(quote);
+  expect(sent.length).toBeLessThan(30);
+  expect(Buffer.byteLength(JSON.stringify(messages), 'utf8')).toBeLessThanOrEqual(20000);
+});
+
+test('exact integer order hints outrank generic order prose and neighboring positions', () => {
+  const evidence = fromSources([source({ id: 'invoice', text: 'Invoice order information.' }),
+    source({ id: 'neighbor', text: 'Other by Example Author. Book 20.' }),
+    source({ id: 'fraction', text: 'Novella by Example Author. Book 2.5.' }),
+    ...Array.from({ length: 27 }, (_, i) => source({ id: `catalog-${i}`, provider: 'apple', text: 'Catalog information.' })),
+    source({ id: 'exact-order', text: 'Second by Example Author. Book 2.' })]);
+  const req = request({ formats: ['audio'], target: { ...request().target, title: '' } });
+  const sent = JSON.parse(buildExtractionMessages(req, evidence)[1].content).sources as Source[];
+  expect(sent.find(item => item.id === 'exact-order')?.text).toBe('Second by Example Author. Book 2.');
+  expect(sent.length).toBeLessThanOrEqual(30);
 });

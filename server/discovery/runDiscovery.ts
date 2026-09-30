@@ -7,6 +7,7 @@ import type { collectCatalogs } from './catalogs';
 import type { extractEvidence } from './deepseek';
 import { ProviderError } from './http';
 import { buildSearchQueries } from './search';
+import { allocationEvidence, roleReservations } from './evidenceAllocation';
 
 export interface DiscoveryDependencies {
   catalogs: typeof collectCatalogs;
@@ -60,36 +61,8 @@ function validatedBundle(raw: EvidenceBundle, namespace: string, reason: (value:
 }
 
 function bound(request: CheckRequest, input: EvidenceBundle, checkedAt: string, suppressed: Set<Format | 'identity'>, reason: (value: Reason) => void): EvidenceBundle {
-  const matchingAuthor = (author: string) => normalizeIdentity(author) === normalizeIdentity(request.target.author);
-  const identities = input.identities.filter(item => matchingAuthor(item.author) && item.position === request.target.position);
-  const titles = new Set(identities.map(item => normalizeIdentity(item.title)));
-  if (request.target.title) titles.add(normalizeIdentity(request.target.title));
-  const editions = input.editions.filter(item => matchingAuthor(item.author) &&
-    (!titles.size || titles.has(normalizeIdentity(item.title))) && (item.position === null || item.position === request.target.position));
-  const referenced = new Set([...input.identities, ...input.editions].flatMap(item => item.citations.map(citation => citation.sourceId)));
-  const relevantReferences = new Set([...identities, ...editions].flatMap(item => item.citations.map(citation => citation.sourceId)));
-  // Remove source text belonging exclusively to discarded unrelated facts.
-  // Shared relevant citations and unclassified search prose must remain eligible.
-  const eligibleSources = input.sources.filter(source => !referenced.has(source.id) || relevantReferences.has(source.id));
-  // Detect structured contradictions before identity resolution too. Otherwise
-  // pruning an unknown-title catalog could discard one side before a later
-  // query establishes the identity and make the surviving date look certain.
-  const editionGroups = new Map<string, EditionEvidence[]>();
-  for (const item of editions) {
-    const key = JSON.stringify([normalizeIdentity(item.title), normalizeIdentity(item.author), item.editionKey, item.market, item.format]);
-    editionGroups.set(key, [...(editionGroups.get(key) ?? []), item]);
-  }
-  const conflicts = [...editionGroups.values()].filter(group => group.some((left, index) =>
-    left.date !== null && group.slice(index + 1).some(right => right.date !== null && !left.date!.startsWith(right.date) && !right.date.startsWith(left.date!))))
-    .map(group => ({ evidenceIds: group.map(item => item.id) }));
-  const grouped = new Set<string>();
-  const groups: EditionEvidence[][] = [];
-  for (const conflict of conflicts) {
-    const group = editions.filter(item => conflict.evidenceIds.includes(item.id));
-    group.forEach(item => grouped.add(item.id)); groups.push(group);
-  }
-  groups.push(...editions.filter(item => !grouped.has(item.id))
-    .sort((a, b) => Number(b.market === request.preferredMarket) - Number(a.market === request.preferredMarket)).map(item => [item]));
+  const allocation = allocationEvidence(request, input);
+  const { identities, editions, sources: eligibleSources, conflicts, singletons } = allocation;
   const retained = empty();
   const sourceIds = new Set<string>();
   const keep = (citations: Citation[]): boolean => {
@@ -97,28 +70,46 @@ function bound(request: CheckRequest, input: EvidenceBundle, checkedAt: string, 
     if (needed.size > 30) return false;
     needed.forEach(key => sourceIds.add(key)); return true;
   };
-  for (const identity of identities) {
-    if (retained.identities.length < 30 && keep(identity.citations)) retained.identities.push(identity);
-    else {
-      reason('budget');
-      // Dropped order contradictions must not turn ambiguity into a resolved title.
-      suppressed.add('identity'); suppressed.add('book'); suppressed.add('audio'); retained.identities = [];
-      break;
+  // Identity alternatives are one protected closure. Keeping only the first
+  // alternative must never resolve ambiguity after truncation.
+  if (identities.length <= 30 && keep(identities.flatMap(item => item.citations))) retained.identities = identities;
+  else {
+    reason('budget');
+    suppressed.add('identity'); suppressed.add('book'); suppressed.add('audio');
+  }
+  const keepGroup = (group: EditionEvidence[]) => {
+    if (retained.editions.length + group.length > 100 || !keep(group.flatMap(item => item.citations))) return false;
+    retained.editions.push(...group); return true;
+  };
+  for (const group of conflicts) {
+    if (!keepGroup(group)) {
+      reason('budget'); suppressed.add(group[0].format === 'audio' ? 'audio' : 'book');
     }
   }
-  for (const group of groups) {
-    if (retained.editions.length + group.length <= 100 && keep(group.flatMap(item => item.citations))) retained.editions.push(...group);
-    else {
-      reason('budget');
-      if (group.length > 1) suppressed.add(group[0].format === 'audio' ? 'audio' : 'book');
+  // Reserve at most one order role and one role for each requested format.
+  // Structured representatives retain the chosen edition's whole closure.
+  const keptEditionIds = new Set(retained.editions.map(item => item.id));
+  for (const role of roleReservations(request, allocation, checkedAt)) {
+    if (role.editions.length) {
+      for (const item of role.editions) {
+        if (keptEditionIds.has(item.id)) continue;
+        if (keepGroup([item])) keptEditionIds.add(item.id);
+        else { reason('budget'); suppressed.add(item.format === 'audio' ? 'audio' : 'book'); }
+      }
+    } else if (!sourceIds.has(role.source.id)) {
+      if (sourceIds.size < 30) sourceIds.add(role.source.id);
+      else reason('budget');
     }
   }
-  const cited = eligibleSources.filter(source => sourceIds.has(source.id));
-  const extras = eligibleSources.filter(source => !sourceIds.has(source.id)).sort((a, b) => {
-    const priority = (source: typeof a) => /\b(reading order|series order|book order)\b/i.test(`${source.title} ${source.text}`) ? 0 : source.market === request.preferredMarket ? 1 : 2;
-    return priority(a) - priority(b);
-  });
-  retained.sources = [...cited, ...extras.slice(0, 30 - cited.length)];
+  for (const item of singletons) {
+    if (keptEditionIds.has(item.id)) continue;
+    if (keepGroup([item])) keptEditionIds.add(item.id);
+    else reason('budget');
+  }
+  const extras = eligibleSources.filter(source => !sourceIds.has(source.id))
+    .sort((a, b) => Number(b.market === request.preferredMarket) - Number(a.market === request.preferredMarket));
+  for (const source of extras.slice(0, 30 - sourceIds.size)) sourceIds.add(source.id);
+  retained.sources = eligibleSources.filter(source => sourceIds.has(source.id));
   if (eligibleSources.length > retained.sources.length || editions.length > retained.editions.length) reason('budget');
   return retained;
 }

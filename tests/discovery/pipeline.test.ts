@@ -8,6 +8,7 @@ import { bundle, edition, request } from './fixtures';
 import { ProviderError } from '../../server/discovery/http';
 import { parseCheckResponse } from '../../shared/discoveryValidation';
 import { createDiscoveryRuntime } from '../../server/discovery/runtime';
+import { buildExtractionMessages } from '../../server/discovery/prompt';
 
 afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
 
@@ -253,5 +254,98 @@ test('truncating eligible source-only evidence above the source cap still report
   const result = await runDiscovery(request({ formats: ['book'] }), deps, new AbortController().signal);
   expect(result.sources).toHaveLength(30);
   expect(result.summary.status).toBe('partial');
+  expect(result.summary.reasons).toContain('budget');
+});
+
+test.each(['catalog-singletons', 'conflict-and-singletons'])('source pruning then prompt pruning reserve sole order and audio search roles under %s saturation', async variant => {
+  const catalogs = bundle(Array.from({ length: 35 }, (_, i) => edition({ id: `cat-${i}`, editionKey: `isbn:${i}`,
+    citations: [{ sourceId: `cat-${i}`, quote: 'English ebook in Canada: 2027-03-01.' }] })));
+  catalogs.sources.forEach(item => { item.provider = 'apple'; item.text += ' Large fictional catalog detail.'.repeat(450); });
+  if (variant === 'conflict-and-singletons') {
+    const conflicts = bundle([edition({ id: 'conflict-left', editionKey: 'conflicted', citations: [{ sourceId: 'conflict-left', quote: 'English ebook in Canada: 2027-03-01.' }] }),
+      edition({ id: 'conflict-right', editionKey: 'conflicted', date: '2028-03-01', citations: [{ sourceId: 'conflict-right', quote: 'English ebook in Canada: 2028-03-01.' }] })]);
+    catalogs.sources.push(...conflicts.sources); catalogs.editions.push(...conflicts.editions);
+  }
+  const template = bundle([edition()]).sources[0];
+  const search: EvidenceBundle = { sources: [
+    { ...template, id: 'order', title: 'Fictional series order', market: null, text: 'Second by Example Author. Book 2.' },
+    { ...template, id: 'audio', title: 'Fictional GB audio', market: 'GB', text: 'Second by Example Author. English audiobook in GB: 2028-04-02.' },
+  ], identities: [], editions: [] };
+  const before = structuredClone({ catalogs, search });
+  const req = request({ useAi: true, target: { ...request().target, title: '' } });
+  const deps = dependencies(catalogs);
+  deps.search = vi.fn().mockResolvedValueOnce(search).mockResolvedValue(empty());
+  let promptSources: EvidenceBundle['sources'] = [];
+  deps.extract = vi.fn(async (_request, evidence) => {
+    promptSources = JSON.parse(buildExtractionMessages(req, evidence)[1].content).sources;
+    return { evidence: { sources: evidence.sources, identities: [], editions: [] }, usage: emptyUsage() };
+  });
+  const result = await runDiscovery(req, deps, new AbortController().signal);
+  expect(deps.extract).toHaveBeenCalledOnce();
+  expect(result.sources.some(item => item.title === 'Fictional series order')).toBe(true);
+  expect(result.sources.some(item => item.title === 'Fictional GB audio')).toBe(true);
+  const retained = vi.mocked(deps.extract).mock.calls[0][1];
+  expect(retained.sources.length).toBeLessThanOrEqual(30);
+  expect(retained.editions.length).toBeLessThanOrEqual(100);
+  expect(promptSources.some(item => item.title === 'Fictional series order' && item.text.includes('Second by Example Author. Book 2.'))).toBe(true);
+  expect(promptSources.some(item => item.title === 'Fictional GB audio' && item.text.includes('English audiobook in GB: 2028-04-02.'))).toBe(true);
+  if (variant === 'conflict-and-singletons') {
+    expect(retained.editions.filter(item => item.editionKey === 'conflicted')).toHaveLength(2);
+  }
+  expect(result.proposals.identity).toBeNull();
+  expect(result.proposals.releases.audio).toBeNull();
+  expect(result.summary.reasons).toContain('budget');
+  expect({ catalogs, search }).toEqual(before);
+});
+
+test('identity alternative closure exceeding 30 sources suppresses identity and dependent formats', async () => {
+  const identities = ['Second', 'Alternative'].map((title, index) => ({ title, author: 'Example Author', position: 2,
+    citations: Array.from({ length: 16 }, (_, i) => ({ sourceId: `identity-${index}-${i}`, quote: `${title} by Example Author. Book 2.` })) }));
+  const evidence = bundle([edition()], identities);
+  const deps = dependencies(evidence); deps.canSearch = false;
+  const result = await runDiscovery(request({ target: { ...request().target, title: '' } }), deps, new AbortController().signal);
+  expect(result.proposals.identity).toBeNull(); expect(result.proposals.releases.book).toBeNull();
+  expect(result.sources.length).toBeLessThanOrEqual(30);
+  expect(result.summary.reasons).toContain('budget');
+});
+
+test('whole conflict dependency closure exceeding 30 sources cannot expose a surviving date', async () => {
+  const left = edition({ id: 'left', citations: Array.from({ length: 16 }, (_, i) => ({ sourceId: `left-${i}`, quote: 'English ebook in Canada: 2027-03-01.' })) });
+  const right = edition({ id: 'right', date: '2028-03-01', citations: Array.from({ length: 16 }, (_, i) => ({ sourceId: `right-${i}`, quote: 'English ebook in Canada: 2028-03-01.' })) });
+  const deps = dependencies(bundle([left, right, edition({ id: 'unrelated-supported', editionKey: 'separate' })])); deps.canSearch = false;
+  const result = await runDiscovery(request({ formats: ['book'] }), deps, new AbortController().signal);
+  expect(result.proposals.releases.book).toBeNull(); expect(result.summary.reasons).toContain('budget');
+});
+
+test('a structured format minimum whose closure cannot fit suppresses later surviving singleton dates', async () => {
+  const identities = [{ title: 'Second', author: 'Example Author', position: 2,
+    citations: Array.from({ length: 29 }, (_, i) => ({ sourceId: `order-${i}`, quote: 'Second by Example Author. Book 2.' })) }];
+  const first = edition({ id: 'earliest', date: '2026-12-01', editionKey: 'earliest',
+    citations: ['earliest-a', 'earliest-b'].map(sourceId => ({ sourceId, quote: 'English ebook in Canada: 2026-12-01.' })) });
+  const later = edition({ id: 'later', editionKey: 'later' });
+  const deps = dependencies(bundle([first, later], identities)); deps.canSearch = false;
+  const result = await runDiscovery(request({ formats: ['book'] }), deps, new AbortController().signal);
+  expect(result.proposals.identity?.title).toBe('Second');
+  expect(result.proposals.releases.book).toBeNull();
+  expect(result.summary.reasons).toContain('budget');
+});
+
+test('source-only role reservations cannot evict a fitting protected 30-source identity closure', async () => {
+  const identity = { title: 'Second', author: 'Example Author', position: 2,
+    citations: Array.from({ length: 30 }, (_, i) => ({ sourceId: `protected-${i}`, quote: 'Second by Example Author. Book 2.' })) };
+  const protectedEvidence = bundle([], [identity]);
+  const template = protectedEvidence.sources[0];
+  const roles: EvidenceBundle = { sources: [
+    { ...template, id: 'order-role', title: 'Reading order', text: 'Fictional reading order information.' },
+    { ...template, id: 'book-role', title: 'Paperback', text: 'Fictional paperback details.' },
+    { ...template, id: 'audio-role', title: 'Audiobook', text: 'Fictional audiobook details.' },
+  ], identities: [], editions: [] };
+  const deps = dependencies(protectedEvidence);
+  deps.search = vi.fn().mockResolvedValueOnce(roles).mockResolvedValue(empty());
+  const result = await runDiscovery(request({ target: { ...request().target, title: '' } }), deps, new AbortController().signal);
+  expect(result.proposals.identity?.title).toBe('Second');
+  expect(result.sources).toHaveLength(30);
+  expect(result.sources.map(item => item.url)).toEqual(protectedEvidence.sources.map(item => item.url));
+  expect(result.sources.some(item => ['Reading order', 'Paperback', 'Audiobook'].includes(item.title))).toBe(false);
   expect(result.summary.reasons).toContain('budget');
 });
