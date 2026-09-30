@@ -6,7 +6,7 @@ Date: 2026-09-30. Status: integration approved; implementation follows the exist
 
 Add optional Google Books retrieval for bibliographic identity and English ebook evidence before optional extraction. Preserve Apple book/audio storefront retrieval, Open Library edition-language joins, exact title matching, independent format/market policy and honest unknowns. No source ranking, prior researched title, publication metadata or query preference establishes a release fact.
 
-The adapter returns the existing `EvidenceBundle`. It adds no aliases, schema for work relationships, new dependency, persistent cache, frontend flow, library migration or automatic request. Task 8 and later of the original phase 2 plan remain gated by the existing pilot requirements and visual approval. The original 14-case pilot remains immutable and its allowance spent. The separate four-case Tavily/DeepSeek consent proposal remains pending. All implementation tests use fictional records and injected fake fetches.
+The adapter returns the existing `EvidenceBundle`. It adds no aliases, schema for work relationships, new dependency, persistent cache, frontend flow, library migration or automatic request. Task 8 and later of the original phase 2 plan remain gated by the existing pilot requirements and visual approval. The original 14-case pilot remains immutable and its allowance spent. The revised four-case batch was separately approved and completed at `52641b7`, after offline independent review, with no dates or audio proposals. See [pilot report](../../discovery-four-case-pilot-report.md). Its allowance is closed. All implementation tests use fictional records and injected fake fetches.
 
 ## Configuration, contracts and transport
 

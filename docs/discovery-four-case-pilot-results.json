@@ -1,0 +1,497 @@
+[
+  {
+    "caseId": "hierarchy",
+    "latencyMs": 25151,
+    "summary": {
+      "requestId": "pilot-hierarchy",
+      "checkedAt": "2026-09-30T23:25:04.074Z",
+      "status": "partial",
+      "reasons": [
+        "budget",
+        "invalid-evidence"
+      ],
+      "formats": {
+        "book": "supported",
+        "audio": "unknown"
+      },
+      "usage": {
+        "apple": 6,
+        "openlibrary": 1,
+        "googlebooks": 1,
+        "tavily": 3,
+        "deepseek": 1,
+        "inputTokens": 5285,
+        "outputTokens": 633
+      }
+    },
+    "proposals": {
+      "identity": {
+        "title": "The Strength of the Few",
+        "author": "James Islington",
+        "position": 2,
+        "attribution": {
+          "checkedAt": "2026-09-30T23:25:04.074Z",
+          "sources": [
+            {
+              "id": "search1:d64e074b678466489b5919f40767e977",
+              "title": "Hierarchy (2 book series) Kindle Edition",
+              "url": "https://www.amazon.com.au/The-Hierarchy-Trilogy/dp/B0BJQL8C8V"
+            },
+            {
+              "id": "search1:ada2ad8d2b447a8f691421d5faaa4495",
+              "title": "Hierarchy Series by James Islington",
+              "url": "https://www.goodreads.com/series/358080-hierarchy"
+            }
+          ]
+        }
+      },
+      "releases": {
+        "book": {
+          "title": "The Strength of the Few",
+          "position": 2,
+          "state": "announced",
+          "date": null,
+          "provenance": {
+            "checkedAt": "2026-09-30T23:25:04.074Z",
+            "sources": [
+              {
+                "id": "catalog:fd4943cf5d160abb5581963382b0c128",
+                "title": "The Strength of the Few",
+                "url": "https://books.google.com/books?id=jvRQEQAAQBAJ"
+              }
+            ],
+            "preferredMarket": "CA",
+            "sourceMarket": null,
+            "language": "en",
+            "editionFormat": "ebook",
+            "editionKey": "isbn:9781982141257",
+            "datePrecision": "none",
+            "interpreted": false
+          }
+        },
+        "audio": null
+      },
+      "conflicts": []
+    },
+    "sources": [
+      {
+        "id": "catalog:fd4943cf5d160abb5581963382b0c128",
+        "title": "The Strength of the Few",
+        "url": "https://books.google.com/books?id=jvRQEQAAQBAJ"
+      },
+      {
+        "id": "catalog:d532b48e27421c4dfba9f4492a2b9789",
+        "title": "The Strength of the Few",
+        "url": "https://books.apple.com/ca/book/the-strength-of-the-few/id6743716497?uo=4"
+      },
+      {
+        "id": "catalog:5e3badbbbe134d89e2ac3669de70ed65",
+        "title": "The strength of the few",
+        "url": "https://books.apple.com/ca/audiobook/the-strength-of-the-few/id1849097724?uo=4"
+      },
+      {
+        "id": "catalog:add5c8f75c2aadfde4539378ffdf971c",
+        "title": "The Strength of the Few",
+        "url": "https://books.apple.com/us/book/the-strength-of-the-few/id6743716497?uo=4"
+      },
+      {
+        "id": "catalog:4f254aaca0f5774035db093e7aff55ee",
+        "title": "The strength of the few",
+        "url": "https://books.apple.com/us/audiobook/the-strength-of-the-few/id1849097724?uo=4"
+      },
+      {
+        "id": "catalog:d46579072df33cdc6e1d612218107922",
+        "title": "The Strength of the Few",
+        "url": "https://books.apple.com/gb/book/the-strength-of-the-few/id6761428720?uo=4"
+      },
+      {
+        "id": "catalog:53b0402e1ec93eb869b7b1ca98871de0",
+        "title": "The strength of the few",
+        "url": "https://books.apple.com/gb/audiobook/the-strength-of-the-few/id1849097724?uo=4"
+      },
+      {
+        "id": "search1:d64e074b678466489b5919f40767e977",
+        "title": "Hierarchy (2 book series) Kindle Edition",
+        "url": "https://www.amazon.com.au/The-Hierarchy-Trilogy/dp/B0BJQL8C8V"
+      },
+      {
+        "id": "search1:ada2ad8d2b447a8f691421d5faaa4495",
+        "title": "Hierarchy Series by James Islington",
+        "url": "https://www.goodreads.com/series/358080-hierarchy"
+      },
+      {
+        "id": "search1:f6b79b772b7398da7f8dbe5bae0199dc",
+        "title": "James Islington Books in Order | FictionDB",
+        "url": "https://www.fictiondb.com/author/james-islington~342702.htm"
+      },
+      {
+        "id": "search1:9340f4a3f2546f3c8f2a24d9e3fee332",
+        "title": "Updates",
+        "url": "https://jamesislington.com/updates.html"
+      },
+      {
+        "id": "search1:0890f1297f38af490c955b75d3861d72",
+        "title": "Book Review: The Will of the Many (Hierarchy, #1) by James Islington - Novel Notions",
+        "url": "https://novelnotions.net/2023/03/27/book-review-the-will-of-the-many-hierarchy-1-by-james-islington"
+      },
+      {
+        "id": "search2:fcb004c6a84900e6249e0322499deb64",
+        "title": "The Will of the Many - Wikipedia",
+        "url": "https://en.wikipedia.org/wiki/The_Will_of_the_Many"
+      },
+      {
+        "id": "search2:0f002dea62495e388573a800fa9fb5bc",
+        "title": "James Islington's Blog",
+        "url": "https://www.goodreads.com/author/show/8427407.James_Islington/blog"
+      }
+    ]
+  },
+  {
+    "caseId": "ana-and-din",
+    "latencyMs": 23831,
+    "summary": {
+      "requestId": "pilot-ana-and-din",
+      "checkedAt": "2026-09-30T23:25:29.226Z",
+      "status": "partial",
+      "reasons": [
+        "budget",
+        "invalid-evidence"
+      ],
+      "formats": {
+        "book": "unknown",
+        "audio": "unknown"
+      },
+      "usage": {
+        "apple": 6,
+        "openlibrary": 1,
+        "googlebooks": 1,
+        "tavily": 3,
+        "deepseek": 1,
+        "inputTokens": 4301,
+        "outputTokens": 979
+      }
+    },
+    "proposals": {
+      "identity": {
+        "title": "A Trade of Blood",
+        "author": "Robert Jackson Bennett",
+        "position": 3,
+        "attribution": {
+          "checkedAt": "2026-09-30T23:25:29.226Z",
+          "sources": [
+            {
+              "id": "search1:38fa36962463eff5be7c958e709d926d",
+              "title": "Ana and Din Mysteries",
+              "url": "https://www.penguinrandomhouse.com/series/LVI/ana-and-din-mysteries"
+            }
+          ]
+        }
+      },
+      "releases": {
+        "book": null,
+        "audio": null
+      },
+      "conflicts": []
+    },
+    "sources": [
+      {
+        "id": "catalog:b36aaf0fd76aae8fcb90ea8617802355",
+        "title": "A Trade of Blood",
+        "url": "https://books.apple.com/ca/book/a-trade-of-blood/id6749252239?uo=4"
+      },
+      {
+        "id": "catalog:6029216a8a9964af304d89a8e013e353",
+        "title": "A Trade of Blood",
+        "url": "https://books.apple.com/us/book/a-trade-of-blood/id6749252239?uo=4"
+      },
+      {
+        "id": "catalog:62856737f20f75f89d90e44fb31d5aa3",
+        "title": "A Trade of Blood",
+        "url": "https://books.apple.com/gb/book/a-trade-of-blood/id6753278693?uo=4"
+      },
+      {
+        "id": "catalog:2afc036ff1974fdc21ebfea8047d379b",
+        "title": "A Trade of Blood",
+        "url": "https://books.apple.com/gb/audiobook/a-trade-of-blood/id6786220314?uo=4"
+      },
+      {
+        "id": "search1:38fa36962463eff5be7c958e709d926d",
+        "title": "Ana and Din Mysteries",
+        "url": "https://www.penguinrandomhouse.com/series/LVI/ana-and-din-mysteries"
+      }
+    ]
+  },
+  {
+    "caseId": "scholomance",
+    "latencyMs": 23830,
+    "summary": {
+      "requestId": "pilot-scholomance",
+      "checkedAt": "2026-09-30T23:25:53.058Z",
+      "status": "partial",
+      "reasons": [
+        "budget",
+        "invalid-evidence"
+      ],
+      "formats": {
+        "book": "supported",
+        "audio": "unknown"
+      },
+      "usage": {
+        "apple": 6,
+        "openlibrary": 3,
+        "googlebooks": 1,
+        "tavily": 3,
+        "deepseek": 1,
+        "inputTokens": 4467,
+        "outputTokens": 468
+      }
+    },
+    "proposals": {
+      "identity": {
+        "title": "The Last Graduate",
+        "author": "Naomi Novik",
+        "position": 2,
+        "attribution": {
+          "checkedAt": "2026-09-30T23:25:53.058Z",
+          "sources": [
+            {
+              "id": "catalog:39aeef9d706e1d167c7dd7182fb9c1ad",
+              "title": "The Last Graduate",
+              "url": "https://books.apple.com/ca/book/the-last-graduate/id1533584913?uo=4"
+            },
+            {
+              "id": "search1:6a114441958fe36bd6b0c659b2a43c37",
+              "title": "The Scholomance",
+              "url": "https://www.penguinrandomhouse.com/series/2TS/the-scholomance"
+            }
+          ]
+        }
+      },
+      "releases": {
+        "book": {
+          "title": "The Last Graduate",
+          "position": 2,
+          "state": "announced",
+          "date": null,
+          "provenance": {
+            "checkedAt": "2026-09-30T23:25:53.058Z",
+            "sources": [
+              {
+                "id": "catalog:aa228b477771cdb2c63527b59be7e56d",
+                "title": "The Last Graduate",
+                "url": "https://books.google.com/books?id=YJv_DwAAQBAJ"
+              }
+            ],
+            "preferredMarket": "CA",
+            "sourceMarket": null,
+            "language": "en",
+            "editionFormat": "ebook",
+            "editionKey": "isbn:9780593128879",
+            "datePrecision": "none",
+            "interpreted": false
+          }
+        },
+        "audio": null
+      },
+      "conflicts": []
+    },
+    "sources": [
+      {
+        "id": "catalog:aa228b477771cdb2c63527b59be7e56d",
+        "title": "The Last Graduate",
+        "url": "https://books.google.com/books?id=YJv_DwAAQBAJ"
+      },
+      {
+        "id": "catalog:39aeef9d706e1d167c7dd7182fb9c1ad",
+        "title": "The Last Graduate",
+        "url": "https://books.apple.com/ca/book/the-last-graduate/id1533584913?uo=4"
+      },
+      {
+        "id": "catalog:e90902231531dd988ff1f0a163ae45b3",
+        "title": "The Last Graduate: A Novel (Unabridged)",
+        "url": "https://books.apple.com/ca/audiobook/the-last-graduate-a-novel-unabridged/id1579449151?uo=4"
+      },
+      {
+        "id": "catalog:213bbcceaec677aef3cdef73f0f2d962",
+        "title": "Scholomance Series 3 Books Set (Hardcover)",
+        "url": "https://openlibrary.org/works/OL42560332W"
+      },
+      {
+        "id": "search1:6a114441958fe36bd6b0c659b2a43c37",
+        "title": "The Scholomance",
+        "url": "https://www.penguinrandomhouse.com/series/2TS/the-scholomance"
+      }
+    ]
+  },
+  {
+    "caseId": "path-to-ascendancy-gb",
+    "latencyMs": 22926,
+    "summary": {
+      "requestId": "pilot-path-to-ascendancy-gb",
+      "checkedAt": "2026-09-30T23:26:16.888Z",
+      "status": "partial",
+      "reasons": [
+        "invalid-evidence"
+      ],
+      "formats": {
+        "book": "supported",
+        "audio": "unknown"
+      },
+      "usage": {
+        "apple": 6,
+        "openlibrary": 3,
+        "googlebooks": 2,
+        "tavily": 2,
+        "deepseek": 1,
+        "inputTokens": 2377,
+        "outputTokens": 1278
+      }
+    },
+    "proposals": {
+      "identity": {
+        "title": "Deadhouse Landing",
+        "author": "Ian C. Esslemont",
+        "position": 2,
+        "attribution": {
+          "checkedAt": "2026-09-30T23:26:16.888Z",
+          "sources": [
+            {
+              "id": "catalog:f57346d7f54298c302b15a0b7fc2629b",
+              "title": "Deadhouse Landing",
+              "url": "https://books.google.com/books?id=k_jtDQAAQBAJ"
+            }
+          ]
+        }
+      },
+      "releases": {
+        "book": {
+          "title": "Deadhouse Landing",
+          "position": 2,
+          "state": "announced",
+          "date": null,
+          "provenance": {
+            "checkedAt": "2026-09-30T23:26:16.888Z",
+            "sources": [
+              {
+                "id": "catalog:f57346d7f54298c302b15a0b7fc2629b",
+                "title": "Deadhouse Landing",
+                "url": "https://books.google.com/books?id=k_jtDQAAQBAJ"
+              }
+            ],
+            "preferredMarket": "GB",
+            "sourceMarket": null,
+            "language": "en",
+            "editionFormat": "ebook",
+            "editionKey": "isbn:9781466868595",
+            "datePrecision": "none",
+            "interpreted": false
+          }
+        },
+        "audio": null
+      },
+      "conflicts": []
+    },
+    "sources": [
+      {
+        "id": "catalog:f57346d7f54298c302b15a0b7fc2629b",
+        "title": "Deadhouse Landing",
+        "url": "https://books.google.com/books?id=k_jtDQAAQBAJ"
+      },
+      {
+        "id": "catalog:ca26d30045a5aea46a82c0ba0e10f0e4",
+        "title": "Deadhouse Landing",
+        "url": "https://books.google.com/books?id=DkePEAAAQBAJ"
+      },
+      {
+        "id": "catalog:473cc8aaf17defecd21918f7880abfa4",
+        "title": "Deadhouse Landing",
+        "url": "https://openlibrary.org/works/OL20732723W"
+      },
+      {
+        "id": "catalog:8e1d71539316904837d484a8dc6d53cf",
+        "title": "Deadhouse Landing: Path to Ascendancy, Book 2 (A Novel of the Malazan Empire)",
+        "url": "https://openlibrary.org/works/OL19830667W"
+      },
+      {
+        "id": "catalog:a9b508e624ff99f111051d5d110e3321",
+        "title": "Deadhouse Landing: Path to Ascendancy Book 2",
+        "url": "https://openlibrary.org/works/OL19359442W"
+      },
+      {
+        "id": "catalog:d7c3239d10c36b5896b50699c58e8c03",
+        "title": "Deadhouse Landing: Path to Ascendancy Book 2",
+        "url": "https://openlibrary.org/works/OL19359441W"
+      },
+      {
+        "id": "catalog:ad1522d8e0f22cc4e67df0da6df11cb7",
+        "title": "Deadhouse Landing",
+        "url": "https://openlibrary.org/books/OL39532283M"
+      },
+      {
+        "id": "catalog:b7e0e5f275f99f984da558b153964faf",
+        "title": "Deadhouse Landing",
+        "url": "https://openlibrary.org/books/OL35802251M"
+      },
+      {
+        "id": "catalog:bb5bd0143bf3e440039b741ead0df3cd",
+        "title": "Deadhouse Landing",
+        "url": "https://books.apple.com/us/book/deadhouse-landing/id1200479305?uo=4"
+      },
+      {
+        "id": "catalog:90437236502b6ff794b96642b95d994f",
+        "title": "Deadhouse Landing",
+        "url": "https://books.apple.com/ca/book/deadhouse-landing/id1200479305?uo=4"
+      },
+      {
+        "id": "search1:d760ad9f269fc7098bcc8586c9ec518e",
+        "title": "Deadhouse Landing",
+        "url": "https://en.wikipedia.org/wiki/Deadhouse_Landing"
+      },
+      {
+        "id": "search1:4e245a2a9ca9101e10e2814563a3e000",
+        "title": "Deadhouse Landing | Malazan Wiki - Fandom",
+        "url": "https://malazan.fandom.com/wiki/Deadhouse_Landing"
+      },
+      {
+        "id": "search1:578f62453088f8c85e39bcb9cdf91d83",
+        "title": "Deadhouse Landing: Path to Ascendancy, Book 2 (A Novel ...",
+        "url": "https://www.amazon.com/Deadhouse-Landing-Ascendancy-Malazan-Empire/dp/0765379465"
+      },
+      {
+        "id": "search1:246f8c4285153f45cd1397ed4d36c304",
+        "title": "Deadhouse Landing by Ian C. Esslemont",
+        "url": "https://fantasy-faction.com/2018/deadhouse-landing-by-ian-c-esslemont"
+      },
+      {
+        "id": "search1:a0563097505b3c7cb2af5c4bf23f137d",
+        "title": "Deadhouse Landing by Ian C Esslemont book review",
+        "url": "https://www.fantasybookreview.co.uk/Ian-C-Esslemont/Deadhouse-Landing.html"
+      },
+      {
+        "id": "search2:f9265ba6ade5cfaf4990a34595d90f67",
+        "title": "Deadhouse Landing Audiobook by Ian C. Esslemont",
+        "url": "https://www.audible.com/pd/Deadhouse-Landing-Audiobook/B0779J4255"
+      },
+      {
+        "id": "search2:f39235150b95f1ff9be4d61fbea0e152",
+        "title": "Deadhouse Landing: A Novel of the Malazan Empire (Path ...",
+        "url": "https://www.amazon.com/Deadhouse-Landing-Ian-C-Esslemont-audiobook/dp/B0779GP3DV"
+      },
+      {
+        "id": "search2:4e245a2a9ca9101e10e2814563a3e000",
+        "title": "Deadhouse Landing | Malazan Wiki - Fandom",
+        "url": "https://malazan.fandom.com/wiki/Deadhouse_Landing"
+      },
+      {
+        "id": "search2:d760ad9f269fc7098bcc8586c9ec518e",
+        "title": "Deadhouse Landing",
+        "url": "https://en.wikipedia.org/wiki/Deadhouse_Landing"
+      },
+      {
+        "id": "search2:5c59764df32d516e65192b8e40b9c9fe",
+        "title": "Next Esslemont MALAZAN novel gets a name change and ...",
+        "url": "https://www.reddit.com/r/Fantasy/comments/tht22v/next_esslemont_malazan_novel_gets_a_name_change"
+      }
+    ]
+  }
+]
