@@ -210,3 +210,28 @@ test('synchronous cancellation with a rejected operation stays handled and cance
   const result = await runDiscovery(request(), deps, abort.signal);
   expect(result.summary.status).toBe('cancelled'); expect(result.summary.usage.tavily).toBe(1);
 });
+test('discarded unrelated catalog sources cannot displace useful source-only search text before extraction', async () => {
+  const unrelated = Array.from({ length: 30 }, (_, index) => edition({ id: `unrelated-${index}`, title: 'Other Work', author: 'Other Author',
+    citations: [{ sourceId: `unrelated-${index}`, quote: 'English ebook in Canada: 2027-03-01.' }] }));
+  const deps = dependencies(bundle(unrelated));
+  const useful = bundle([edition({ id: 'useful-audio', format: 'audio', editionKey: 'audio',
+    citations: [{ sourceId: 'useful-search', quote: 'English audio in Canada: 2027-03-01.' }] })]);
+  useful.sources[0].market = null; useful.editions = [];
+  deps.search = vi.fn(async () => useful);
+  deps.extract = vi.fn(async (_req, evidence) => ({ evidence: { sources: evidence.sources, identities: [], editions: [] }, usage: emptyUsage() }));
+  await runDiscovery(request({ formats: ['audio'], useAi: true }), deps, new AbortController().signal);
+  const sent = vi.mocked(deps.extract).mock.calls[0][1];
+  expect(sent.sources.some(source => source.text.includes('English audio in Canada: 2027-03-01.'))).toBe(true);
+  expect(sent.sources.some(source => source.text.includes('Other Work'))).toBe(false);
+});
+test('source pruning keeps sources shared by retained and discarded factual records', async () => {
+  const relevant = edition();
+  const unrelated = edition({ id: 'unrelated-shared', title: 'Other Work', author: 'Other Author' });
+  const deps = dependencies(bundle([relevant, unrelated]));
+  deps.extract = vi.fn(async (_req, evidence) => ({ evidence: { sources: evidence.sources, identities: [], editions: [] }, usage: emptyUsage() }));
+  const result = await runDiscovery(request({ useAi: true }), deps, new AbortController().signal);
+  const sent = vi.mocked(deps.extract).mock.calls[0][1];
+  expect(sent.sources).toHaveLength(1); expect(sent.sources[0].text).toContain('Second by Example Author');
+  expect(sent.editions).toHaveLength(1); expect(sent.editions[0].title).toBe('Second');
+  expect(result.proposals.releases.book?.date).toBe('2027-03-01');
+});

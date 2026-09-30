@@ -66,6 +66,11 @@ function bound(request: CheckRequest, input: EvidenceBundle, checkedAt: string, 
   if (request.target.title) titles.add(normalizeIdentity(request.target.title));
   const editions = input.editions.filter(item => matchingAuthor(item.author) &&
     (!titles.size || titles.has(normalizeIdentity(item.title))) && (item.position === null || item.position === request.target.position));
+  const referenced = new Set([...input.identities, ...input.editions].flatMap(item => item.citations.map(citation => citation.sourceId)));
+  const relevantReferences = new Set([...identities, ...editions].flatMap(item => item.citations.map(citation => citation.sourceId)));
+  // Remove source text belonging exclusively to discarded unrelated facts.
+  // Shared relevant citations and unclassified search prose must remain eligible.
+  const eligibleSources = input.sources.filter(source => !referenced.has(source.id) || relevantReferences.has(source.id));
   // Detect structured contradictions before identity resolution too. Otherwise
   // pruning an unknown-title catalog could discard one side before a later
   // query establishes the identity and make the surviving date look certain.
@@ -108,8 +113,8 @@ function bound(request: CheckRequest, input: EvidenceBundle, checkedAt: string, 
       if (group.length > 1) suppressed.add(group[0].format === 'audio' ? 'audio' : 'book');
     }
   }
-  const cited = input.sources.filter(source => sourceIds.has(source.id));
-  const extras = input.sources.filter(source => !sourceIds.has(source.id)).sort((a, b) => {
+  const cited = eligibleSources.filter(source => sourceIds.has(source.id));
+  const extras = eligibleSources.filter(source => !sourceIds.has(source.id)).sort((a, b) => {
     const priority = (source: typeof a) => /\b(reading order|series order|book order)\b/i.test(`${source.title} ${source.text}`) ? 0 : source.market === request.preferredMarket ? 1 : 2;
     return priority(a) - priority(b);
   });
