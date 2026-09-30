@@ -65,7 +65,14 @@ function url(input: unknown, path: string): string {
   const value = string(input, path, 2048);
   let parsed: URL;
   try { parsed = new URL(value); } catch { return fail(path, 'invalid URL'); }
+  const ipv6 = parsed.hostname.startsWith('[') && parsed.hostname.endsWith(']')
+    ? parsed.hostname.slice(1, -1).toLowerCase() : null;
+  const unsafeIpv6 = ipv6 !== null && (
+    ipv6 === '::' || ipv6 === '::1' || ipv6.startsWith('::ffff:') ||
+    /^f[cd]/.test(ipv6) || /^fe[89ab]/.test(ipv6) ||
+    /^ff/.test(ipv6) || /^::[0-9a-f]/.test(ipv6));
   if (!['https:', 'http:'].includes(parsed.protocol) || parsed.username || parsed.password || !parsed.hostname ||
+    unsafeIpv6 ||
     /^(localhost|.*\.localhost|.*\.local)$/i.test(parsed.hostname) ||
     /^(127\.|0\.|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[01])\.)/.test(parsed.hostname) ||
     parsed.hostname === '[::1]') fail(path, 'unsafe URL');
@@ -174,7 +181,8 @@ function release(input: unknown, path: string): ReleaseProposal {
   const date = nullableString(value.date, `${path}.date`, 10);
   if ((state === 'scheduled' && (date === null || !calendarDate(date))) || (state === 'announced' && date !== null)) fail(`${path}.date`, 'invalid release date');
   const provenance = attribution(value.provenance, `${path}.provenance`, true) as Provenance;
-  if (state === 'scheduled' && provenance.datePrecision !== 'day') fail(`${path}.provenance.datePrecision`, 'scheduled release needs day precision');
+  if ((state === 'scheduled' && provenance.datePrecision !== 'day') ||
+    (state === 'announced' && provenance.datePrecision === 'day')) fail(`${path}.provenance.datePrecision`, 'state and date precision disagree');
   return { title: string(value.title, `${path}.title`, 300), position: number(value.position, `${path}.position`),
     state, date, provenance, citations: citations(value.citations, `${path}.citations`) };
 }

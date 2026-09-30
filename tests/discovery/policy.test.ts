@@ -23,6 +23,22 @@ test('same-edition contradictory dates block the affected format', () => {
   expect(p.releases.book).toBeNull();
   expect(p.conflicts[0].format).toBe('book');
 });
+test('compatible month and day evidence preserves the exact date', () => {
+  const p = selectProposals(request(), bundle([
+    edition({ id: 'month', date: '2027-03', precision: 'month' }),
+    edition({ id: 'day', date: '2027-03-01', precision: 'day' }),
+  ]), at);
+  expect(p.conflicts).toEqual([]);
+  expect(p.releases.book?.date).toBe('2027-03-01');
+});
+test('disjoint month and day evidence for one edition blocks the date', () => {
+  const p = selectProposals(request(), bundle([
+    edition({ id: 'month', date: '2027-05', precision: 'month' }),
+    edition({ id: 'day', date: '2027-03-01', precision: 'day' }),
+  ]), at);
+  expect(p.releases.book).toBeNull();
+  expect(p.conflicts[0]?.evidenceIds).toEqual(['day', 'month']);
+});
 test.each([
   { language: 'fr' }, { language: null }, { author: 'Different Author' },
   { position: 1.5 }, { title: 'Second boxed set' },

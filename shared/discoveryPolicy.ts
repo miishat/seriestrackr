@@ -48,8 +48,10 @@ export function selectProposals(request: CheckRequest, evidence: EvidenceBundle,
   }
   const conflicted = new Set<string>();
   for (const [key, group] of grouped) {
-    const dated = new Set(group.filter(item => item.date !== null).map(item => `${item.precision}:${item.date}`));
-    if (dated.size > 1) {
+    const dated = group.filter(item => item.date !== null);
+    const incompatible = dated.some((left, index) => dated.slice(index + 1).some(right =>
+      !left.date!.startsWith(right.date!) && !right.date!.startsWith(left.date!)));
+    if (incompatible) {
       conflicted.add(key);
       result.conflicts.push({
         format: group[0].format === 'audio' ? 'audio' : 'book',

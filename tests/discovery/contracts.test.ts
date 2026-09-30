@@ -14,6 +14,10 @@ test('rejects malformed response fields and unexpected fields', () => {
   expect(parseCheckResponse(valid).ok).toBe(true);
   expect(parseCheckResponse({ ...valid, summary: { ...valid.summary, status: 'maybe' } }).ok).toBe(false);
   expect(parseCheckResponse({ ...valid, extra: true }).ok).toBe(false);
+  const book = valid.proposals.releases.book!;
+  expect(parseCheckResponse({ ...valid, proposals: { ...valid.proposals, releases: {
+    ...valid.proposals.releases, book: { ...book, state: 'announced', date: null },
+  } } }).ok).toBe(false);
 });
 test('rejects response proposals citing sources absent from the response', () => {
   const valid = response();
@@ -40,6 +44,11 @@ test('rejects unsafe URLs and credentials', () => {
   const valid = response();
   expect(parseCheckResponse({ ...valid, sources: [{ id: 's1', title: 'Bad', url: 'javascript:alert(1)' }] }).ok).toBe(false);
   expect(parseCheckResponse({ ...valid, sources: [{ id: 's1', title: 'Bad', url: 'https://user:password@example.com/' }] }).ok).toBe(false);
+  const evidence = bundle([edition()]);
+  for (const unsafe of ['http://[::ffff:127.0.0.1]/', 'http://[fc00::1]/', 'http://[fe80::1]/', 'http://[::]/']) {
+    const sources = [{ ...evidence.sources[0], url: unsafe }];
+    expect(parseExtraction({ ...evidence, sources }, sources).ok).toBe(false);
+  }
 });
 test('accepts a bounded request and rejects invalid position, country, and formats', () => {
   expect(parseCheckRequest(request()).ok).toBe(true);
