@@ -181,6 +181,26 @@ test.each([[3100, 'Apple'], [1100, 'Open Library']] as const)('spaces %s ms queu
   await expect(Promise.all([first, second, third])).resolves.toEqual([1, 2, 3]);
 });
 
+test.each([[3100, 'Apple'], [1100, 'Open Library']] as const)(
+  'preserves %s ms minimum spacing for %s when Node truncates fractional timer delays',
+  async (interval, _provider) => {
+    vi.useFakeTimers();
+    const schedule = globalThis.setTimeout;
+    vi.spyOn(globalThis, 'setTimeout').mockImplementation((callback, ms) => schedule(callback, Math.trunc(ms ?? 0)));
+    const queue = createRateQueue(interval);
+    const starts: number[] = [];
+    const job = async () => { starts.push(performance.now()); };
+    await queue.run(job, signal());
+    await vi.advanceTimersByTimeAsync(0.25);
+    const second = queue.run(job, signal());
+    await vi.advanceTimersByTimeAsync(interval - 1);
+    expect(starts).toEqual([0]);
+    await vi.advanceTimersByTimeAsync(1);
+    await second;
+    expect(starts).toEqual([0, interval + 0.25]);
+  },
+);
+
 test('a rejected queue job does not poison the next job', async () => {
   vi.useFakeTimers();
   const queue = createRateQueue(1100);

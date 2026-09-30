@@ -28,7 +28,8 @@ export function createRateQueue(intervalMs: number): {
         const next = tail.then(async () => {
           if (signal.aborted) throw cancelled();
           const remaining = lastStarted === null ? 0 : intervalMs - (performance.now() - lastStarted);
-          if (remaining > 0) await delay(remaining, signal);
+          // Node truncates fractional timer delays, so round up to preserve the minimum.
+          if (remaining > 0) await delay(Math.ceil(remaining), signal);
           if (signal.aborted) throw cancelled();
           lastStarted = performance.now();
           // From here the running job owns cancellation through its captured signal.
