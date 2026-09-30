@@ -14,7 +14,7 @@ const citations = (sourceId: string, facts: string): Citation[] => facts.match(/
   .map(quote => ({ sourceId, quote }));
 
 function excluded(title: string, subtitle: string | null): boolean {
-  return /\b(?:companion|omnibus|anthology|novella|guide|sampler|rpg)\b|\b(?:short[\s-]+story|boxed[\s-]+set)\b/
+  return /\b(?:companions?|omnibus(?:es)?|antholog(?:y|ies)|novellas?|guides?|samplers?|rpgs?)\b|\b(?:short[\s-]+stor(?:y|ies)|boxed[\s-]+sets?)\b/
     .test(normalizeIdentity(`${title} ${subtitle ?? ''}`));
 }
 

@@ -13,6 +13,16 @@ const volume = () => ({ id: 'Fictional01', volumeInfo: {
 }, saleInfo: { isEbook: true, saleability: 'FOR_PREORDER', country: 'GB',
   onSaleDate: '2027-03-01T00:15:00+14:00' } });
 const unknownTitle = () => request({ target: { ...request().target, title: '' } });
+
+test.each(['Short Stories', 'short-stories', 'short  stories', 'short\tstories',
+  'Boxed Sets', 'boxed-sets', 'boxed\tsets', 'Anthologies', 'Novellas',
+  'Companions', 'Omnibuses', 'Guides', 'Samplers', 'RPGs'])('rejects plural companion %s despite qualified sale facts', marker => {
+  for (const location of ['title', 'subtitle'] as const) {
+    const item = volume();
+    item.volumeInfo[location] = location === 'title' ? `Second: ${marker}` : `Example, Book Two: ${marker}`;
+    expect(normalizeGoogleBooks({ items: [item] }, unknownTitle(), at)).toEqual({ sources: [], identities: [], editions: [] });
+  }
+});
 type Fixture = ReturnType<typeof volume>;
 const normalize = (item: unknown, req = request()) => normalizeGoogleBooks({ items: [item] }, req, at);
 const remove = (value: object, key: string) => { delete (value as Record<string, unknown>)[key]; };
