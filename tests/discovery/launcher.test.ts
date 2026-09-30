@@ -1,5 +1,9 @@
 // @vitest-environment node
 import { EventEmitter } from 'node:events';
+import { spawn as nativeSpawn, type ChildProcess } from 'node:child_process';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { afterEach, expect, test, vi } from 'vitest';
 import { launchDevelopment } from '../../scripts/dev-all.mjs';
 
@@ -47,4 +51,32 @@ test('bounded shutdown kills only remaining owned child when cooperative close s
   vi.useFakeTimers(); const { children, host, launch } = fixture(); host.emit('SIGTERM'); children[0].emit('close', 0, null);
   vi.advanceTimersByTime(50); expect(children[0].kill).not.toHaveBeenCalled(); expect(children[1].kill).toHaveBeenCalledWith('SIGKILL');
   children[1].emit('close', null, 'SIGKILL'); expect(await launch.done).toBe(0);
+});
+test('malformed fake configuration exits with the real IPC preload and shuts down sibling', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'seriestrackr-launcher-config-test-'));
+  writeFileSync(join(root, '.env.deepseek.local'), 'DEEPSEEK_MODEL="unterminated');
+  const sibling = new Child();
+  sibling.send.mockImplementation(() => { setImmediate(() => sibling.emit('close', 0, null)); return true; });
+  let service!: ChildProcess; let errors = ''; let timer: ReturnType<typeof setTimeout>;
+  const launched = launchDevelopment({ host: new EventEmitter(), shutdownMs: 50,
+    spawn: (command, args, options) => {
+      if (args.at(-1)!.endsWith('vite.js')) return sibling;
+      service = nativeSpawn(command, args, { ...options, cwd: root, stdio: ['ignore', 'pipe', 'pipe', 'ipc'] });
+      service.stdout!.resume(); service.stderr!.on('data', chunk => { errors += chunk; });
+      return service;
+    } });
+  try {
+    const timeout = new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error('startup failure did not exit')), 2000); });
+    expect(await Promise.race([launched.done, timeout])).toBe(1);
+    expect(errors.trim()).toBe('Discovery configuration could not be loaded.');
+    expect(sibling.send).toHaveBeenCalledOnce();
+    expect(sibling.send).toHaveBeenCalledWith({ type: 'discovery-dev-shutdown' });
+    expect(sibling.kill).not.toHaveBeenCalled();
+    expect(service.connected).toBe(false);
+  } finally {
+    clearTimeout(timer!);
+    if (service.exitCode === null && service.signalCode === null) service.kill('SIGKILL');
+    await launched.done;
+    rmSync(root, { recursive: true, force: true });
+  }
 });

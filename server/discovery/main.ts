@@ -17,4 +17,5 @@ try {
   server.listen(3001, '127.0.0.1', () => console.log('Discovery service: http://127.0.0.1:3001'));
 } catch {
   console.error('Discovery configuration could not be loaded.'); process.exitCode = 1;
+  if (process.connected) process.disconnect();
 }
