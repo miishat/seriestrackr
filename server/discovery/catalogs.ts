@@ -17,16 +17,21 @@ const country = (input: unknown): string | null => typeof input === 'string' && 
 const hash = (value: string) => createHash('sha256').update(value).digest('hex').slice(0, 12);
 const citations = (sourceId: string, quote: string): Citation[] => quote.match(/[\s\S]{1,600}/g)!.map(part => ({ sourceId, quote: part }));
 
-function language(input: unknown): string | null {
-  const values = list(input).length ? list(input) : [input];
+type LanguageMetadata = { state: 'absent' | 'explicit' | 'ambiguous'; value: string | null };
+
+function languageMetadata(input: unknown): LanguageMetadata {
+  const values = input === null || input === undefined ? [] : Array.isArray(input) ? input : [input];
+  if (!values.length) return { state: 'absent', value: null };
   const normalized = values.map(item => {
     const value = (text(item, 50) ?? text(object(item).key, 50))?.toLowerCase().replace('/languages/', '');
     if (['en', 'eng', 'english'].includes(value ?? '')) return 'en';
     if (['fr', 'fre', 'fra', 'french'].includes(value ?? '')) return 'fr';
     return value && /^[a-z]{2,3}$/.test(value) ? value : null;
   });
-  return normalized.length && normalized.every(item => item !== null && item === normalized[0]) ? normalized[0] : null;
+  return normalized.every(item => item !== null && item === normalized[0])
+    ? { state: 'explicit', value: normalized[0] } : { state: 'ambiguous', value: null };
 }
+const language = (input: unknown): string | null => languageMetadata(input).value;
 
 function date(input: unknown, isoOnly = false): { date: string | null; precision: Precision } {
   const unknown = { date: null, precision: 'none' as const };
@@ -63,16 +68,17 @@ function isbn(input: unknown): string | null {
 }
 
 // Repeated identical evidence is coalesced; incompatible same-ID records keep distinct citations.
-function append(bundle: EvidenceBundle, source: Source, edition?: EditionEvidence): void {
+function append(bundle: EvidenceBundle, source: Source, edition?: EditionEvidence): string {
   const existing = bundle.sources.find(item => item.id === source.id);
-  if (existing?.text === source.text && existing.url === source.url) return;
+  if (existing?.text === source.text && existing.url === source.url) return existing.id;
   if (existing) {
     source = { ...source, id: `${source.id}:${hash(source.text + source.url)}` };
-    if (bundle.sources.some(item => item.id === source.id)) return;
+    if (bundle.sources.some(item => item.id === source.id)) return source.id;
     if (edition) edition = { ...edition, id: source.id, citations: edition.citations.map(item => ({ ...item, sourceId: source.id })) };
   }
   bundle.sources.push(source);
   if (edition) bundle.editions.push(edition);
+  return source.id;
 }
 
 function bibliographicText(edition: Omit<EditionEvidence, 'citations'>): string {
@@ -80,6 +86,10 @@ function bibliographicText(edition: Omit<EditionEvidence, 'citations'>): string 
 }
 
 export function normalizeApple(input: unknown, market: string, format: 'ebook' | 'audio', checkedAt: string): EvidenceBundle {
+  return normalizeAppleRecords(input, market, format, checkedAt);
+}
+
+function normalizeAppleRecords(input: unknown, market: string, format: 'ebook' | 'audio', checkedAt: string, languageStates?: Map<string, LanguageMetadata>): EvidenceBundle {
   const bundle = empty();
   for (const item of list(object(input).results).slice(0, 20)) {
     const raw = object(item);
@@ -99,14 +109,17 @@ export function normalizeApple(input: unknown, market: string, format: 'ebook' |
     const actualMarket = storefront ?? explicitCountry;
     const contradictory = storefront !== null && explicitCountry !== null && storefront !== explicitCountry;
     const id = `apple:${identifier}:${actualMarket ?? country(market) ?? 'unknown'}:${format}`;
+    const metadata = languageMetadata([raw.language, raw.languages].filter(value => value !== null && value !== undefined)
+      .flatMap(value => Array.isArray(value) ? value : [value]));
     const edition = { id, title, author, position: null, editionKey: isbn(raw.isbn13 ?? raw.isbn) ?? `apple:${identifier}`,
-      format, language: language(raw.language ?? raw.languages), market: contradictory ? null : actualMarket,
+      format, language: metadata.value, market: contradictory ? null : actualMarket,
       ...date(raw.releaseDate, true) } satisfies Omit<EditionEvidence, 'citations'>;
     const quote = bibliographicText(edition);
     const narrator = text(raw.narratorName);
     const source: Source = { id, title, url, provider: 'apple', market: edition.market, retrievedAt: checkedAt,
-      text: `${quote}${narrator ? ` Narrator: ${narrator}.` : ''}${contradictory ? ' Contradictory country attribution.' : ''}` };
-    append(bundle, source, contradictory ? undefined : { ...edition, citations: citations(id, quote) });
+      text: `${quote}${metadata.state === 'ambiguous' ? ' Language metadata: ambiguous.' : ''}${narrator ? ` Narrator: ${narrator}.` : ''}${contradictory ? ' Contradictory country attribution.' : ''}` };
+    const sourceId = append(bundle, source, contradictory ? undefined : { ...edition, citations: citations(id, quote) });
+    languageStates?.set(sourceId, metadata);
   }
   return bundle;
 }
@@ -142,19 +155,21 @@ export function normalizeOpenLibrary(input: unknown, checkedAt: string): Evidenc
   return bundle;
 }
 
-function merge(destination: EvidenceBundle, incoming: EvidenceBundle): void {
-  for (const source of incoming.sources) append(destination, source, incoming.editions.find(item => item.citations.some(cited => cited.sourceId === source.id)));
+function merge(destination: EvidenceBundle, incoming: EvidenceBundle): Map<string, string> {
+  const aliases = new Map<string, string>();
+  for (const source of incoming.sources) aliases.set(source.id, append(destination, source, incoming.editions.find(item => item.citations.some(cited => cited.sourceId === source.id))));
+  return aliases;
 }
 
-function joinAppleLanguages(evidence: EvidenceBundle, originalLanguages: Map<string, string | null>): void {
+function joinAppleLanguages(evidence: EvidenceBundle, originalLanguages: Map<string, LanguageMetadata>): void {
   for (const apple of evidence.editions.filter(item => item.id.startsWith('apple:') && item.editionKey?.startsWith('isbn:'))) {
-    if (!originalLanguages.has(apple.id)) originalLanguages.set(apple.id, apple.language);
-    const originalLanguage = originalLanguages.get(apple.id)!;
+    const originalLanguage = originalLanguages.get(apple.id);
     const matches = evidence.editions.filter(item => item.id.startsWith('openlibrary:') && item.editionKey === apple.editionKey &&
       item.format === apple.format && normalizeIdentity(item.title) === normalizeIdentity(apple.title) && normalizeIdentity(item.author) === normalizeIdentity(apple.author));
     const languages = new Set(matches.map(item => item.language));
     if (!matches.length) continue;
-    if (languages.size !== 1 || languages.has(null) || (originalLanguage !== null && !languages.has(originalLanguage))) {
+    if (!originalLanguage || originalLanguage.state === 'ambiguous' || languages.size !== 1 || languages.has(null) ||
+      (originalLanguage.state === 'explicit' && !languages.has(originalLanguage.value))) {
       apple.language = null;
       continue;
     }
@@ -169,7 +184,7 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
   const evidence = empty();
   const usage = emptyUsage();
   const reasons: Reason[] = [];
-  const originalLanguages = new Map<string, string | null>();
+  const originalLanguages = new Map<string, LanguageMetadata>();
   const unavailable = Symbol('unavailable');
   const checkedAt = new Date().toISOString();
   const reason = (value: Reason) => { if (!reasons.includes(value)) reasons.push(value); };
@@ -203,9 +218,12 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
     const results = object(raw).results;
     if (!Array.isArray(results)) { reason('invalid-evidence'); return; }
     if (results.length > 20) reason('budget');
-    const normalized = normalizeApple(raw, market, format === 'book' ? 'ebook' : 'audio', checkedAt);
+    const languageStates = new Map<string, LanguageMetadata>();
+    const normalized = normalizeAppleRecords(raw, market, format === 'book' ? 'ebook' : 'audio', checkedAt, languageStates);
     if (results.length && !normalized.sources.length) reason('invalid-evidence');
-    merge(evidence, normalized);
+    for (const [incomingId, actualId] of merge(evidence, normalized)) {
+      if (!originalLanguages.has(actualId) && languageStates.has(incomingId)) originalLanguages.set(actualId, languageStates.get(incomingId)!);
+    }
     joinAppleLanguages(evidence, originalLanguages);
   }
 

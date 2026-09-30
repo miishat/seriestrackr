@@ -173,6 +173,20 @@ test('a contradictory explicit language cannot be erased by repeated ISBN joins'
   expect(selectProposals(request(), result.evidence, checkedAt).releases.book?.provenance.sourceMarket).toBeNull();
 });
 
+test.each([
+  { languages: ['eng', 'fre'] },
+  { language: 'eng', languages: ['fre'] },
+])('explicit mixed-language metadata cannot become English through an ISBN join: %j', async metadata => {
+  const { result } = await collect(request({ formats: ['book'] }), ['CA', 'US', 'GB'], url => {
+    if (url.pathname === '/search.json') return json(ol.search);
+    if (url.pathname.startsWith('/books/')) return json(ol.editions.find((item: { key: string }) => `${item.key}.json` === url.pathname));
+    return json({ results: [{ ...apple.ebook.results[0], ...metadata }] });
+  });
+  const candidate = result.evidence.editions.find(item => item.id.startsWith('apple:42:'));
+  expect(candidate?.language).toBeNull();
+  expect(selectProposals(request(), result.evidence, checkedAt).releases.book?.provenance.sourceMarket).toBeNull();
+});
+
 test('four allowed countries bound requests even when arbitrary extra inputs are supplied', async () => {
   const { result, urls } = await collect(request({ preferredMarket: 'AU' }), ['AU', 'US', 'GB', 'CA', 'FR', 'DE']);
   expect(result.usage.apple).toBe(8);
