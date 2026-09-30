@@ -1,8 +1,8 @@
 # Bounded discovery pilot
 
-Updated 2026-09-30. The authorized 14-case production retrieval batch is complete; the live release gate did not pass. It made 84 Apple requests, 29 Open Library requests, 42 Tavily basic search attempts and 14 DeepSeek extraction attempts, with one run per case and no retries. Three identities were offered and manually source-audited; no book or audio release was offered. Library migrations and UI wiring remain gated. See the [remediation plan](superpowers/plans/2026-09-30-discovery-pilot-remediation.md).
+Updated 2026-09-30. The authorized 14-case production retrieval batch at backend commit `0f80cea` is complete; the live release gate did not pass. It made 84 Apple requests, 29 Open Library requests, 42 Tavily basic search attempts and 14 DeepSeek extraction attempts, with one run per case and no retries. Three identities were offered and manually source-audited; no book or audio release was offered. The separately tested offline repairs at `5cf3bd0` have not had a live evaluation. Library migrations and UI wiring remain gated. See the [remediation plan](superpowers/plans/2026-09-30-discovery-pilot-remediation.md).
 
-## Implemented offline behavior
+## Original pilot backend behavior at `0f80cea`
 
 `runDiscovery` validates its input, collects catalogs once with the complete ordered country set, then makes at most three adaptive searches and one explicitly requested extraction. Catalog transport keeps its existing check-local deduplication, attempt counters and global rate queues. Source namespaces prevent collisions between queries from redirecting citations. Unrelated factual records are discarded before priority pruning; retained bundles have at most 30 sources, 30 identities and 100 editions. Structured contradictions are grouped even before identity resolution. A conflict that cannot fit suppresses its format proposal and adds a budget reason.
 
@@ -94,7 +94,7 @@ No unsupported offered assertion was found in these three identity audits. This 
 
 ### Metadata observations and their limits
 
-Production currently rejects the entire extraction when `parseExtraction` or `checkTarget` fails. This is intentional strict behavior, not an accidental partial-result parser. It preserves deterministic catalog evidence and source links. Literal quote matching establishes traceability; it does not establish semantic entailment of each claimed field.
+At the original pilot commit `0f80cea`, production rejected the entire extraction when `parseExtraction` or `checkTarget` failed. This was intentional strict behavior, not an accidental partial-result parser. It preserved deterministic catalog evidence and source links. The 2026-09-30 offline repair below changes the internal batch handling without changing these dated live observations. Literal quote matching establishes traceability; it does not establish semantic entailment of each claimed field.
 
 - Path to Ascendancy, Mistborn and Murderbot had valid schema and quote checks but an edition/target relationship failure. The recorded checks do not reconstruct the exact offending text.
 - GB-preferred Path to Ascendancy isolated the relationship failure to edition title: author and position checks passed. This supports investigating work versus edition title handling; it does not prove that removing a subtitle would be safe.
@@ -104,10 +104,48 @@ Production currently rejects the entire extraction when `parseExtraction` or `ch
 
 The additional recorded diagnostic input/output pairs are Path to Ascendancy 5,526/892, Mistborn 3,598/316, Murderbot 3,450/385, Scholomance 3,412/537, Ana and Din control 3,234/798 and GB Path to Ascendancy 5,514/868. These counts are response metadata, not a reconstructed batch bill. The earliest three cases lack this wrapper evidence. No raw responses were saved, so do not invent specific parser diagnoses for Witness, Hierarchy or Last Horizon, or recreate purported real quotations for tests.
 
-## Offline verification and gate decision
+## Original backend verification and live gate decision
 
 Fresh controller verification at backend commit `0f80cea` passed 347/347 tests across 18 files, `npm.cmd run typecheck`, and `npm.cmd run build` (47 modules). These checks used offline fixtures and made no live requests. The documentation subagent subsequently encountered a Codex usage limit. On resumption, the report, recommendation and amended repair plan received independent review; no live-result correction was needed. Offline repair execution is authorized, while new live calls remain separately gated.
 
 Offline focused checks passed 44/44 pipeline/pilot tests after pruning and summary fixes. The full suite had passed 304/304 before two final initial self-review regressions; focused checks and typechecking were rerun after those fixes and both review rounds. The CLI dry run through `npm.cmd` reported zero requests. Fake-provider tests cover bounds, source namespaces, oracle exclusion, one extraction, secret-free payloads, cancellation, conflict preservation, market controls and unknown versus failure behavior. Those deterministic checks remain useful but do not supersede the live findings.
 
-The gate did not pass: six known identities remain unresolved (Witness, Hierarchy, Last Horizon, Ana and Din, Devils and Path to Ascendancy), and release coverage is zero. A named scope limitation is evidence for a revised decision, not automatic approval of a title-only product. Keep library migrations and UI wiring waiting. The [remediation plan](superpowers/plans/2026-09-30-discovery-pilot-remediation.md) specifies free offline fixes and synthetic regressions first. The completed authorization contains no remaining search or AI attempts. Any further live pilot needs a new concrete case list, refreshed free-account/pricing observations and explicit consent after offline work is reviewable.
+The gate did not pass: six known identities remain unresolved (Witness, Hierarchy, Last Horizon, Ana and Din, Devils and Path to Ascendancy), and release coverage is zero. A named scope limitation is evidence for a revised decision, not automatic approval of a title-only product. The completed authorization contains no remaining search or AI attempts. The original input, result, audit and account observations above remain the immutable record of that batch.
+
+## 2026-09-30 offline repair at `5cf3bd0`
+
+The user authorized the free offline repair. Tasks 1 through 5 received individual independent approval. Independent whole-repair source review approved `0f80cea..5cf3bd0` with no Critical, Important or Minor findings. The reviewer confirmed citation closures, bounds, minimum preservation and batch isolation integrate, with no additional provider calls, raw evidence persistence, expected-oracle imports or frontend secret exposure. No additional search or extraction request was made for these repairs. Their passing fictional fixtures test behavior, not improved live coverage or general accuracy.
+
+| Repair | Commit and tested behavior |
+| --- | --- |
+| Target-only instructions | `a8d2d8b`: request only the requested position, use explicitly supported canonical titles, and omit unsupported editions rather than remove decorations |
+| Bounded allocation | `79fdd68` plus reviewed fix `f968e21`: protect retained identity alternatives, whole conflicts and citation dependencies at both 30-source and 20,000-byte bounds; reserve useful order/format evidence without treating prose markers as facts |
+| Minimum preservation | `f968e21`: prevent a pruned qualifying exact-day edition from exposing a later false minimum when identity resolves later; suppress the affected work/format with a budget reason when its minimum cannot be recovered |
+| Internal batch isolation | `942f49c`: valid identity evidence survives an invalid whole AI edition batch with `invalid-evidence`, partial status and trustworthy reported usage; deterministic catalog evidence stays independently validated |
+| Canonical boundaries | `9449a04`: explicit canonical evidence may coexist with decorated display metadata; unsupported decorated titles, title prefixes and punctuation-distinct authors cannot establish an exact relationship |
+| Independent format/market matrix | `5cf3bd0`: synthetic policy/pipeline cases cover language, date precision, conflicts and selected-market versus actual-market or country-unspecified fallback independently for book and audio |
+
+Invalid transport/envelopes, malformed output and global schema/array-limit failures still reject the entire extraction. Identity records are validated as a batch; different valid target-position titles remain ambiguous. An invalid nonempty identity batch suppresses all AI editions, including a known-title request. A valid empty identity batch can use a known exact input title for edition validation. Any invalid AI edition rejects the entire AI edition batch, so dropping a conflicting record cannot manufacture an earliest date. A valid empty extraction remains complete/unknown unless separate retrieval reasons make the overall check partial.
+
+The source, request, time and token bounds remain unchanged. Validation uses the source text actually supplied in the bounded prompt, with exact normalized title/author relationships and literal quotations. There is no alias joining, subtitle stripping, inferred English from country/work metadata, new provider endpoint, retry, model repair or raw evidence persistence. Validated bounded `Citation.quote` values remain transient API review fields only; reports, library records and backups retain no quotes, raw pages, prompts, model bodies or credentials.
+
+Fresh controller verification after the last source change at `5cf3bd0` passed `npm.cmd test -- --run` with **403/403 tests across 18 files, exit 0**, `npm.cmd run typecheck` with **exit 0**, and `npm.cmd run build` with **exit 0 and 47 modules transformed**. Exact outputs are in the ignored workflow logs `remediation-final-tests.log`, `remediation-final-typecheck.log` and `remediation-final-build.log`. These are offline results. The prior 347-test checkpoint above remains historical.
+
+## Frozen proposed follow-up, awaiting new consent
+
+This is a new allowance proposal, not a retry under the exhausted original authorization. Run each named input once with both formats requested and an empty title, using existing input cases only. Expected assertions must remain outside provider queries and extraction input.
+
+| Existing input case ID | Series | Author | Position | Preferred market | Input title | Formats |
+| --- | --- | --- | ---: | --- | --- | --- |
+| `hierarchy` | Hierarchy | James Islington | 2 | CA | empty | book, audio |
+| `ana-and-din` | Ana and Din | Robert Jackson Bennett | 3 | CA | empty | book, audio |
+| `scholomance` | Scholomance | Naomi Novik | 2 | CA | empty | book, audio |
+| `path-to-ascendancy-gb` | Path to Ascendancy | Ian C. Esslemont | 2 | GB | empty | book, audio |
+
+The proposed maximum is **12 free Tavily basic search attempts and four DeepSeek extraction calls total**, with no retries. Normal per-check catalog limits, queues and time/byte/token bounds remain unchanged. These four diagnostic cases probe identity rejection, ambiguity, literal quotations and edition-title relationships. They do not replace the original eight-case release acceptance criterion or establish broader coverage. Audit every offered identity and every proposed edition's title relationship, English language, format, exact calendar date and actual country or explicitly unspecified country. Prefer supported selected-market exact days, then supported fallback days independently by format; preserve unknowns and conflicts.
+
+The controller refreshed the [official DeepSeek price table](https://api-docs.deepseek.com/quick_start/pricing) on 2026-09-30. `deepseek-flash` is DeepSeek-V4.1-Flash; peak uncached input is USD 0.30/million tokens and output USD 1.20/million, with off-peak USD 0.15 and USD 0.60. A conservative planning proxy of 20,000 input tokens for the 20,000 UTF-8-byte cap plus 2,048 output tokens gives **USD 0.0084576 per call and USD 0.0338304 for four calls, approximately USD 0.04**, at peak rates. This is an estimate, not a guaranteed bill or verified account deduction. It assumes no cache discount and does not schedule an off-peak run or automation.
+
+Read-only Tavily GET `/usage` at **2026-09-30T20:44:46.161Z** returned HTTP 200: key usage 42, key limit null, plan usage 42/1000, pay-as-you-go usage 0 and pay-as-you-go limit null. This snapshot leaves **958 plan credits** at that time, exceeding the proposed 12. It now agrees numerically with the original runtime's 42 search attempts; the earlier post-batch 12/1000 observation remains preserved, and no explanation for the difference is inferred. The user's prior confirmation that pay-as-you-go is disabled remains applicable; null limit metadata does not prove that setting. See the [official usage endpoint](https://docs.tavily.com/documentation/api-reference/endpoint/usage).
+
+Fresh concrete consent and the new live run remain pending. A present key, remaining credits or the earlier batch approval does not authorize new searches or extraction. Keep migrations and UI wiring gated until the tested release scope passes or the user explicitly chooses a narrower source-review feature. A title-only result cannot automatically pass release discovery.
