@@ -9,8 +9,10 @@ test('preferred-market date wins; audio falls back independently', () => {
     edition({ id: 'us', market: 'US', editionKey: 'isbn:us', date: '2027-02-01' }),
     edition({ id: 'gb-audio', market: 'GB', format: 'audio', editionKey: 'isbn:audio' }),
   ]), at);
-  expect(p.releases.book?.date).toBe('2027-03-01');
-  expect(p.releases.audio?.provenance.sourceMarket).toBe('GB');
+  expect(p.releases.book).toMatchObject({ date: '2027-03-01',
+    provenance: { sourceMarket: 'CA', editionFormat: 'ebook', datePrecision: 'day' } });
+  expect(p.releases.audio).toMatchObject({ date: '2027-03-01',
+    provenance: { sourceMarket: 'GB', editionFormat: 'audio', datePrecision: 'day' } });
 });
 test('earliest ebook/print wins within selected market', () => {
   const p = selectProposals(request(), bundle([
@@ -21,7 +23,9 @@ test('earliest ebook/print wins within selected market', () => {
 test('same-edition contradictory dates block the affected format', () => {
   const p = selectProposals(request(), bundle([edition(), edition({ id: 'other', date: '2027-04-01' })]), at);
   expect(p.releases.book).toBeNull();
-  expect(p.conflicts[0].format).toBe('book');
+  expect(p.releases.audio).toBeNull();
+  expect(p.conflicts).toEqual([{ format: 'book', evidenceIds: ['e1', 'other'],
+    reason: 'Contradictory dates for the same edition' }]);
 });
 test('compatible month and day evidence preserves the exact date', () => {
   const p = selectProposals(request(), bundle([

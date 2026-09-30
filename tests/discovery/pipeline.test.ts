@@ -10,6 +10,7 @@ import { parseCheckResponse } from '../../shared/discoveryValidation';
 import { createDiscoveryRuntime } from '../../server/discovery/runtime';
 import { buildExtractionMessages } from '../../server/discovery/prompt';
 import { extractEvidence } from '../../server/discovery/deepseek';
+import { collectCatalogs, normalizeOpenLibrary } from '../../server/discovery/catalogs';
 
 afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
 
@@ -22,11 +23,11 @@ function dependencies(evidence = empty()): DiscoveryDependencies {
   };
 }
 
-test.each(['identity-only', 'catalog-facts-and-conflicts'])('invalid AI edition batch stays partial and preserves identity plus %s', async variant => {
+test.each(['identity-only', 'catalog-book', 'catalog-facts-and-conflicts'])('invalid AI edition batch stays partial and preserves identity plus %s', async variant => {
   const identity = { title: 'Second', author: 'Example Author', position: 2,
     citations: [{ sourceId: 's1', quote: 'Second by Example Author. Book 2.' }] };
   const found = bundle([], [identity]); found.identities = [];
-  const catalog = variant === 'identity-only' ? empty() : bundle([
+  const catalog = variant === 'identity-only' ? empty() : variant === 'catalog-book' ? bundle([edition()]) : bundle([
     edition(), edition({ id: 'conflicting-book', date: '2028-03-01' }),
     edition({ id: 'catalog-audio', editionKey: 'audio', format: 'audio', market: 'GB', date: '2028-04-02' }),
   ]);
@@ -46,11 +47,18 @@ test.each(['identity-only', 'catalog-facts-and-conflicts'])('invalid AI edition 
   expect(result.summary.status).toBe('partial');
   expect(result.summary.reasons).toEqual(['invalid-evidence']);
   expect(result.proposals.identity?.title).toBe('Second');
-  expect(result.proposals.releases.book).toBeNull();
-  if (variant === 'identity-only') {
+  if (variant === 'catalog-book') {
+    expect(result.proposals.releases.book).toMatchObject({ date: '2027-03-01',
+      provenance: { sourceMarket: 'CA', editionFormat: 'ebook', datePrecision: 'day', interpreted: false } });
+    expect(result.proposals.releases.audio).toBeNull();
+    expect(result.summary.formats).toEqual({ book: 'supported', audio: 'unknown' });
+    expect(result.proposals.conflicts).toEqual([]);
+  } else if (variant === 'identity-only') {
+    expect(result.proposals.releases.book).toBeNull();
     expect(result.proposals.releases.audio).toBeNull();
     expect(result.proposals.conflicts).toEqual([]);
   } else {
+    expect(result.proposals.releases.book).toBeNull();
     expect(result.proposals.conflicts).toHaveLength(1);
     expect(result.proposals.conflicts[0].format).toBe('book');
     expect(result.proposals.releases.audio?.date).toBe('2028-04-02');
@@ -60,6 +68,31 @@ test.each(['identity-only', 'catalog-facts-and-conflicts'])('invalid AI edition 
   expect(result.summary.usage).toMatchObject({ deepseek: 1, inputTokens: 100, outputTokens: 50 });
   expect(deps.extract).toHaveBeenCalledOnce(); expect(fetcher).toHaveBeenCalledOnce();
   expect(parseCheckResponse(result).ok).toBe(true);
+});
+
+test('an earlier wrong-title AI edition rejects the whole batch instead of leaving a false minimum', async () => {
+  const valid = edition({ id: 'valid-later', editionKey: 'valid-later' });
+  const invalidEarlier = edition({ id: 'invalid-earlier', editionKey: 'invalid-earlier', title: 'Third', date: '2026-12-01' });
+  const found = bundle([valid, invalidEarlier]); found.editions = [];
+  const deps = dependencies();
+  deps.search = vi.fn().mockResolvedValueOnce(found).mockResolvedValue(empty());
+  const fetcher = vi.fn<typeof fetch>(async (_url, init) => {
+    const sent = JSON.parse(JSON.parse(init!.body as string).messages[1].content).sources as EvidenceBundle['sources'];
+    const sourceId = sent.find(item => item.text.includes('Third by Example Author'))!.id;
+    return Response.json({ choices: [{ finish_reason: 'stop', message: { content: JSON.stringify({ identities: [],
+      editions: [valid, invalidEarlier].map(item => ({ ...item, citations: item.citations.map(citation => ({ ...citation, sourceId })) })),
+    }) } }], usage: { prompt_tokens: 100, completion_tokens: 50 } });
+  });
+  deps.extract = vi.fn((req, evidence, signal) => extractEvidence(req, evidence,
+    { tavilyKey: null, deepseekKey: 'fake-test-key', model: 'deepseek-flash' }, signal, fetcher));
+  const result = await runDiscovery(request({ useAi: true }), deps, new AbortController().signal);
+  expect(result.proposals.releases).toEqual({ book: null, audio: null });
+  expect(result.proposals.conflicts).toEqual([]);
+  expect(result.summary.formats).toEqual({ book: 'unknown', audio: 'unknown' });
+  expect(result.summary.status).toBe('partial');
+  expect(result.summary.reasons).toEqual(['invalid-evidence']);
+  expect(result.summary.usage).toMatchObject({ deepseek: 1, inputTokens: 100, outputTokens: 50 });
+  expect(deps.extract).toHaveBeenCalledOnce(); expect(fetcher).toHaveBeenCalledOnce();
 });
 
 test('pipeline merges optional extraction reasons once while retaining safe usage and valid evidence', async () => {
@@ -140,12 +173,66 @@ test('validated search identity narrows subsequent format queries', async () => 
   expect(vi.mocked(deps.search).mock.calls[2][0]).toContain('Second Example Author audiobook');
   expect(result.proposals.identity?.title).toBe('Second');
 });
-test('fallback is independent for book and audio and source markets remain actual', async () => {
-  const deps = dependencies(bundle([edition(), edition({ id: 'us-audio', editionKey: 'audio', format: 'audio', market: 'US' })]));
+test.each([
+  { label: 'CA book and GB audio', bookMarket: 'CA', audioMarket: 'GB' },
+  { label: 'US book and US audio fallback', bookMarket: 'US', audioMarket: 'US' },
+])('fallback is independent for $label and source markets remain actual', async ({ bookMarket, audioMarket }) => {
+  const deps = dependencies(bundle([edition({ market: bookMarket }),
+    edition({ id: 'fallback-audio', editionKey: 'audio', format: 'audio', market: audioMarket, date: '2027-04-02' })]));
   const result = await runDiscovery(request(), deps, new AbortController().signal);
-  expect(result.proposals.releases.book?.provenance.sourceMarket).toBe('CA');
-  expect(result.proposals.releases.audio?.provenance.sourceMarket).toBe('US');
+  expect(result.proposals.releases.book).toMatchObject({ date: '2027-03-01',
+    provenance: { preferredMarket: 'CA', sourceMarket: bookMarket, editionFormat: 'ebook', datePrecision: 'day' } });
+  expect(result.proposals.releases.audio).toMatchObject({ date: '2027-04-02',
+    provenance: { preferredMarket: 'CA', sourceMarket: audioMarket, editionFormat: 'audio', datePrecision: 'day' } });
+  expect(result.summary.formats).toEqual({ book: 'supported', audio: 'supported' });
   expect(deps.search).not.toHaveBeenCalled();
+});
+
+test.each([
+  { label: 'exact day', publishDate: 'March 1, 2027', date: '2027-03-01', precision: 'day', state: 'scheduled' },
+  { label: 'month only', publishDate: 'March 2027', date: null, precision: 'month', state: 'announced' },
+])('country-unspecified English print with $label preserves date precision', async ({ publishDate, date, precision, state }) => {
+  const catalog = normalizeOpenLibrary({ key: '/books/OL901M', title: 'Second', author_name: ['Example Author'],
+    physical_format: 'paperback', languages: [{ key: '/languages/eng' }], publish_date: publishDate }, '2026-09-29T12:00:00Z');
+  const result = await runDiscovery(request({ formats: ['book'] }), dependencies(catalog), new AbortController().signal);
+  expect(result.proposals.releases.book).toMatchObject({ date, state,
+    provenance: { preferredMarket: 'CA', sourceMarket: null, language: 'en', editionFormat: 'print', datePrecision: precision } });
+  expect(result.proposals.releases.audio).toBeNull();
+  expect(result.summary.formats).toEqual({ book: 'supported', audio: 'not-requested' });
+});
+
+test.each(['absent work language', 'English aggregate work language'])('CA storefront without edition language stays unknown with %s', async variant => {
+  vi.useFakeTimers();
+  const aggregate = variant === 'English aggregate work language';
+  const fetcher = vi.fn<typeof fetch>(async input => {
+    const url = new URL(String(input));
+    if (url.pathname === '/search.json') return Response.json({ docs: aggregate ? [{ key: '/works/OL901W',
+      title: 'Second', author_name: ['Example Author'], author_key: ['OL901A'], edition_key: ['OL901M'],
+      language: ['eng'], isbn: ['9780000000001'], first_publish_year: 2027 }] : [] });
+    if (url.pathname === '/books/OL901M.json') return Response.json({ key: '/books/OL901M', title: 'Second',
+      authors: [{ key: '/authors/OL901A' }], physical_format: 'ebook', isbn_13: ['9780000000001'], publish_date: 'March 1, 2027' });
+    return Response.json({ results: url.searchParams.get('country') === 'ca' ? [{ trackId: 901, trackName: 'Second',
+      artistName: 'Example Author', trackViewUrl: 'https://books.apple.com/ca/book/second/id901',
+      isbn13: '9780000000001', releaseDate: '2027-03-01T00:00:00Z' }] : [] });
+  });
+  const deps = dependencies();
+  deps.catalogs = vi.fn((req, markets, signal) => collectCatalogs(req, markets, signal, fetcher));
+  const operation = runDiscovery(request({ formats: ['book'] }), deps, new AbortController().signal);
+  await vi.runAllTimersAsync();
+  const result = await operation;
+  const collected = await vi.mocked(deps.catalogs).mock.results[0].value;
+  expect(collected.evidence.editions.find(item => item.id.startsWith('apple:901:'))).toMatchObject({
+    date: '2027-03-01', format: 'ebook', market: 'CA', language: null,
+  });
+  if (aggregate) {
+    expect(collected.evidence.editions.find(item => item.id === 'openlibrary:OL901M')).toMatchObject({
+      date: '2027-03-01', format: 'ebook', market: null, language: null, editionKey: 'isbn:9780000000001',
+    });
+  }
+  expect(result.proposals.releases).toEqual({ book: null, audio: null });
+  expect(result.summary.formats).toEqual({ book: 'unknown', audio: 'not-requested' });
+  expect(result.summary.reasons).toEqual([]);
+  expect(deps.extract).not.toHaveBeenCalled();
 });
 test.each(['quota', 'provider-error'] as const)('failed %s searches count each unique attempt and retain useful catalogs', async failure => {
   const deps = dependencies(bundle([edition()]));
@@ -200,6 +287,8 @@ test('contradictory extraction for the same edition preserves the conflict', asy
   ] }, usage: { ...emptyUsage(), inputTokens: 123, outputTokens: 45 } }));
   const result = await runDiscovery(request({ useAi: true }), deps, new AbortController().signal);
   expect(result.proposals.releases.book).toBeNull(); expect(result.proposals.conflicts).toHaveLength(1);
+  expect(result.proposals.conflicts[0].format).toBe('book');
+  expect(result.summary.formats).toEqual({ book: 'unknown', audio: 'unknown' });
   expect(result.summary.usage).toMatchObject({ deepseek: 1, inputTokens: 123, outputTokens: 45 });
 });
 test('priority bounds keep identity and preferred evidence ahead of unrelated catalog records', async () => {
