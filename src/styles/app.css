@@ -109,6 +109,15 @@ button:disabled {
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
+}
+
+.brand>div {
+  min-width: 0;
+}
+
+.brand>svg {
+  flex-shrink: 0;
 }
 
 .brand strong {
@@ -128,6 +137,7 @@ button:disabled {
 .site-header nav {
   display: flex;
   gap: 10px;
+  flex-shrink: 0;
 }
 
 .small {
@@ -659,9 +669,13 @@ legend {
   .summary {
     display: none;
   }
+  .site-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
   .site-header nav {
     flex-wrap: wrap;
-    justify-content: end;
+    justify-content: start;
   }
   .library-tools input[type=search] {
     width: 100%;

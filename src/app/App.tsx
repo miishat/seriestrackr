@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Dialog } from '../components/Dialog';
 import { BookIcon } from '../components/Icons';
+import { BrandTagline } from '../components/BrandTagline';
 import { BackupDialog } from '../features/backups/BackupDialog';
 import { LibraryView } from '../features/library/LibraryView';
 import { SeriesForm } from '../features/library/SeriesForm';
@@ -85,7 +86,7 @@ export function App() {
   const availableCount = library.doc.series.filter((s) => s.readingStatus !== 'completed' && s.formats.book && (s.releases.book.state === 'released' || s.releases.book.state === 'scheduled' && !!s.releases.book.date && s.releases.book.date <= today)).length;
   const scheduledAudioCount = library.doc.series.filter((s) => s.readingStatus !== 'completed' && s.formats.audio && s.releases.audio.state === 'scheduled' && !!s.releases.audio.date && s.releases.audio.date > today).length;
   return <div className="app-shell">
-    <header className="site-header"><div className="brand"><BookIcon /><div><strong>Series<span>Trackr</span></strong><div className="small">Your reading, one series at a time</div></div></div>
+    <header className="site-header"><div className="brand"><BookIcon /><div><strong>Series<span>Trackr</span></strong><BrandTagline /></div></div>
       <nav aria-label="Library tools"><button onClick={() => setSettingsOpen(true)}>Market: {library.doc.settings.market ?? 'Choose'}</button><button onClick={() => library.updateSettings({ ...library.doc.settings, theme: library.doc.settings.theme === 'dark' ? 'light' : 'dark' }, false)}>{library.doc.settings.theme === 'dark' ? 'Light theme' : 'Dark theme'}</button><button onClick={() => setBackupsOpen(true)}>Backups</button></nav></header>
     {library.mode === 'recovery' && <div className="warning" role="alert"><strong>Stored library needs recovery.</strong> {library.error} Download the original data, restore a backup, or reset explicitly.
       <button onClick={() => setBackupsOpen(true)}>Open backups</button></div>}
