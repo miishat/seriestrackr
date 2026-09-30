@@ -141,7 +141,7 @@ test('priority bounds keep identity and preferred evidence ahead of unrelated ca
   const deps = dependencies(bundle([...unrelated, relevant])); deps.canSearch = false;
   const result = await runDiscovery(request(), deps, new AbortController().signal);
   expect(result.sources.length).toBeLessThanOrEqual(30); expect(result.proposals.releases.book?.date).toBe('2027-03-01');
-  expect(result.summary.reasons).toContain('budget'); expect(parseCheckResponse(result).ok).toBe(true);
+  expect(result.summary.reasons).not.toContain('budget'); expect(parseCheckResponse(result).ok).toBe(true);
 });
 test('a conflict larger than bounds suppresses the format rather than resolving by truncation', async () => {
   const editions = Array.from({ length: 101 }, (_, index) => edition({ id: `c${index}`, date: index % 2 ? '2028-03-01' : '2027-03-01' }));
@@ -234,4 +234,24 @@ test('source pruning keeps sources shared by retained and discarded factual reco
   expect(sent.sources).toHaveLength(1); expect(sent.sources[0].text).toContain('Second by Example Author');
   expect(sent.editions).toHaveLength(1); expect(sent.editions[0].title).toBe('Second');
   expect(result.proposals.releases.book?.date).toBe('2027-03-01');
+});
+test('filtering unrelated evidence below all caps keeps a successful supported check complete', async () => {
+  const relevant = edition();
+  const unrelated = edition({ id: 'unrelated', title: 'Other Work', author: 'Other Author',
+    citations: [{ sourceId: 'unrelated-source', quote: 'English ebook in Canada: 2027-03-01.' }] });
+  const result = await runDiscovery(request({ formats: ['book'] }), dependencies(bundle([relevant, unrelated])), new AbortController().signal);
+  expect(result.proposals.releases.book?.date).toBe('2027-03-01');
+  expect(result.sources).toHaveLength(1);
+  expect(result.summary.status).toBe('complete');
+  expect(result.summary.reasons).not.toContain('budget');
+});
+test('truncating eligible source-only evidence above the source cap still reports a budget limit', async () => {
+  const evidence = bundle([]);
+  const template = bundle([edition()]).sources[0];
+  evidence.sources = Array.from({ length: 31 }, (_, index) => ({ ...template, id: `source-only-${index}`, url: `https://example.com/source-only-${index}` }));
+  const deps = dependencies(evidence); deps.canSearch = false;
+  const result = await runDiscovery(request({ formats: ['book'] }), deps, new AbortController().signal);
+  expect(result.sources).toHaveLength(30);
+  expect(result.summary.status).toBe('partial');
+  expect(result.summary.reasons).toContain('budget');
 });

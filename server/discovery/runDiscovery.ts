@@ -119,7 +119,7 @@ function bound(request: CheckRequest, input: EvidenceBundle, checkedAt: string, 
     return priority(a) - priority(b);
   });
   retained.sources = [...cited, ...extras.slice(0, 30 - cited.length)];
-  if (input.sources.length > retained.sources.length || editions.length > retained.editions.length) reason('budget');
+  if (eligibleSources.length > retained.sources.length || editions.length > retained.editions.length) reason('budget');
   return retained;
 }
 
