@@ -7,6 +7,7 @@ import { loadDiscoveryConfig } from '../server/discovery/config';
 import { estimatedMaxAiUsd } from '../server/discovery/deepseek';
 import { runDiscovery, type DiscoveryDependencies } from '../server/discovery/runDiscovery';
 import { createDiscoveryRuntime } from '../server/discovery/runtime';
+import type { DiagnosticObserver } from '../server/discovery/diagnostics';
 
 export interface PilotArgs { run: boolean; caseId: string | null; ai: boolean }
 export function parsePilotArgs(input: string[]): PilotArgs {
@@ -59,6 +60,7 @@ function sanitized(result: CheckResponse, caseId: string, latencyMs: number) {
 }
 export async function runPilot(args: string[], options: {
   root?: string; fetcher?: typeof fetch; runtime?: DiscoveryDependencies; print?: (value: string) => void;
+  onDiagnostic?: DiagnosticObserver;
 } = {}): Promise<void> {
   const flags = parsePilotArgs(args);
   const root = options.root ?? process.cwd();
@@ -79,7 +81,7 @@ export async function runPilot(args: string[], options: {
     return;
   }
   const request = { ...cases[flags.caseId!], useAi: flags.ai };
-  const runtime = options.runtime ?? createDiscoveryRuntime(config, options.fetcher);
+  const runtime = options.runtime ?? createDiscoveryRuntime(config, options.fetcher, { onDiagnostic: options.onDiagnostic });
   const start = performance.now();
   const result = await runDiscovery(request, runtime, new AbortController().signal);
   print(JSON.stringify(sanitized(result, flags.caseId!, Math.round(performance.now() - start)), null, 2));
