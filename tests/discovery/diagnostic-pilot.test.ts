@@ -5,6 +5,7 @@ import { resolve } from 'node:path';
 import { afterEach, expect, test, vi } from 'vitest';
 import { runDiagnosticPilot, createDiagnosticFetch, createDiagnosticSink } from '../../scripts/discovery-diagnostic-pilot';
 import { runPilot } from '../../scripts/discovery-pilot';
+import * as runtimeModule from '../../server/discovery/runtime';
 
 test('persistence sink validates fixed fields, caps events and exposes immutable snapshots', () => {
   const sink = createDiagnosticSink();
@@ -34,7 +35,7 @@ function root(keys = true) {
   }
   return path;
 }
-afterEach(() => { vi.useRealTimers(); roots.splice(0).forEach(path => rmSync(path, { recursive: true, force: true })); });
+afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); roots.splice(0).forEach(path => rmSync(path, { recursive: true, force: true })); });
 const counts = () => ({ googlebooks: 0, apple: 0, openlibrary: 0, tavily: 0, deepseek: 0 });
 const args = ['--run', '--case', 'example', '--output', 'first'];
 
@@ -87,7 +88,7 @@ test('redirect cannot trigger an uncounted provider request', async () => {
   expect(fetcher).toHaveBeenCalledOnce(); expect(usage.tavily).toBe(1);
 });
 
-test.each([false, true])('run reserves before fetch, rejects invalid sibling=%s, persists safe diagnostics and cannot replay', async badSibling => {
+test.each([{ badSibling: false, adversarial: false }, { badSibling: true, adversarial: false }, { badSibling: false, adversarial: true }])('run reserves, rejects invalid sibling=$badSibling, bounds injected diagnostics=$adversarial without changing results', async ({ badSibling, adversarial }) => {
   vi.useFakeTimers(); const path = root(); const directory = resolve(path, workspace, 'first');
   const sourceText = 'Second by Example Author. Book 2. English ebook in Canada: 2027-03-01. English audio in GB: 2027-03-02.';
   const fetcher = vi.fn<typeof fetch>(async (input, init) => {
@@ -104,6 +105,16 @@ test.each([false, true])('run reserves before fetch, rejects invalid sibling=%s,
       editions: ['ebook', 'audio'].map((format, i) => ({ id: `e${i}`, title: 'Second', author: 'Example Author', position: 2, editionKey: `edition${i}`, format, language: 'en', market: i ? 'GB' : 'CA', date: badSibling && i ? '2027-02-30' : i ? '2027-03-02' : '2027-03-01', precision: 'day', citations: [citation] })),
     }) } }], usage: { prompt_tokens: 100, completion_tokens: 50 } });
   });
+  if (adversarial) {
+    const original = runtimeModule.createDiscoveryRuntime;
+    vi.spyOn(runtimeModule, 'createDiscoveryRuntime').mockImplementation((config, injectedFetch, options) => {
+      // Replace only the optional diagnostic producer, retaining real runtime,
+      // transport, persistence and discovery acceptance behavior.
+      options?.onDiagnostic?.({ stage: 'FAKE_SECRET' } as never);
+      for (let i = 0; i < 140; i++) options?.onDiagnostic?.({ stage: 'catalog', category: 'shape', sources: 0, identities: 0, editions: 0, FAKE_SECRET: 'never emit' } as never);
+      return original(config, injectedFetch, options);
+    });
+  }
   const operation = runDiagnosticPilot(args, { root: path, fetcher, print: () => {} });
   await vi.runAllTimersAsync(); await operation;
   const resultText = readFileSync(resolve(directory, 'result.json'), 'utf8'); const result = JSON.parse(resultText);
@@ -115,16 +126,19 @@ test.each([false, true])('run reserves before fetch, rejects invalid sibling=%s,
   expect(result.proposals.identity.title).toBe('Second');
   const report = JSON.parse(readFileSync(resolve(directory, 'diagnostics.json'), 'utf8'));
   expect(report.complete).toBe(true); expect(report.counts.deepseek).toBe(1);
-  expect(report.events).toContainEqual({ stage: 'edition', category: badSibling ? 'date-precision' : 'accepted', sources: 3, identities: 1, editions: badSibling ? 0 : 2 });
+  if (adversarial) { expect(report.events).toHaveLength(128); expect(report.droppedEvents).toBeGreaterThanOrEqual(12); }
+  else expect(report.events).toContainEqual({ stage: 'edition', category: badSibling ? 'date-precision' : 'accepted', sources: 3, identities: 1, editions: badSibling ? 0 : 2 });
   const allText = readdirSync(directory).map(file => readFileSync(resolve(directory, file), 'utf8')).join('');
   for (const forbidden of [sourceText, 'fake-deepseek', 'fake-google', 'fake-tavily', 'quote', 'messages']) expect(allText).not.toContain(forbidden);
   const baseline: string[] = [];
+  vi.restoreAllMocks();
   const baselineRun = runPilot(['--run', '--case', 'example', '--ai'], { root: path, fetcher, print: value => baseline.push(value) });
   await vi.runAllTimersAsync(); await baselineRun;
   const legacy = JSON.parse(baseline[0]);
   const withoutCheckTimes = (value: unknown) => JSON.parse(JSON.stringify(value, (key, item) => key === 'checkedAt' ? undefined : item));
   expect(withoutCheckTimes(result.proposals)).toEqual(withoutCheckTimes(legacy.proposals));
   expect(result.sources).toEqual(legacy.sources);
+  expect(result.summary.usage).toEqual(legacy.summary.usage);
   const count = fetcher.mock.calls.length;
   await expect(runDiagnosticPilot(args, { root: path, fetcher })).rejects.toThrow('output-already-reserved');
   expect(fetcher).toHaveBeenCalledTimes(count);
