@@ -25,9 +25,11 @@ test.each([
   { bad: edition({ citations: [{ sourceId: 's1', quote: 'FAKE_SECRET invented' }] }), category: 'citation' },
   { bad: { ...edition(), FAKE_SECRET: 'not for diagnostics' }, category: 'shape' },
   { bad: edition({ title: 'Third' }), category: 'target-mismatch' },
+  { bad: edition({ date: '2027-03', precision: 'day' }), category: 'date-precision' },
+  { bad: edition({ citations: [{ sourceId: 'missing', quote: 'literal' }] }), category: 'citation' },
 ])('diagnoses rejected edition $category while retaining identity', async ({ bad, category }) => {
   const events: unknown[] = [];
-  const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [identity()], editions: [bad] }));
+  const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [identity()], editions: [edition({ id: 'valid-sibling' }), bad] }));
   const req = request({ useAi: true, target: { ...enabled().target, title: '' } });
   const result = await extractEvidence(req, fromSources([source()]), config, signal(), fetcher, event => events.push(event));
   expect(result.evidence.identities).toEqual([identity()]);

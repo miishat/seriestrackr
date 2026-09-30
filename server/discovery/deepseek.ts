@@ -72,7 +72,7 @@ export async function extractEvidence(
   let messages: ReturnType<typeof buildExtractionMessages>;
   try { messages = buildExtractionMessages(request, evidence); }
   catch (error) {
-    emitDiagnostic(onDiagnostic, { stage: 'prompt', category: error instanceof ProviderError && error.reason === 'budget' ? 'bounds' : 'shape', ...diagnosticCounts(evidence) });
+    emitDiagnostic(onDiagnostic, { stage: 'prompt', category: error instanceof ProviderError && error.reason === 'budget' ? 'bounds' : 'shape', sources: 0, identities: 0, editions: 0 });
     throw error;
   }
   // Read the actual user payload back, retaining metadata only on the server.
