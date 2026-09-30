@@ -4,10 +4,12 @@ import { emptyUsage } from '../../shared/discovery';
 import { normalizeIdentity, selectProposals } from '../../shared/discoveryPolicy';
 import { fetchProviderJson, ProviderError } from './http';
 import { createRateQueue } from './rateQueue';
+import { normalizeGoogleBooks } from './googleBooks';
 
 export type CatalogResult = { evidence: EvidenceBundle; usage: Usage; reasons: Reason[] };
 const appleQueue = createRateQueue(3100);
 const openLibraryQueue = createRateQueue(1100);
+const googleBooksQueue = createRateQueue(1100);
 const empty = (): EvidenceBundle => ({ sources: [], identities: [], editions: [] });
 const object = (input: unknown): Record<string, unknown> => input !== null && typeof input === 'object' && !Array.isArray(input)
   ? input as Record<string, unknown> : {};
@@ -157,7 +159,19 @@ export function normalizeOpenLibrary(input: unknown, checkedAt: string): Evidenc
 
 function merge(destination: EvidenceBundle, incoming: EvidenceBundle): Map<string, string> {
   const aliases = new Map<string, string>();
-  for (const source of incoming.sources) aliases.set(source.id, append(destination, source, incoming.editions.find(item => item.citations.some(cited => cited.sourceId === source.id))));
+  // Map every source before copying facts, including all citations to shared sources.
+  for (const source of incoming.sources) aliases.set(source.id, append(destination, { ...source }));
+  const remap = (items: Citation[]) => items.map(item => ({ ...item, sourceId: aliases.get(item.sourceId) ?? item.sourceId }));
+  for (const identity of incoming.identities) {
+    const copied = { ...identity, citations: remap(identity.citations) };
+    if (!destination.identities.some(item => JSON.stringify(item) === JSON.stringify(copied))) destination.identities.push(copied);
+  }
+  for (const edition of incoming.editions) {
+    let copied = { ...edition, id: aliases.get(edition.id) ?? edition.id, citations: remap(edition.citations) };
+    const existing = destination.editions.find(item => item.id === copied.id);
+    if (existing && JSON.stringify(existing) !== JSON.stringify(copied)) copied = { ...copied, id: `${copied.id}:${hash(JSON.stringify(copied))}` };
+    if (!destination.editions.some(item => item.id === copied.id)) destination.editions.push(copied);
+  }
   return aliases;
 }
 
@@ -180,7 +194,8 @@ function joinAppleLanguages(evidence: EvidenceBundle, originalLanguages: Map<str
   }
 }
 
-export async function collectCatalogs(request: CheckRequest, markets: string[], signal: AbortSignal, fetcher: typeof fetch = fetch): Promise<CatalogResult> {
+export async function collectCatalogs(request: CheckRequest, markets: string[], signal: AbortSignal, fetcher: typeof fetch = fetch,
+  options: { googleBooksKey?: string | null } = {}): Promise<CatalogResult> {
   const evidence = empty();
   const usage = emptyUsage();
   const reasons: Reason[] = [];
@@ -192,12 +207,21 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
   const countries = [...new Set([preferred, ...markets.map(country)].filter((item): item is string => item !== null && (item === preferred || ['US', 'GB', 'CA'].includes(item))))].slice(0, 4);
   const formats = [...new Set(request.formats)];
   const queries = new Map<string, Promise<unknown>>();
-  const retrieve = (provider: 'apple' | 'openlibrary', path: string): Promise<unknown> => {
+  const googleBooksKey = options.googleBooksKey?.trim() ?? '';
+  const seriesQuery = `${request.target.series} inauthor:${request.target.author}`;
+  const titleQuery = (title: string) => `intitle:${title} inauthor:${request.target.author}`;
+  const initialQuery = request.target.title ? titleQuery(request.target.title) : seriesQuery;
+  const effectiveRequest = (): CheckRequest => {
+    if (request.target.title) return request;
+    const identity = selectProposals(request, evidence, checkedAt).identity;
+    return identity ? { ...request, target: { ...request.target, title: identity.title } } : request;
+  };
+  const retrieve = (provider: 'apple' | 'openlibrary' | 'googlebooks', path: string): Promise<unknown> => {
     const key = `${provider}:${path}`;
     const cached = queries.get(key);
     if (cached) return cached;
-    const queue = provider === 'apple' ? appleQueue : openLibraryQueue;
-    const cap = provider === 'apple' ? 12 : 3;
+    const queue = { apple: appleQueue, openlibrary: openLibraryQueue, googlebooks: googleBooksQueue }[provider];
+    const cap = { apple: 12, openlibrary: 3, googlebooks: 2 }[provider];
     if (signal.aborted) { reason('cancelled'); return Promise.resolve(unavailable); }
     if (usage[provider] >= cap) { reason('budget'); return Promise.resolve(unavailable); }
     const operation = queue.run(async () => {
@@ -210,8 +234,22 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
     queries.set(key, operation);
     return operation;
   };
-  const term = `${request.target.title || request.target.series} ${request.target.author}`;
+  async function googleSearch(query: string): Promise<void> {
+    const params = new URLSearchParams({ q: query, key: googleBooksKey, maxResults: '20', showPreorders: 'true', langRestrict: 'en' });
+    const raw = await retrieve('googlebooks', `/books/v1/volumes?${params}`);
+    if (raw === unavailable) return;
+    const envelope = object(raw);
+    if (!Array.isArray(envelope.items)) {
+      if (!Object.hasOwn(envelope, 'items') && envelope.totalItems === 0) return;
+      reason('invalid-evidence'); return;
+    }
+    if (envelope.items.length > 20) reason('budget');
+    // Query narrowing must not erase alternatives for an originally unknown title.
+    merge(evidence, normalizeGoogleBooks(raw, request, checkedAt));
+  }
   async function appleSearch(market: string, format: 'book' | 'audio'): Promise<void> {
+    const target = effectiveRequest().target;
+    const term = `${target.title || target.series} ${target.author}`;
     const params = new URLSearchParams({ term, country: market.toLowerCase(), entity: format === 'book' ? 'ebook' : 'audiobook', limit: '20' });
     const raw = await retrieve('apple', `/search?${params}`);
     if (raw === unavailable) return;
@@ -227,9 +265,11 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
     joinAppleLanguages(evidence, originalLanguages);
   }
 
+  if (googleBooksKey && !signal.aborted) await googleSearch(initialQuery);
   for (const format of formats) if (countries[0] && !signal.aborted) await appleSearch(countries[0], format);
   if (!signal.aborted) {
-    const params = new URLSearchParams({ title: request.target.title || request.target.series, author: request.target.author, limit: '20', fields: 'key,title,author_name,author_key,edition_key,first_publish_year,language' });
+    const target = effectiveRequest().target;
+    const params = new URLSearchParams({ title: target.title || target.series, author: target.author, limit: '20', fields: 'key,title,author_name,author_key,edition_key,first_publish_year,language' });
     const raw = await retrieve('openlibrary', `/search.json?${params}`);
     const docs = object(raw).docs;
     if (!Array.isArray(docs)) { if (raw !== unavailable) reason('invalid-evidence'); }
@@ -240,8 +280,8 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
       for (const item of docs.slice(0, 20)) {
         const doc = object(item);
         const names = list(doc.author_name);
-        if (names.length !== 1 || normalizeIdentity(String(names[0])) !== normalizeIdentity(request.target.author) ||
-          (request.target.title && normalizeIdentity(String(doc.title)) !== normalizeIdentity(request.target.title))) continue;
+        if (names.length !== 1 || normalizeIdentity(String(names[0])) !== normalizeIdentity(target.author) ||
+          (target.title && normalizeIdentity(String(doc.title)) !== normalizeIdentity(target.title))) continue;
         for (const key of list(doc.edition_key)) if (typeof key === 'string' && /^OL\d+M$/.test(key) && !candidates.has(key)) candidates.set(key, doc);
       }
       for (const [key, doc] of [...candidates].slice(0, 2)) {
@@ -267,6 +307,13 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
       if (proposal?.date && proposal.provenance.sourceMarket === preferred) continue;
       await appleSearch(market, format);
     }
+  }
+  if (googleBooksKey && !signal.aborted) {
+    const proposals = selectProposals(request, evidence, checkedAt);
+    const needsIdentity = (!request.target.title || !Number.isInteger(request.target.position)) && !proposals.identity;
+    const needsBook = formats.includes('book') && !proposals.releases.book?.date;
+    const alternate = request.target.title ? seriesQuery : proposals.identity ? titleQuery(proposals.identity.title) : null;
+    if ((needsBook || needsIdentity) && alternate && alternate !== initialQuery) await googleSearch(alternate);
   }
   if (signal.aborted) reason('cancelled');
   return { evidence, usage, reasons };

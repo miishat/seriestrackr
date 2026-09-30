@@ -9,7 +9,7 @@ import type { DiscoveryDependencies } from './runDiscovery';
 // existing catalog provider queues remain global across runtimes/checks.
 export function createDiscoveryRuntime(config: DiscoveryConfig, fetcher: typeof fetch = fetch): DiscoveryDependencies {
   return {
-    catalogs: (request, markets, signal) => collectCatalogs(request, markets, signal, fetcher),
+    catalogs: (request, markets, signal) => collectCatalogs(request, markets, signal, fetcher, { googleBooksKey: config.googleBooksKey }),
     search: (query, signal) => searchEvidence(query, config, signal, fetcher),
     extract: (request, evidence, signal) => extractEvidence(request, evidence, config, signal, fetcher),
     now: () => new Date().toISOString(), canSearch: Boolean(config.tavilyKey?.trim()), canExtract: Boolean(config.deepseekKey?.trim()),

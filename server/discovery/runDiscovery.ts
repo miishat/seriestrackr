@@ -171,6 +171,7 @@ export async function runDiscovery(input: CheckRequest, dependencies: DiscoveryD
       // counters even on cancellation. Await that final accounting snapshot.
       const catalogs = await dependencies.catalogs(request, [...new Set([request.preferredMarket, 'US', 'GB', 'CA'])], signal);
       usage.apple = catalogs.usage.apple; usage.openlibrary = catalogs.usage.openlibrary;
+      usage.googlebooks = catalogs.usage.googlebooks;
       catalogs.reasons.forEach(reason);
       merge(validatedBundle(catalogs.evidence, 'catalog', reason));
     } catch (error) { failure(error); }

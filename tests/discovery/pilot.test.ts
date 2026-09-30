@@ -22,7 +22,7 @@ function tempRoot() {
 }
 afterEach(() => { vi.useRealTimers(); for (const root of roots.splice(0)) rmSync(root, { recursive: true }); });
 function runtime(evidence = bundle([])): DiscoveryDependencies {
-  return { catalogs: vi.fn(async () => ({ evidence, usage: emptyUsage(), reasons: [] })),
+  return { catalogs: vi.fn(async () => ({ evidence, usage: { ...emptyUsage(), googlebooks: 2 }, reasons: [] })),
     search: vi.fn(async () => bundle([])), extract: vi.fn(async () => ({ evidence: bundle([]), usage: emptyUsage() })),
     canSearch: true, canExtract: true, now: () => '2026-09-30T00:00:00Z' };
 }
@@ -78,7 +78,8 @@ test('explicit run invokes one production pipeline and excludes source text and 
   expect(deps.catalogs).toHaveBeenCalledOnce(); expect(vi.mocked(deps.catalogs).mock.calls[0][0].target.title).toBe('');
   const output = print.mock.calls[0][0]; const report = JSON.parse(output);
   expect(report.caseId).toBe('mistborn'); expect(report.proposals.identity.title).toBe(identity.title);
-  expect(report.summary.usage.googlebooks).toBe(0); expect(output).not.toContain('fake-google-secret');
+  expect(report.summary.usage.googlebooks).toBe(2); expect(output).not.toContain('fake-google-secret');
+  expect(output).not.toContain('www.googleapis.com');
   expect(output).not.toContain('quote'); expect(output).not.toContain('English ebook in Canada');
   expect(output).not.toContain('ORACLE_ONLY'); expect(output).not.toContain('fake-tavily-secret');
   expect(deps.extract).not.toHaveBeenCalled();
@@ -91,7 +92,7 @@ test('unknown case fails before constructing any provider operation', async () =
 test('production transport uses only one input case and never loads the oracle or secrets into JSON payloads', async () => {
   vi.useFakeTimers(); const root = tempRoot(); const print = vi.fn();
   const fetcher = vi.fn(async (url: URL | RequestInfo) => {
-    const value = String(url); return new Response(JSON.stringify(value.includes('itunes.apple.com') ? { results: [] } : value.includes('openlibrary.org') ? { docs: [] } : { results: [] }),
+    const value = String(url); return new Response(JSON.stringify(value.includes('itunes.apple.com') ? { results: [] } : value.includes('openlibrary.org') ? { docs: [] } : value.includes('www.googleapis.com') ? { totalItems: 0 } : { results: [] }),
       { headers: { 'content-type': 'application/json' } });
   });
   const operation = runPilot(['--run', '--case', 'mistborn'], { root, fetcher: fetcher as typeof fetch, print });
@@ -101,7 +102,7 @@ test('production transport uses only one input case and never loads the oracle o
   expect(bodies).toContain('Mistborn Brandon Sanderson book 2');
   expect(bodies).not.toContain('ORACLE_ONLY'); expect(bodies).not.toContain('fake-tavily-secret'); expect(bodies).not.toContain('fake-deepseek-secret');
   expect(bodies).not.toContain('The Well of Ascension');
-  const report = JSON.parse(print.mock.calls[0][0]); expect(report.summary.usage).toMatchObject({ apple: 6, openlibrary: 1, googlebooks: 0, tavily: 3, deepseek: 0 });
+  const report = JSON.parse(print.mock.calls[0][0]); expect(report.summary.usage).toMatchObject({ apple: 6, openlibrary: 1, googlebooks: 1, tavily: 3, deepseek: 0 });
   expect(print.mock.calls[0][0]).not.toContain('fake-google-secret');
 });
 test('withheld CA control selects independent US factual editions without relabeling', async () => {
