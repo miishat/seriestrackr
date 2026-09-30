@@ -160,7 +160,13 @@ export function normalizeOpenLibrary(input: unknown, checkedAt: string): Evidenc
 function merge(destination: EvidenceBundle, incoming: EvidenceBundle): Map<string, string> {
   const aliases = new Map<string, string>();
   // Map every source before copying facts, including all citations to shared sources.
-  for (const source of incoming.sources) aliases.set(source.id, append(destination, { ...source }));
+  for (const source of incoming.sources) {
+    // Google may assign a different collision alias when the same rows arrive
+    // in another order. Reuse the retained facts before generating another ID.
+    const retained = source.provider === 'googlebooks' ? destination.sources.find(item => item.text === source.text && item.url === source.url &&
+      item.provider === source.provider && item.market === source.market && item.title === source.title) : undefined;
+    aliases.set(source.id, retained?.id ?? append(destination, { ...source }));
+  }
   const remap = (items: Citation[]) => items.map(item => ({ ...item, sourceId: aliases.get(item.sourceId) ?? item.sourceId }));
   for (const identity of incoming.identities) {
     const copied = { ...identity, citations: remap(identity.citations) };

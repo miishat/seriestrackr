@@ -265,6 +265,47 @@ test('duplicate Google IDs with incompatible identity texts keep every alternati
   expect(parseExtraction(result.evidence, result.evidence.sources).ok).toBe(true);
 });
 
+test.each([
+  { facts: 'ISBN announcements', repeat: 'second' }, { facts: 'ISBN announcements', repeat: 'reversed' },
+  { facts: 'conflicting sale days', repeat: 'second' }, { facts: 'conflicting sale days', repeat: 'reversed' },
+])('same-ID Google $facts coalesce across responses when alternate repeats $repeat', async ({ facts, repeat }) => {
+  const conflicting = facts === 'conflicting sale days';
+  const req = request({ formats: ['book'], target: { ...request().target, position: conflicting ? 2.5 : 2 } });
+  const rows = conflicting ? [qualifiedVolume('2027-03-01'), qualifiedVolume('2028-03-01')]
+    : ['9781234567890', '9781234567891'].map(identifier => volume({
+      volumeInfo: { ...volume().volumeInfo, industryIdentifiers: [{ type: 'ISBN_13', identifier }] },
+    }));
+  const before = structuredClone(rows);
+  const { result, urls } = await collect(req, ['CA'], url => url.hostname === 'www.googleapis.com'
+    ? json({ items: url.searchParams.get('q')?.startsWith('intitle:') ? rows : repeat === 'second' ? [rows[1]] : [...rows].reverse() })
+    : emptyCatalog(url), googleOptions);
+  expect(googleUrls(urls)).toHaveLength(2); expect(result.usage.googlebooks).toBe(2);
+  expect(result.evidence.sources).toHaveLength(2); expect(result.evidence.editions).toHaveLength(2);
+  expect(result.evidence.identities).toHaveLength(conflicting ? 0 : 2);
+  expect(new Set(result.evidence.sources.map(source => source.id)).size).toBe(2);
+  expect(new Set(result.evidence.editions.map(item => item.id)).size).toBe(2);
+  expect(parseExtraction(result.evidence, result.evidence.sources).ok).toBe(true);
+  expect(result.reasons).not.toContain('budget'); expect(rows).toEqual(before);
+  if (conflicting) expect(selectProposals(request({ formats: ['book'] }), result.evidence, checkedAt).conflicts).toHaveLength(1);
+  for (const item of [...result.evidence.identities, ...result.evidence.editions]) for (const citation of item.citations)
+    expect(result.evidence.sources.find(source => source.id === citation.sourceId)?.text).toContain(citation.quote);
+});
+
+test('reversed Google collision aliases do not consume source and identity capacity twice', async () => {
+  const req = request({ formats: ['book'] });
+  const rows = Array.from({ length: 10 }, (_, i) => [
+    volume({ id: `FictionalCollision${i}`, volumeInfo: { ...volume().volumeInfo,
+      industryIdentifiers: [{ type: 'ISBN_13', identifier: `9781234567${String(i * 2).padStart(3, '0')}` }] } }),
+    volume({ id: `FictionalCollision${i}`, volumeInfo: { ...volume().volumeInfo,
+      industryIdentifiers: [{ type: 'ISBN_13', identifier: `9781234567${String(i * 2 + 1).padStart(3, '0')}` }] } }),
+  ]).flat();
+  const { result } = await collect(req, ['CA'], url => url.hostname === 'www.googleapis.com'
+    ? json({ items: url.searchParams.get('q')?.startsWith('intitle:') ? rows : [...rows].reverse() }) : emptyCatalog(url), googleOptions);
+  expect(result.evidence.sources).toHaveLength(20); expect(result.evidence.identities).toHaveLength(20);
+  expect(result.evidence.editions).toHaveLength(20); expect(result.reasons).toEqual([]);
+  expect(parseExtraction(result.evidence, result.evidence.sources).ok).toBe(true);
+});
+
 test('Google ISBN never supplies missing Apple language and actual CA book and GB audio stay independent', async () => {
   const { result, urls } = await collect(request(), ['CA', 'US', 'GB'], url => {
     if (url.hostname === 'www.googleapis.com') return json({ items: [qualifiedVolume('2027-03-02', {
