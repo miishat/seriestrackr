@@ -19,6 +19,8 @@ export interface DiscoveryDependencies {
 }
 const empty = (): EvidenceBundle => ({ sources: [], identities: [], editions: [] });
 const id = (namespace: string, original: string) => `${namespace}:${createHash('sha256').update(original).digest('hex').slice(0, 32)}`;
+const workFormatKey = (title: string, author: string, format: Format) => JSON.stringify([normalizeIdentity(title), normalizeIdentity(author), format]);
+type PrunedDates = { preferred: string | null; fallback: string | null };
 
 // Every retrieval owns a namespace. Ambiguous duplicate IDs within one reply
 // are rejected rather than allowing the last record to redirect citations.
@@ -60,9 +62,12 @@ function validatedBundle(raw: EvidenceBundle, namespace: string, reason: (value:
   return result;
 }
 
-function bound(request: CheckRequest, input: EvidenceBundle, checkedAt: string, suppressed: Set<Format | 'identity'>, reason: (value: Reason) => void): EvidenceBundle {
+function bound(request: CheckRequest, input: EvidenceBundle, checkedAt: string, suppressed: Set<Format | 'identity'>,
+  prunedWorkFormats: Map<string, PrunedDates>, reason: (value: Reason) => void): EvidenceBundle {
   const allocation = allocationEvidence(request, input);
   const { identities, editions, sources: eligibleSources, conflicts, singletons } = allocation;
+  const unresolvedIdentity = (!request.target.title.trim() || !Number.isInteger(request.target.position)) &&
+    !selectProposals(request, allocation, checkedAt).identity;
   const retained = empty();
   const sourceIds = new Set<string>();
   const keep = (citations: Citation[]): boolean => {
@@ -104,7 +109,20 @@ function bound(request: CheckRequest, input: EvidenceBundle, checkedAt: string, 
   for (const item of singletons) {
     if (keptEditionIds.has(item.id)) continue;
     if (keepGroup([item])) keptEditionIds.add(item.id);
-    else reason('budget');
+    else {
+      reason('budget');
+      // Until identity resolves, any matching English exact-day edition might
+      // be the selected minimum. Remember its work/format across later merges
+      // rather than presenting a later surviving date as the earliest one.
+      if (unresolvedIdentity && item.language === 'en' && item.precision === 'day' && item.date !== null) {
+        const key = workFormatKey(item.title, item.author, item.format === 'audio' ? 'audio' : 'book');
+        const dates = prunedWorkFormats.get(key) ?? { preferred: null, fallback: null };
+        const pool = item.market === request.preferredMarket ? 'preferred' : 'fallback';
+        const previous = dates[pool];
+        if (previous === null || item.date < previous) dates[pool] = item.date;
+        prunedWorkFormats.set(key, dates);
+      }
+    }
   }
   const extras = eligibleSources.filter(source => !sourceIds.has(source.id))
     .sort((a, b) => Number(b.market === request.preferredMarket) - Number(a.market === request.preferredMarket));
@@ -134,11 +152,12 @@ export async function runDiscovery(input: CheckRequest, dependencies: DiscoveryD
   const reasons: Reason[] = [];
   const reason = (value: Reason) => { if (!reasons.includes(value)) reasons.push(value); };
   const suppressed = new Set<Format | 'identity'>();
+  const prunedWorkFormats = new Map<string, PrunedDates>();
   let evidence = empty();
   const failure = (error: unknown) => reason(caller.aborted ? 'cancelled' : deadline.aborted ? 'timeout' : error instanceof ProviderError ? error.reason : 'provider-error');
   const merge = (incoming: EvidenceBundle) => { evidence = bound(request, {
     sources: [...evidence.sources, ...incoming.sources], identities: [...evidence.identities, ...incoming.identities], editions: [...evidence.editions, ...incoming.editions],
-  }, checkedAt, suppressed, reason); };
+  }, checkedAt, suppressed, prunedWorkFormats, reason); };
   const selection = () => selectProposals(request, evidence, checkedAt);
   const needs = () => {
     const proposals = selection();
@@ -205,6 +224,17 @@ export async function runDiscovery(input: CheckRequest, dependencies: DiscoveryD
   for (const format of suppressed) {
     if (format === 'identity') { proposals.identity = null; proposals.identityAttribution = null; }
     else proposals.releases[format] = null;
+  }
+  for (const format of request.formats) {
+    const proposal = proposals.releases[format];
+    if (!proposal) continue;
+    const pruned = prunedWorkFormats.get(workFormatKey(proposal.title, request.target.author, format));
+    if (!pruned) continue;
+    // A missing preferred day outranks fallback days. Otherwise compare only
+    // the selected pool's minimum; recovered same/earlier evidence is safe.
+    const local = proposal.provenance.sourceMarket === request.preferredMarket;
+    if (!proposal.date || (local ? pruned.preferred !== null && pruned.preferred < proposal.date
+      : pruned.preferred !== null || (pruned.fallback !== null && pruned.fallback < proposal.date))) proposals.releases[format] = null;
   }
   if ((!request.target.title.trim() || !Number.isInteger(request.target.position)) && !proposals.identity) reason('unknown-identity');
   for (const format of request.formats) {

@@ -349,3 +349,53 @@ test('source-only role reservations cannot evict a fitting protected 30-source i
   expect(result.sources.some(item => ['Reading order', 'Paperback', 'Audiobook'].includes(item.title))).toBe(false);
   expect(result.summary.reasons).toContain('budget');
 });
+
+test.each([
+  { label: 'earlier matching preferred', prunedTitle: 'Second', prunedDate: '2026-12-01', prunedMarket: 'CA', retainedMarket: 'CA', expected: null },
+  { label: 'earlier matching fallback', prunedTitle: 'Second', prunedDate: '2026-12-01', prunedMarket: 'US', retainedMarket: 'US', expected: null },
+  { label: 'earlier unrelated work', prunedTitle: 'Other Work', prunedDate: '2026-12-01', prunedMarket: 'CA', retainedMarket: 'CA', expected: '2027-03-01' },
+  { label: 'later matching preferred', prunedTitle: 'Second', prunedDate: '2028-12-01', prunedMarket: 'CA', retainedMarket: 'CA', expected: '2027-03-01' },
+  { label: 'earlier fallback beside supported preferred', prunedTitle: 'Second', prunedDate: '2026-12-01', prunedMarket: 'US', retainedMarket: 'CA', expected: '2027-03-01' },
+  { label: 'preferred day before fallback selection', prunedTitle: 'Second', prunedDate: '2028-12-01', prunedMarket: 'CA', retainedMarket: 'US', expected: null, competingWorks: true },
+  { label: 'same earliest day recovered in AI batch', prunedTitle: 'Second', prunedDate: '2026-12-01', prunedMarket: 'CA', retainedMarket: 'CA', expected: '2026-12-01', recovered: true },
+])('late AI identity preserves date policy after pruning $label evidence', async ({ prunedTitle, prunedDate, prunedMarket, retainedMarket, expected, recovered, competingWorks }) => {
+  const books = Array.from({ length: 30 }, (_, i) => {
+    const last = i === 29;
+    const market = last ? prunedMarket : competingWorks ? 'CA' : retainedMarket;
+    const date = last ? prunedDate : '2027-03-01';
+    return edition({ id: `late-${i}`, editionKey: `late-${i}`,
+      title: last ? prunedTitle : competingWorks ? 'Other Work' : 'Second', date, market,
+      citations: [{ sourceId: `late-source-${i}`, quote: `English ebook in ${market === 'CA' ? 'Canada' : market}: ${date}.` }] });
+  });
+  if (competingWorks) books.push(edition({ id: 'retained-fallback', editionKey: 'retained-fallback', market: 'US',
+    citations: [{ sourceId: 'late-source-0', quote: 'English ebook in US: 2027-03-01.' }] }));
+  const audio = edition({ id: 'independent-audio', format: 'audio', editionKey: 'independent-audio', market: 'GB', date: '2028-04-02',
+    citations: [{ sourceId: 'late-source-0', quote: 'English audio in GB: 2028-04-02.' }] });
+  const catalogs = bundle([...books, audio]);
+  if (recovered) catalogs.sources[0].text += ' English ebook in Canada: 2026-12-01.';
+  catalogs.sources.forEach(item => { item.provider = 'apple'; });
+  const template = catalogs.sources[0];
+  const deps = dependencies(catalogs);
+  deps.search = vi.fn().mockResolvedValueOnce({ sources: [{ ...template, provider: 'tavily', id: 'uncited-order', title: 'Series order',
+    text: 'Fictional series order prose.' }], identities: [], editions: [] }).mockResolvedValue(empty());
+  deps.extract = vi.fn(async (_req, evidence) => {
+    const sourceId = evidence.sources.find(item => item.url.endsWith('/late-source-0'))!.id;
+    return { evidence: { sources: evidence.sources, editions: recovered ? [edition({ id: 'recovered', editionKey: 'recovered', date: '2026-12-01',
+      citations: [{ sourceId, quote: 'English ebook in Canada: 2026-12-01.' }] })] : [], identities: [
+      { title: 'Second', author: 'Example Author', position: 2, citations: [{ sourceId, quote: 'Second by Example Author. Book 2.' }] },
+    ] }, usage: emptyUsage() };
+  });
+  const result = await runDiscovery(request({ useAi: true, target: { ...request().target, title: '' } }), deps, new AbortController().signal);
+  expect(result.proposals.identity?.title).toBe('Second');
+  expect(result.proposals.releases.book?.date ?? null).toBe(expected);
+  expect(result.proposals.releases.audio?.date).toBe('2028-04-02');
+  expect(result.proposals.releases.audio?.provenance.sourceMarket).toBe('GB');
+  expect(result.sources.length).toBeLessThanOrEqual(30);
+  expect(result.sources.some(item => item.title === 'Series order')).toBe(true);
+  expect(result.sources.some(item => item.url.endsWith('/late-source-29'))).toBe(false);
+  expect(result.summary.reasons).toContain('budget');
+  expect(result.summary.formats.book).toBe(expected === null ? 'unknown' : 'supported');
+  expect(result.summary.reasons).not.toContain('invalid-evidence');
+  expect(result.summary.usage.tavily).toBe(3);
+  expect(result.summary.usage.deepseek).toBe(1);
+});
