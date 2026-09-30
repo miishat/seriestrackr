@@ -8,6 +8,7 @@ import type { extractEvidence } from './deepseek';
 import { ProviderError } from './http';
 import { buildSearchQueries } from './search';
 import { allocationEvidence, roleReservations } from './evidenceAllocation';
+import { diagnosticCounts, emitDiagnostic, type DiagnosticObserver } from './diagnostics';
 
 export interface DiscoveryDependencies {
   catalogs: typeof collectCatalogs;
@@ -16,6 +17,7 @@ export interface DiscoveryDependencies {
   now: () => string;
   canSearch: boolean;
   canExtract: boolean;
+  onDiagnostic?: DiagnosticObserver;
 }
 const empty = (): EvidenceBundle => ({ sources: [], identities: [], editions: [] });
 const id = (namespace: string, original: string) => `${namespace}:${createHash('sha256').update(original).digest('hex').slice(0, 32)}`;
@@ -155,9 +157,13 @@ export async function runDiscovery(input: CheckRequest, dependencies: DiscoveryD
   const prunedWorkFormats = new Map<string, PrunedDates>();
   let evidence = empty();
   const failure = (error: unknown) => reason(caller.aborted ? 'cancelled' : deadline.aborted ? 'timeout' : error instanceof ProviderError ? error.reason : 'provider-error');
-  const merge = (incoming: EvidenceBundle) => { evidence = bound(request, {
+  const merge = (incoming: EvidenceBundle) => {
+    let allocationBudget = false;
+    evidence = bound(request, {
     sources: [...evidence.sources, ...incoming.sources], identities: [...evidence.identities, ...incoming.identities], editions: [...evidence.editions, ...incoming.editions],
-  }, checkedAt, suppressed, prunedWorkFormats, reason); };
+    }, checkedAt, suppressed, prunedWorkFormats, value => { reason(value); if (value === 'budget') allocationBudget = true; });
+    if (allocationBudget) emitDiagnostic(dependencies.onDiagnostic, { stage: 'allocation', category: 'bounds', ...diagnosticCounts(evidence) });
+  };
   const selection = () => selectProposals(request, evidence, checkedAt);
   const needs = () => {
     const proposals = selection();

@@ -5,6 +5,7 @@ import { normalizeIdentity, selectProposals } from '../../shared/discoveryPolicy
 import { fetchProviderJson, ProviderError } from './http';
 import { createRateQueue } from './rateQueue';
 import { normalizeGoogleBooks } from './googleBooks';
+import { diagnosticCounts, emitDiagnostic, type DiagnosticObserver } from './diagnostics';
 
 export type CatalogResult = { evidence: EvidenceBundle; usage: Usage; reasons: Reason[] };
 const appleQueue = createRateQueue(3100);
@@ -201,14 +202,18 @@ function joinAppleLanguages(evidence: EvidenceBundle, originalLanguages: Map<str
 }
 
 export async function collectCatalogs(request: CheckRequest, markets: string[], signal: AbortSignal, fetcher: typeof fetch = fetch,
-  options: { googleBooksKey?: string | null } = {}): Promise<CatalogResult> {
+  options: { googleBooksKey?: string | null; onDiagnostic?: DiagnosticObserver } = {}): Promise<CatalogResult> {
   const evidence = empty();
   const usage = emptyUsage();
   const reasons: Reason[] = [];
   const originalLanguages = new Map<string, LanguageMetadata>();
   const unavailable = Symbol('unavailable');
   const checkedAt = new Date().toISOString();
-  const reason = (value: Reason) => { if (!reasons.includes(value)) reasons.push(value); };
+  const reason = (value: Reason) => {
+    if (!reasons.includes(value)) reasons.push(value);
+    if (value === 'budget' || value === 'invalid-evidence') emitDiagnostic(options.onDiagnostic,
+      { stage: 'catalog', category: value === 'budget' ? 'bounds' : 'shape', ...diagnosticCounts(evidence) });
+  };
   const preferred = country(request.preferredMarket);
   const countries = [...new Set([preferred, ...markets.map(country)].filter((item): item is string => item !== null && (item === preferred || ['US', 'GB', 'CA'].includes(item))))].slice(0, 4);
   const formats = [...new Set(request.formats)];

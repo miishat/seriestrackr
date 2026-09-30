@@ -19,6 +19,69 @@ const source = (overrides: Partial<Source> = {}): Source => ({
 const fromSources = (sources: Source[]): EvidenceBundle => ({ sources, ...empty });
 const identity = () => ({ title: 'Second', author: 'Example Author', position: 2,
   citations: [{ sourceId: 's1', quote: 'Second by Example Author. Book 2.' }] });
+
+test.each([
+  { bad: edition({ date: '2027-02-30' }), category: 'date-precision' },
+  { bad: edition({ citations: [{ sourceId: 's1', quote: 'FAKE_SECRET invented' }] }), category: 'citation' },
+  { bad: { ...edition(), FAKE_SECRET: 'not for diagnostics' }, category: 'shape' },
+  { bad: edition({ title: 'Third' }), category: 'target-mismatch' },
+])('diagnoses rejected edition $category while retaining identity', async ({ bad, category }) => {
+  const events: unknown[] = [];
+  const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [identity()], editions: [bad] }));
+  const req = request({ useAi: true, target: { ...enabled().target, title: '' } });
+  const result = await extractEvidence(req, fromSources([source()]), config, signal(), fetcher, event => events.push(event));
+  expect(result.evidence.identities).toEqual([identity()]);
+  expect(result.evidence.editions).toEqual([]);
+  expect(events).toContainEqual({ stage: 'edition', category, sources: 1, identities: 1, editions: 0 });
+  expect(JSON.stringify(events)).not.toContain('FAKE_SECRET');
+  expect(fetcher).toHaveBeenCalledOnce();
+});
+
+test('diagnoses duplicate edition IDs without retaining either edition', async () => {
+  const events: unknown[] = [];
+  const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [identity()], editions: [edition(), edition()] }));
+  const result = await extractEvidence(enabled(), fromSources([source()]), config, signal(), fetcher, event => events.push(event));
+  expect(result.evidence.editions).toEqual([]);
+  expect(events).toContainEqual({ stage: 'edition', category: 'duplicate-id', sources: 1, identities: 1, editions: 0 });
+});
+
+test.each([
+  { identities: [{ ...identity(), FAKE_SECRET: true }], category: 'shape' },
+  { identities: [{ ...identity(), position: 3 }], category: 'target-mismatch' },
+])('diagnoses rejected identity $category and suppresses editions', async ({ identities, category }) => {
+  const events: unknown[] = [];
+  const fetcher = vi.fn<typeof fetch>(async () => response({ identities, editions: [edition()] }));
+  const result = await extractEvidence(enabled(), fromSources([source()]), config, signal(), fetcher, event => events.push(event));
+  expect(result.evidence.identities).toEqual([]); expect(result.evidence.editions).toEqual([]);
+  expect(events).toContainEqual({ stage: 'identity', category, sources: 1, identities: 0, editions: 0 });
+});
+
+test('diagnoses malformed envelope before throwing the existing safe error', async () => {
+  const events: unknown[] = [];
+  await expect(extractEvidence(enabled(), fromSources([source()]), config, signal(), async () => response({ FAKE_SECRET: 'never emit' }), event => events.push(event)))
+    .rejects.toMatchObject({ reason: 'invalid-evidence' });
+  expect(events).toContainEqual({ stage: 'envelope', category: 'shape', sources: 1, identities: 0, editions: 0 });
+});
+
+test('accepted known-title empty identity emits accepted counts with an isolated observer', async () => {
+  const fetcher: typeof fetch = async () => response({ identities: [], editions: [edition()] });
+  const baseline = await extractEvidence(enabled(), fromSources([source()]), config, signal(), fetcher);
+  const events: unknown[] = [];
+  const result = await extractEvidence(enabled(), fromSources([source()]), config, signal(), fetcher, event => { events.push(event); throw new Error('observer failed'); });
+  expect(result).toEqual(baseline);
+  expect(events).toContainEqual({ stage: 'edition', category: 'accepted', sources: 1, identities: 0, editions: 1 });
+});
+
+test('diagnoses trimmed source quote without emitting its text', async () => {
+  const evidence = fromSources([source({ text: 'x'.repeat(19000) + ' trimmed-tail' }), source({ id: 'other', text: 'y'.repeat(19000) })]);
+  const events: unknown[] = [];
+  const fetcher: typeof fetch = async () => response({ identities: [], editions: [edition({ citations: [{ sourceId: 's1', quote: 'trimmed-tail' }] })] });
+  const result = await extractEvidence(enabled(), evidence, config, signal(), fetcher, event => events.push(event));
+  expect(result.evidence.editions).toEqual([]);
+  expect(events).toContainEqual({ stage: 'prompt', category: 'trimmed', sources: 2, identities: 0, editions: 0 });
+  expect(events).toContainEqual({ stage: 'edition', category: 'citation', sources: 2, identities: 0, editions: 0 });
+  expect(JSON.stringify(events)).not.toContain('trimmed-tail');
+});
 afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
 
 test('explicit canonical prose supports identity and edition despite decorated display metadata', async () => {

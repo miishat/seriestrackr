@@ -5,6 +5,7 @@ import { parseExtraction } from '../../shared/discoveryValidation';
 import type { DiscoveryConfig } from './config';
 import { fetchProviderJson, ProviderError } from './http';
 import { buildExtractionMessages } from './prompt';
+import { classifyExtractionFailure, diagnosticCounts, emitDiagnostic, type DiagnosticObserver } from './diagnostics';
 
 const object = (value: unknown): Record<string, unknown> | null =>
   value !== null && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : null;
@@ -63,24 +64,41 @@ function extractionContent(raw: unknown): { identities: unknown[]; editions: unk
 
 export async function extractEvidence(
   request: CheckRequest, evidence: EvidenceBundle, config: DiscoveryConfig,
-  signal: AbortSignal, fetcher: typeof fetch = fetch,
+  signal: AbortSignal, fetcher: typeof fetch = fetch, onDiagnostic?: DiagnosticObserver,
 ): Promise<ExtractionResult> {
   if (!request.useAi) return { evidence, usage: emptyUsage() };
   if (signal.aborted) throw new ProviderError('deepseek', 'cancelled');
   if (!config.deepseekKey?.trim()) throw new ProviderError('deepseek', 'missing-key');
-  const messages = buildExtractionMessages(request, evidence);
+  let messages: ReturnType<typeof buildExtractionMessages>;
+  try { messages = buildExtractionMessages(request, evidence); }
+  catch (error) {
+    emitDiagnostic(onDiagnostic, { stage: 'prompt', category: error instanceof ProviderError && error.reason === 'budget' ? 'bounds' : 'shape', ...diagnosticCounts(evidence) });
+    throw error;
+  }
   // Read the actual user payload back, retaining metadata only on the server.
   // Sources dropped or text trimmed for the budget cannot verify model quotes.
   const sent = JSON.parse(messages[1].content) as { sources: Pick<Source, 'id' | 'title' | 'text'>[] };
   const originalById = new Map(evidence.sources.map(source => [source.id, source]));
   const suppliedSources = sent.sources.map(source => ({ ...originalById.get(source.id)!, ...source }));
-  if (!parseExtraction({ identities: [], editions: [] }, suppliedSources).ok) invalid();
+  const supplied = { sources: suppliedSources, identities: [], editions: [] };
+  if (suppliedSources.length < evidence.sources.length || suppliedSources.some(source => originalById.get(source.id)?.text !== source.text)) {
+    emitDiagnostic(onDiagnostic, { stage: 'prompt', category: 'trimmed', ...diagnosticCounts(supplied) });
+  }
+  if (!parseExtraction({ identities: [], editions: [] }, suppliedSources).ok) {
+    emitDiagnostic(onDiagnostic, { stage: 'prompt', category: 'shape', ...diagnosticCounts(supplied) });
+    invalid();
+  }
   const raw = await fetchProviderJson('deepseek', '/chat/completions', {
     method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${config.deepseekKey}` },
     body: JSON.stringify({ model: config.model, messages, thinking: { type: 'disabled' },
       max_tokens: 2048, response_format: { type: 'json_object' }, stream: false }),
   }, signal, fetcher);
-  const content = extractionContent(raw);
+  let content: ReturnType<typeof extractionContent>;
+  try { content = extractionContent(raw); }
+  catch (error) {
+    emitDiagnostic(onDiagnostic, { stage: 'envelope', category: 'shape', ...diagnosticCounts(supplied) });
+    throw error;
+  }
   const reportedUsage = object(object(raw)?.usage);
   const usage: Usage = { ...emptyUsage(), deepseek: 1,
     inputTokens: tokenCount(reportedUsage?.prompt_tokens), outputTokens: tokenCount(reportedUsage?.completion_tokens) };
@@ -88,14 +106,18 @@ export async function extractEvidence(
   // A bad nonempty identity batch cannot borrow the known input title to
   // validate editions. Keep ambiguity and false identity claims unresolved.
   if (!identities.ok || !matchesTarget(request, identities.value)) {
+    emitDiagnostic(onDiagnostic, { stage: 'identity', category: 'error' in identities ? classifyExtractionFailure(identities.error) : 'target-mismatch', ...diagnosticCounts(supplied) });
     return { evidence: { sources: suppliedSources, identities: [], editions: [] }, usage, reasons: ['invalid-evidence'] };
   }
+  emitDiagnostic(onDiagnostic, { stage: 'identity', category: 'accepted', ...diagnosticCounts(identities.value) });
   const editions = parseExtraction({ identities: identities.value.identities, editions: content.editions }, suppliedSources);
   // Editions are one batch: dropping a single bad/conflicting record could
   // manufacture an earliest date from whichever edition happened to survive.
   if (!editions.ok || !matchesTarget(request, editions.value)) {
+    emitDiagnostic(onDiagnostic, { stage: 'edition', category: 'error' in editions ? classifyExtractionFailure(editions.error) : 'target-mismatch', ...diagnosticCounts(identities.value) });
     return { evidence: identities.value, usage, reasons: ['invalid-evidence'] };
   }
+  emitDiagnostic(onDiagnostic, { stage: 'edition', category: 'accepted', ...diagnosticCounts(editions.value) });
   return { evidence: editions.value, usage };
 }
 
