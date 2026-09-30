@@ -208,6 +208,7 @@ export async function runDiscovery(input: CheckRequest, dependencies: DiscoveryD
         if (!validated.ok) throw new ProviderError('deepseek', 'invalid-evidence');
         const tokens = (value: number | null) => Number.isSafeInteger(value) && value! >= 0 ? value : null;
         usage.inputTokens = tokens(extracted.usage.inputTokens); usage.outputTokens = tokens(extracted.usage.outputTokens);
+        for (const value of extracted.reasons ?? []) reason(value);
         const incoming = validatedBundle(validated.value, 'ai', reason);
         const aliases = new Map(validated.value.sources.map(source => [id('ai', source.id), source.id]));
         const remap = (citations: Citation[]) => citations.map(citation => ({ ...citation, sourceId: aliases.get(citation.sourceId)! }));

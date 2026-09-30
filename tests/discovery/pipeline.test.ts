@@ -9,6 +9,7 @@ import { ProviderError } from '../../server/discovery/http';
 import { parseCheckResponse } from '../../shared/discoveryValidation';
 import { createDiscoveryRuntime } from '../../server/discovery/runtime';
 import { buildExtractionMessages } from '../../server/discovery/prompt';
+import { extractEvidence } from '../../server/discovery/deepseek';
 
 afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
 
@@ -20,6 +21,71 @@ function dependencies(evidence = empty()): DiscoveryDependencies {
     now: () => '2026-09-29T12:00:00Z', canSearch: true, canExtract: true,
   };
 }
+
+test.each(['identity-only', 'catalog-facts-and-conflicts'])('invalid AI edition batch stays partial and preserves identity plus %s', async variant => {
+  const identity = { title: 'Second', author: 'Example Author', position: 2,
+    citations: [{ sourceId: 's1', quote: 'Second by Example Author. Book 2.' }] };
+  const found = bundle([], [identity]); found.identities = [];
+  const catalog = variant === 'identity-only' ? empty() : bundle([
+    edition(), edition({ id: 'conflicting-book', date: '2028-03-01' }),
+    edition({ id: 'catalog-audio', editionKey: 'audio', format: 'audio', market: 'GB', date: '2028-04-02' }),
+  ]);
+  const deps = dependencies(catalog);
+  deps.search = vi.fn().mockResolvedValueOnce(found).mockResolvedValue(empty());
+  const fetcher = vi.fn<typeof fetch>(async (_url, init) => {
+    const sent = JSON.parse(JSON.parse(init!.body as string).messages[1].content).sources as EvidenceBundle['sources'];
+    const sourceId = sent.find(item => item.text.includes(identity.citations[0].quote))!.id;
+    return Response.json({ choices: [{ finish_reason: 'stop', message: { content: JSON.stringify({
+      identities: [{ ...identity, citations: [{ sourceId, quote: identity.citations[0].quote }] }],
+      editions: [edition({ title: 'Third', citations: [{ sourceId, quote: identity.citations[0].quote }] })],
+    }) } }], usage: { prompt_tokens: 100, completion_tokens: 50 } });
+  });
+  deps.extract = vi.fn((req, evidence, signal) => extractEvidence(req, evidence,
+    { tavilyKey: null, deepseekKey: 'fake-test-key', model: 'deepseek-flash' }, signal, fetcher));
+  const result = await runDiscovery(request({ useAi: true, target: { ...request().target, title: '' } }), deps, new AbortController().signal);
+  expect(result.summary.status).toBe('partial');
+  expect(result.summary.reasons).toEqual(['invalid-evidence']);
+  expect(result.proposals.identity?.title).toBe('Second');
+  expect(result.proposals.releases.book).toBeNull();
+  if (variant === 'identity-only') {
+    expect(result.proposals.releases.audio).toBeNull();
+    expect(result.proposals.conflicts).toEqual([]);
+  } else {
+    expect(result.proposals.conflicts).toHaveLength(1);
+    expect(result.proposals.conflicts[0].format).toBe('book');
+    expect(result.proposals.releases.audio?.date).toBe('2028-04-02');
+    expect(result.proposals.releases.audio?.provenance.sourceMarket).toBe('GB');
+    expect(result.proposals.releases.audio?.provenance.interpreted).toBe(false);
+  }
+  expect(result.summary.usage).toMatchObject({ deepseek: 1, inputTokens: 100, outputTokens: 50 });
+  expect(deps.extract).toHaveBeenCalledOnce(); expect(fetcher).toHaveBeenCalledOnce();
+  expect(parseCheckResponse(result).ok).toBe(true);
+});
+
+test('pipeline merges optional extraction reasons once while retaining safe usage and valid evidence', async () => {
+  const found = bundle([edition()]); found.editions = [];
+  const deps = dependencies(found);
+  deps.extract = vi.fn<DiscoveryDependencies['extract']>(async (_req, evidence) => ({ evidence: { sources: evidence.sources, identities: [], editions: [] },
+    usage: { ...emptyUsage(), inputTokens: 123, outputTokens: 45 }, reasons: ['invalid-evidence', 'invalid-evidence'] }));
+  const result = await runDiscovery(request({ useAi: true }), deps, new AbortController().signal);
+  expect(result.summary.status).toBe('partial');
+  expect(result.summary.reasons).toEqual(['invalid-evidence']);
+  expect(result.summary.usage).toMatchObject({ deepseek: 1, inputTokens: 123, outputTokens: 45 });
+});
+
+test('valid empty AI arrays complete with unknown identity and no invalid evidence', async () => {
+  const deps = dependencies();
+  const fetcher = vi.fn<typeof fetch>(async () => Response.json({ choices: [{ finish_reason: 'stop',
+    message: { content: JSON.stringify({ identities: [], editions: [] }) } }], usage: { prompt_tokens: 20, completion_tokens: 8 } }));
+  deps.extract = vi.fn((req, evidence, signal) => extractEvidence(req, evidence,
+    { tavilyKey: null, deepseekKey: 'fake-test-key', model: 'deepseek-flash' }, signal, fetcher));
+  const result = await runDiscovery(request({ useAi: true, target: { ...request().target, title: '' } }), deps, new AbortController().signal);
+  expect(result.summary.status).toBe('complete');
+  expect(result.summary.reasons).toEqual(['unknown-identity']);
+  expect(result.proposals.identity).toBeNull(); expect(result.proposals.releases.book).toBeNull();
+  expect(result.summary.usage).toMatchObject({ deepseek: 1, inputTokens: 20, outputTokens: 8 });
+  expect(fetcher).toHaveBeenCalledOnce();
+});
 test('complete catalogs skip AI and search and receive all countries once', async () => {
   const deps = dependencies(bundle([edition(), edition({ id: 'audio', format: 'audio', editionKey: 'isbn:audio' })]));
   const result = await runDiscovery(request({ useAi: true }), deps, new AbortController().signal);

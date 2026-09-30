@@ -16,13 +16,94 @@ const source = (overrides: Partial<Source> = {}): Source => ({
   retrievedAt: '2026-09-29T12:00:00Z', text: 'Second by Example Author. Book 2. English ebook in Canada: 2027-03-01.', ...overrides,
 });
 const fromSources = (sources: Source[]): EvidenceBundle => ({ sources, ...empty });
+const identity = () => ({ title: 'Second', author: 'Example Author', position: 2,
+  citations: [{ sourceId: 's1', quote: 'Second by Example Author. Book 2.' }] });
 afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
 
-test('invalid extraction makes one call and does not repair itself', async () => {
+test('valid unknown-title identity survives a wrong-title edition with safe usage and one call', async () => {
+  const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [identity()], editions: [edition({ title: 'Third' })] }));
+  const req = request({ useAi: true, target: { ...enabled().target, title: '' } });
+  const result = await extractEvidence(req, fromSources([source()]), config, signal(), fetcher);
+  expect(result.evidence.identities).toEqual([identity()]);
+  expect(result.evidence.editions).toEqual([]);
+  expect(result.reasons).toEqual(['invalid-evidence']);
+  expect(result.usage).toMatchObject({ deepseek: 1, inputTokens: 100, outputTokens: 50 });
+  expect(fetcher).toHaveBeenCalledOnce();
+});
+
+test.each([
+  { label: 'wrong title', bad: edition({ id: 'bad', title: 'Third' }) },
+  { label: 'false quotation', bad: edition({ id: 'bad', citations: [{ sourceId: 's1', quote: 'Invented quotation' }] }) },
+  { label: 'duplicate ID', bad: edition() },
+  { label: 'invalid calendar day', bad: edition({ id: 'bad', date: '2027-02-30' }) },
+  { label: 'unrequested format', bad: edition({ id: 'bad', format: 'audio' }) },
+])('one $label edition rejects the entire edition batch and keeps the valid identity', async ({ bad }) => {
+  const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [identity()], editions: [edition(), bad] }));
+  const req = request({ useAi: true, formats: ['book'], target: { ...enabled().target, title: '' } });
+  const evidence = fromSources([source({ text: bad.format === 'audio' ? `${source().text} ${bad.citations[0].quote}` : source().text })]);
+  const result = await extractEvidence(req, evidence, config, signal(), fetcher);
+  expect(result.evidence.identities).toEqual([identity()]);
+  expect(result.evidence.editions).toEqual([]);
+  expect(result.reasons).toEqual(['invalid-evidence']);
+  expect(fetcher).toHaveBeenCalledOnce();
+});
+
+test.each(['', 'Second'])('invalid nonempty identity suppresses editions with input title %j', async title => {
+  const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [{ ...identity(),
+    citations: [{ sourceId: 's1', quote: 'False identity quote' }] }], editions: [edition()] },
+  { prompt_tokens: 123, completion_tokens: Number.MAX_SAFE_INTEGER + 1 }));
+  const result = await extractEvidence(request({ useAi: true, target: { ...enabled().target, title } }), fromSources([source()]), config, signal(), fetcher);
+  expect(result.evidence.identities).toEqual([]);
+  expect(result.evidence.editions).toEqual([]);
+  expect(result.reasons).toEqual(['invalid-evidence']);
+  expect(result.usage).toMatchObject({ inputTokens: 123, outputTokens: null });
+  expect(fetcher).toHaveBeenCalledOnce();
+});
+
+test.each([{ author: 'Other Author' }, { position: 3 }, { title: 'Third' }])('known title cannot rescue an invalid nonempty identity relationship %j', async change => {
+  const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [{ ...identity(), ...change }], editions: [edition()] }));
+  const result = await extractEvidence(enabled(), fromSources([source()]), config, signal(), fetcher);
+  expect(result.evidence.identities).toEqual([]);
+  expect(result.evidence.editions).toEqual([]);
+  expect(result.reasons).toEqual(['invalid-evidence']);
+  expect(fetcher).toHaveBeenCalledOnce();
+});
+
+test('two cited target-position identities stay ambiguous and suppress all editions', async () => {
+  const other = { ...identity(), title: 'Third', citations: [{ sourceId: 's1', quote: 'Third by Example Author. Book 2.' }] };
+  const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [identity(), other], editions: [edition()] }));
+  const result = await extractEvidence(request({ useAi: true, target: { ...enabled().target, title: '' } }),
+    fromSources([source({ text: `${source().text} ${other.citations[0].quote}` })]), config, signal(), fetcher);
+  expect(result.evidence.identities).toEqual([]);
+  expect(result.evidence.editions).toEqual([]);
+  expect(result.reasons).toEqual(['invalid-evidence']);
+  expect(fetcher).toHaveBeenCalledOnce();
+});
+
+test('valid empty unknown-title output remains successful without invalid evidence', async () => {
+  const fetcher = vi.fn<typeof fetch>(async () => response(empty));
+  const result = await extractEvidence(request({ useAi: true, target: { ...enabled().target, title: '' } }), fromSources([source()]), config, signal(), fetcher);
+  expect(result.evidence).toEqual(fromSources([source()]));
+  expect(result.reasons ?? []).toEqual([]);
+  expect(fetcher).toHaveBeenCalledOnce();
+});
+
+test.each([
+  {}, [], null, { identities: [], editions: [], extra: true },
+  { identities: null, editions: [] }, { identities: [], editions: {} },
+  { identities: Array.from({ length: 31 }, identity), editions: [] },
+  { identities: [identity()], editions: Array.from({ length: 101 }, (_, i) => edition({ id: `e-${i}` })) },
+])('malformed outer object or global array bounds reject the whole extraction %#', async content => {
+  const fetcher = vi.fn<typeof fetch>(async () => response(content));
+  await expect(extractEvidence(enabled(), fromSources([source()]), config, signal(), fetcher)).rejects.toMatchObject({ reason: 'invalid-evidence' });
+  expect(fetcher).toHaveBeenCalledOnce();
+});
+
+test('invalid identity batch makes one call and does not repair itself', async () => {
   const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [{ title: 'Second', author: 'Example Author', position: 2,
     citations: [{ sourceId: 'invented', quote: 'Book 2' }] }], editions: [] }));
   await expect(extractEvidence(enabled(), bundle([edition()]), config, signal(), fetcher))
-    .rejects.toMatchObject({ reason: 'invalid-evidence', message: 'invalid-evidence' });
+    .resolves.toMatchObject({ evidence: { identities: [], editions: [] }, reasons: ['invalid-evidence'] });
   expect(fetcher).toHaveBeenCalledTimes(1);
 });
 
@@ -30,6 +111,8 @@ test('uses one fixed JSON extraction request without thinking, tools or retries'
   const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [], editions: [edition()] }));
   const result = await extractEvidence(enabled(), bundle([edition()]), config, signal(), fetcher);
   expect(result.evidence.editions).toEqual([edition()]);
+  expect(result.evidence.identities).toEqual([]);
+  expect(result.reasons ?? []).toEqual([]);
   expect(result.usage).toEqual({ apple: 0, openlibrary: 0, tavily: 0, deepseek: 1, inputTokens: 100, outputTokens: 50 });
   expect(fetcher).toHaveBeenCalledTimes(1);
   const [url, init] = fetcher.mock.calls[0];
@@ -95,7 +178,8 @@ test('rejects quotes in trimmed-away text and sources omitted at the source cap'
     source({ id: 'omitted', provider: 'apple', text: 'omitted-proof' })]);
   for (const citations of [[{ sourceId: 's1', quote: 'trimmed-tail' }], [{ sourceId: 'omitted', quote: 'omitted-proof' }]]) {
     const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [], editions: [edition({ citations })] }));
-    await expect(extractEvidence(enabled(), evidence, config, signal(), fetcher)).rejects.toMatchObject({ reason: 'invalid-evidence' });
+    await expect(extractEvidence(enabled(), evidence, config, signal(), fetcher))
+      .resolves.toMatchObject({ evidence: { identities: [], editions: [] }, reasons: ['invalid-evidence'] });
     expect(fetcher).toHaveBeenCalledTimes(1);
   }
 });
@@ -126,12 +210,16 @@ test.each([
 
 test('rejects a false literal quotation', async () => {
   const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [], editions: [edition({ citations: [{ sourceId: 's1', quote: 'Made up date' }] })] }));
-  await expect(extractEvidence(enabled(), bundle([edition()]), config, signal(), fetcher)).rejects.toMatchObject({ reason: 'invalid-evidence' });
+  await expect(extractEvidence(enabled(), bundle([edition()]), config, signal(), fetcher))
+    .resolves.toMatchObject({ evidence: { identities: [], editions: [] }, reasons: ['invalid-evidence'] });
+  expect(fetcher).toHaveBeenCalledOnce();
 });
 
 test.each([{ position: 3 }, { author: 'Other Author' }, { title: 'Other Title' }])('rejects mismatched edition identity %j', async (change) => {
   const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [], editions: [edition(change)] }));
-  await expect(extractEvidence(enabled(), bundle([edition()]), config, signal(), fetcher)).rejects.toMatchObject({ reason: 'invalid-evidence' });
+  await expect(extractEvidence(enabled(), bundle([edition()]), config, signal(), fetcher))
+    .resolves.toMatchObject({ evidence: { identities: [], editions: [] }, reasons: ['invalid-evidence'] });
+  expect(fetcher).toHaveBeenCalledOnce();
 });
 
 test('rejects wrong-position identities and ambiguous titles for an unknown target title', async () => {
@@ -139,14 +227,16 @@ test('rejects wrong-position identities and ambiguous titles for an unknown targ
   for (const identities of [[{ ...identity, position: 3 }], [identity, { ...identity, title: 'Another' }]]) {
     const fetcher = vi.fn<typeof fetch>(async () => response({ identities, editions: [] }));
     await expect(extractEvidence(request({ useAi: true, target: { ...enabled().target, title: '' } }), bundle([edition()]), config, signal(), fetcher))
-      .rejects.toMatchObject({ reason: 'invalid-evidence' });
+      .resolves.toMatchObject({ evidence: { identities: [], editions: [] }, reasons: ['invalid-evidence'] });
+    expect(fetcher).toHaveBeenCalledOnce();
   }
 });
 
 test('an unknown title needs an extracted identity before accepting editions', async () => {
   const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [], editions: [edition()] }));
   await expect(extractEvidence(request({ useAi: true, target: { ...enabled().target, title: '' } }), bundle([edition()]), config, signal(), fetcher))
-    .rejects.toMatchObject({ reason: 'invalid-evidence' });
+    .resolves.toMatchObject({ evidence: { identities: [], editions: [] }, reasons: ['invalid-evidence'] });
+  expect(fetcher).toHaveBeenCalledOnce();
 });
 
 test('preserves independent editions, actual countries and partial date precision', async () => {
@@ -170,8 +260,10 @@ test('omitted unsupported nullable facts stay unknown instead of inheriting stor
 
 test('missing edition format cannot produce a known release format', async () => {
   const { format: _format, ...item } = edition();
-  const fetcher: typeof fetch = async () => response({ identities: [], editions: [item] });
-  await expect(extractEvidence(enabled(), bundle([edition()]), config, signal(), fetcher)).rejects.toMatchObject({ reason: 'invalid-evidence' });
+  const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [], editions: [item] }));
+  await expect(extractEvidence(enabled(), bundle([edition()]), config, signal(), fetcher))
+    .resolves.toMatchObject({ evidence: { identities: [], editions: [] }, reasons: ['invalid-evidence'] });
+  expect(fetcher).toHaveBeenCalledOnce();
 });
 
 test.each([undefined, null, {}, { prompt_tokens: -1, completion_tokens: 1.5 },
