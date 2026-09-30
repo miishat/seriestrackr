@@ -1,0 +1,77 @@
+{
+  "researchedAt": "2026-09-30",
+  "purpose": "Independent manual audit assertions. Never load into runtime, CLI, provider payloads or prompts. Dates describe listed editions, not exhaustive earliest availability. Explicit English-language and actual-country evidence must still be checked in live retrieved sources.",
+  "cases": {
+    "witness": {
+      "identity": { "title": "Legacies of Betrayal", "position": 3, "source": "https://www.penguin.co.uk/books/405106/legacies-of-betrayal-the-third-tale-of-witness-by-erikson-steven/9781409032786" },
+      "formats": {
+        "book": { "editionFormat": "ebook", "listedDate": "2026-10-01", "publisherMarket": "GB", "source": "https://www.penguin.co.uk/books/405106/legacies-of-betrayal-the-third-tale-of-witness-by-erikson-steven/9781409032786" },
+        "audio": { "editionFormat": "audio", "listedDate": "2026-10-01", "publisherMarket": "GB", "source": "https://www.penguin.co.uk/books/405106/legacies-of-betrayal-the-third-tale-of-witness/9781529991000" }
+      },
+      "unknowns": ["CA dates not re-established by this manual source snapshot", "Subtitle alias must be explicitly reconciled during audit"]
+    },
+    "hierarchy": {
+      "identity": { "title": "The Strength of the Few", "position": 2, "source": "https://www.simonandschuster.ca/books/The-Strength-of-the-Few/James-Islington/Hierarchy/9781982141257" },
+      "formats": { "book": { "editionFormat": "ebook", "listedDate": "2025-11-11", "publisherMarket": "CA", "source": "https://www.simonandschuster.ca/books/The-Strength-of-the-Few/James-Islington/Hierarchy/9781982141257" }, "audio": null },
+      "unknowns": ["Separate audio edition not audited in this snapshot", "Earliest print comparison not established"]
+    },
+    "last-horizon": {
+      "identity": { "title": "The Pilot", "position": 4, "source": "https://www.willwight.com/a-blog-of-dubious-intent/archives/07-2025" },
+      "formats": { "book": null, "audio": null },
+      "unknowns": ["Author July 4 release post does not establish an exact country/format date pair"]
+    },
+    "ana-and-din": {
+      "identity": { "title": "A Trade of Blood", "position": 3, "source": "https://www.penguinrandomhouse.com/series/LVI/ana-and-din-mysteries/" },
+      "formats": {
+        "book": { "editionFormat": "ebook", "listedDate": "2026-08-04", "publisherMarket": "US", "source": "https://www.penguinrandomhouse.com/books/735560/a-trade-of-blood-by-robert-jackson-bennett/audio/" },
+        "audio": { "editionFormat": "audio", "listedDate": "2026-08-04", "publisherMarket": "US", "source": "https://www.penguinrandomhouse.com/books/735560/a-trade-of-blood-by-robert-jackson-bennett/audio/" }
+      },
+      "unknowns": ["CA preferred-market evidence requires separate live retrieval"]
+    },
+    "bound-and-broken": {
+      "identity": { "title": "Of Empires and Dust", "position": 4, "source": "https://www.ryancahillauthor.com/books" },
+      "formats": { "book": null, "audio": null },
+      "unknowns": ["Author distinguishes fourth main novel from novellas", "No audited exact edition/market date pair"]
+    },
+    "devils": {
+      "identity": { "title": "The Heretics", "position": 2, "source": "https://joeabercrombie.com/progress-report-june-26/" },
+      "formats": { "book": null, "audio": null },
+      "unknowns": ["Direct sequel relationship is supported", "June update gives different UK/US days but no explicit edition-format pair, so no release-date assertion is frozen"]
+    },
+    "book-of-dead": {
+      "identity": { "title": "Ascension", "position": 5, "source": "https://aethonbooks.com/2026/06/12/july-2026-litrpg-progression-fantasy-releases/" },
+      "formats": { "book": null, "audio": null },
+      "unknowns": ["Publisher listing names Book of the Dead 5: Ascension; title alias needs audit", "July 22 general listing is not an edition/language/country date pair"]
+    },
+    "path-to-ascendancy": {
+      "identity": { "title": "Deadhouse Landing", "position": 2, "source": "https://www.penguin.co.uk/books/421794/deadhouse-landing-by-esslemont-ian-c/9781473510593" },
+      "formats": {
+        "book": { "editionFormat": "ebook", "listedDate": "2017-11-16", "publisherMarket": "GB", "source": "https://www.penguin.co.uk/books/421794/deadhouse-landing-by-esslemont-ian-c/9781473510593" },
+        "audio": { "editionFormat": "audio", "listedDate": "2017-11-16", "publisherMarket": "GB", "source": "https://www.penguin.co.uk/books/421794/deadhouse-landing-by-esslemont-ian-c/9781473542198" }
+      },
+      "unknowns": ["CA dates not re-established by this snapshot", "Publisher spelling Ian C Esslemont differs from punctuated input; no alias auto-normalization"]
+    },
+    "mistborn": {
+      "identity": { "title": "The Well of Ascension", "position": 2, "source": "https://www.brandonsanderson.com/pages/the-mistborn-saga-the-original-trilogy" },
+      "formats": { "book": { "editionFormat": "print", "listedDate": "2007-08", "publisherMarket": null, "source": "https://www.brandonsanderson.com/pages/the-mistborn-saga-the-original-trilogy" }, "audio": null },
+      "unknowns": ["Author confirms hardcover month only, never expand to an exact day", "Country and independent audio date remain unknown"]
+    },
+    "murderbot": {
+      "identity": { "title": "Artificial Condition", "position": 2, "source": "https://us.macmillan.com/books/9781250186935/artificialcondition/" },
+      "formats": { "book": null, "audio": null },
+      "unknowns": ["Publisher identifies Volume 2; author categorizes these early entries as novellas", "Main-novel versus serialized-entry scope must be reviewed without silently substituting a novel", "Dynamic publisher format selector alone is not frozen as an explicit format assertion"]
+    },
+    "scholomance": {
+      "identity": { "title": "The Last Graduate", "position": 2, "source": "https://www.penguinrandomhouse.com/books/609362/the-last-graduate-by-naomi-novik/audio/" },
+      "formats": { "book": null, "audio": { "editionFormat": "audio", "listedDate": "2021-09-28", "publisherMarket": "US", "source": "https://www.penguinrandomhouse.com/books/609362/the-last-graduate-by-naomi-novik/audio/" } },
+      "unknowns": ["CA edition evidence and earliest book comparison remain unknown"]
+    },
+    "masquerade": {
+      "identity": { "title": "The Monster Baru Cormorant", "position": 2, "source": "https://us.macmillan.com/books/9781466875135/themonsterbarucormorant/" },
+      "formats": { "book": null, "audio": null },
+      "unknowns": ["Volume 2 is explicit; dynamic format selector does not alone freeze a format/date assertion", "CA and independent audio evidence remain unknown"]
+    },
+    "ana-and-din-withheld-ca": { "referenceCase": "ana-and-din", "deterministicControl": "Withhold all CA editions in offline fixtures; select US book/audio independently and retain US source attribution. Production CLI does not alter real evidence." },
+    "path-to-ascendancy-gb": { "referenceCase": "path-to-ascendancy", "deterministicControl": "With GB preferred, select GB 2017-11-16 book/audio ahead of earlier CA 2017-11-14 editions and later GB paperback." }
+  }
+}
