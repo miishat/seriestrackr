@@ -108,3 +108,18 @@ Ratios below come from the actual Chromium computed colors. The helper composite
 Disabled opacity remains the specified existing 0.55. Inactive controls are exempt from text contrast requirements and were visually inspected. This is focused identity verification, not a complete accessibility audit. The helper models current solid RGB/rgba surfaces and element opacity; newly introduced complex backgrounds or ancestor group opacity would need expanded measurement.
 
 No real discovery provider was called, no AI billing occurred, and no production fixture or startup/storage/service configuration was changed. Independent Task 4 and whole-branch reviews are coordinated separately by the execution controller.
+
+## Final review correction
+
+The independent final review identified the YOUR CHOICE badge as the only remaining legacy typography weight. Its `.next-phase > span` rule in `src/styles/app.css` now uses Manrope 600, matching the selected typography contract. A stylesheet search found no remaining `font-weight` declarations at 650, 700 or 750. This correction is recorded in range `dc5135c..HEAD` (the final correction commit is HEAD).
+
+Affected checks, run from the worktree root with PowerShell environment normalization:
+
+```powershell
+$env:NO_COLOR=$null
+$env:FORCE_COLOR='0'
+node node_modules/@playwright/test/cli.js test --config=.superpowers/sdd/2026-10-01-visual-identity/identity.playwright.config.ts tests/e2e/identity.spec.ts tests/e2e/identity-discovery.spec.ts
+npm run build
+```
+
+The focused Chromium identity and discovery run passed all 25 tests in 14.6 seconds on the isolated frontend at port 3011. Production build exited 0, transformed 56 modules and completed in 1.27 seconds. The user's frontend on port 3000 was left untouched. Earlier full-suite, preview, font, contrast and inventory results above remain the recorded evidence for this identity implementation.
