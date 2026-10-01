@@ -2,6 +2,25 @@ import { mkdir } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
 import { seedIdentity } from './identity-fixtures';
 
+test('opening a filter closes the other filter without clearing selections', async ({ page }) => {
+  await seedIdentity(page);
+  await page.goto('/');
+  await page.getByText('All reading statuses', { exact: true }).click();
+  const active = page.getByRole('checkbox', { name: 'Reading status: Active', exact: true });
+  await active.check();
+  await page.getByText('All book statuses', { exact: true }).click();
+  await expect(page.getByRole('group', { name: 'Reading status', exact: true })).not.toBeVisible();
+  await expect(page.getByRole('group', { name: 'Book availability', exact: true })).toBeVisible();
+  const audio = page.getByText('All audiobook statuses', { exact: true });
+  await audio.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('group', { name: 'Book availability', exact: true })).not.toBeVisible();
+  await expect(page.getByRole('group', { name: 'Audiobook availability', exact: true })).toBeVisible();
+  await page.getByText('Reading status: 1 selected', { exact: true }).click();
+  await expect(active).toBeChecked();
+  await expect(page.getByRole('group', { name: 'Audiobook availability', exact: true })).not.toBeVisible();
+});
+
 test('organized library tools fit desktop and phone and retain filtering', async ({ page }) => {
   await seedIdentity(page);
   await page.goto('/');

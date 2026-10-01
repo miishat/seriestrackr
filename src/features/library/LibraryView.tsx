@@ -9,7 +9,7 @@ function FilterMenu<T extends string>({ label, allLabel, options, selected, onCh
   label: string; allLabel: string; options: readonly (readonly [T, string])[]; selected: T[]; onChange: (values: T[]) => void;
 }) {
   const toggle = (value: T, checked: boolean) => onChange(checked ? [...selected, value] : selected.filter((item) => item !== value));
-  return <details className="filter-menu"><summary>{selected.length ? `${label}: ${selected.length} selected` : allLabel}</summary>
+  return <details className="filter-menu" name="library-status-filter"><summary>{selected.length ? `${label}: ${selected.length} selected` : allLabel}</summary>
     <div className="filter-panel" role="group" aria-label={label}>{options.map(([value, text]) => <label key={value}><input type="checkbox" aria-label={`${label}: ${text}`} checked={selected.includes(value)} onChange={(event) => toggle(value, event.target.checked)} />{text}</label>)}</div>
   </details>;
 }

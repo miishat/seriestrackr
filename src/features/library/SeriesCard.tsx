@@ -5,7 +5,7 @@ import { displayRelease } from './releases';
 import { DiscoverySummary } from '../discovery/DiscoverySummary';
 
 export const releaseLabels: Record<ReleaseState, string> = {
-  'not-checked': 'Not checked', 'not-found': 'No announcement found', announced: 'Announced, date unknown',
+  'not-checked': 'Not checked', 'not-found': 'No announcement found', announced: 'Announced, Date Unknown',
   scheduled: 'Scheduled', released: 'Available',
 };
 function Cover({ url, title }: { url: string | null; title: string }) {
@@ -17,7 +17,7 @@ export function ReleaseSummary({ format, release, today }: { format: Format; rel
   const state = displayRelease(release, today);
   return <div className="release-summary"><span className="small label-upper">{format === 'book' ? 'Book' : 'Audiobook'}</span>
     <span className={`badge ${state}`}>{releaseLabels[state]}</span>
-    <span className="sub">{release.date ? release.date : state === 'not-checked' ? 'No check recorded' : state === 'announced' ? 'Date unknown' : 'Manual entry'}</span>
+    <span className="sub">{release.date ? release.date : state === 'not-checked' ? 'No check recorded' : state === 'announced' ? 'Date Unknown' : 'Manual entry'}</span>
     {release.source && /^https?:\/\//i.test(release.source.url) && <a href={release.source.url} target="_blank" rel="noreferrer">{release.source.title}</a>}
     {release.provenance && <div className="small">English {release.provenance.editionFormat === 'audio' ? 'audiobook' : release.provenance.editionFormat} · {release.provenance.sourceMarket ? `Source country: ${release.provenance.sourceMarket}` : 'Source country unspecified'}
       {release.date && <span className="sub">Earliest supported date in sources checked.</span>}
