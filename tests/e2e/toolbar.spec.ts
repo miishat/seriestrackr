@@ -19,6 +19,28 @@ test('opening a filter closes the other filter without clearing selections', asy
   await page.getByText('Reading status: 1 selected', { exact: true }).click();
   await expect(active).toBeChecked();
   await expect(page.getByRole('group', { name: 'Audiobook availability', exact: true })).not.toBeVisible();
+  await page.getByRole('heading', { name: 'What comes next?' }).click();
+  await expect(page.getByRole('group', { name: 'Reading status', exact: true })).not.toBeVisible();
+  await page.getByText('Reading status: 1 selected', { exact: true }).click();
+  await expect(active).toBeChecked();
+  await active.focus();
+  await page.keyboard.press('Escape');
+  await expect(page.getByText('Reading status: 1 selected', { exact: true })).toBeFocused();
+  await expect(page.getByRole('group', { name: 'Reading status', exact: true })).not.toBeVisible();
+});
+
+test('compact shows horizontal rows distinctly smaller than grid cards', async ({ page }) => {
+  await seedIdentity(page);
+  await page.setViewportSize({ width: 1391, height: 1244 });
+  await page.goto('/');
+  await page.evaluate(() => document.fonts.ready.then(() => undefined));
+  const grid = await page.locator('.series-card').first().boundingBox();
+  await page.getByRole('button', { name: 'Compact', exact: true }).click();
+  const compact = await page.locator('.series-card').first().boundingBox();
+  expect(compact!.width).toBeGreaterThan(grid!.width * 2);
+  expect(compact!.height).toBeLessThan(grid!.height * 0.75);
+  await mkdir('node_modules/.cache/playwright-visual', { recursive: true });
+  await page.screenshot({ path: 'node_modules/.cache/playwright-visual/compact-1391-dark.png', fullPage: true });
 });
 
 test('organized library tools fit desktop and phone and retain filtering', async ({ page }) => {

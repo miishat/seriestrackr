@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { LibraryDocument, ReadingStatus, ReleaseState, Series } from './model';
 import { displayRelease } from './releases';
 import { SeriesCard } from './SeriesCard';
@@ -8,8 +8,24 @@ const states: [ReleaseState, string][] = [['not-checked','Not checked'],['not-fo
 function FilterMenu<T extends string>({ label, allLabel, options, selected, onChange }: {
   label: string; allLabel: string; options: readonly (readonly [T, string])[]; selected: T[]; onChange: (values: T[]) => void;
 }) {
+  const menu = useRef<HTMLDetailsElement>(null);
+  useEffect(() => {
+    const closeOutside = (event: PointerEvent) => {
+      if (menu.current?.open && event.target instanceof Node && !menu.current.contains(event.target)) {
+        menu.current.open = false;
+      }
+    };
+    document.addEventListener('pointerdown', closeOutside);
+    return () => document.removeEventListener('pointerdown', closeOutside);
+  }, []);
   const toggle = (value: T, checked: boolean) => onChange(checked ? [...selected, value] : selected.filter((item) => item !== value));
-  return <details className="filter-menu" name="library-status-filter"><summary>{selected.length ? `${label}: ${selected.length} selected` : allLabel}</summary>
+  return <details ref={menu} className="filter-menu" name="library-status-filter" onKeyDown={event => {
+    if (event.key === 'Escape' && menu.current?.open) {
+      event.preventDefault();
+      menu.current.open = false;
+      menu.current.querySelector('summary')?.focus();
+    }
+  }}><summary>{selected.length ? `${label}: ${selected.length} selected` : allLabel}</summary>
     <div className="filter-panel" role="group" aria-label={label}>{options.map(([value, text]) => <label key={value}><input type="checkbox" aria-label={`${label}: ${text}`} checked={selected.includes(value)} onChange={(event) => toggle(value, event.target.checked)} />{text}</label>)}</div>
   </details>;
 }

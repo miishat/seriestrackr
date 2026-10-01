@@ -523,7 +523,39 @@ input[type='checkbox']:disabled {
 .card-footer button:nth-child(3), .card-footer button:only-child { grid-column: 1 / -1; }
 
 .compact-cards {
-  grid-template-columns: repeat(2,minmax(0,1fr));
+  grid-template-columns: minmax(0,1fr);
+  gap: 12px;
+}
+
+.series-card.compact {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(0,1.4fr) 145px;
+  grid-template-areas: 'identity next releases actions' 'progress next releases actions' 'check check check check';
+  gap: 12px 20px;
+  padding: 18px;
+  align-items: start;
+}
+
+.compact .card-header { grid-area: identity; gap: 10px; }
+.compact .card-progress { grid-area: progress; margin: 0; padding: 0; border: 0; }
+.compact .card-next { grid-area: next; background: none; border-radius: 0; }
+.compact .release-pair { grid-area: releases; }
+.compact > .discovery-summary { grid-area: check; }
+.compact .card-footer {
+  grid-area: actions;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.compact .release-summary {
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
 }
 
 .compact .card-header h2 {
@@ -540,11 +572,32 @@ input[type='checkbox']:disabled {
 }
 
 .compact .card-next {
-  padding: 12px 14px;
+  padding: 0;
 }
 
 .compact .release-pair {
-  padding: 10px 0;
+  padding: 0;
+}
+
+@media (max-width: 1150px) {
+  .series-card.compact {
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+    grid-template-areas: 'identity next' 'progress next' 'releases releases' 'check check' 'actions actions';
+  }
+  .compact .card-footer {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+  }
+  .compact .card-footer button { grid-column: auto; }
+}
+
+@media (max-width: 650px) {
+  .series-card.compact { padding: 14px; gap: 12px; }
+  .compact .cover-frame { width: 32px; height: 48px; }
+  .compact .card-header h2 { font-size: 16px; }
+  .compact .card-next strong { font-size: 17px; }
+  .compact .card-footer { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .compact .card-footer button:nth-child(3) { grid-column: 1 / -1; }
 }
 
 .table-wrap {
