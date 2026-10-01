@@ -219,11 +219,12 @@ test('broken cover falls back while keeping its saved URL', () => {
   expect(JSON.parse(localStorage.getItem(key)!).series[0].coverUrl).toBe('https://example.com/broken.jpg');
 });
 
-test('compact poster shows next title and keeps history in expandable details', async () => {
+test('compact poster leads with series name and shows next book separately', async () => {
   seed(); render(<App />);
   await userEvent.click(screen.getByRole('button', { name: 'Compact' }));
   const card = screen.getByRole('article');
-  expect(within(card).getByRole('heading', { name: 'Second' })).toBeVisible();
+  expect(within(card).getByRole('heading', { name: 'Example' })).toBeVisible();
+  expect(within(card).getByText('Next book: Second')).toBeVisible();
   expect(within(card).getByText('Example Author')).toBeVisible();
   expect(within(card).getByText('Last read · Book 1: First')).toBeVisible();
   expect(within(card).getByText('Next unread · Book 2')).toBeVisible();

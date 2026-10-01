@@ -32,8 +32,9 @@ export function SeriesCard({ series, today, market, showCovers, compact = false,
   if (compact) return <article className="series-card compact">
     <div className="card-header">
       {showCovers && series.readingStatus !== 'completed' && <div className="cover-frame"><Cover key={series.coverUrl ?? ''} url={series.coverUrl} title={series.next.title} /></div>}
-      <div><h2 title={series.readingStatus === 'completed' ? series.name : series.next.title}>{series.readingStatus === 'completed' ? series.name : series.next.title || 'Title not entered'}</h2>
-        <div className="sub" title={series.author}>{series.author}</div><div className="sub" title={series.name}>{series.name}</div>
+      <div><h2 title={series.name}>{series.name}</h2>
+        <div className="sub" title={series.author}>{series.author}</div>
+        {series.readingStatus !== 'completed' && <div className="sub" title={series.next.title}>Next book: {series.next.title || 'Title not entered'}</div>}
         <div className="position">{series.readingStatus === 'completed' ? 'Series completed' : `Next unread · Book ${nextPosition(series)}`}</div>
       </div>
     </div>
