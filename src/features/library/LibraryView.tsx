@@ -36,7 +36,7 @@ export function LibraryView({ doc, today, onEdit, onFinish, onCheck, checkingSer
       </div>
       <div className="library-options-row">
         <div className="library-filter-group" role="group" aria-labelledby="library-filters-label">
-          <span className="tools-label" id="library-filters-label">Filters</span>
+          <span className="visually-hidden" id="library-filters-label">Filters</span>
           <div className="library-filters">
       <FilterMenu<ReadingStatus> label="Reading status" allLabel="All reading statuses" options={['active','paused','dropped','completed'].map((item) => [item as ReadingStatus, item[0].toUpperCase() + item.slice(1)] as const)} selected={reading} onChange={setReading} />
       <FilterMenu label="Book availability" allLabel="All book statuses" options={states} selected={book} onChange={setBook} />
@@ -44,7 +44,7 @@ export function LibraryView({ doc, today, onEdit, onFinish, onCheck, checkingSer
           </div>
         </div>
         <div className="library-view-group">
-          <span className="tools-label" id="library-view-label">View</span>
+          <span className="visually-hidden" id="library-view-label">View</span>
           <div className="view-switch" role="group" aria-labelledby="library-view-label">{(['grid','compact','list'] as const).map((view) => <button key={view} aria-pressed={doc.settings.view === view} onClick={() => onView(view)}>{view === 'list' ? 'Table' : view[0].toUpperCase() + view.slice(1)}</button>)}</div>
         </div>
       </div>

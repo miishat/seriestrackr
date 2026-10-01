@@ -358,11 +358,13 @@ input[type='checkbox']:disabled {
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(3,minmax(0,1fr));
+  grid-template-columns: repeat(auto-fit,minmax(min(100%,340px),1fr));
   gap: 18px;
 }
 
 .series-card {
+  display: flex;
+  flex-direction: column;
   padding: 23px;
   background: var(--panel);
   border: 1px solid var(--line);
@@ -373,8 +375,7 @@ input[type='checkbox']:disabled {
 .card-header {
   display: flex;
   gap: 17px;
-  align-items: flex-start;
-  min-height: 112px;
+  align-items: center;
 }
 
 .card-header h2 {
@@ -421,13 +422,24 @@ input[type='checkbox']:disabled {
 }
 
 .card-next {
-  margin-top: 23px;
-  padding: 18px 0;
+  padding: 14px 16px;
+  background: var(--soft);
+  border-radius: 8px;
+}
+
+.card-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 18px 0 14px;
+  padding-top: 14px;
   border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+  overflow-wrap: anywhere;
 }
 
 .card-next strong {
+  display: block;
   font-size: 19px;
   font-family: var(--font-display);
   font-weight: 400;
@@ -437,20 +449,31 @@ input[type='checkbox']:disabled {
   font-size: 11px;
   color: var(--accent);
   font-weight: 600;
-  margin: 16px 0 4px;
+  margin: 0 0 5px;
   text-transform: uppercase;
 }
 
 .release-pair {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 10px;
   padding: 18px 0;
 }
 
 .release-summary {
   min-width: 0;
 }
+
+.series-card .release-summary {
+  padding: 14px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow-wrap: anywhere;
+}
+
+.series-card .release-summary a { display: block; margin-top: 8px; }
+.series-card .release-summary:only-child { grid-column: 1 / -1; }
 
 .label-upper {
   display: block;
@@ -488,12 +511,16 @@ input[type='checkbox']:disabled {
 }
 
 .card-footer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
   gap: 8px;
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
 }
+
+.card-footer button { padding: 10px 8px; }
+.card-footer button:nth-child(3), .card-footer button:only-child { grid-column: 1 / -1; }
 
 .compact-cards {
   grid-template-columns: repeat(2,minmax(0,1fr));
@@ -513,8 +540,7 @@ input[type='checkbox']:disabled {
 }
 
 .compact .card-next {
-  margin-top: 12px;
-  padding: 10px 0;
+  padding: 12px 14px;
 }
 
 .compact .release-pair {
@@ -824,6 +850,7 @@ legend {
 }
 
 .filter-menu summary {
+  position: relative;
   list-style: none;
   cursor: pointer;
   padding: 10px 34px 10px 12px;
@@ -839,10 +866,18 @@ legend {
 }
 
 .filter-menu summary::after {
-  content: '⌄';
+  content: '';
   position: absolute;
-  right: 12px;
+  right: 15px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: translateY(-70%) rotate(45deg);
 }
+
+.filter-menu[open] summary::after { transform: translateY(-30%) rotate(225deg); }
 
 .filter-panel {
   position: absolute;

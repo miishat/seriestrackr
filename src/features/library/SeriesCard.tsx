@@ -33,10 +33,10 @@ export function SeriesCard({ series, today, market, showCovers, compact = false,
     <div className="card-header">
       {showCovers && series.readingStatus !== 'completed' && <div className="cover-frame"><Cover key={series.coverUrl ?? ''} url={series.coverUrl} title={series.next.title} /></div>}
       <div><h2>{series.name}</h2><div className="sub">{series.author}</div><div className="sub">{series.readingStatus[0].toUpperCase() + series.readingStatus.slice(1)} · {series.marketOverride ?? market}</div>
-        {series.readingStatus !== 'completed' && <div className="sub">Next unread: Book {nextPosition(series)}</div>}
       </div>
     </div>
-    <div className="card-next"><div className="small">Last finished: {finished}</div>
+    <div className="card-progress"><span className="small">Last finished: {finished}</span></div>
+    <div className="card-next">
       {series.readingStatus === 'completed' ? <strong>Series completed</strong> : <><div className="position">Next unread · Book {nextPosition(series)}</div><strong>{series.next.title || 'Title not entered'}</strong>{series.next.orderNote && <div className="sub">{series.next.orderNote}</div>}</>}
       {isCaughtUp(series) && <div className="sub">Caught up with known published books</div>}
     </div>
