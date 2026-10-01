@@ -1,42 +1,11 @@
 @import './fonts.css';
+@import './theme.css';
 
 @tailwind base;
 
 @tailwind components;
 
 @tailwind utilities;
-
-:root {
-  color-scheme: light;
-  --bg: #f6f5f1;
-  --panel: #fff;
-  --ink: #202923;
-  --muted: #617067;
-  --line: #dfe4dc;
-  --accent: #285d48;
-  --soft: #eaf1ea;
-  --purple: #645687;
-  --purplebg: #f0ecf7;
-  --amber: #826318;
-  --amberbg: #faf2d9;
-  --shadow: 0 18px 70px #1f302529;
-}
-
-:root[data-theme=dark] {
-  color-scheme: dark;
-  --bg: #17211d;
-  --panel: #202d26;
-  --ink: #edf1e9;
-  --muted: #acbcb0;
-  --line: #3d4c41;
-  --accent: #a8d5b9;
-  --soft: #2c4436;
-  --purple: #d4c3ef;
-  --purplebg: #3e344d;
-  --amber: #e4c77d;
-  --amberbg: #423923;
-  --shadow: 0 18px 70px #0007;
-}
 
 * {
   box-sizing: border-box;
@@ -55,7 +24,7 @@ button,input,select,textarea {
 
 button {
   cursor: pointer;
-  border: 1px solid var(--line);
+  border: 1px solid var(--control-line);
   border-radius: 8px;
   padding: 9px 14px;
   background: var(--panel);
@@ -67,8 +36,9 @@ button:hover {
   border-color: var(--accent);
 }
 
-button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,a:focus-visible {
-  outline: 3px solid #a786dc;
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,
+summary:focus-visible,a:focus-visible,.table-wrap:focus-visible {
+  outline: 3px solid var(--focus);
   outline-offset: 3px;
 }
 
@@ -79,17 +49,17 @@ button:disabled {
 
 .primary {
   background: var(--accent);
-  color: var(--bg);
+  color: var(--accent-ink);
   border-color: var(--accent);
 }
 
 .danger {
-  background: #9d3434;
-  color: #fff;
+  background: var(--danger);
+  color: var(--danger-ink);
 }
 
 .danger-link {
-  color: #9d3434;
+  color: var(--error);
 }
 
 .app-shell {
@@ -165,6 +135,10 @@ button:disabled {
   font-weight: 600;
 }
 
+.intro .eyebrow {
+  color: var(--signal);
+}
+
 h1 {
   font-family: var(--font-display);
   font-size: 40px;
@@ -223,13 +197,22 @@ p {
   flex: 1;
 }
 
-input,select {
+input,select,textarea {
   padding: 10px 12px;
   background: var(--panel);
   color: var(--ink);
-  border: 1px solid var(--line);
+  border: 1px solid var(--control-line);
   border-radius: 7px;
   min-width: 0;
+}
+
+input::placeholder,textarea::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
+input[type='checkbox'],input[type='radio'] {
+  accent-color: var(--accent);
 }
 
 .library-tools select {
@@ -529,7 +512,7 @@ dialog {
 }
 
 dialog::backdrop {
-  background: #111b16aa;
+  background: var(--backdrop);
 }
 
 dialog h2 {
@@ -613,7 +596,7 @@ legend {
 }
 
 .form-error {
-  color: #a32d2d;
+  color: var(--error);
 }
 
 .cover-options {
@@ -637,9 +620,14 @@ legend {
 .warning {
   padding: 16px;
   background: var(--amberbg);
+  color: var(--amber);
   border: 1px solid var(--amber);
   margin-top: 20px;
   border-radius: 8px;
+}
+
+.warning p,.discovery-content .warn p,.discovery-summary.warn .small {
+  color: var(--amber);
 }
 
 .warning button {
@@ -720,7 +708,7 @@ legend {
   cursor: pointer;
   padding: 10px 34px 10px 12px;
   background: var(--panel);
-  border: 1px solid var(--line);
+  border: 1px solid var(--control-line);
   border-radius: 7px;
   min-width: 154px;
   white-space: nowrap;
