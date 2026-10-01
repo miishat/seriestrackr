@@ -92,6 +92,8 @@ button:disabled {
   flex-shrink: 0;
 }
 
+.brand .brand-mark { color: var(--accent); width: 28px; height: 28px; flex: none; }
+
 .brand strong {
   font-family: var(--font-body);
   font-weight: 600;
@@ -106,6 +108,7 @@ button:disabled {
 .brand .small {
   font-weight: 400;
   letter-spacing: 0;
+  overflow-wrap: anywhere;
 }
 
 .site-header nav {

@@ -3,6 +3,20 @@ import { expect, test, type Locator } from '@playwright/test';
 import { response } from '../discovery/fixtures';
 import { identitySeries, seedIdentity } from './identity-fixtures';
 
+test('L2 has a stable decorative mark and readable wordmark', async ({ page }) => {
+  await seedIdentity(page); await page.goto('/');
+  const mark = page.locator('.brand .brand-mark');
+  await expect(mark).toBeVisible();
+  await expect(mark).toHaveAttribute('aria-hidden', 'true');
+  await expect(mark).toHaveAttribute('focusable', 'false');
+  await expect(mark).toHaveCSS('width', '28px');
+  await expect(mark).toHaveCSS('color', 'rgb(181, 196, 255)');
+  await expect(page.locator('.brand strong')).toHaveText('SeriesTrackr');
+  await expect(page.locator('.brand .small')).toHaveText('You don’t have a reading problem. You have a tracking problem.');
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
 test('T2 fonts load locally and style the actual library', async ({ page }) => {
   const external: string[] = [];
   page.on('request', req => {
