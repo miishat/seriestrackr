@@ -528,19 +528,65 @@ input[type='checkbox']:disabled {
   align-items: stretch;
 }
 
-.series-card.compact { padding: 14px; gap: 12px; height: 100%; box-sizing: border-box; }
+.series-card.compact {
+  display: grid;
+  grid-row: span 5;
+  grid-template-rows: subgrid;
+  padding: 14px;
+  gap: 12px;
+  box-sizing: border-box;
+}
 .compact .card-header { align-items: start; gap: 12px; }
-.compact .card-header h2 { font-size: 19px; }
-.compact .cover-frame { width: 64px; height: 96px; }
+.compact .card-header { min-height: 132px; }
+.compact .card-header h2 {
+  font-size: 19px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.compact .card-header .sub {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.compact .cover-frame { width: 88px; height: 132px; }
+.compact-last-read {
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .compact .position { margin: 8px 0 0; }
-.compact .release-pair { padding: 0; gap: 8px; min-height: 72px; }
+.compact .release-pair { padding: 0; gap: 8px; }
 .compact .release-summary { padding: 8px; }
+.compact > .compact-release-pair { height: 132px; }
+.compact-release-pair > .release-summary {
+  display: grid;
+  grid-template-rows: 14px 32px 18px 32px;
+  align-content: start;
+  gap: 4px;
+  box-sizing: border-box;
+  height: 132px;
+}
+.compact-release-pair .badge { justify-self: start; align-self: start; }
+.compact-release-pair .sub { margin: 0; }
+.compact > .compact-release-pair > .release-summary a {
+  margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
 .compact .label-upper { margin-bottom: 4px; }
 .compact .release-summary a { margin-top: 5px; font-size: 11px; }
 .compact-details { border-top: 1px solid var(--line); padding-top: 8px; }
-.compact-details summary { cursor: pointer; color: var(--muted); font-size: 12px; }
+.compact-details summary { cursor: pointer; color: var(--muted); font-size: 12px; min-height: 32px; }
 .compact-details > .release-pair { margin: 10px 0; }
 .compact .card-footer {
+  margin-top: 0;
+  align-self: end;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 5px;
   padding-top: 8px;

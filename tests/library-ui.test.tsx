@@ -243,6 +243,19 @@ test('announced release badge does not repeat its unknown date', async () => {
   expect(screen.queryByText('Announced, Date Unknown')).toBeNull();
 });
 
+test('compact source link uses the saved book title and preserves source details', async () => {
+  const source = { title: 'Second: The Third Tale of Witness', url: 'https://example.com/audio' };
+  seed([seriesFixture({ releases: { book: emptyRelease(), audio: { ...emptyRelease(), state: 'released', source } } })]);
+  render(<App />);
+  await userEvent.click(screen.getByRole('button', { name: 'Compact' }));
+  const card = screen.getByRole('article');
+  const link = within(card).getByRole('link', { name: 'Second' });
+  expect(link).toHaveAttribute('href', source.url);
+  expect(link).toHaveAttribute('title', source.title);
+  await userEvent.click(within(card).getByText('Release details'));
+  expect(within(card).getByRole('link', { name: source.title })).toBeVisible();
+});
+
 test('search and release filters use the displayed status after local midnight', async () => {
   vi.useFakeTimers();
   vi.setSystemTime(new Date(2027, 2, 17, 23, 59, 50));
