@@ -172,7 +172,7 @@ test('new check results clear selections and partial results keep supported fiel
   const result = response(); result.requestId = 'r2'; result.summary.requestId = 'r2'; result.summary.status = 'partial';
   view.rerender(<DiscoveryDialog {...view.props} session={session('review', result)} />);
   expect(screen.getByRole('checkbox', { name: 'Save Book' })).not.toBeChecked();
-  expect(screen.getByText(/some sources could not be checked/i)).toBeVisible();
+  expect(screen.getByText(/this describes source coverage, not book or audiobook availability/i)).toBeVisible();
   await userEvent.click(screen.getByRole('checkbox', { name: 'Save Book' }));
   expect(screen.getByRole('button', { name: 'Save selected changes' })).toBeEnabled();
 });

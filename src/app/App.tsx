@@ -6,7 +6,7 @@ import { BackupDialog } from '../features/backups/BackupDialog';
 import { LibraryView } from '../features/library/LibraryView';
 import { SeriesForm } from '../features/library/SeriesForm';
 import type { LibraryDocument, Series } from '../features/library/model';
-import { localToday } from '../features/library/releases';
+import { displayRelease, localToday } from '../features/library/releases';
 import { useLibrary } from '../features/library/useLibrary';
 import { useDiscovery } from '../features/discovery/useDiscovery';
 import { DiscoveryDialog } from '../features/discovery/DiscoveryDialog';
@@ -87,8 +87,8 @@ export function App() {
     if (result.ok === false) setSetupError(result.error);
   };
   useEffect(() => { document.documentElement.dataset.theme = library.doc.settings.theme; }, [library.doc.settings.theme]);
-  const availableCount = library.doc.series.filter((s) => s.readingStatus !== 'completed' && s.formats.book && (s.releases.book.state === 'released' || s.releases.book.state === 'scheduled' && !!s.releases.book.date && s.releases.book.date <= today)).length;
-  const scheduledAudioCount = library.doc.series.filter((s) => s.readingStatus !== 'completed' && s.formats.audio && s.releases.audio.state === 'scheduled' && !!s.releases.audio.date && s.releases.audio.date > today).length;
+  const availableCount = library.doc.series.filter((s) => s.readingStatus !== 'completed' && s.formats.book && displayRelease(s.releases.book, today) === 'released').length;
+  const availableAudioCount = library.doc.series.filter((s) => s.readingStatus !== 'completed' && s.formats.audio && displayRelease(s.releases.audio, today) === 'released').length;
   return <div className="app-shell">
     <header className="site-header"><div className="brand"><BrandMark /><div><strong>Series<span>Trackr</span></strong><BrandTagline /></div></div>
       <nav aria-label="Library tools"><button onClick={() => setSettingsOpen(true)}>Market: {library.doc.settings.market ?? 'Choose'}</button><button onClick={() => library.updateSettings({ ...library.doc.settings, theme: library.doc.settings.theme === 'dark' ? 'light' : 'dark' }, false)}>{library.doc.settings.theme === 'dark' ? 'Light Theme' : 'Dark Theme'}</button><button onClick={() => setBackupsOpen(true)}>Backups</button></nav></header>
@@ -96,7 +96,7 @@ export function App() {
       <button onClick={() => setBackupsOpen(true)}>Open backups</button></div>}
     {library.mode === 'unsaved' && <div className="warning" role="alert"><strong>Changes are in memory and may be lost.</strong> {library.error} <button onClick={() => downloadJson(encodeBackup(library.doc), 'seriestrackr-unsaved.json')}>Export now</button>{library.recoveryRaw !== null && <button onClick={() => setBackupsOpen(true)}>Open backups</button>}</div>}
     <section className="intro"><div><div className="eyebrow">Your library</div><h1>What comes next?</h1><p>A bookshelf for the stories you are following. Your next read stays in focus.</p></div>
-      {library.doc.series.length > 0 && <div className="summary"><div><b>{library.doc.series.length}</b><span>Tracked series</span></div><div><b>{availableCount}</b><span>Next book available</span></div><div><b>{scheduledAudioCount}</b><span>Audiobook scheduled</span></div></div>}</section>
+      {library.doc.series.length > 0 && <div className="summary"><div><b>{library.doc.series.length}</b><span>Tracked series</span></div><div><b>{availableCount}</b><span>Next book available</span></div><div><b>{availableAudioCount}</b><span>Next audiobook available</span></div></div>}</section>
     {library.doc.settings.market && library.mode !== 'recovery' && <LibraryView doc={library.doc} today={today} onEdit={(s) => { setDialogError(null); setEditor(s); }} onFinish={finish} onCheck={(series) => discovery.open(series.id)} checkingSeriesId={discovery.session?.phase === 'checking' ? discovery.session.seriesId : null} onAdd={() => { setDialogError(null); setEditor('new'); }} onView={(view) => library.updateSettings({ ...library.doc.settings, view }, false)} />}
     <aside className="next-phase"><span>YOUR CHOICE</span><div><strong>Discovery, when you ask for it.</strong><p>Check releases, review sources and choose what to save. Manual tracking works independently.</p></div></aside>
     {library.canUndo && <div className="undo" role="status">Most recent finish can be undone until another change or reload. <button onClick={() => library.undo()}>Undo finish</button></div>}

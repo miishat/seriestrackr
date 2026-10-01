@@ -5,7 +5,7 @@ import { displayRelease } from './releases';
 import { DiscoverySummary } from '../discovery/DiscoverySummary';
 
 export const releaseLabels: Record<ReleaseState, string> = {
-  'not-checked': 'Not checked', 'not-found': 'No announcement found', announced: 'Announced, Date Unknown',
+  'not-checked': 'Not checked', 'not-found': 'No announcement found', announced: 'Announced',
   scheduled: 'Scheduled', released: 'Available',
 };
 function Cover({ url, title }: { url: string | null; title: string }) {
@@ -13,13 +13,13 @@ function Cover({ url, title }: { url: string | null; title: string }) {
   if (!url || broken) return <div className="cover-placeholder">No cover available</div>;
   return <img className="cover-image" src={url} alt={`Cover for ${title || 'next unread book'}`} onError={() => setBroken(true)} />;
 }
-export function ReleaseSummary({ format, release, today }: { format: Format; release: Release; today: string }) {
+export function ReleaseSummary({ format, release, today, compact = false }: { format: Format; release: Release; today: string; compact?: boolean }) {
   const state = displayRelease(release, today);
   return <div className="release-summary"><span className="small label-upper">{format === 'book' ? 'Book' : 'Audiobook'}</span>
     <span className={`badge ${state}`}>{releaseLabels[state]}</span>
     <span className="sub">{release.date ? release.date : state === 'not-checked' ? 'No check recorded' : state === 'announced' ? 'Date Unknown' : 'Manual entry'}</span>
     {release.source && /^https?:\/\//i.test(release.source.url) && <a href={release.source.url} target="_blank" rel="noreferrer">{release.source.title}</a>}
-    {release.provenance && <div className="small">English {release.provenance.editionFormat === 'audio' ? 'audiobook' : release.provenance.editionFormat} · {release.provenance.sourceMarket ? `Source country: ${release.provenance.sourceMarket}` : 'Source country unspecified'}
+    {!compact && release.provenance && <div className="small">English {release.provenance.editionFormat === 'audio' ? 'audiobook' : release.provenance.editionFormat} · {release.provenance.sourceMarket ? `Source country: ${release.provenance.sourceMarket}` : 'Source country unspecified'}
       {release.date && <span className="sub">Earliest supported date in sources checked.</span>}
       {release.date && release.provenance.sourceMarket !== release.provenance.preferredMarket && <span className="sub">Date from {release.provenance.sourceMarket ?? 'an unspecified country'}; no supported {release.provenance.preferredMarket} date found in sources checked.</span>}
     </div>}
@@ -29,6 +29,32 @@ export function SeriesCard({ series, today, market, showCovers, compact = false,
   series: Series; today: string; market: string; showCovers: boolean; compact?: boolean; onEdit: () => void; onFinish: () => void; onCheck?: () => void; checking?: boolean;
 }) {
   const finished = series.lastFinished ? `Book ${series.lastFinished.position}: ${series.lastFinished.title}` : 'None yet';
+  if (compact) return <article className="series-card compact">
+    <div className="card-header">
+      {showCovers && series.readingStatus !== 'completed' && <div className="cover-frame"><Cover key={series.coverUrl ?? ''} url={series.coverUrl} title={series.next.title} /></div>}
+      <div><h2>{series.readingStatus === 'completed' ? series.name : series.next.title || 'Title not entered'}</h2>
+        <div className="sub">{series.author}</div><div className="sub">{series.name}</div>
+        <div className="sub compact-last-read">Last read · {finished}</div>
+        <div className="position">{series.readingStatus === 'completed' ? 'Series completed' : `Next unread · Book ${nextPosition(series)}`}</div>
+      </div>
+    </div>
+    {series.readingStatus !== 'completed' && <div className="release-pair">
+      {series.formats.book && <ReleaseSummary format="book" release={series.releases.book} today={today} compact />}
+      {series.formats.audio && <ReleaseSummary format="audio" release={series.releases.audio} today={today} compact />}
+    </div>}
+    <details className="compact-details"><summary>Release details{series.lastCheck && series.lastCheck.status !== 'complete' ? ' · Check needs attention' : ''}</summary>
+      <p className="small">Last finished: {finished}</p>
+      <p className="small">{series.readingStatus} · {series.marketOverride ?? market}</p>
+      {series.next.orderNote && <p className="small">{series.next.orderNote}</p>}
+      {isCaughtUp(series) && <p className="small">Caught up with known published books</p>}
+      {series.readingStatus !== 'completed' && <div className="release-pair">
+        {series.formats.book && <ReleaseSummary format="book" release={series.releases.book} today={today} />}
+        {series.formats.audio && <ReleaseSummary format="audio" release={series.releases.audio} today={today} />}
+      </div>}
+      <DiscoverySummary summary={series.lastCheck} />
+    </details>
+    <div className="card-footer"><button onClick={onEdit}>Edit details</button>{series.readingStatus !== 'completed' && <><button onClick={onFinish}>Mark finished</button>{onCheck && <button onClick={onCheck} disabled={checking}>{checking ? 'Checking…' : 'Check releases'}</button>}</>}</div>
+  </article>;
   return <article className={`series-card ${compact ? 'compact' : ''}`}>
     <div className="card-header">
       {showCovers && series.readingStatus !== 'completed' && <div className="cover-frame"><Cover key={series.coverUrl ?? ''} url={series.coverUrl} title={series.next.title} /></div>}

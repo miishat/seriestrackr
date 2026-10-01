@@ -6,6 +6,16 @@ import { emptyDocument, emptyRelease } from '../src/features/library/model';
 import { seriesFixture } from './fixtures';
 
 const key = 'seriestrackr:v1';
+test('summary counts available audiobooks including past scheduled dates', () => {
+  seed([
+    seriesFixture({ id: 'past', releases: { book: emptyRelease(), audio: { ...emptyRelease(), state: 'scheduled', date: '2000-01-01' } } }),
+    seriesFixture({ id: 'available', releases: { book: emptyRelease(), audio: { ...emptyRelease(), state: 'released' } } }),
+    seriesFixture({ id: 'future', releases: { book: emptyRelease(), audio: { ...emptyRelease(), state: 'scheduled', date: '2099-01-01' } } }),
+    seriesFixture({ id: 'completed', readingStatus: 'completed', publicationRunComplete: true, releases: { book: emptyRelease(), audio: { ...emptyRelease(), state: 'released' } } }),
+  ]);
+  render(<App />);
+  expect(screen.getByText('Next audiobook available').parentElement).toHaveTextContent('2');
+});
 function seed(series = [seriesFixture()]) {
   localStorage.setItem(key, JSON.stringify({ ...emptyDocument(), settings: { ...emptyDocument().settings, market: 'CA' }, series }));
 }
@@ -207,6 +217,30 @@ test('broken cover falls back while keeping its saved URL', () => {
   fireEvent.error(screen.getByRole('img', { name: /cover/i }));
   expect(screen.getByText('No cover available')).toBeVisible();
   expect(JSON.parse(localStorage.getItem(key)!).series[0].coverUrl).toBe('https://example.com/broken.jpg');
+});
+
+test('compact poster shows next title and keeps history in expandable details', async () => {
+  seed(); render(<App />);
+  await userEvent.click(screen.getByRole('button', { name: 'Compact' }));
+  const card = screen.getByRole('article');
+  expect(within(card).getByRole('heading', { name: 'Second' })).toBeVisible();
+  expect(within(card).getByText('Example Author')).toBeVisible();
+  expect(within(card).getByText('Last read · Book 1: First')).toBeVisible();
+  expect(within(card).getByText('Next unread · Book 2')).toBeVisible();
+  const history = within(card).getByText('Last finished: Book 1: First');
+  expect(history).not.toBeVisible();
+  await userEvent.click(within(card).getByText('Release details'));
+  expect(history).toBeVisible();
+  expect(within(card).getByRole('button', { name: 'Check releases' })).toBeEnabled();
+});
+
+test('announced release badge does not repeat its unknown date', async () => {
+  seed([seriesFixture({ releases: { book: { ...emptyRelease(), state: 'announced' }, audio: emptyRelease() } })]);
+  render(<App />);
+  const card = screen.getByRole('article');
+  expect(within(card).getByText('Announced')).toBeVisible();
+  expect(within(card).getByText('Date Unknown')).toBeVisible();
+  expect(screen.queryByText('Announced, Date Unknown')).toBeNull();
 });
 
 test('search and release filters use the displayed status after local midnight', async () => {

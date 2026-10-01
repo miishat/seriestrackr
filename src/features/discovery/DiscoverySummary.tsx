@@ -16,7 +16,7 @@ export function DiscoverySummary({ summary }: { summary: CheckSummary | null }):
   return <div className={`discovery-summary note${summary.status === 'complete' ? '' : ' warn'}`} role="status">
     <strong>{statusLabels[summary.status]}</strong>
     <p className="small">Checked <time dateTime={summary.checkedAt}>{summary.checkedAt}</time>.</p>
-    {summary.status === 'partial' && <p>Some sources could not be checked. Review supported details below; missing fields remain unknown.</p>}
+    {summary.status === 'partial' && <p>Some sources could not be fully checked or verified. Supported dates and announcements are still usable. This describes source coverage, not book or audiobook availability. See the reasons below.</p>}
     {(summary.status === 'failed' || summary.status === 'cancelled') && <p>Your saved release details are unchanged.</p>}
     {summary.status === 'complete' && unknown && <p>Some formats have no supported details in sources checked.</p>}
     {summary.reasons.length > 0 && <ul>{[...new Set(summary.reasons)].map(reason => <li key={reason}>{reasonLabels[reason]}</li>)}</ul>}
