@@ -1,3 +1,5 @@
+@import './fonts.css';
+
 @tailwind base;
 
 @tailwind components;
@@ -44,10 +46,10 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font: 14px/1.5 system-ui,sans-serif;
+  font: 14px/1.5 var(--font-body);
 }
 
-button,input,select {
+button,input,select,textarea {
   font: inherit;
 }
 
@@ -121,6 +123,8 @@ button:disabled {
 }
 
 .brand strong {
+  font-family: var(--font-body);
+  font-weight: 600;
   font-size: 22px;
   letter-spacing: -1px;
 }
@@ -158,11 +162,11 @@ button:disabled {
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--accent);
-  font-weight: 750;
+  font-weight: 600;
 }
 
 h1 {
-  font-family: Georgia,serif;
+  font-family: var(--font-display);
   font-size: 40px;
   line-height: 1.15;
   font-weight: 400;
@@ -171,8 +175,12 @@ h1 {
 }
 
 h2 {
-  font-family: Georgia,serif;
+  font-family: var(--font-display);
   font-weight: 400;
+}
+
+h3,b,strong {
+  font-weight: 600;
 }
 
 p {
@@ -277,9 +285,10 @@ input,select {
 }
 
 .card-header h2 {
-  font-family: system-ui,sans-serif;
-  font-size: 15px;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.15;
   margin: 0 0 5px;
 }
 
@@ -327,14 +336,14 @@ input,select {
 
 .card-next strong {
   font-size: 19px;
-  font-family: Georgia,serif;
+  font-family: var(--font-display);
   font-weight: 400;
 }
 
 .position {
   font-size: 11px;
   color: var(--accent);
-  font-weight: 700;
+  font-weight: 600;
   margin: 16px 0 4px;
   text-transform: uppercase;
 }
@@ -359,7 +368,7 @@ input,select {
 .badge {
   display: inline-block;
   font-size: 11px;
-  font-weight: 650;
+  font-weight: 600;
   border-radius: 5px;
   padding: 4px 8px;
 }
@@ -395,6 +404,10 @@ input,select {
 
 .compact-cards {
   grid-template-columns: repeat(2,minmax(0,1fr));
+}
+
+.compact .card-header h2 {
+  font-size: 18px;
 }
 
 .compact .card-header {
@@ -436,13 +449,20 @@ input,select {
   font-size: 10px;
   letter-spacing: 1.3px;
   text-transform: uppercase;
-  font-weight: 650;
+  font-weight: 600;
 }
 
 .table-wrap td {
   padding: 23px 18px;
   border-top: 1px solid var(--line);
   vertical-align: top;
+}
+
+.table-wrap td:first-child > strong {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.2;
 }
 
 .table-wrap td button {
@@ -554,7 +574,7 @@ fieldset {
 legend {
   padding: 0 6px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .actions {
