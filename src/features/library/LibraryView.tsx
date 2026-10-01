@@ -30,12 +30,24 @@ export function LibraryView({ doc, today, onEdit, onFinish, onCheck, checkingSer
   });
   return <main>
     <div className="library-tools">
-      <label className="visually-hidden" htmlFor="library-search">Search series or author</label><input id="library-search" type="search" placeholder="Search series or author" value={query} onChange={(event) => setQuery(event.target.value)} />
+      <div className="library-search-row">
+        <label className="visually-hidden" htmlFor="library-search">Search series or author</label><input id="library-search" type="search" placeholder="Search series or author" value={query} onChange={(event) => setQuery(event.target.value)} />
+        <button className="primary" onClick={onAdd}>Add series</button>
+      </div>
+      <div className="library-options-row">
+        <div className="library-filter-group" role="group" aria-labelledby="library-filters-label">
+          <span className="tools-label" id="library-filters-label">Filters</span>
+          <div className="library-filters">
       <FilterMenu<ReadingStatus> label="Reading status" allLabel="All reading statuses" options={['active','paused','dropped','completed'].map((item) => [item as ReadingStatus, item[0].toUpperCase() + item.slice(1)] as const)} selected={reading} onChange={setReading} />
       <FilterMenu label="Book availability" allLabel="All book statuses" options={states} selected={book} onChange={setBook} />
       <FilterMenu label="Audiobook availability" allLabel="All audiobook statuses" options={states} selected={audio} onChange={setAudio} />
-      <div className="spacer" /><div className="view-switch" aria-label="Library view">{(['grid','compact','list'] as const).map((view) => <button key={view} aria-pressed={doc.settings.view === view} onClick={() => onView(view)}>{view === 'list' ? 'Table' : view[0].toUpperCase() + view.slice(1)}</button>)}</div>
-      <button className="primary" onClick={onAdd}>Add series</button>
+          </div>
+        </div>
+        <div className="library-view-group">
+          <span className="tools-label" id="library-view-label">View</span>
+          <div className="view-switch" role="group" aria-labelledby="library-view-label">{(['grid','compact','list'] as const).map((view) => <button key={view} aria-pressed={doc.settings.view === view} onClick={() => onView(view)}>{view === 'list' ? 'Table' : view[0].toUpperCase() + view.slice(1)}</button>)}</div>
+        </div>
+      </div>
     </div>
     {doc.series.length === 0 ? <div className="empty"><div className="eyebrow">A fresh start</div><h2>Your bookshelf is empty</h2><p>Add a series, then keep its next book and audiobook releases in one place.</p><button className="primary" onClick={onAdd}>Add your first series</button></div>
       : filtered.length === 0 ? <div className="empty"><h2>No matching series</h2><p>Try another search or filter.</p></div>

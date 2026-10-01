@@ -14,7 +14,7 @@ test('long and mixed-script text fits all views and themes', async ({ page }) =>
   for (const width of [390, 1024]) {
     await page.setViewportSize({ width, height: 900 });
     for (const theme of ['light', 'dark'] as const) {
-      const toggle = page.getByRole('button', { name: theme === 'light' ? 'Light theme' : 'Dark theme', exact: true });
+      const toggle = page.getByRole('button', { name: theme === 'light' ? 'Light Theme' : 'Dark Theme', exact: true });
       if (await toggle.count()) await toggle.click();
       for (const view of ['Grid', 'Compact', 'Table']) {
         await page.getByRole('button', { name: view, exact: true }).click();
@@ -94,9 +94,9 @@ test('D colors are applied and switching themes preserves series records', async
   await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(23, 29, 43)');
   await expect(page.locator('.series-card').first()).toHaveCSS('background-color', 'rgb(33, 43, 61)');
   await expect(page.getByRole('button', { name: 'Add series', exact: true })).toHaveCSS('background-color', 'rgb(181, 196, 255)');
-  await page.getByRole('button', { name: 'Light theme', exact: true }).click();
+  await page.getByRole('button', { name: 'Light Theme', exact: true }).click();
   await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(246, 245, 241)');
-  await page.getByRole('button', { name: 'Dark theme', exact: true }).click();
+  await page.getByRole('button', { name: 'Dark Theme', exact: true }).click();
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('seriestrackr:v1')!));
@@ -198,7 +198,7 @@ for (const theme of ['light', 'dark'] as const) {
     await mkdir('node_modules/.cache/playwright-visual', { recursive: true });
     await page.screenshot({ path: `node_modules/.cache/playwright-visual/identity-summaries-${theme}.png`, fullPage: true });
     // Trigger the real storage warning without changing the active theme.
-    await page.getByRole('button', { name: theme === 'dark' ? 'Light theme' : 'Dark theme', exact: true }).click();
+    await page.getByRole('button', { name: theme === 'dark' ? 'Light Theme' : 'Dark Theme', exact: true }).click();
     await page.evaluate(() => {
       const original = Storage.prototype.setItem;
       Storage.prototype.setItem = function (key, value) {
@@ -206,7 +206,7 @@ for (const theme of ['light', 'dark'] as const) {
         original.call(this, key, value);
       };
     });
-    await page.getByRole('button', { name: theme === 'dark' ? 'Dark theme' : 'Light theme', exact: true }).click();
+    await page.getByRole('button', { name: theme === 'dark' ? 'Dark Theme' : 'Light Theme', exact: true }).click();
     await expect(page.locator('.warning')).toContainText('Changes are in memory and may be lost');
     for (const selector of ['.warning', '.warning strong']) {
       const colors = await renderedColors(page.locator(selector));
