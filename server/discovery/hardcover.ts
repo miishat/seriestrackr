@@ -5,6 +5,7 @@ import { parseExtraction } from '../../shared/discoveryValidation';
 import type { CatalogResult } from './catalogs';
 import { fetchProviderJson, ProviderError } from './http';
 import { createRateQueue } from './rateQueue';
+import { seriesBase } from './seriesOrder';
 
 const queue = createRateQueue(1100);
 const empty = (): EvidenceBundle => ({ sources: [], identities: [], editions: [] });
@@ -20,7 +21,7 @@ const list = (value: unknown, max: number): unknown[] => {
 
 export function hardcoverAliases(series: string): string[] {
   const original = series.trim();
-  const base = original.replace(/^the\s+/i, '').replace(/\s+(?:series|mysteries|trilogy)$/i, '').replace(/^tales of\s+/i, '');
+  const base = seriesBase(original);
   return [...new Set([original, original.replace(/^the\s+/i, ''), base, `The ${base}`, `${base} Series`, `${base} Mysteries`, `${base} Trilogy`, `Tales of ${base}`].filter(Boolean))].slice(0, 8);
 }
 

@@ -1,5 +1,7 @@
 # Phase 2 release discovery: complete status report
 
+Post-integration follow-up, 2026-10-01: the [Witness matching repair](discovery-witness-matching-fix.md) now establishes the user's Book 3 input and independently verifies CA ebook/audio dates of 2026-10-01 without AI. Witness's unsupported result in the earlier pilot below remains historical. The follow-up fixes ordinal subtitles and singular/plural aliases while preserving strict evidence guards.
+
 Updated 2026-10-01. Current status: Phase 2 implementation and verification are complete with named coverage and custom-order limits. Fresh final checks passed 1133 tests across 33 files, typecheck, build (55 modules) and all 24 browser tests (14 discovery, 10 existing workflows, 10.7 seconds). The sole final-review P2 was repaired with four expected failing regressions and approved by independent scoped re-review after 82 focused tests, with no new material findings.
 
 The current measured retrieval result is the independently audited 13-case batch: 10 identities, seven book dates and seven audio dates, all 14 dates independently corroborated, zero AI calls. Witness, The Devils and the CA Path to Ascendancy case are named unsupported. Human visual approval was received. Task 8 migration/recovery and Task 9 guarded acceptance were independently approved after 88 and 40 focused tests respectively; the standalone dialog was approved after 43 tests. This continuation remains uncommitted and unmerged.

@@ -8,6 +8,24 @@ import { parseExtraction } from '../../shared/discoveryValidation';
 import { request } from './fixtures';
 
 const checkedAt = '2026-09-30T00:00:00Z';
+test.each(['ebook', 'audio'] as const)('explicit ordinal qualifier joins %s to canonical title with exact product evidence', format => {
+  const api = record();
+  const edition = { ...api.editions[0], format, title: 'Legacies of Betrayal: The Third Tale of Witness' };
+  const source = { ...api.sources[0], title: edition.title, url: format === 'audio' ? productUrl.replace('/book/', '/audiobook/') : productUrl };
+  const req = request({ target: { ...request().target, series: 'The Tale of Witness', title: 'Legacies of Betrayal', position: 3 } });
+  const html = page({ name: edition.title, '@type': format === 'audio' ? 'Audiobook' : 'Book' });
+  const evidence = normalizeAppleProductPage(html, source, edition, req, checkedAt);
+  expect(evidence.editions[0]).toMatchObject({ title: 'Legacies of Betrayal', date: '2027-03-01', language: 'en', format });
+  expect(evidence.sources[0].text).toContain(`Literal catalog label: ${edition.title}.`);
+  expect(evidence.sources[0].text).toContain('Exact supported series-order title relationship.');
+  expect(evidence.sources[0].text).not.toMatch(/unabridged|literal audio label/i);
+  expect(evidence.editions[0].citations.map(citation => citation.quote).join('')).toBe(evidence.sources[0].text);
+  expect(parseExtraction(evidence, evidence.sources).ok).toBe(true);
+  const wrong = { ...req, target: { ...req.target, position: 2 } };
+  expect(normalizeAppleProductPage(html, source, edition, wrong, checkedAt).editions).toEqual([]);
+  const other = { ...req, target: { ...req.target, series: 'The Tale of Other' } };
+  expect(normalizeAppleProductPage(html, source, edition, other, checkedAt).editions).toEqual([]);
+});
 const productUrl = 'https://books.apple.com/ca/book/second/id123';
 const record = (audio = false) => normalizeApple({ results: [{ trackId: 123, collectionId: 123, trackName: 'Second', collectionName: 'Second: Example, Book 2 (Unabridged)', artistName: 'Example Author', trackViewUrl: productUrl, collectionViewUrl: productUrl.replace('/book/', '/audiobook/'), releaseDate: '2027-03-01T00:00:00Z' }] }, 'CA', audio ? 'audio' : 'ebook', checkedAt);
 const badge = (caption = 'English') => `<figure class="book-badge"><div class="book-badge__eyebrow">LANGUAGE</div><div class="book-badge__caption">${caption}</div></figure>`;
@@ -28,6 +46,8 @@ test('audio label and unique product badge qualify canonical title', () => {
   const result = normalize(page({ '@type': 'Audiobook', name: 'Second: Example, Book 2 (Unabridged)', bookFormat: undefined, inLanguage: undefined }, badge()), true);
   expect(result.editions[0]).toMatchObject({ title: 'Second', format: 'audio', language: 'en' });
   expect(result.sources[0].text).toContain('Second: Example, Book 2 (Unabridged)');
+  expect(result.sources[0].text).toContain('Literal audio label: Second: Example, Book 2 (Unabridged).');
+  expect(result.sources[0].text).toContain('Exact supported unabridged title relationship.');
 });
 test.each([
   [{ inLanguage: 'fr' }, badge()], [{ inLanguage: ['en', 'fr'] }, ''],
