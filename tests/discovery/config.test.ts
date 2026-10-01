@@ -11,7 +11,7 @@ const write = (path: string, file: string, text: string) => writeFileSync(join(p
 afterEach(() => { for (const path of roots.splice(0)) rmSync(path, { recursive: true, force: true }); });
 
 test('missing service files yield null keys and the approved model', () => {
-  expect(loadDiscoveryConfig(root())).toEqual({ tavilyKey: null, deepseekKey: null, googleBooksKey: null, model: 'deepseek-flash' });
+  expect(loadDiscoveryConfig(root())).toEqual({ tavilyKey: null, deepseekKey: null, googleBooksKey: null, hardcoverToken: null, model: 'deepseek-flash' });
 });
 
 test('reads only the three service files without mutating the process environment', () => {
@@ -22,7 +22,7 @@ test('reads only the three service files without mutating the process environmen
   write(path, '.env.discovery.local', '# service key\nexport TAVILY_API_KEY="test-tavily=#value"\nDEEPSEEK_API_KEY=wrong');
   write(path, '.env.deepseek.local', 'DEEPSEEK_API_KEY=\'test-deepseek=#value\'\nDEEPSEEK_MODEL=deepseek-flash\nTAVILY_API_KEY=wrong');
   write(path, '.env.google-books.local', 'export GOOGLE_BOOKS_API_KEY=" fake-google-secret=#value " # comment\nTAVILY_API_KEY=wrong\nDEEPSEEK_API_KEY=wrong');
-  expect(loadDiscoveryConfig(path)).toEqual({ tavilyKey: 'test-tavily=#value', deepseekKey: 'test-deepseek=#value', googleBooksKey: 'fake-google-secret=#value', model: 'deepseek-flash' });
+  expect(loadDiscoveryConfig(path)).toEqual({ tavilyKey: 'test-tavily=#value', deepseekKey: 'test-deepseek=#value', googleBooksKey: 'fake-google-secret=#value', hardcoverToken: null, model: 'deepseek-flash' });
   expect(process.env).toEqual(before);
 });
 
@@ -31,7 +31,27 @@ test('blank keys and model use safe defaults', () => {
   write(path, '.env.discovery.local', 'TAVILY_API_KEY=');
   write(path, '.env.deepseek.local', 'DEEPSEEK_API_KEY=" "\nDEEPSEEK_MODEL=');
   write(path, '.env.google-books.local', 'GOOGLE_BOOKS_API_KEY=" "');
-  expect(loadDiscoveryConfig(path)).toEqual({ tavilyKey: null, deepseekKey: null, googleBooksKey: null, model: 'deepseek-flash' });
+  expect(loadDiscoveryConfig(path)).toEqual({ tavilyKey: null, deepseekKey: null, googleBooksKey: null, hardcoverToken: null, model: 'deepseek-flash' });
+});
+
+test('reads the Hardcover token only from its own service file', () => {
+  const path = root(); const before = { ...process.env };
+  for (const file of ['.env', '.env.local', '.env.discovery.local', '.env.deepseek.local', '.env.google-books.local']) {
+    write(path, file, 'HARDCOVER_API_TOKEN=wrong-secret');
+  }
+  expect(loadDiscoveryConfig(path).hardcoverToken).toBeNull();
+  write(path, '.env.hardcover.local', '# Hardcover API evaluation only\nHARDCOVER_API_TOKEN=fake-hardcover-token\n');
+  expect(loadDiscoveryConfig(path).hardcoverToken).toBe('fake-hardcover-token');
+  expect(process.env).toEqual(before);
+});
+
+test('blank Hardcover token is absent and malformed assignments are sanitized', () => {
+  const blank = root();
+  write(blank, '.env.hardcover.local', 'HARDCOVER_API_TOKEN=" "');
+  expect(loadDiscoveryConfig(blank).hardcoverToken).toBeNull();
+  const malformed = root();
+  write(malformed, '.env.hardcover.local', 'HARDCOVER_API_TOKEN=fake-secret\nHARDCOVER_API_TOKEN=second-secret');
+  expect(() => loadDiscoveryConfig(malformed)).toThrow(/^invalid-config$/);
 });
 
 test('rejects a nonblank model other than deepseek-flash with a sanitized error', () => {

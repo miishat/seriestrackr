@@ -86,7 +86,7 @@ function source(input: unknown, path: string): Source {
   const value = object(input, path, ['id', 'title', 'url', 'provider', 'market', 'retrievedAt', 'text']);
   return {
     id: string(value.id, `${path}.id`, 100), title: string(value.title, `${path}.title`, 300), url: url(value.url, `${path}.url`),
-    provider: oneOf(value.provider, `${path}.provider`, ['apple', 'openlibrary', 'googlebooks', 'tavily', 'deepseek']),
+    provider: oneOf(value.provider, `${path}.provider`, ['apple', 'openlibrary', 'googlebooks', 'tavily', 'deepseek', 'hardcover']),
     market: nullableCountry(value.market, `${path}.market`), retrievedAt: timestamp(value.retrievedAt, `${path}.retrievedAt`),
     text: string(value.text, `${path}.text`, 20000),
   };
@@ -194,9 +194,9 @@ function conflict(input: unknown, path: string): Conflict {
   return { format: oneOf(value.format, `${path}.format`, ['book', 'audio']), evidenceIds, reason: string(value.reason, `${path}.reason`, 500) };
 }
 function usage(input: unknown, path: string): Usage {
-  const value = object(input, path, ['apple', 'openlibrary', 'googlebooks', 'tavily', 'deepseek', 'inputTokens', 'outputTokens']);
+  const value = object(input, path, ['apple', 'openlibrary', 'googlebooks', 'tavily', 'deepseek', 'hardcover', 'inputTokens', 'outputTokens']);
   return { apple: count(value.apple, `${path}.apple`), openlibrary: count(value.openlibrary, `${path}.openlibrary`),
-    googlebooks: count(value.googlebooks, `${path}.googlebooks`),
+    googlebooks: count(value.googlebooks, `${path}.googlebooks`), hardcover: count(value.hardcover, `${path}.hardcover`),
     tavily: count(value.tavily, `${path}.tavily`), deepseek: count(value.deepseek, `${path}.deepseek`),
     inputTokens: value.inputTokens === null ? null : count(value.inputTokens, `${path}.inputTokens`),
     outputTokens: value.outputTokens === null ? null : count(value.outputTokens, `${path}.outputTokens`) };
@@ -261,3 +261,7 @@ function parse<T>(operation: () => T): Parsed<T> {
 export const parseCheckRequest = (input: unknown): Parsed<CheckRequest> => parse(() => request(input));
 export const parseCheckResponse = (input: unknown): Parsed<CheckResponse> => parse(() => response(input));
 export const parseExtraction = (input: unknown, sources: Source[]): Parsed<EvidenceBundle> => parse(() => extraction(input, sources));
+
+export const parseAttribution = (input: unknown): Parsed<Attribution> => parse(() => attribution(input, 'attribution') as Attribution);
+export const parseProvenance = (input: unknown): Parsed<Provenance> => parse(() => attribution(input, 'provenance', true) as Provenance);
+export const parseCheckSummary = (input: unknown): Parsed<CheckSummary> => parse(() => summary(input, 'summary'));

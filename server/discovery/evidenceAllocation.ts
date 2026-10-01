@@ -1,6 +1,12 @@
 import type { CheckRequest, Citation, EditionEvidence, EvidenceBundle, Source } from '../../shared/discovery';
 import { normalizeIdentity, selectProposals } from '../../shared/discoveryPolicy';
 
+const exactDay = (item: EditionEvidence) => item.date !== null && item.precision === 'day';
+const candidateRank = (request: CheckRequest) => (a: EditionEvidence, b: EditionEvidence) =>
+  Number(exactDay(b)) - Number(exactDay(a)) ||
+  Number(b.market === request.preferredMarket) - Number(a.market === request.preferredMarket) ||
+  (a.date ?? '\uffff').localeCompare(b.date ?? '\uffff');
+
 // Allocation hints only rank already validated evidence. They never establish
 // identity, order, language, country, format or a release date.
 export function allocationEvidence(request: CheckRequest, input: EvidenceBundle) {
@@ -26,7 +32,7 @@ export function allocationEvidence(request: CheckRequest, input: EvidenceBundle)
       !left.date!.startsWith(right.date) && !right.date.startsWith(left.date!))));
   const conflicting = new Set(conflicts.flatMap(group => group.map(item => item.id)));
   const singletons = editions.filter(item => !conflicting.has(item.id))
-    .sort((a, b) => Number(b.market === request.preferredMarket) - Number(a.market === request.preferredMarket));
+    .sort(candidateRank(request));
   return { sources, identities, editions, conflicts, singletons };
 }
 
@@ -58,14 +64,20 @@ export function roleReservations(request: CheckRequest, evidence: EvidenceBundle
     if (source) reserve(source);
   }
   const proposals = selectProposals(request, evidence, checkedAt);
+  const unresolved = (!request.target.title.trim() || !Number.isInteger(request.target.position)) && !proposals.identity;
+  const candidates = unresolved ? allocationEvidence(request, evidence).singletons : [];
   for (const format of request.formats) {
     const proposal = proposals.releases[format];
-    const chosen = proposal && evidence.editions.filter(item =>
+    const chosenProposal = proposal && evidence.editions.filter(item =>
       item.language === 'en' && normalizeIdentity(item.title) === normalizeIdentity(proposal.title) &&
       JSON.stringify(item.citations) === JSON.stringify(proposal.citations) && item.format === proposal.provenance.editionFormat &&
       item.market === proposal.provenance.sourceMarket && item.editionKey === proposal.provenance.editionKey &&
       item.precision === proposal.provenance.datePrecision && (proposal.date === null || item.date === proposal.date))
       .sort((a, b) => a.id.localeCompare(b.id))[0];
+    const candidate = candidates.filter(item =>
+      (format === 'audio' ? item.format === 'audio' : item.format !== 'audio') &&
+      (item.language === 'en' || item.language === null) && exactDay(item))[0];
+    const chosen = chosenProposal || candidate;
     const structured = chosen && evidence.sources.find(source => chosen.citations.some(citation => citation.sourceId === source.id));
     if (structured && chosen) {
       reserve(structured, chosen.citations, chosen);

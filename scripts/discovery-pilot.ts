@@ -71,9 +71,9 @@ export async function runPilot(args: string[], options: {
   if (!flags.run) {
     const selected = flags.caseId ? [flags.caseId] : Object.keys(cases);
     print(JSON.stringify({ mode: 'dry-run', requestsMade: 0, liveGate: 'pending',
-      keyPresence: { search: Boolean(config.tavilyKey), ai: Boolean(config.deepseekKey), googleBooks: Boolean(config.googleBooksKey?.trim()) },
+      keyPresence: { search: Boolean(config.tavilyKey), ai: Boolean(config.deepseekKey), googleBooks: Boolean(config.googleBooksKey?.trim()), hardcover: Boolean(config.hardcoverToken?.trim()) },
       plan: selected.map(caseId => ({ caseId, markets: [...new Set([cases[caseId].preferredMarket, 'US', 'GB', 'CA'])],
-        queries: { appleMax: 12, openlibraryMax: 3, googleBooksMax: config.googleBooksKey?.trim() ? 2 : 0, tavilyMax: 3, deepseekMax: flags.ai ? 1 : 0 },
+        queries: { hardcoverMax: config.hardcoverToken?.trim() ? 1 : 0, appleMax: 12, openlibraryMax: 3, googleBooksMax: config.googleBooksKey?.trim() ? 2 : 0, tavilyMax: 3, deepseekMax: flags.ai ? 1 : 0 },
         aiInputBytesMax: 20000, aiOutputTokensMax: 2048, deadlineMs: 180000 })),
       aiEstimatePerCase: flags.ai ? estimatedMaxAiUsd() : null,
       aiConsent: flags.ai ? 'Pending explicit authorization for the concrete batch. Dry run makes no calls.' : 'AI disabled',
@@ -89,3 +89,4 @@ export async function runPilot(args: string[], options: {
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   runPilot(process.argv.slice(2)).catch(() => { console.error('discovery-pilot-failed'); process.exitCode = 1; });
 }
+

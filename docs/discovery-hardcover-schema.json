@@ -1,0 +1,682 @@
+{
+  "books": {
+    "name": "books",
+    "fields": [
+      {
+        "name": "activities_count",
+        "type": "Int!"
+      },
+      {
+        "name": "alternative_titles",
+        "type": "json!"
+      },
+      {
+        "name": "audio_seconds",
+        "type": "Int"
+      },
+      {
+        "name": "book_category_id",
+        "type": "Int!"
+      },
+      {
+        "name": "book_characters",
+        "type": "[!]!"
+      },
+      {
+        "name": "book_mappings",
+        "type": "[!]!"
+      },
+      {
+        "name": "book_series",
+        "type": "[!]!"
+      },
+      {
+        "name": "book_series_aggregate",
+        "type": "book_series_aggregate!"
+      },
+      {
+        "name": "book_status",
+        "type": "book_statuses!"
+      },
+      {
+        "name": "book_status_id",
+        "type": "smallint!"
+      },
+      {
+        "name": "cached_contributors",
+        "type": "json!"
+      },
+      {
+        "name": "cached_featured_series",
+        "type": "jsonb!"
+      },
+      {
+        "name": "cached_header_image",
+        "type": "jsonb!"
+      },
+      {
+        "name": "cached_image",
+        "type": "jsonb!"
+      },
+      {
+        "name": "cached_similar_book_ids",
+        "type": "jsonb!"
+      },
+      {
+        "name": "cached_similar_books_updated_at",
+        "type": "timestamp"
+      },
+      {
+        "name": "cached_tags",
+        "type": "jsonb!"
+      },
+      {
+        "name": "canonical",
+        "type": "books"
+      },
+      {
+        "name": "canonical_id",
+        "type": "Int"
+      },
+      {
+        "name": "collection_import_results",
+        "type": "[!]!"
+      },
+      {
+        "name": "compilation",
+        "type": "Boolean!"
+      },
+      {
+        "name": "contributions",
+        "type": "[!]!"
+      },
+      {
+        "name": "contributions_aggregate",
+        "type": "contributions_aggregate!"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp!"
+      },
+      {
+        "name": "created_by_user_id",
+        "type": "Int"
+      },
+      {
+        "name": "curation_status",
+        "type": "Int!"
+      },
+      {
+        "name": "default_audio_edition",
+        "type": "editions"
+      },
+      {
+        "name": "default_audio_edition_id",
+        "type": "Int"
+      },
+      {
+        "name": "default_cover_edition",
+        "type": "editions"
+      },
+      {
+        "name": "default_cover_edition_id",
+        "type": "Int"
+      },
+      {
+        "name": "default_ebook_edition",
+        "type": "editions"
+      },
+      {
+        "name": "default_ebook_edition_id",
+        "type": "Int"
+      },
+      {
+        "name": "default_physical_edition",
+        "type": "editions"
+      },
+      {
+        "name": "default_physical_edition_id",
+        "type": "Int"
+      },
+      {
+        "name": "description",
+        "type": "String"
+      },
+      {
+        "name": "editions",
+        "type": "[!]!"
+      },
+      {
+        "name": "editions_count",
+        "type": "Int!"
+      },
+      {
+        "name": "featured_book_series",
+        "type": "book_series"
+      },
+      {
+        "name": "featured_book_series_id",
+        "type": "Int"
+      },
+      {
+        "name": "header_image_id",
+        "type": "Int"
+      },
+      {
+        "name": "headline",
+        "type": "String"
+      },
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "image",
+        "type": "images"
+      },
+      {
+        "name": "image_id",
+        "type": "Int"
+      },
+      {
+        "name": "images",
+        "type": "[!]!"
+      },
+      {
+        "name": "import_platform_id",
+        "type": "Int!"
+      },
+      {
+        "name": "is_partial_book",
+        "type": "Boolean"
+      },
+      {
+        "name": "journals_count",
+        "type": "Int!"
+      },
+      {
+        "name": "links",
+        "type": "jsonb!"
+      },
+      {
+        "name": "list_books",
+        "type": "[!]!"
+      },
+      {
+        "name": "list_books_aggregate",
+        "type": "list_books_aggregate!"
+      },
+      {
+        "name": "lists_count",
+        "type": "Int"
+      },
+      {
+        "name": "literary_type_id",
+        "type": "Int"
+      },
+      {
+        "name": "locked",
+        "type": "Boolean!"
+      },
+      {
+        "name": "pages",
+        "type": "Int"
+      },
+      {
+        "name": "parent_book",
+        "type": "books"
+      },
+      {
+        "name": "parent_book_id",
+        "type": "Int"
+      },
+      {
+        "name": "prompt_answers",
+        "type": "[!]!"
+      },
+      {
+        "name": "prompt_answers_aggregate",
+        "type": "prompt_answers_aggregate!"
+      },
+      {
+        "name": "prompt_summaries",
+        "type": "[!]!"
+      },
+      {
+        "name": "prompts_count",
+        "type": "Int!"
+      },
+      {
+        "name": "rating",
+        "type": "numeric"
+      },
+      {
+        "name": "ratings_count",
+        "type": "Int!"
+      },
+      {
+        "name": "ratings_distribution",
+        "type": "jsonb!"
+      },
+      {
+        "name": "release_date",
+        "type": "date"
+      },
+      {
+        "name": "release_year",
+        "type": "Int"
+      },
+      {
+        "name": "reviews_count",
+        "type": "Int!"
+      },
+      {
+        "name": "slug",
+        "type": "String"
+      },
+      {
+        "name": "state",
+        "type": "String!"
+      },
+      {
+        "name": "subtitle",
+        "type": "String"
+      },
+      {
+        "name": "taggable_counts",
+        "type": "[!]!"
+      },
+      {
+        "name": "taggings",
+        "type": "[!]!"
+      },
+      {
+        "name": "taggings_aggregate",
+        "type": "taggings_aggregate!"
+      },
+      {
+        "name": "title",
+        "type": "String"
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamptz"
+      },
+      {
+        "name": "user_books",
+        "type": "[!]!"
+      },
+      {
+        "name": "user_books_aggregate",
+        "type": "user_books_aggregate!"
+      },
+      {
+        "name": "users_count",
+        "type": "Int!"
+      },
+      {
+        "name": "users_read_count",
+        "type": "Int!"
+      }
+    ]
+  },
+  "editions": {
+    "name": "editions",
+    "fields": [
+      {
+        "name": "alternative_titles",
+        "type": "json!"
+      },
+      {
+        "name": "asin",
+        "type": "String"
+      },
+      {
+        "name": "audio_seconds",
+        "type": "Int"
+      },
+      {
+        "name": "book",
+        "type": "books!"
+      },
+      {
+        "name": "book_id",
+        "type": "Int!"
+      },
+      {
+        "name": "book_mappings",
+        "type": "[!]!"
+      },
+      {
+        "name": "cached_contributors",
+        "type": "json!"
+      },
+      {
+        "name": "cached_image",
+        "type": "jsonb!"
+      },
+      {
+        "name": "cached_tags",
+        "type": "json!"
+      },
+      {
+        "name": "canonical_id",
+        "type": "Int"
+      },
+      {
+        "name": "compilation",
+        "type": "Boolean!"
+      },
+      {
+        "name": "contributions",
+        "type": "[!]!"
+      },
+      {
+        "name": "contributions_aggregate",
+        "type": "contributions_aggregate!"
+      },
+      {
+        "name": "country",
+        "type": "countries"
+      },
+      {
+        "name": "country_id",
+        "type": "Int"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp!"
+      },
+      {
+        "name": "created_by_user_id",
+        "type": "Int"
+      },
+      {
+        "name": "curation_status",
+        "type": "Int!"
+      },
+      {
+        "name": "edition_format",
+        "type": "String"
+      },
+      {
+        "name": "edition_information",
+        "type": "String"
+      },
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "image",
+        "type": "images"
+      },
+      {
+        "name": "image_id",
+        "type": "Int"
+      },
+      {
+        "name": "images",
+        "type": "[!]!"
+      },
+      {
+        "name": "isbn_10",
+        "type": "String"
+      },
+      {
+        "name": "isbn_10_valid",
+        "type": "Boolean"
+      },
+      {
+        "name": "isbn_13",
+        "type": "String"
+      },
+      {
+        "name": "isbn_13_valid",
+        "type": "Boolean"
+      },
+      {
+        "name": "isbns_match",
+        "type": "Boolean"
+      },
+      {
+        "name": "language",
+        "type": "languages"
+      },
+      {
+        "name": "language_id",
+        "type": "Int"
+      },
+      {
+        "name": "list_books",
+        "type": "[!]!"
+      },
+      {
+        "name": "list_books_aggregate",
+        "type": "list_books_aggregate!"
+      },
+      {
+        "name": "lists_count",
+        "type": "Int!"
+      },
+      {
+        "name": "locked",
+        "type": "Boolean!"
+      },
+      {
+        "name": "normalized_at",
+        "type": "timestamp"
+      },
+      {
+        "name": "object_type",
+        "type": "String!"
+      },
+      {
+        "name": "original_book_id",
+        "type": "Int"
+      },
+      {
+        "name": "pages",
+        "type": "Int"
+      },
+      {
+        "name": "physical_format",
+        "type": "String"
+      },
+      {
+        "name": "physical_information",
+        "type": "String"
+      },
+      {
+        "name": "publisher",
+        "type": "publishers"
+      },
+      {
+        "name": "publisher_id",
+        "type": "Int"
+      },
+      {
+        "name": "rating",
+        "type": "numeric"
+      },
+      {
+        "name": "reading_format",
+        "type": "reading_formats"
+      },
+      {
+        "name": "reading_format_id",
+        "type": "Int!"
+      },
+      {
+        "name": "release_date",
+        "type": "date"
+      },
+      {
+        "name": "release_year",
+        "type": "Int"
+      },
+      {
+        "name": "score",
+        "type": "Int!"
+      },
+      {
+        "name": "source",
+        "type": "String"
+      },
+      {
+        "name": "state",
+        "type": "String!"
+      },
+      {
+        "name": "subtitle",
+        "type": "String"
+      },
+      {
+        "name": "title",
+        "type": "String"
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp!"
+      },
+      {
+        "name": "users_count",
+        "type": "Int!"
+      },
+      {
+        "name": "users_read_count",
+        "type": "Int!"
+      }
+    ]
+  },
+  "series": {
+    "name": "series",
+    "fields": [
+      {
+        "name": "author",
+        "type": "authors"
+      },
+      {
+        "name": "author_id",
+        "type": "Int"
+      },
+      {
+        "name": "book_series",
+        "type": "[!]!"
+      },
+      {
+        "name": "book_series_aggregate",
+        "type": "book_series_aggregate!"
+      },
+      {
+        "name": "books_count",
+        "type": "Int!"
+      },
+      {
+        "name": "canonical",
+        "type": "series"
+      },
+      {
+        "name": "canonical_id",
+        "type": "Int"
+      },
+      {
+        "name": "creator",
+        "type": "users"
+      },
+      {
+        "name": "description",
+        "type": "String"
+      },
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "identifiers",
+        "type": "jsonb!"
+      },
+      {
+        "name": "is_completed",
+        "type": "Boolean"
+      },
+      {
+        "name": "locked",
+        "type": "Boolean!"
+      },
+      {
+        "name": "name",
+        "type": "String!"
+      },
+      {
+        "name": "object_type",
+        "type": "String!"
+      },
+      {
+        "name": "primary_books_count",
+        "type": "Int"
+      },
+      {
+        "name": "slug",
+        "type": "String!"
+      },
+      {
+        "name": "state",
+        "type": "String!"
+      },
+      {
+        "name": "user_id",
+        "type": "Int"
+      }
+    ]
+  },
+  "book_series": {
+    "name": "book_series",
+    "fields": [
+      {
+        "name": "book",
+        "type": "books"
+      },
+      {
+        "name": "book_id",
+        "type": "Int!"
+      },
+      {
+        "name": "compilation",
+        "type": "Boolean!"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp!"
+      },
+      {
+        "name": "details",
+        "type": "String"
+      },
+      {
+        "name": "featured",
+        "type": "Boolean!"
+      },
+      {
+        "name": "id",
+        "type": "bigint!"
+      },
+      {
+        "name": "position",
+        "type": "float8"
+      },
+      {
+        "name": "series",
+        "type": "series"
+      },
+      {
+        "name": "series_id",
+        "type": "Int!"
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp!"
+      }
+    ]
+  }
+}

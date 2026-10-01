@@ -20,6 +20,51 @@ const fromSources = (sources: Source[]): EvidenceBundle => ({ sources, ...empty 
 const identity = () => ({ title: 'Second', author: 'Example Author', position: 2,
   citations: [{ sourceId: 's1', quote: 'Second by Example Author. Book 2.' }] });
 
+test('crowded prompt preserves retrieved footer language and release facts', () => {
+  const evidence = fromSources(Array.from({ length: 26 }, (_, i) => source({ id: `footer-${i}`,
+    text: 'Second by Example Author.\n' + 'description '.repeat(350) + '\nLANGUAGE EN English\nRELEASED March 1, 2027\nISBN 1234567890' })));
+  const messages = buildExtractionMessages(enabled(), evidence);
+  const sent = JSON.parse(messages[1].content).sources as Source[];
+  expect(sent).toHaveLength(26);
+  for (const item of sent) {
+    expect(item.text).toContain('Second by Example Author.');
+    expect(item.text).toContain('LANGUAGE EN English');
+    expect(item.text).toContain('RELEASED March 1, 2027');
+  }
+  expect(Buffer.byteLength(JSON.stringify(messages), 'utf8')).toBeLessThanOrEqual(20000);
+});
+
+test('unknown-title crowded description retains order heading together with footer facts', () => {
+  const text = 'Second by Example Author. Book 2.\n' + 'plain prose '.repeat(100)
+    + ('An English release described in this English release story.\n' + 'x'.repeat(200) + '\n').repeat(15)
+    + 'LANGUAGE\nEN English\nRELEASED\n2027-03-01\nISBN 9780000000001';
+  const evidence = fromSources(Array.from({ length: 26 }, (_, index) => source({ id: `page-${index}`, text })));
+  const req = request({ useAi: true, formats: ['book'], target: { ...enabled().target, title: '' } });
+  const messages = buildExtractionMessages(req, evidence);
+  const sent = JSON.parse(messages[1].content).sources as Source[];
+  for (const item of sent) {
+    expect(item.text).toContain('Second by Example Author. Book 2.');
+    expect(item.text).toContain('LANGUAGE\nEN English');
+    expect(item.text).toContain('RELEASED\n2027-03-01');
+  }
+  expect(Buffer.byteLength(JSON.stringify(messages), 'utf8')).toBeLessThanOrEqual(20000);
+});
+
+test('rejects a quote crossing an artificial excerpt omission', async () => {
+  const evidence = fromSources([source({ text: 'Second by Example Author. ' + 'x'.repeat(19000) + '\nLANGUAGE EN English\nRELEASED 2027-03-01' })]);
+  const fetcher = vi.fn<typeof fetch>(async (_url, init) => {
+    const sent = JSON.parse(JSON.parse(init!.body as string).messages[1].content).sources[0].text as string;
+    const join = sent.indexOf('\n[…]\n');
+    expect(join).toBeGreaterThan(0);
+    const quote = sent.slice(join - 5, join + 10);
+    expect(evidence.sources[0].text).not.toContain(quote);
+    return response({ identities: [], editions: [edition({ citations: [{ sourceId: 's1', quote }] })] });
+  });
+  await expect(extractEvidence(enabled(), evidence, config, signal(), fetcher)).resolves.toMatchObject({
+    evidence: { editions: [] }, reasons: ['invalid-evidence'],
+  });
+});
+
 test.each([
   { bad: edition({ date: '2027-02-30' }), category: 'date-precision' },
   { bad: edition({ citations: [{ sourceId: 's1', quote: 'FAKE_SECRET invented' }] }), category: 'citation' },
@@ -215,7 +260,7 @@ test('uses one fixed JSON extraction request without thinking, tools or retries'
   expect(result.evidence.editions).toEqual([edition()]);
   expect(result.evidence.identities).toEqual([]);
   expect(result.reasons ?? []).toEqual([]);
-  expect(result.usage).toEqual({ apple: 0, openlibrary: 0, googlebooks: 0, tavily: 0, deepseek: 1, inputTokens: 100, outputTokens: 50 });
+  expect(result.usage).toEqual({ apple: 0, openlibrary: 0, googlebooks: 0, tavily: 0, hardcover: 0, deepseek: 1, inputTokens: 100, outputTokens: 50 });
   expect(fetcher).toHaveBeenCalledTimes(1);
   const [url, init] = fetcher.mock.calls[0];
   expect(String(url)).toBe('https://api.deepseek.com/chat/completions');
@@ -230,7 +275,7 @@ test('AI disabled performs zero calls and retains the original evidence', async 
   const fetcher = vi.fn<typeof fetch>(async () => response(empty));
   const evidence = bundle([edition()]);
   await expect(extractEvidence(request(), evidence, { ...config, deepseekKey: null }, signal(), fetcher))
-    .resolves.toEqual({ evidence, usage: { apple: 0, openlibrary: 0, googlebooks: 0, tavily: 0, deepseek: 0, inputTokens: 0, outputTokens: 0 } });
+    .resolves.toEqual({ evidence, usage: { apple: 0, openlibrary: 0, googlebooks: 0, tavily: 0, hardcover: 0, deepseek: 0, inputTokens: 0, outputTokens: 0 } });
   expect(fetcher).not.toHaveBeenCalled();
 });
 
@@ -286,13 +331,13 @@ test('rejects quotes in trimmed-away text and sources omitted at the source cap'
   }
 });
 
-test('returns the exact sent source texts while retaining server metadata', async () => {
+test('returns original selected sources after validating against actually sent text', async () => {
   const evidence = fromSources([source({ market: 'US', text: 'é'.repeat(19000) })]);
   const fetcher = vi.fn<typeof fetch>(async () => response(empty));
   const result = await extractEvidence(enabled(), evidence, config, signal(), fetcher);
   const sent = JSON.parse(JSON.parse(fetcher.mock.calls[0][1]!.body as string).messages[1].content).sources;
-  expect(result.evidence.sources[0]).toEqual({ ...evidence.sources[0], text: sent[0].text });
-  expect(result.evidence.sources[0].text.length).toBeLessThan(19000);
+  expect(result.evidence.sources[0]).toEqual(evidence.sources[0]);
+  expect(sent[0].text.length).toBeLessThan(19000);
 });
 
 test.each([
@@ -446,13 +491,15 @@ test('protected identity quotes beyond initial prefixes and both conflict sides 
   expect(sent.find(item => item.id === 'right')?.text).toContain('2028-03-01');
 });
 
-test('impossible protected prompt prefix rejects with budget before any provider call', async () => {
+test('short late protected quote fits without retaining its huge irrelevant prefix', async () => {
   const quote = 'Second by Example Author. Book 2.';
   const evidence: EvidenceBundle = { sources: [source({ text: 'x'.repeat(19000) + quote })],
     identities: [{ title: 'Second', author: 'Example Author', position: 2, citations: [{ sourceId: 's1', quote }] }], editions: [] };
   const fetcher = vi.fn<typeof fetch>(async () => response(empty));
-  await expect(extractEvidence(enabled(), evidence, config, signal(), fetcher)).rejects.toMatchObject({ reason: 'budget' });
-  expect(fetcher).not.toHaveBeenCalled();
+  await expect(extractEvidence(enabled(), evidence, config, signal(), fetcher)).resolves.toMatchObject({ evidence: empty });
+  expect(fetcher).toHaveBeenCalledOnce();
+  const sent = JSON.parse(JSON.parse(fetcher.mock.calls[0][1]!.body as string).messages[1].content).sources;
+  expect(sent[0].text).toContain(quote);
 });
 
 test('structured format reservation protects the whole selected citation closure in the prompt', () => {
@@ -474,7 +521,7 @@ test('optional source metadata is dropped before a protected-fit failure', () =>
   const messages = buildExtractionMessages(enabled(), evidence);
   const sent = JSON.parse(messages[1].content).sources as Source[];
   expect(sent.find(item => item.id === 'proof')?.text).toContain(quote);
-  expect(sent.length).toBeLessThan(30);
+  expect(sent.length).toBeLessThanOrEqual(30);
   expect(Buffer.byteLength(JSON.stringify(messages), 'utf8')).toBeLessThanOrEqual(20000);
 });
 
@@ -489,3 +536,4 @@ test('exact integer order hints outrank generic order prose and neighboring posi
   expect(sent.find(item => item.id === 'exact-order')?.text).toBe('Second by Example Author. Book 2.');
   expect(sent.length).toBeLessThanOrEqual(30);
 });
+

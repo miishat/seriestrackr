@@ -9,7 +9,7 @@ export function Dialog({ open, title, onClose, children, closable = true }: { op
     if (!dialog) return;
     opener.current = document.activeElement as HTMLElement | null;
     if (!dialog.open) dialog.showModal();
-    queueMicrotask(() => (dialog.querySelector<HTMLElement>('input:not([type=hidden]), select, textarea') ?? dialog.querySelector<HTMLElement>('button'))?.focus());
+    queueMicrotask(() => (dialog.querySelector<HTMLElement>('input:not([type=hidden]):not(:disabled), select:not(:disabled), textarea:not(:disabled)') ?? dialog.querySelector<HTMLElement>('button:not(:disabled)'))?.focus());
     return () => {
       if (dialog.open) dialog.close();
       opener.current?.focus();

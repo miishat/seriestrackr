@@ -1,0 +1,372 @@
+{
+  "retrievedAt": "2026-09-30T00:45:31.402Z",
+  "retrieval": "Assistant-assisted primary-source search and page reading; known catalog URLs revisited live. Publisher passages are factual research summaries, not unfiltered pages. Prior catalog API timestamps retained.",
+  "cases": [
+    {
+      "id": "witness",
+      "series": "The Witness Trilogy",
+      "author": "Steven Erikson",
+      "lastFinishedPosition": 2,
+      "preferredMarket": "CA",
+      "sourceIds": [
+        "P1",
+        "P13",
+        "A1"
+      ]
+    },
+    {
+      "id": "hierarchy",
+      "series": "Hierarchy",
+      "author": "James Islington",
+      "lastFinishedPosition": 1,
+      "preferredMarket": "CA",
+      "sourceIds": [
+        "P2",
+        "A2",
+        "A3",
+        "A4",
+        "A5"
+      ]
+    },
+    {
+      "id": "last-horizon",
+      "series": "The Last Horizon",
+      "author": "Will Wight",
+      "lastFinishedPosition": 3,
+      "preferredMarket": "CA",
+      "sourceIds": [
+        "P3",
+        "P14",
+        "A6"
+      ]
+    },
+    {
+      "id": "ana-din",
+      "series": "Ana and Din Mysteries",
+      "author": "Robert Jackson Bennett",
+      "lastFinishedPosition": 2,
+      "preferredMarket": "CA",
+      "sourceIds": [
+        "P4",
+        "P12",
+        "A7",
+        "A8"
+      ]
+    },
+    {
+      "id": "bound-broken",
+      "series": "The Bound and The Broken",
+      "author": "Ryan Cahill",
+      "lastFinishedPosition": 3,
+      "preferredMarket": "CA",
+      "sourceIds": [
+        "P5",
+        "A9"
+      ]
+    },
+    {
+      "id": "devils",
+      "series": "The Devils",
+      "author": "Joe Abercrombie",
+      "lastFinishedPosition": 1,
+      "preferredMarket": "CA",
+      "sourceIds": [
+        "P6",
+        "P7",
+        "A10"
+      ]
+    },
+    {
+      "id": "book-dead",
+      "series": "Book of the Dead",
+      "author": "RinoZ",
+      "lastFinishedPosition": 4,
+      "preferredMarket": "CA",
+      "sourceIds": [
+        "P8",
+        "A11"
+      ]
+    },
+    {
+      "id": "path",
+      "series": "Path to Ascendancy",
+      "author": "Ian C Esslemont",
+      "lastFinishedPosition": 1,
+      "preferredMarket": "CA",
+      "sourceIds": [
+        "P9",
+        "P10",
+        "P11",
+        "A12",
+        "A13",
+        "A14"
+      ]
+    },
+    {
+      "id": "ana-din-fallback",
+      "series": "Ana and Din Mysteries",
+      "author": "Robert Jackson Bennett",
+      "lastFinishedPosition": 2,
+      "preferredMarket": "CA",
+      "sourceIds": [
+        "P4",
+        "P12"
+      ]
+    },
+    {
+      "id": "path-prefer-uk",
+      "series": "Path to Ascendancy",
+      "author": "Ian C Esslemont",
+      "lastFinishedPosition": 1,
+      "preferredMarket": "GB",
+      "sourceIds": [
+        "P9",
+        "P10",
+        "P11",
+        "A12",
+        "A13",
+        "A14"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "P1",
+      "url": "https://www.penguin.co.uk/books/405106/legacies-of-betrayal-the-third-tale-of-witness/9781529991000",
+      "market": "GB",
+      "format": "audio",
+      "language": "en",
+      "text": "Steven Erikson. Legacies of Betrayal: The Third Tale of Witness. Third novel in Tales of Witness; audio ISBN 9781529991000. Published 01/10/2026 (UK date order)."
+    },
+    {
+      "id": "P2",
+      "url": "https://www.simonandschuster.ca/books/The-Strength-of-the-Few/James-Islington/Hierarchy/9781982141257",
+      "market": "CA",
+      "format": "ebook",
+      "language": "en",
+      "text": "James Islington. The Strength of the Few. Book #2 of Hierarchy. eBook ISBN 9781982141257. Publisher date November 11, 2025."
+    },
+    {
+      "id": "P3",
+      "url": "https://www.willwight.com/a-blog-of-dubious-intent/archives/02-2025",
+      "market": "unspecified",
+      "format": "unspecified",
+      "language": "en",
+      "text": "Will Wight discusses work on The Pilot; identifies the project as Book 4 of The Last Horizon. No format-specific date in this passage."
+    },
+    {
+      "id": "P4",
+      "url": "https://www.penguinrandomhouse.com/series/LVI/ana-and-din-mysteries/",
+      "market": "US",
+      "format": "unspecified",
+      "language": "en",
+      "text": "Robert Jackson Bennett. Ana and Din Mysteries series titles in order: A Trade of Blood, Book 3. Listed formats ebook, audio and hardcover. No dates in this passage."
+    },
+    {
+      "id": "P5",
+      "url": "https://www.ryancahillauthor.com/ofempiresanddust",
+      "market": "unspecified",
+      "format": "unspecified",
+      "language": "en",
+      "text": "Ryan Cahill. Of Empires and Dust. Book IV in The Bound and The Broken. No format-specific release date in this passage."
+    },
+    {
+      "id": "P6",
+      "url": "https://joeabercrombie.com/progress-report-june-26/",
+      "market": "unspecified",
+      "format": "unspecified",
+      "language": "en",
+      "text": "Joe Abercrombie, June 2026: The Heretics is the sequel to The Devils. Publication May 4 UK, May 11 US. This passage does not specify format or year."
+    },
+    {
+      "id": "P7",
+      "url": "https://joeabercrombie.com/progress-report-april-26/",
+      "market": "unspecified",
+      "format": "unspecified",
+      "language": "en",
+      "text": "Joe Abercrombie, April 2026: sequel publication expected May 2027. No format-specific date in this passage."
+    },
+    {
+      "id": "P8",
+      "url": "https://aethonbooks.com/2026/06/12/july-2026-litrpg-progression-fantasy-releases/",
+      "market": "unspecified",
+      "format": "unspecified",
+      "language": "en",
+      "text": "Aethon Books release listing: Book of the Dead 5: Ascension; Book of the Dead Book 5; RinoZ; July 22, 2026. Passage does not identify edition format or country. Same page also lists RinoZ Chrysalis book 9 on July 15."
+    },
+    {
+      "id": "P9",
+      "url": "https://www.penguin.co.uk/books/421794/deadhouse-landing-by-esslemont-ian-c/9781473510593",
+      "market": "GB",
+      "format": "ebook",
+      "language": "en",
+      "text": "Ian C Esslemont. Deadhouse Landing. Path to Ascendancy #2. Ebook ISBN 9781473510593. Published 16/11/2017 (UK date order)."
+    },
+    {
+      "id": "P10",
+      "url": "https://www.penguin.co.uk/books/421794/deadhouse-landing-by-esslemont-ian-c/9781473542198",
+      "market": "GB",
+      "format": "audio",
+      "language": "en",
+      "text": "Ian C Esslemont. Deadhouse Landing. Path to Ascendancy #2. Audio Download ISBN 9781473542198. Published 16/11/2017 (UK date order)."
+    },
+    {
+      "id": "P11",
+      "url": "https://www.penguin.co.uk/books/421794/deadhouse-landing-by-esslemont-ian-c/9780857502841",
+      "market": "GB",
+      "format": "paperback",
+      "language": "en",
+      "text": "Ian C Esslemont. Deadhouse Landing. Path to Ascendancy #2. Paperback ISBN 9780857502841. Published 23/08/2018 (UK date order)."
+    },
+    {
+      "id": "P12",
+      "url": "https://www.penguinrandomhouse.com/books/735560/a-trade-of-blood-by-robert-jackson-bennett/",
+      "market": "US",
+      "format": "ebook/print/audio",
+      "language": "en",
+      "text": "Robert Jackson Bennett. A Trade of Blood. US publisher format details: hardcover, ebook, audiobook download all published Aug 04, 2026."
+    },
+    {
+      "id": "P13",
+      "url": "https://www.penguin.co.uk/books/405106/legacies-of-betrayal-the-third-tale-of-witness-by-erikson-steven/9781409032786",
+      "market": "GB",
+      "format": "ebook",
+      "language": "en",
+      "text": "Steven Erikson. Legacies of Betrayal: The Third Tale of Witness. Ebook ISBN 9781409032786. Published 01/10/2026 (UK date order)."
+    },
+    {
+      "id": "P14",
+      "url": "https://music.amazon.com/podcasts/4fbf8999-9ffb-4cbe-a647-367ec0c31446/the-hidden-gnome-podcast",
+      "market": "unspecified",
+      "format": "ebook/print/audio",
+      "language": "en",
+      "text": "Hidden Gnome Publishing podcast announcement for Will Wight: The Pilot in The Last Horizon launches July 1, 2025; ebook, paperback and Audible-exclusive audiobook preorders. Country not specified."
+    },
+    {
+      "id": "A1",
+      "url": "https://books.apple.com/ca/book/legacies-of-betrayal-the-third-tale-of-witness/id6759184295?uo=4",
+      "market": "CA",
+      "format": "ebook",
+      "language": "en",
+      "text": "{\"title\":\"Legacies of Betrayal: The Third Tale of Witness\",\"author\":\"Steven Erikson\",\"apiTimestamp\":\"2026-10-01T07:00:00Z\",\"language\":\"LANGUAGE EN English\",\"pageDate\":\"Expected Oct 1, 2026\"}",
+      "series": "The Witness Trilogy"
+    },
+    {
+      "id": "A2",
+      "url": "https://books.apple.com/ca/book/the-strength-of-the-few/id6743716497?uo=4",
+      "market": "CA",
+      "format": "ebook",
+      "language": "en",
+      "text": "{\"title\":\"The Strength of the Few\",\"author\":\"James Islington\",\"apiTimestamp\":\"2025-11-11T08:00:00Z\",\"language\":\"LANGUAGE EN English\",\"pageDate\":\"RELEASED 2025 November 11\"}",
+      "series": "The Hierarchy"
+    },
+    {
+      "id": "A3",
+      "url": "https://books.apple.com/ca/book/the-strength-of-the-few/id6781290082?uo=4",
+      "market": "CA",
+      "format": "ebook",
+      "language": "fr",
+      "text": "{\"title\":\"The Strength of the Few\",\"author\":\"James Islington\",\"apiTimestamp\":\"2026-10-07T07:00:00Z\",\"language\":\"LANGUAGE FR French\",\"pageDate\":null}",
+      "series": "The Hierarchy"
+    },
+    {
+      "id": "A4",
+      "url": "https://books.apple.com/ca/audiobook/the-strength-of-the-few-hierarchy-book-2-unabridged/id1852118863?uo=4",
+      "market": "CA",
+      "format": "audiobook",
+      "language": "en",
+      "text": "{\"title\":\"The Strength of the Few: Hierarchy, Book 2 (Unabridged)\",\"author\":\"James Islington\",\"apiTimestamp\":\"2025-11-11T08:00:00Z\",\"language\":\"LANGUAGE EN English\",\"pageDate\":\"RELEASED 2025 November 11\"}",
+      "series": "The Hierarchy"
+    },
+    {
+      "id": "A5",
+      "url": "https://books.apple.com/ca/audiobook/the-strength-of-the-few/id1849097724?uo=4",
+      "market": "CA",
+      "format": "audiobook",
+      "language": "de",
+      "text": "{\"title\":\"The strength of the few\",\"author\":\"James Islington\",\"apiTimestamp\":\"2026-01-29T08:00:00Z\",\"language\":\"LANGUAGE DE German\",\"pageDate\":\"RELEASED 2026 January 29\"}",
+      "series": "The Hierarchy"
+    },
+    {
+      "id": "A6",
+      "url": "https://books.apple.com/ca/audiobook/the-pilot-the-last-horizon-book-4-unabridged/id1816312467?uo=4",
+      "market": "CA",
+      "format": "audiobook",
+      "language": "en",
+      "text": "{\"title\":\"The Pilot: The Last Horizon, Book 4 (Unabridged)\",\"author\":\"Will Wight\",\"apiTimestamp\":\"2025-07-01T07:00:00Z\",\"language\":\"LANGUAGE EN English\",\"pageDate\":\"RELEASED 2025 July 1\"}",
+      "series": "The Last Horizon"
+    },
+    {
+      "id": "A7",
+      "url": "https://books.apple.com/ca/book/a-trade-of-blood/id6749252239?uo=4",
+      "market": "CA",
+      "format": "ebook",
+      "language": "en",
+      "text": "{\"title\":\"A Trade of Blood\",\"author\":\"Robert Jackson Bennett\",\"apiTimestamp\":\"2026-08-04T07:00:00Z\",\"language\":\"LANGUAGE EN English\",\"pageDate\":\"RELEASED 2026 August 4\"}",
+      "series": "Ana and Din Mysteries"
+    },
+    {
+      "id": "A8",
+      "url": "https://books.apple.com/ca/audiobook/a-trade-of-blood-unabridged/id1829582507?uo=4",
+      "market": "CA",
+      "format": "audiobook",
+      "language": "en",
+      "text": "{\"title\":\"A Trade of Blood (Unabridged)\",\"author\":\"Robert Jackson Bennett\",\"apiTimestamp\":\"2026-08-04T07:00:00Z\",\"language\":\"LANGUAGE EN English\",\"pageDate\":\"RELEASED 2026 August 4\"}",
+      "series": "Ana and Din Mysteries"
+    },
+    {
+      "id": "A9",
+      "url": "https://books.apple.com/ca/audiobook/of-empires-and-dust-the-bound-and/id1824333097?uo=4",
+      "market": "CA",
+      "format": "audiobook",
+      "language": "en",
+      "text": "{\"title\":\"Of Empires and Dust: The Bound and the Broken, Book 4 (Unabridged)\",\"author\":\"Ryan Cahill\",\"apiTimestamp\":\"2025-09-30T07:00:00Z\",\"language\":\"LANGUAGE EN English\",\"pageDate\":\"RELEASED 2025 September 30\"}",
+      "series": "The Bound and the Broken"
+    },
+    {
+      "id": "A10",
+      "url": "https://books.apple.com/ca/book/the-heretics/id6768326621?uo=4",
+      "market": "CA",
+      "format": "ebook",
+      "language": "en",
+      "text": "{\"title\":\"The Heretics\",\"author\":\"Joe Abercrombie\",\"apiTimestamp\":\"2027-05-11T07:00:00Z\",\"language\":\"LANGUAGE EN English\",\"pageDate\":\"Expected May 11, 2027\"}",
+      "series": "The Devils"
+    },
+    {
+      "id": "A11",
+      "url": "https://books.apple.com/ca/audiobook/ascension-a-litrpg-adventure-book-of-the-dead-5-unabridged/id6793687365?uo=4",
+      "market": "CA",
+      "format": "audiobook",
+      "language": "en",
+      "text": "{\"title\":\"Ascension: A LitRPG Adventure (Book of the Dead 5) (Unabridged)\",\"author\":\"Rinoz\",\"apiTimestamp\":\"2026-08-19T07:00:00Z\",\"language\":\"LANGUAGE EN English\",\"pageDate\":\"RELEASED 2026 August 19\"}",
+      "series": "Book of the Dead"
+    },
+    {
+      "id": "A12",
+      "url": "https://books.apple.com/ca/book/deadhouse-landing/id1200479305?uo=4",
+      "market": "CA",
+      "format": "ebook",
+      "language": "en",
+      "text": "{\"title\":\"Deadhouse Landing\",\"author\":\"Ian C. Esslemont\",\"apiTimestamp\":\"2017-11-14T08:00:00Z\",\"language\":\"LANGUAGE EN English\",\"pageDate\":\"RELEASED 2017 November 14\"}",
+      "series": "Path to Ascendancy"
+    },
+    {
+      "id": "A13",
+      "url": "https://books.apple.com/ca/book/deadhouse-landing/id1197165271?uo=4",
+      "market": "CA",
+      "format": "ebook",
+      "language": "en",
+      "text": "{\"title\":\"Deadhouse Landing\",\"author\":\"Ian C Esslemont\",\"apiTimestamp\":\"2017-11-16T08:00:00Z\",\"language\":\"LANGUAGE EN English\",\"pageDate\":\"RELEASED 2017 November 16\"}",
+      "series": "Path to Ascendancy"
+    },
+    {
+      "id": "A14",
+      "url": "https://books.apple.com/ca/audiobook/deadhouse-landing-a-novel-of-the-malazan-empire/id1311761184?uo=4",
+      "market": "CA",
+      "format": "audiobook",
+      "language": "en",
+      "text": "{\"title\":\"Deadhouse Landing: A Novel of the Malazan Empire (Path to Ascendancy, Book 2) (Unabridged)\",\"author\":\"Ian C. Esslemont\",\"apiTimestamp\":\"2017-11-14T08:00:00Z\",\"language\":\"LANGUAGE EN English\",\"pageDate\":\"RELEASED 2017 November 14\"}",
+      "series": "Path to Ascendancy"
+    }
+  ]
+}

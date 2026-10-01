@@ -1,0 +1,151 @@
+[
+  {
+    "series": "The Witness Trilogy",
+    "query": "https://openlibrary.org/search.json?title=The%20God%20Is%20Not%20Willing&author=Steven%20Erikson&limit=3&fields=key,title,author_name,first_publish_year,edition_count",
+    "checkedAt": "2026-09-29T19:37:51.5426202Z",
+    "status": 200,
+    "numFound": 1,
+    "docs": [
+      {
+        "author_name": [
+          "Steven Erikson"
+        ],
+        "edition_count": 8,
+        "first_publish_year": 2021,
+        "key": "/works/OL20857366W",
+        "title": "The God is Not Willing"
+      }
+    ],
+    "cors": null,
+    "error": null
+  },
+  {
+    "series": "The Hierarchy",
+    "query": "https://openlibrary.org/search.json?title=The%20Will%20of%20the%20Many&author=James%20Islington&limit=3&fields=key,title,author_name,first_publish_year,edition_count",
+    "checkedAt": "2026-09-29T19:37:52.9691058Z",
+    "status": 200,
+    "numFound": 1,
+    "docs": [
+      {
+        "author_name": [
+          "James Islington"
+        ],
+        "edition_count": 7,
+        "first_publish_year": 2023,
+        "key": "/works/OL31088394W",
+        "title": "The Will of the Many"
+      }
+    ],
+    "cors": null,
+    "error": null
+  },
+  {
+    "series": "The Last Horizon",
+    "query": "https://openlibrary.org/search.json?title=The%20Captain&author=Will%20Wight&limit=3&fields=key,title,author_name,first_publish_year,edition_count",
+    "checkedAt": "2026-09-29T19:37:54.5098445Z",
+    "status": 200,
+    "numFound": 1,
+    "docs": [
+      {
+        "author_name": [
+          "Will Wight"
+        ],
+        "edition_count": 3,
+        "first_publish_year": 2023,
+        "key": "/works/OL33661586W",
+        "title": "The Captain"
+      }
+    ],
+    "cors": null,
+    "error": null
+  },
+  {
+    "series": "Ana and Din Mysteries",
+    "query": "https://openlibrary.org/search.json?title=The%20Tainted%20Cup&author=Robert%20Jackson%20Bennett&limit=3&fields=key,title,author_name,first_publish_year,edition_count",
+    "checkedAt": "2026-09-29T19:37:56.0214538Z",
+    "status": 200,
+    "numFound": 2,
+    "docs": [
+      {
+        "author_name": [
+          "Robert Jackson Bennett"
+        ],
+        "edition_count": 3,
+        "first_publish_year": 2024,
+        "key": "/works/OL37628730W",
+        "title": "The Tainted Cup"
+      },
+      {
+        "author_name": [
+          "Robert Jackson Bennett"
+        ],
+        "edition_count": 2,
+        "first_publish_year": 2024,
+        "key": "/works/OL39550764W",
+        "title": "The Tainted Cup"
+      }
+    ],
+    "cors": null,
+    "error": null
+  },
+  {
+    "series": "The Bound and the Broken",
+    "query": "https://openlibrary.org/search.json?title=Of%20Blood%20and%20Fire&author=Ryan%20Cahill&limit=3&fields=key,title,author_name,first_publish_year,edition_count",
+    "checkedAt": "2026-09-29T19:37:58.5116767Z",
+    "status": 200,
+    "numFound": 1,
+    "docs": [
+      {
+        "author_name": [
+          "Ryan Cahill"
+        ],
+        "edition_count": 3,
+        "first_publish_year": 2021,
+        "key": "/works/OL24244461W",
+        "title": "Of Blood And Fire"
+      }
+    ],
+    "cors": null,
+    "error": null
+  },
+  {
+    "series": "The Devils",
+    "query": "https://openlibrary.org/search.json?title=The%20Devils&author=Joe%20Abercrombie&limit=3&fields=key,title,author_name,first_publish_year,edition_count",
+    "checkedAt": "2026-09-29T19:37:59.9351844Z",
+    "status": 200,
+    "numFound": 1,
+    "docs": [
+      {
+        "author_name": [
+          "Joe Abercrombie"
+        ],
+        "edition_count": 2,
+        "first_publish_year": 2025,
+        "key": "/works/OL43508633W",
+        "title": "The Devils"
+      }
+    ],
+    "cors": null,
+    "error": null
+  },
+  {
+    "series": "Book of the Dead",
+    "query": "https://openlibrary.org/search.json?title=Awakening&author=RinoZ&limit=3&fields=key,title,author_name,first_publish_year,edition_count",
+    "checkedAt": "2026-09-29T19:38:01.3211546Z",
+    "status": null,
+    "numFound": null,
+    "docs": [],
+    "cors": null,
+    "error": "Response status code does not indicate success: 502 (Bad Gateway)."
+  },
+  {
+    "series": "Path to Ascendancy",
+    "query": "https://openlibrary.org/search.json?title=Dancer%27s%20Lament&author=Ian%20C.%20Esslemont&limit=3&fields=key,title,author_name,first_publish_year,edition_count",
+    "checkedAt": "2026-09-29T19:38:02.6769957Z",
+    "status": null,
+    "numFound": null,
+    "docs": [],
+    "cors": null,
+    "error": "Response status code does not indicate success: 502 (Bad Gateway)."
+  }
+]

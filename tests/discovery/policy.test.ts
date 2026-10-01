@@ -3,6 +3,37 @@ import { selectProposals } from '../../shared/discoveryPolicy';
 import { request, edition, bundle } from './fixtures';
 const at = '2026-09-29T12:00:00Z';
 
+test('a known integer-position title with a custom order note cannot accept catalog dates', () => {
+  const req = request({ target: { ...request().target, orderNote: '  Alternate chronology: second entry  ' } });
+  const evidence = bundle([edition({ position: null }), edition({ id: 'audio', format: 'audio', editionKey: 'audio' })]);
+  const before = structuredClone(evidence);
+  expect(selectProposals(req, evidence, at)).toEqual({
+    identity: null, identityAttribution: null, releases: { book: null, audio: null }, conflicts: [],
+  });
+  expect(evidence).toEqual(before);
+});
+
+test('generic same-position identity cannot attest a custom order note', () => {
+  const req = request({ target: { ...request().target, title: '', orderNote: 'Novels only' } });
+  const evidence = bundle([edition()], [{ title: 'Second', author: 'Example Author', position: 2,
+    citations: [{ sourceId: 's1', quote: 'Second by Example Author. Book 2.' }] }]);
+  expect(selectProposals(req, evidence, at)).toEqual({
+    identity: null, identityAttribution: null, releases: { book: null, audio: null }, conflicts: [],
+  });
+});
+
+test.each(['', ' \t\n '])('blank order note %j preserves known titles and cited fractional identities', orderNote => {
+  const req = request({ target: { ...request().target, orderNote } });
+  expect(selectProposals(req, bundle([edition({ position: null })]), at).releases.book?.date).toBe('2027-03-01');
+  const fractional = request({ target: { ...req.target, title: '', position: 1.5 } });
+  const identity = { title: 'Second', author: 'Example Author', position: 1.5,
+    citations: [{ sourceId: 's1', quote: 'Second by Example Author. Book 1.5.' }] };
+  const proposals = selectProposals(fractional, bundle([edition({ position: 1.5 })], [identity]), at);
+  expect(proposals.identity).toEqual(identity);
+  expect(proposals.releases.book?.date).toBe('2027-03-01');
+  expect(selectProposals(fractional, bundle([edition({ position: 1.5 })]), at).releases.book).toBeNull();
+});
+
 test('preferred-market date wins; audio falls back independently', () => {
   const p = selectProposals(request(), bundle([
     edition({ id: 'ca', date: '2027-03-01' }),

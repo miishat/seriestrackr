@@ -1,8 +1,10 @@
 import { createHash } from 'node:crypto';
 import type { CheckRequest, Citation, EditionEvidence, EditionFormat, EvidenceBundle, Precision, Reason, Source, Usage } from '../../shared/discovery';
 import { emptyUsage } from '../../shared/discovery';
+import { parseExtraction } from '../../shared/discoveryValidation';
 import { normalizeIdentity, selectProposals } from '../../shared/discoveryPolicy';
-import { fetchProviderJson, ProviderError } from './http';
+import { fetchProviderJson, fetchAppleProductText, ProviderError } from './http';
+import { appleCanonicalTitle, appleProductUrl, normalizeAppleProductPage } from './applePages';
 import { createRateQueue } from './rateQueue';
 import { normalizeGoogleBooks } from './googleBooks';
 import { diagnosticCounts, emitDiagnostic, type DiagnosticObserver } from './diagnostics';
@@ -202,7 +204,7 @@ function joinAppleLanguages(evidence: EvidenceBundle, originalLanguages: Map<str
 }
 
 export async function collectCatalogs(request: CheckRequest, markets: string[], signal: AbortSignal, fetcher: typeof fetch = fetch,
-  options: { googleBooksKey?: string | null; onDiagnostic?: DiagnosticObserver } = {}): Promise<CatalogResult> {
+  options: { googleBooksKey?: string | null; onDiagnostic?: DiagnosticObserver; appleIsbnJoin?: boolean; appleProductPages?: boolean; seedEvidence?: EvidenceBundle } = {}): Promise<CatalogResult> {
   const evidence = empty();
   const usage = emptyUsage();
   const reasons: Reason[] = [];
@@ -214,19 +216,27 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
     if (value === 'budget' || value === 'invalid-evidence') emitDiagnostic(options.onDiagnostic,
       { stage: 'catalog', category: value === 'budget' ? 'bounds' : 'shape', ...diagnosticCounts(evidence) });
   };
+  if (options.seedEvidence) {
+    const seed = parseExtraction(options.seedEvidence, options.seedEvidence.sources);
+    if (seed.ok) merge(evidence, seed.value); else reason('invalid-evidence');
+  }
   const preferred = country(request.preferredMarket);
   const countries = [...new Set([preferred, ...markets.map(country)].filter((item): item is string => item !== null && (item === preferred || ['US', 'GB', 'CA'].includes(item))))].slice(0, 4);
   const formats = [...new Set(request.formats)];
   const queries = new Map<string, Promise<unknown>>();
+  const hydrated = new Set<string>();
+  let htmlStarted = 0;
   const googleBooksKey = options.googleBooksKey?.trim() ?? '';
   const seriesQuery = `${request.target.series} inauthor:${request.target.author}`;
   const titleQuery = (title: string) => `intitle:${title} inauthor:${request.target.author}`;
-  const initialQuery = request.target.title ? titleQuery(request.target.title) : seriesQuery;
+
   const effectiveRequest = (): CheckRequest => {
     if (request.target.title) return request;
     const identity = selectProposals(request, evidence, checkedAt).identity;
     return identity ? { ...request, target: { ...request.target, title: identity.title } } : request;
   };
+  const initialTitle = effectiveRequest().target.title;
+  const initialQuery = initialTitle ? titleQuery(initialTitle) : seriesQuery;
   const retrieve = (provider: 'apple' | 'openlibrary' | 'googlebooks', path: string): Promise<unknown> => {
     const key = `${provider}:${path}`;
     const cached = queries.get(key);
@@ -276,8 +286,105 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
     joinAppleLanguages(evidence, originalLanguages);
   }
 
+  async function hydrateApple(market: string): Promise<void> {
+    if (!options.appleProductPages) return;
+    const targetRequest = effectiveRequest();
+    if (!targetRequest.target.title) return;
+    const candidates = evidence.editions.filter(edition => edition.id.startsWith('apple:') && edition.market === market &&
+      formats.includes(edition.format === 'audio' ? 'audio' : 'book') && appleCanonicalTitle(edition, targetRequest) !== null)
+      .sort((left, right) => (left.date ?? '9999-99-99').localeCompare(right.date ?? '9999-99-99') || left.id.localeCompare(right.id))
+      .map(edition => ({ edition, source: evidence.sources.find(source => source.id === edition.id) }))
+      .filter((item): item is { edition: EditionEvidence; source: Source } => item.source !== undefined && appleProductUrl(item.source.url, item.edition) !== null);
+    const ordered: typeof candidates = [];
+    for (const format of formats) {
+      const candidate = candidates.find(item => (format === 'audio' ? item.edition.format === 'audio' : item.edition.format === 'ebook'));
+      if (candidate) ordered.push(candidate);
+    }
+    ordered.push(...candidates.filter(item => !ordered.includes(item)));
+    for (const { edition, source } of ordered) {
+      if (signal.aborted) { reason('cancelled'); break; }
+      const key = `${market}:${edition.id}`;
+      if (hydrated.has(key)) continue;
+      const proposal = selectProposals(request, evidence, checkedAt).releases[edition.format === 'audio' ? 'audio' : 'book'];
+      if (proposal?.date && proposal.provenance.sourceMarket === preferred) continue;
+      if (usage.apple >= 12 || htmlStarted >= 6) { reason('budget'); break; }
+      hydrated.add(key);
+      try {
+        const html = await appleQueue.run(async () => {
+          if (usage.apple >= 12 || htmlStarted >= 6) throw new ProviderError('apple', 'budget');
+          usage.apple++; htmlStarted++;
+          return fetchAppleProductText(source.url, signal, fetcher);
+        }, signal);
+        const normalized = normalizeAppleProductPage(html, source, edition, targetRequest, checkedAt);
+        if (!normalized.sources.length) reason('invalid-evidence');
+        merge(evidence, normalized);
+      } catch (error) {
+        reason(signal.aborted ? 'cancelled' : error instanceof ProviderError ? error.reason : 'provider-error');
+      }
+    }
+  }
+
+  // ISBN join: an explicit edition identifier is stronger evidence than title
+  // text. Catalog-supplied ISBNs are resolved directly against the storefront
+  // so a decorated storefront title (series, ordinal, Unabridged) can still
+  // supply the market-scoped date for the exact edition.
+  const appleIsbnJoin = async (): Promise<void> => {
+    const market = countries[0];
+    const target = effectiveRequest().target;
+    if (!market || !target.title || !formats.includes('book')) return;
+    const workTitle = normalizeIdentity(target.title);
+    const workAuthor = normalizeIdentity(request.target.author);
+    const candidates = new Map<string, EditionEvidence[]>();
+    for (const item of evidence.editions) {
+      if (!item.editionKey?.startsWith('isbn:') || item.format !== 'ebook' || item.id.startsWith('apple:')) continue;
+      if (normalizeIdentity(item.title) !== workTitle || normalizeIdentity(item.author) !== workAuthor) continue;
+      candidates.set(item.editionKey, [...(candidates.get(item.editionKey) ?? []), item]);
+    }
+    for (const [key, matches] of [...candidates].slice(0, 4)) {
+      if (signal.aborted) return;
+      const proposal = selectProposals(request, evidence, checkedAt).releases.book;
+      if (proposal?.date && proposal.provenance.sourceMarket === preferred) continue;
+      const params = new URLSearchParams({ isbn: key.slice('isbn:'.length),
+        country: market.toLowerCase(), entity: 'ebook', limit: '5' });
+      const raw = await retrieve('apple', `/lookup?${params}`);
+      if (raw === unavailable) continue;
+      const results = object(raw).results;
+      if (!Array.isArray(results)) { reason('invalid-evidence'); continue; }
+      if (results.length > 5) { reason('budget'); continue; }
+      const responseIsbns = results.flatMap(item => {
+        const record = object(item);
+        return [record.isbn13, record.isbn].filter(value => value !== null && value !== undefined);
+      });
+      if (responseIsbns.some(value => isbn(value) !== key)) { reason('invalid-evidence'); continue; }
+      const languageStates = new Map<string, LanguageMetadata>();
+      const normalized = normalizeAppleRecords(raw, market, 'ebook', checkedAt, languageStates);
+      if (normalized.editions.length !== 1 || normalized.sources.length !== 1) continue;
+      const edition = normalized.editions[0];
+      if (normalizeIdentity(edition.author) !== workAuthor) continue;
+      const metadata = languageStates.get(edition.id);
+      const languages = new Set(matches.map(item => item.language));
+      const catalogLanguage = languages.size === 1 && !languages.has(null) ? matches[0].language : null;
+      const joinedLanguage = metadata?.state === 'absent' ? catalogLanguage
+        : metadata?.state === 'explicit' && catalogLanguage === metadata.value ? metadata.value : null;
+      const association = `ISBN lookup: ${key}. Returned edition: ${edition.editionKey}. Canonical title: ${target.title}.`;
+      const source = normalized.sources[0];
+      source.text += ` ${association}`;
+      const joined = empty();
+      joined.sources.push(source);
+      const joinedCitations = [...edition.citations, ...citations(source.id, association)];
+      for (const match of matches) for (const citation of match.citations) {
+        if (!joinedCitations.some(item => item.sourceId === citation.sourceId && item.quote === citation.quote)) joinedCitations.push(citation);
+      }
+      joined.editions.push({ ...edition, title: target.title, editionKey: key, language: joinedLanguage, citations: joinedCitations });
+      for (const [incomingId, actualId] of merge(evidence, joined)) {
+        if (!originalLanguages.has(actualId) && languageStates.has(incomingId)) originalLanguages.set(actualId, languageStates.get(incomingId)!);
+      }
+    }
+  };
+
   if (googleBooksKey && !signal.aborted) await googleSearch(initialQuery);
   for (const format of formats) if (countries[0] && !signal.aborted) await appleSearch(countries[0], format);
+  if (countries[0] && !signal.aborted) await hydrateApple(countries[0]);
   if (!signal.aborted) {
     const target = effectiveRequest().target;
     const params = new URLSearchParams({ title: target.title || target.series, author: target.author, limit: '20', fields: 'key,title,author_name,author_key,edition_key,first_publish_year,language' });
@@ -318,6 +425,7 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
       if (proposal?.date && proposal.provenance.sourceMarket === preferred) continue;
       await appleSearch(market, format);
     }
+    if (!signal.aborted) await hydrateApple(market);
   }
   if (googleBooksKey && !signal.aborted) {
     const proposals = selectProposals(request, evidence, checkedAt);
@@ -326,6 +434,9 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
     const alternate = request.target.title ? seriesQuery : proposals.identity ? titleQuery(proposals.identity.title) : null;
     if ((needsBook || needsIdentity) && alternate && alternate !== initialQuery) await googleSearch(alternate);
   }
+  if (options.appleIsbnJoin && !signal.aborted) await appleIsbnJoin();
+  if (countries[0] && !signal.aborted) await hydrateApple(countries[0]);
   if (signal.aborted) reason('cancelled');
   return { evidence, usage, reasons };
 }
+

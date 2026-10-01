@@ -13,7 +13,7 @@ export function SettingsDialog({ settings, onSave, onCancel, error }: { settings
   const [value, setValue] = useState(settings);
   const [localError, setLocalError] = useState<string | null>(null);
   const submit = (event: FormEvent) => { event.preventDefault(); if (!value.market || !/^[A-Z]{2}$/.test(value.market)) return setLocalError('Choose a two-letter country market.'); setLocalError(null); onSave(value); };
-  return <form onSubmit={submit} noValidate><p>Release dates refer to the selected market. A series can override it.</p>
+  return <form onSubmit={submit} noValidate><p>The selected country is preferred for English releases. Each format can use another country when no supported preferred-country date is found. A series can override this preference. Manual tracking works independently.</p>
     <div className="form-grid"><MarketSelect value={value.market ?? ''} onChange={(market) => setValue({ ...value, market: market || null })} />
       <label>Theme<select value={value.theme} onChange={(event) => setValue({ ...value, theme: event.target.value as Settings['theme'] })}><option value="light">Light</option><option value="dark">Dark</option></select></label>
       <label>Default view<select value={value.view} onChange={(event) => setValue({ ...value, view: event.target.value as Settings['view'] })}><option value="grid">Bookshelf cards</option><option value="compact">Compact cards</option><option value="list">Release table</option></select></label>

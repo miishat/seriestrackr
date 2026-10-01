@@ -118,3 +118,11 @@ test('different cited identities at the requested position block dependent dates
   ]);
   expect(selectProposals(request(), evidence, at).releases.book).toBeNull();
 });
+
+test('Hardcover contract provider and required usage counter are explicit', () => {
+  const valid = response();
+  expect(emptyUsage().hardcover).toBe(0);
+  const { hardcover: omitted, ...withoutHardcover } = valid.summary.usage;
+  expect(parseCheckResponse({ ...valid, summary: { ...valid.summary, usage: withoutHardcover } }).ok).toBe(false);
+  for (const count of [-1, 0.5, '1', null]) expect(parseCheckResponse({ ...valid, summary: { ...valid.summary, usage: { ...valid.summary.usage, hardcover: count } } }).ok).toBe(false);
+});

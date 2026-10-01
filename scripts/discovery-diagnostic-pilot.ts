@@ -5,11 +5,11 @@ import { emitDiagnostic, type DiagnosticEvent } from '../server/discovery/diagno
 import { estimatedMaxAiUsd } from '../server/discovery/deepseek';
 import { readPilotCases, runPilot } from './discovery-pilot';
 
-const caps = { googlebooks: 2, apple: 12, openlibrary: 3, tavily: 3, deepseek: 1 } as const;
+const caps = { hardcover: 1, googlebooks: 2, apple: 12, openlibrary: 3, tavily: 3, deepseek: 1 } as const;
 type Counts = Record<keyof typeof caps, number>;
-const zeroCounts = (): Counts => ({ googlebooks: 0, apple: 0, openlibrary: 0, tavily: 0, deepseek: 0 });
+const zeroCounts = (): Counts => ({ hardcover: 0, googlebooks: 0, apple: 0, openlibrary: 0, tavily: 0, deepseek: 0 });
 const origins: Record<string, keyof Counts> = {
-  'https://www.googleapis.com': 'googlebooks', 'https://itunes.apple.com': 'apple',
+  'https://api.hardcover.app': 'hardcover', 'https://www.googleapis.com': 'googlebooks', 'https://itunes.apple.com': 'apple', 'https://books.apple.com': 'apple',
   'https://openlibrary.org': 'openlibrary', 'https://api.tavily.com': 'tavily', 'https://api.deepseek.com': 'deepseek',
 };
 const workspaceParts = ['.superpowers', 'sdd', '2026-09-30-discovery-retrieval-diagnostics'];
@@ -107,3 +107,4 @@ export async function runDiagnosticPilot(args: string[], options: {
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   runDiagnosticPilot(process.argv.slice(2)).catch(() => { console.error('diagnostic-pilot-failed'); process.exitCode = 1; });
 }
+

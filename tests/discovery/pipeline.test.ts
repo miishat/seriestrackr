@@ -63,6 +63,28 @@ function dependencies(evidence = empty()): DiscoveryDependencies {
   };
 }
 
+test.each(['Second', ''])('custom order note preserves source-only results and unknown summaries for title %j', async title => {
+  const evidence = bundle([edition({ position: null }), edition({ id: 'audio', format: 'audio', editionKey: 'audio' })], [
+    { title: 'Second', author: 'Example Author', position: 2,
+      citations: [{ sourceId: 's1', quote: 'Second by Example Author. Book 2.' }] },
+  ]);
+  const req = request({ target: { ...request().target, title, orderNote: 'Alternate chronology: second entry' } });
+  const beforeRequest = structuredClone(req); const beforeEvidence = structuredClone(evidence);
+  const deps = dependencies(evidence);
+  const result = await runDiscovery(req, deps, new AbortController().signal);
+  expect(result.proposals).toEqual({ identity: null, identityAttribution: null,
+    releases: { book: null, audio: null }, conflicts: [] });
+  expect(result.summary.formats).toEqual({ book: 'unknown', audio: 'unknown' });
+  expect(result.summary.status).toBe('complete');
+  if (!title) expect(result.summary.reasons).toContain('unknown-identity');
+  expect(result.sources).toHaveLength(1);
+  expect(result.sources[0]).toMatchObject({ title: evidence.sources[0].title, url: evidence.sources[0].url });
+  expect(result.sources[0]).not.toHaveProperty('text');
+  expect(parseCheckResponse(result).ok).toBe(true);
+  expect(deps.extract).not.toHaveBeenCalled();
+  expect(req).toEqual(beforeRequest); expect(evidence).toEqual(beforeEvidence);
+});
+
 test.each(['identity-only', 'catalog-book', 'catalog-facts-and-conflicts'])('invalid AI edition batch stays partial and preserves identity plus %s', async variant => {
   const identity = { title: 'Second', author: 'Example Author', position: 2,
     citations: [{ sourceId: 's1', quote: 'Second by Example Author. Book 2.' }] };
@@ -551,8 +573,8 @@ test('source-only role reservations cannot evict a fitting protected 30-source i
 });
 
 test.each([
-  { label: 'earlier matching preferred', prunedTitle: 'Second', prunedDate: '2026-12-01', prunedMarket: 'CA', retainedMarket: 'CA', expected: null },
-  { label: 'earlier matching fallback', prunedTitle: 'Second', prunedDate: '2026-12-01', prunedMarket: 'US', retainedMarket: 'US', expected: null },
+  { label: 'earlier matching preferred', prunedTitle: 'Second', prunedDate: '2026-12-01', prunedMarket: 'CA', retainedMarket: 'CA', expected: '2026-12-01' },
+  { label: 'earlier matching fallback', prunedTitle: 'Second', prunedDate: '2026-12-01', prunedMarket: 'US', retainedMarket: 'US', expected: '2026-12-01' },
   { label: 'earlier unrelated work', prunedTitle: 'Other Work', prunedDate: '2026-12-01', prunedMarket: 'CA', retainedMarket: 'CA', expected: '2027-03-01' },
   { label: 'later matching preferred', prunedTitle: 'Second', prunedDate: '2028-12-01', prunedMarket: 'CA', retainedMarket: 'CA', expected: '2027-03-01' },
   { label: 'earlier fallback beside supported preferred', prunedTitle: 'Second', prunedDate: '2026-12-01', prunedMarket: 'US', retainedMarket: 'CA', expected: '2027-03-01' },
@@ -592,7 +614,8 @@ test.each([
   expect(result.proposals.releases.audio?.provenance.sourceMarket).toBe('GB');
   expect(result.sources.length).toBeLessThanOrEqual(30);
   expect(result.sources.some(item => item.title === 'Series order')).toBe(true);
-  expect(result.sources.some(item => item.url.endsWith('/late-source-29'))).toBe(false);
+  expect(result.sources.some(item => item.url.endsWith('/late-source-29'))).toBe(
+    prunedTitle === 'Second' && prunedDate === '2026-12-01' && prunedMarket === retainedMarket);
   expect(result.summary.reasons).toContain('budget');
   expect(result.summary.formats.book).toBe(expected === null ? 'unknown' : 'supported');
   expect(result.summary.reasons).not.toContain('invalid-evidence');

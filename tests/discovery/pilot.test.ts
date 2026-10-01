@@ -47,8 +47,8 @@ test('dry run validates presence and planned bounds with zero requests, no secre
   await runPilot(['--dry-run', '--ai'], { root, fetcher, runtime: deps, print });
   const output = print.mock.calls.map(call => call[0]).join(''); const report = JSON.parse(output);
   expect(report.requestsMade).toBe(0); expect(report.liveGate).toBe('pending'); expect(report.plan).toHaveLength(14);
-  expect(report.plan[0].queries).toEqual({ appleMax: 12, openlibraryMax: 3, googleBooksMax: 2, tavilyMax: 3, deepseekMax: 1 });
-  expect(report.keyPresence).toEqual({ search: true, ai: true, googleBooks: true });
+  expect(report.plan[0].queries).toEqual({ hardcoverMax: 0, appleMax: 12, openlibraryMax: 3, googleBooksMax: 2, tavilyMax: 3, deepseekMax: 1 });
+  expect(report.keyPresence).toEqual({ search: true, ai: true, googleBooks: true, hardcover: false });
   expect(output).not.toContain('fake-google-secret');
   expect(output).not.toContain('fake-tavily-secret'); expect(output).not.toContain('fake-deepseek-secret'); expect(output).not.toContain('ORACLE_ONLY');
   expect(fetcher).not.toHaveBeenCalled(); expect(deps.catalogs).not.toHaveBeenCalled();
@@ -62,7 +62,7 @@ test.each(['blank', 'absent'])('Google %s ignored env file produces absent key p
   const fetcher = vi.fn(); const deps = runtime();
   await runPilot([], { root, print, fetcher, runtime: deps });
   const output = print.mock.calls[0][0]; const report = JSON.parse(output);
-  expect(report.keyPresence).toEqual({ search: false, ai: false, googleBooks: false });
+  expect(report.keyPresence).toEqual({ search: false, ai: false, googleBooks: false, hardcover: false });
   expect(report.plan.every((item: { queries: { googleBooksMax: number } }) => item.queries.googleBooksMax === 0)).toBe(true);
   expect(report.requestsMade).toBe(0); expect(output).not.toContain('fake-google-secret');
   expect(fetcher).not.toHaveBeenCalled(); expect(deps.catalogs).not.toHaveBeenCalled();
@@ -125,4 +125,14 @@ test('GB preferred control keeps later local dates over earlier CA and later pap
   for (const format of ['book', 'audio'] as const) {
     expect(result.proposals.releases[format]?.date).toBe('2017-11-16'); expect(result.proposals.releases[format]?.provenance.sourceMarket).toBe('GB');
   }
+});
+
+
+test('dry run includes optional Hardcover count without exposing token content', async () => {
+  const root = tempRoot(); writeFileSync(resolve(root, '.env.hardcover.local'), 'HARDCOVER_API_TOKEN=fake-hardcover-secret');
+  const print = vi.fn(); const fetcher = vi.fn();
+  await runPilot(['--dry-run'], { root, print, fetcher, runtime: runtime() });
+  const report = JSON.parse(print.mock.calls[0][0]);
+  expect(report.keyPresence.hardcover).toBe(true); expect(report.plan[0].queries.hardcoverMax).toBe(1);
+  expect(print.mock.calls[0][0]).not.toContain('fake-hardcover-secret'); expect(fetcher).not.toHaveBeenCalled();
 });

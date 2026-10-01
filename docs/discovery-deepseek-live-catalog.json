@@ -1,0 +1,173 @@
+{
+  "checkedAt": "2026-09-30T00:41:54.669Z",
+  "records": [
+    {
+      "series": "The Witness Trilogy",
+      "format": "ebook",
+      "url": "https://books.apple.com/ca/book/legacies-of-betrayal-the-third-tale-of-witness/id6759184295?uo=4",
+      "title": "Legacies of Betrayal: The Third Tale of Witness",
+      "author": "Steven Erikson",
+      "apiDate": "2026-10-01T07:00:00Z",
+      "status": 200,
+      "finalUrl": "https://books.apple.com/ca/book/legacies-of-betrayal-the-third-tale-of-witness/id6759184295?uo=4",
+      "languageExcerpt": "LANGUAGE EN English",
+      "dateExcerpt": "Expected Oct 1, 2026"
+    },
+    {
+      "series": "The Hierarchy",
+      "format": "ebook",
+      "url": "https://books.apple.com/ca/book/the-strength-of-the-few/id6743716497?uo=4",
+      "title": "The Strength of the Few",
+      "author": "James Islington",
+      "apiDate": "2025-11-11T08:00:00Z",
+      "status": 200,
+      "finalUrl": "https://books.apple.com/ca/book/the-strength-of-the-few/id6743716497?uo=4",
+      "languageExcerpt": "LANGUAGE EN English",
+      "dateExcerpt": "RELEASED 2025 November 11"
+    },
+    {
+      "series": "The Hierarchy",
+      "format": "ebook",
+      "url": "https://books.apple.com/ca/book/the-strength-of-the-few/id6781290082?uo=4",
+      "title": "The Strength of the Few",
+      "author": "James Islington",
+      "apiDate": "2026-10-07T07:00:00Z",
+      "status": 200,
+      "finalUrl": "https://books.apple.com/ca/book/the-strength-of-the-few/id6781290082?uo=4",
+      "languageExcerpt": "LANGUAGE FR French",
+      "dateExcerpt": null
+    },
+    {
+      "series": "The Hierarchy",
+      "format": "audiobook",
+      "url": "https://books.apple.com/ca/audiobook/the-strength-of-the-few-hierarchy-book-2-unabridged/id1852118863?uo=4",
+      "title": "The Strength of the Few: Hierarchy, Book 2 (Unabridged)",
+      "author": "James Islington",
+      "apiDate": "2025-11-11T08:00:00Z",
+      "status": 200,
+      "finalUrl": "https://books.apple.com/ca/audiobook/the-strength-of-the-few-hierarchy-book-2-unabridged/id1852118863?uo=4",
+      "languageExcerpt": "LANGUAGE EN English",
+      "dateExcerpt": "RELEASED 2025 November 11"
+    },
+    {
+      "series": "The Hierarchy",
+      "format": "audiobook",
+      "url": "https://books.apple.com/ca/audiobook/the-strength-of-the-few/id1849097724?uo=4",
+      "title": "The strength of the few",
+      "author": "James Islington",
+      "apiDate": "2026-01-29T08:00:00Z",
+      "status": 200,
+      "finalUrl": "https://books.apple.com/ca/audiobook/the-strength-of-the-few/id1849097724?uo=4",
+      "languageExcerpt": "LANGUAGE DE German",
+      "dateExcerpt": "RELEASED 2026 January 29"
+    },
+    {
+      "series": "The Last Horizon",
+      "format": "audiobook",
+      "url": "https://books.apple.com/ca/audiobook/the-pilot-the-last-horizon-book-4-unabridged/id1816312467?uo=4",
+      "title": "The Pilot: The Last Horizon, Book 4 (Unabridged)",
+      "author": "Will Wight",
+      "apiDate": "2025-07-01T07:00:00Z",
+      "status": 200,
+      "finalUrl": "https://books.apple.com/ca/audiobook/the-pilot-the-last-horizon-book-4-unabridged/id1816312467?uo=4",
+      "languageExcerpt": "LANGUAGE EN English",
+      "dateExcerpt": "RELEASED 2025 July 1"
+    },
+    {
+      "series": "Ana and Din Mysteries",
+      "format": "ebook",
+      "url": "https://books.apple.com/ca/book/a-trade-of-blood/id6749252239?uo=4",
+      "title": "A Trade of Blood",
+      "author": "Robert Jackson Bennett",
+      "apiDate": "2026-08-04T07:00:00Z",
+      "status": 200,
+      "finalUrl": "https://books.apple.com/ca/book/a-trade-of-blood/id6749252239?uo=4",
+      "languageExcerpt": "LANGUAGE EN English",
+      "dateExcerpt": "RELEASED 2026 August 4"
+    },
+    {
+      "series": "Ana and Din Mysteries",
+      "format": "audiobook",
+      "url": "https://books.apple.com/ca/audiobook/a-trade-of-blood-unabridged/id1829582507?uo=4",
+      "title": "A Trade of Blood (Unabridged)",
+      "author": "Robert Jackson Bennett",
+      "apiDate": "2026-08-04T07:00:00Z",
+      "status": 200,
+      "finalUrl": "https://books.apple.com/ca/audiobook/a-trade-of-blood-unabridged/id1829582507?uo=4",
+      "languageExcerpt": "LANGUAGE EN English",
+      "dateExcerpt": "RELEASED 2026 August 4"
+    },
+    {
+      "series": "The Bound and the Broken",
+      "format": "audiobook",
+      "url": "https://books.apple.com/ca/audiobook/of-empires-and-dust-the-bound-and/id1824333097?uo=4",
+      "title": "Of Empires and Dust: The Bound and the Broken, Book 4 (Unabridged)",
+      "author": "Ryan Cahill",
+      "apiDate": "2025-09-30T07:00:00Z",
+      "status": 200,
+      "finalUrl": "https://books.apple.com/ca/audiobook/of-empires-and-dust-the-bound-and/id1824333097?uo=4",
+      "languageExcerpt": "LANGUAGE EN English",
+      "dateExcerpt": "RELEASED 2025 September 30"
+    },
+    {
+      "series": "The Devils",
+      "format": "ebook",
+      "url": "https://books.apple.com/ca/book/the-heretics/id6768326621?uo=4",
+      "title": "The Heretics",
+      "author": "Joe Abercrombie",
+      "apiDate": "2027-05-11T07:00:00Z",
+      "status": 200,
+      "finalUrl": "https://books.apple.com/ca/book/the-heretics/id6768326621?uo=4",
+      "languageExcerpt": "LANGUAGE EN English",
+      "dateExcerpt": "Expected May 11, 2027"
+    },
+    {
+      "series": "Book of the Dead",
+      "format": "audiobook",
+      "url": "https://books.apple.com/ca/audiobook/ascension-a-litrpg-adventure-book-of-the-dead-5-unabridged/id6793687365?uo=4",
+      "title": "Ascension: A LitRPG Adventure (Book of the Dead 5) (Unabridged)",
+      "author": "Rinoz",
+      "apiDate": "2026-08-19T07:00:00Z",
+      "status": 200,
+      "finalUrl": "https://books.apple.com/ca/audiobook/ascension-a-litrpg-adventure-book-of-the-dead-5-unabridged/id6793687365?uo=4",
+      "languageExcerpt": "LANGUAGE EN English",
+      "dateExcerpt": "RELEASED 2026 August 19"
+    },
+    {
+      "series": "Path to Ascendancy",
+      "format": "ebook",
+      "url": "https://books.apple.com/ca/book/deadhouse-landing/id1200479305?uo=4",
+      "title": "Deadhouse Landing",
+      "author": "Ian C. Esslemont",
+      "apiDate": "2017-11-14T08:00:00Z",
+      "status": 200,
+      "finalUrl": "https://books.apple.com/ca/book/deadhouse-landing/id1200479305?uo=4",
+      "languageExcerpt": "LANGUAGE EN English",
+      "dateExcerpt": "RELEASED 2017 November 14"
+    },
+    {
+      "series": "Path to Ascendancy",
+      "format": "ebook",
+      "url": "https://books.apple.com/ca/book/deadhouse-landing/id1197165271?uo=4",
+      "title": "Deadhouse Landing",
+      "author": "Ian C Esslemont",
+      "apiDate": "2017-11-16T08:00:00Z",
+      "status": 200,
+      "finalUrl": "https://books.apple.com/ca/book/deadhouse-landing/id1197165271?uo=4",
+      "languageExcerpt": "LANGUAGE EN English",
+      "dateExcerpt": "RELEASED 2017 November 16"
+    },
+    {
+      "series": "Path to Ascendancy",
+      "format": "audiobook",
+      "url": "https://books.apple.com/ca/audiobook/deadhouse-landing-a-novel-of-the-malazan-empire/id1311761184?uo=4",
+      "title": "Deadhouse Landing: A Novel of the Malazan Empire (Path to Ascendancy, Book 2) (Unabridged)",
+      "author": "Ian C. Esslemont",
+      "apiDate": "2017-11-14T08:00:00Z",
+      "status": 200,
+      "finalUrl": "https://books.apple.com/ca/audiobook/deadhouse-landing-a-novel-of-the-malazan-empire/id1311761184?uo=4",
+      "languageExcerpt": "LANGUAGE EN English",
+      "dateExcerpt": "RELEASED 2017 November 14"
+    }
+  ]
+}

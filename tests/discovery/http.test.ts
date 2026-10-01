@@ -12,6 +12,7 @@ const json = (body = '{"ok":true}', status = 200) => new Response(body, {
 const boundedProviders = [
   ['tavily', '/search'],
   ['googlebooks', '/books/v1/volumes?q=Example&key=fake-google-secret'],
+  ['hardcover', '/v1/graphql'],
 ] as const;
 
 test.each([['deepseek', '/chat/completions'], boundedProviders[1]] as const)('never follows a credential-bearing redirect or echoes response bodies for %s', async (provider, path) => {
@@ -48,6 +49,7 @@ test.each([
 });
 
 test.each([
+  ['hardcover', '/v1/graphql', 'https://api.hardcover.app/v1/graphql'],
   ['apple', '/search?term=A%26B&country=US', 'https://itunes.apple.com/search?term=A%26B&country=US'],
   ['openlibrary', '/search.json?q=A%26B', 'https://openlibrary.org/search.json?q=A%26B'],
   ['openlibrary', '/books/OL123M.json', 'https://openlibrary.org/books/OL123M.json'],
@@ -313,4 +315,13 @@ test('a wall-clock jump does not bypass elapsed queue spacing', async () => {
   await vi.advanceTimersByTimeAsync(1);
   await second;
   expect(started).toBe(2);
+});
+
+
+test('Hardcover rejects arbitrary endpoint and query before fetching', async () => {
+  const fetcher = vi.fn<typeof fetch>(async () => json());
+  for (const path of ['/v1/graphql?query=anything', '/v1/graphql#fragment', 'https://evil.example/v1/graphql', '/graphql']) {
+    await expect(fetchProviderJson('hardcover', path, {}, signal(), fetcher)).rejects.toMatchObject({ reason: 'provider-error' });
+  }
+  expect(fetcher).not.toHaveBeenCalled();
 });

@@ -1,5 +1,6 @@
 import type { BookRef, Format, LibraryDocument, ReadingStatus, Release, ReleaseState, Result, Series } from './model';
 import { isCalendarDate } from './releases';
+import { parseAttribution, parseCheckSummary, parseProvenance } from '../../../shared/discoveryValidation';
 
 type RecordValue = Record<string, unknown>;
 
@@ -53,7 +54,14 @@ function bookRef(value: unknown, path: string): BookRef {
   return { position: position(input.position, `${path}.position`), title: string(input.title, `${path}.title`, true) };
 }
 
-function release(value: unknown, path: string): Release {
+function metadata<T>(value: unknown, parser: (value: unknown) => Result<T>): T | null {
+  if (value === null) return null;
+  const parsed = parser(value);
+  if (parsed.ok === false) throw new Error(parsed.error);
+  return parsed.value;
+}
+
+function release(value: unknown, path: string, legacy: boolean, format: Format, market: string | null): Release {
   const input = record(value, path);
   const state = oneOf<ReleaseState>(input.state, ['not-checked', 'not-found', 'announced', 'scheduled', 'released'], `${path}.state`);
   const date = nullable(input.date, (value) => string(value, `${path}.date`));
@@ -65,16 +73,28 @@ function release(value: unknown, path: string): Release {
     const item = record(input.source, `${path}.source`);
     source = { title: string(item.title, `${path}.source.title`, true), url: httpUrl(item.url, `${path}.source.url`) };
   }
+  const origin = oneOf(input.origin, ['manual', 'discovery'], `${path}.origin`);
+  const lastCheckedAt = nullable(input.lastCheckedAt, (value) => string(value, `${path}.lastCheckedAt`, true));
+  const provenance = legacy ? null : metadata(input.provenance, parseProvenance);
+  if (provenance !== null) {
+    if (origin !== 'discovery' || !['announced', 'scheduled', 'released'].includes(state)) throw new Error(`${path}.provenance is incompatible with origin or state.`);
+    if ((format === 'audio') !== (provenance.editionFormat === 'audio')) throw new Error(`${path}.provenance edition format disagrees.`);
+    if (provenance.preferredMarket !== market) throw new Error(`${path}.provenance preferred market disagrees.`);
+    if ((date !== null) !== (provenance.datePrecision === 'day')) throw new Error(`${path}.provenance date precision disagrees.`);
+    const primary = provenance.sources[0];
+    if (!primary || !source || primary.title !== source.title || primary.url !== source.url || lastCheckedAt !== provenance.checkedAt) throw new Error(`${path}.provenance source or checked time disagrees.`);
+  }
   return {
     state,
     date,
     source,
-    origin: oneOf(input.origin, ['manual', 'discovery'], `${path}.origin`),
-    lastCheckedAt: nullable(input.lastCheckedAt, (value) => string(value, `${path}.lastCheckedAt`, true)),
+    origin,
+    lastCheckedAt,
+    provenance,
   };
 }
 
-function series(value: unknown, path: string): Series {
+function series(value: unknown, path: string, legacy: boolean, defaultMarket: string | null): Series {
   const input = record(value, path);
   const next = record(input.next, `${path}.next`);
   const formats = record(input.formats, `${path}.formats`);
@@ -92,6 +112,9 @@ function series(value: unknown, path: string): Series {
     throw new Error(`${path}.lastFinished must reach the latest published position before completing this series.`);
   }
 
+  const marketOverride = nullable(input.marketOverride, (value) => country(value, `${path}.marketOverride`));
+  const attribution = legacy ? null : metadata(next.attribution, parseAttribution);
+  if (attribution !== null && (!attribution.sources.length || !string(next.title, `${path}.next.title`).trim())) throw new Error(`${path}.next.attribution requires a title and source.`);
   return {
     id: string(input.id, `${path}.id`, true),
     name: string(input.name, `${path}.name`, true),
@@ -103,31 +126,35 @@ function series(value: unknown, path: string): Series {
       positionOverride: nullable(next.positionOverride, (value) => position(value, `${path}.next.positionOverride`)),
       title: string(next.title, `${path}.next.title`),
       orderNote: string(next.orderNote, `${path}.next.orderNote`),
+      attribution,
     },
     publicationRunComplete,
     latestPublishedPosition,
     formats: { book: bookEnabled, audio: audioEnabled } satisfies Record<Format, boolean>,
-    marketOverride: nullable(input.marketOverride, (value) => country(value, `${path}.marketOverride`)),
+    marketOverride,
     coverUrl: nullable(input.coverUrl, (value) => httpUrl(value, `${path}.coverUrl`)),
-    releases: { book: release(releases.book, `${path}.releases.book`), audio: release(releases.audio, `${path}.releases.audio`) },
+    releases: { book: release(releases.book, `${path}.releases.book`, legacy, 'book', marketOverride ?? defaultMarket), audio: release(releases.audio, `${path}.releases.audio`, legacy, 'audio', marketOverride ?? defaultMarket) },
+    lastCheck: legacy ? null : metadata(input.lastCheck, parseCheckSummary),
   };
 }
 
 export function parseDocument(input: unknown): Result<LibraryDocument> {
   try {
     const root = record(input, 'document');
-    if (root.version !== 1) throw new Error('Unsupported library version.');
+    const legacy = root.version === 1;
+    if (!legacy && root.version !== 2) throw new Error('Unsupported library version.');
     const settings = record(root.settings, 'settings');
     if (!Array.isArray(root.series)) throw new Error('series must be an array.');
-    const parsedSeries = Array.from(root.series, (value, index) => series(value, `series[${index}]`));
+    const market = nullable(settings.market, (value) => country(value, 'settings.market'));
+    const parsedSeries = Array.from(root.series, (value, index) => series(value, `series[${index}]`, legacy, market));
     const ids = new Set(parsedSeries.map((item) => item.id));
     if (ids.size !== parsedSeries.length) throw new Error('Series IDs must be unique.');
     return {
       ok: true,
       value: {
-        version: 1,
+        version: 2,
         settings: {
-          market: nullable(settings.market, (value) => country(value, 'settings.market')),
+          market,
           language: oneOf(settings.language, ['en'], 'settings.language'),
           theme: oneOf(settings.theme, ['light', 'dark'], 'settings.theme'),
           view: oneOf(settings.view, ['grid', 'compact', 'list'], 'settings.view'),

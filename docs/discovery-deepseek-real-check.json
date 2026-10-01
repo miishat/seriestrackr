@@ -1,0 +1,452 @@
+{
+  "attempts": [
+    {
+      "checkedAt": "2026-09-30T00:48:03.789Z",
+      "model": "deepseek-flash",
+      "test": "eight real series plus two market-rule cases; assistant-assisted retrieval and factual source summaries; not autonomous search",
+      "maxOutputTokens": 2048,
+      "thinking": "disabled",
+      "attempts": 1,
+      "httpStatus": 200,
+      "latencyMs": 2499,
+      "status": "completed",
+      "finishReason": "stop",
+      "usage": {
+        "prompt_tokens": 3902,
+        "completion_tokens": 589,
+        "total_tokens": 4491,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 3902
+      },
+      "validation": {
+        "passed": false,
+        "cases": [
+          {
+            "id": "witness",
+            "passed": false,
+            "identityPassed": true,
+            "bookPassed": true,
+            "audioPassed": null,
+            "selected": {
+              "nextTitle": "Legacies of Betrayal: The Third Tale of Witness",
+              "nextPosition": 3,
+              "nextSourceId": "P13",
+              "book": {
+                "date": "2026-10-01",
+                "sourceId": "A1",
+                "market": "CA"
+              },
+              "audio": null
+            }
+          },
+          {
+            "id": "hierarchy",
+            "passed": true,
+            "identityPassed": true,
+            "bookPassed": true,
+            "audioPassed": true,
+            "selected": {
+              "nextTitle": "The Strength of the Few",
+              "nextPosition": 2,
+              "nextSourceId": "P2",
+              "book": {
+                "date": "2025-11-11",
+                "sourceId": "A2",
+                "market": "CA"
+              },
+              "audio": {
+                "date": "2025-11-11",
+                "sourceId": "A4",
+                "market": "CA"
+              }
+            }
+          },
+          {
+            "id": "last-horizon",
+            "passed": false,
+            "identityPassed": false,
+            "bookPassed": null,
+            "audioPassed": true,
+            "selected": {
+              "nextTitle": "The Pilot",
+              "nextPosition": 4,
+              "nextSourceId": "P14",
+              "book": null,
+              "audio": {
+                "date": "2025-07-01",
+                "sourceId": "A6",
+                "market": "CA"
+              }
+            }
+          },
+          {
+            "id": "ana-din",
+            "passed": true,
+            "identityPassed": true,
+            "bookPassed": true,
+            "audioPassed": true,
+            "selected": {
+              "nextTitle": "A Trade of Blood",
+              "nextPosition": 3,
+              "nextSourceId": "P4",
+              "book": {
+                "date": "2026-08-04",
+                "sourceId": "A7",
+                "market": "CA"
+              },
+              "audio": {
+                "date": "2026-08-04",
+                "sourceId": "A8",
+                "market": "CA"
+              }
+            }
+          },
+          {
+            "id": "bound-broken",
+            "passed": true,
+            "identityPassed": true,
+            "bookPassed": true,
+            "audioPassed": true,
+            "selected": {
+              "nextTitle": "Of Empires and Dust",
+              "nextPosition": 4,
+              "nextSourceId": "P5",
+              "book": null,
+              "audio": {
+                "date": "2025-09-30",
+                "sourceId": "A9",
+                "market": "CA"
+              }
+            }
+          },
+          {
+            "id": "devils",
+            "passed": false,
+            "identityPassed": false,
+            "bookPassed": true,
+            "audioPassed": true,
+            "selected": {
+              "nextTitle": "The Heretics",
+              "nextPosition": 2,
+              "nextSourceId": "A10",
+              "book": {
+                "date": "2027-05-11",
+                "sourceId": "A10",
+                "market": "CA"
+              },
+              "audio": null
+            }
+          },
+          {
+            "id": "book-dead",
+            "passed": true,
+            "identityPassed": true,
+            "bookPassed": true,
+            "audioPassed": true,
+            "selected": {
+              "nextTitle": "Ascension",
+              "nextPosition": 5,
+              "nextSourceId": "P8",
+              "book": null,
+              "audio": {
+                "date": "2026-08-19",
+                "sourceId": "A11",
+                "market": "CA"
+              }
+            }
+          },
+          {
+            "id": "path",
+            "passed": false,
+            "identityPassed": false,
+            "bookPassed": true,
+            "audioPassed": true,
+            "selected": {
+              "nextTitle": "Deadhouse Landing",
+              "nextPosition": 2,
+              "nextSourceId": "A12",
+              "book": {
+                "date": "2017-11-14",
+                "sourceId": "A12",
+                "market": "CA"
+              },
+              "audio": {
+                "date": "2017-11-14",
+                "sourceId": "A14",
+                "market": "CA"
+              }
+            }
+          },
+          {
+            "id": "ana-din-fallback",
+            "passed": false,
+            "identityPassed": true,
+            "bookPassed": null,
+            "audioPassed": null,
+            "selected": {
+              "nextTitle": "A Trade of Blood",
+              "nextPosition": 3,
+              "nextSourceId": "P4",
+              "book": null,
+              "audio": null
+            }
+          },
+          {
+            "id": "path-prefer-uk",
+            "passed": true,
+            "identityPassed": true,
+            "bookPassed": true,
+            "audioPassed": true,
+            "selected": {
+              "nextTitle": "Deadhouse Landing",
+              "nextPosition": 2,
+              "nextSourceId": "P9",
+              "book": {
+                "date": "2017-11-16",
+                "sourceId": "P9",
+                "market": "GB"
+              },
+              "audio": {
+                "date": "2017-11-16",
+                "sourceId": "P10",
+                "market": "GB"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "checkedAt": "2026-09-30T00:49:14.357Z",
+      "model": "deepseek-flash",
+      "test": "eight real series plus two market-rule cases; explicit fallback and order-citation instructions; assistant-assisted retrieval and factual source summaries; not autonomous search",
+      "maxOutputTokens": 2048,
+      "thinking": "disabled",
+      "attempts": 1,
+      "httpStatus": 200,
+      "latencyMs": 2588,
+      "status": "completed",
+      "finishReason": "stop",
+      "usage": {
+        "prompt_tokens": 4054,
+        "completion_tokens": 664,
+        "total_tokens": 4718,
+        "prompt_cache_hit_tokens": 128,
+        "prompt_cache_miss_tokens": 3926
+      },
+      "validation": {
+        "passed": true,
+        "cases": [
+          {
+            "id": "witness",
+            "passed": true,
+            "identityPassed": true,
+            "bookPassed": true,
+            "audioPassed": true,
+            "selected": {
+              "nextTitle": "Legacies of Betrayal: The Third Tale of Witness",
+              "nextPosition": 3,
+              "nextSourceId": "P1",
+              "book": {
+                "date": "2026-10-01",
+                "sourceId": "A1",
+                "market": "CA"
+              },
+              "audio": {
+                "date": "2026-10-01",
+                "sourceId": "P1",
+                "market": "GB"
+              }
+            }
+          },
+          {
+            "id": "hierarchy",
+            "passed": true,
+            "identityPassed": true,
+            "bookPassed": true,
+            "audioPassed": true,
+            "selected": {
+              "nextTitle": "The Strength of the Few",
+              "nextPosition": 2,
+              "nextSourceId": "P2",
+              "book": {
+                "date": "2025-11-11",
+                "sourceId": "P2",
+                "market": "CA"
+              },
+              "audio": {
+                "date": "2025-11-11",
+                "sourceId": "A4",
+                "market": "CA"
+              }
+            }
+          },
+          {
+            "id": "last-horizon",
+            "passed": true,
+            "identityPassed": true,
+            "bookPassed": true,
+            "audioPassed": true,
+            "selected": {
+              "nextTitle": "The Pilot",
+              "nextPosition": 4,
+              "nextSourceId": "P3",
+              "book": {
+                "date": "2025-07-01",
+                "sourceId": "P14",
+                "market": "unspecified"
+              },
+              "audio": {
+                "date": "2025-07-01",
+                "sourceId": "A6",
+                "market": "CA"
+              }
+            }
+          },
+          {
+            "id": "ana-din",
+            "passed": true,
+            "identityPassed": true,
+            "bookPassed": true,
+            "audioPassed": true,
+            "selected": {
+              "nextTitle": "A Trade of Blood",
+              "nextPosition": 3,
+              "nextSourceId": "P4",
+              "book": {
+                "date": "2026-08-04",
+                "sourceId": "A7",
+                "market": "CA"
+              },
+              "audio": {
+                "date": "2026-08-04",
+                "sourceId": "A8",
+                "market": "CA"
+              }
+            }
+          },
+          {
+            "id": "bound-broken",
+            "passed": true,
+            "identityPassed": true,
+            "bookPassed": true,
+            "audioPassed": true,
+            "selected": {
+              "nextTitle": "Of Empires and Dust",
+              "nextPosition": 4,
+              "nextSourceId": "P5",
+              "book": null,
+              "audio": {
+                "date": "2025-09-30",
+                "sourceId": "A9",
+                "market": "CA"
+              }
+            }
+          },
+          {
+            "id": "devils",
+            "passed": true,
+            "identityPassed": true,
+            "bookPassed": true,
+            "audioPassed": true,
+            "selected": {
+              "nextTitle": "The Heretics",
+              "nextPosition": 2,
+              "nextSourceId": "P6",
+              "book": {
+                "date": "2027-05-11",
+                "sourceId": "A10",
+                "market": "CA"
+              },
+              "audio": null
+            }
+          },
+          {
+            "id": "book-dead",
+            "passed": true,
+            "identityPassed": true,
+            "bookPassed": true,
+            "audioPassed": true,
+            "selected": {
+              "nextTitle": "Ascension",
+              "nextPosition": 5,
+              "nextSourceId": "P8",
+              "book": null,
+              "audio": {
+                "date": "2026-08-19",
+                "sourceId": "A11",
+                "market": "CA"
+              }
+            }
+          },
+          {
+            "id": "path",
+            "passed": true,
+            "identityPassed": true,
+            "bookPassed": true,
+            "audioPassed": true,
+            "selected": {
+              "nextTitle": "Deadhouse Landing",
+              "nextPosition": 2,
+              "nextSourceId": "P9",
+              "book": {
+                "date": "2017-11-14",
+                "sourceId": "A12",
+                "market": "CA"
+              },
+              "audio": {
+                "date": "2017-11-14",
+                "sourceId": "A14",
+                "market": "CA"
+              }
+            }
+          },
+          {
+            "id": "ana-din-fallback",
+            "passed": true,
+            "identityPassed": true,
+            "bookPassed": true,
+            "audioPassed": true,
+            "selected": {
+              "nextTitle": "A Trade of Blood",
+              "nextPosition": 3,
+              "nextSourceId": "P4",
+              "book": {
+                "date": "2026-08-04",
+                "sourceId": "P12",
+                "market": "US"
+              },
+              "audio": {
+                "date": "2026-08-04",
+                "sourceId": "P12",
+                "market": "US"
+              }
+            }
+          },
+          {
+            "id": "path-prefer-uk",
+            "passed": true,
+            "identityPassed": true,
+            "bookPassed": true,
+            "audioPassed": true,
+            "selected": {
+              "nextTitle": "Deadhouse Landing",
+              "nextPosition": 2,
+              "nextSourceId": "P9",
+              "book": {
+                "date": "2017-11-16",
+                "sourceId": "P9",
+                "market": "GB"
+              },
+              "audio": {
+                "date": "2017-11-16",
+                "sourceId": "P10",
+                "market": "GB"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

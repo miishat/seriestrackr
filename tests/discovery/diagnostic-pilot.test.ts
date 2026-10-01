@@ -43,7 +43,7 @@ function root(keys = true) {
   return path;
 }
 afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); vi.mocked(filesystem.writeFileSync).mockImplementation(originalFileWrite); roots.splice(0).forEach(path => rmSync(path, { recursive: true, force: true })); });
-const counts = () => ({ googlebooks: 0, apple: 0, openlibrary: 0, tavily: 0, deepseek: 0 });
+const counts = () => ({ hardcover: 0, googlebooks: 0, apple: 0, openlibrary: 0, tavily: 0, deepseek: 0 });
 const args = ['--run', '--case', 'example', '--output', 'first'];
 
 test('dry run and unknown input do not read malformed credentials or create reservations', async () => {
@@ -71,6 +71,7 @@ test('existing junction ancestor rejects before creating outside files', async (
 });
 
 test.each([
+  ['hardcover', 'https://api.hardcover.app/v1/graphql', 1],
   ['googlebooks', 'https://www.googleapis.com/books/v1/volumes', 2], ['apple', 'https://itunes.apple.com/search', 12],
   ['openlibrary', 'https://openlibrary.org/search.json', 3], ['tavily', 'https://api.tavily.com/search', 3],
   ['deepseek', 'https://api.deepseek.com/chat/completions', 1],
@@ -85,6 +86,17 @@ test.each([
 test.each(['https://api.deepseek.com:444/chat/completions', 'https://key@api.deepseek.com/chat/completions', 'http://api.deepseek.com/chat/completions', 'https://evil.example/search'])('rejects origin %s before fetch', async url => {
   const fetcher = vi.fn(); const wrapper = createDiagnosticFetch(fetcher, counts(), () => {});
   await expect(wrapper(url)).rejects.toThrow('diagnostic-origin'); expect(fetcher).not.toHaveBeenCalled();
+});
+
+test('Apple API and public HTML share the diagnostic twelve-attempt counter', async () => {
+  const usage = counts(); const fetcher = vi.fn<typeof fetch>(async () => new Response('fictional'));
+  const wrapper = createDiagnosticFetch(fetcher, usage, () => {});
+  for (let index = 0; index < 6; index++) {
+    await wrapper('https://itunes.apple.com/search');
+    await wrapper('https://books.apple.com/ca/book/second/id123');
+  }
+  await expect(wrapper('https://books.apple.com/ca/audiobook/second/id124')).rejects.toThrow('diagnostic-budget');
+  expect(usage.apple).toBe(12); expect(fetcher).toHaveBeenCalledTimes(12);
 });
 
 test('redirect cannot trigger an uncounted provider request', async () => {
@@ -185,7 +197,9 @@ test.each(['reservation.json', 'counts.json'])('initial %s persistence failure i
   const fetcher = vi.fn();
   await expect(runDiagnosticPilot(args, { root: path, fetcher, print: () => {} })).rejects.toThrow('diagnostic-pilot-failed');
   const report = JSON.parse(readFileSync(resolve(path, workspace, 'first/diagnostics.json'), 'utf8'));
-  expect(report.complete).toBe(false); expect(Object.values(report.counts)).toEqual([0, 0, 0, 0, 0]);
+  expect(report.complete).toBe(false); expect(Object.values(report.counts)).toEqual([0, 0, 0, 0, 0, 0]);
   expect(JSON.stringify(report)).not.toContain('FAKE_SECRET'); expect(fetcher).not.toHaveBeenCalled();
   await expect(runDiagnosticPilot(args, { root: path, fetcher })).rejects.toThrow('output-already-reserved');
 });
+
+

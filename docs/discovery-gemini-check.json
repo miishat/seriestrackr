@@ -1,0 +1,99 @@
+{
+  "attempts": [
+    {
+      "checkedAt": "2026-09-29T20:03:21.353Z",
+      "model": "gemini-3.8-flash",
+      "test": "text-only connectivity; no search tools",
+      "httpStatus": 503,
+      "latencyMs": 538,
+      "response": {
+        "error": {
+          "code": 503,
+          "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
+          "status": "UNAVAILABLE"
+        }
+      }
+    },
+    {
+      "checkedAt": "2026-09-29T20:03:44.583Z",
+      "model": "gemini-3.8-flash",
+      "test": "text-only connectivity; one bounded retry; no search tools",
+      "httpStatus": 200,
+      "latencyMs": 3079,
+      "response": {
+        "candidates": [
+          {
+            "content": {},
+            "finishReason": "MAX_TOKENS",
+            "index": 0
+          }
+        ],
+        "usageMetadata": {
+          "promptTokenCount": 9,
+          "totalTokenCount": 67,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 9
+            }
+          ],
+          "thoughtsTokenCount": 58,
+          "serviceTier": "standard"
+        },
+        "modelVersion": "gemini-3.8-flash",
+        "responseId": "nRm8ar-MGJHUjMcPwLuQiAU"
+      }
+    },
+    {
+      "checkedAt": "2026-09-29T20:05:38.764Z",
+      "model": "gemini-3.8-flash",
+      "test": "synthetic evidence-only extraction; no search tools",
+      "prompt": "Synthetic extraction test, not real publication facts. Use only these supplied records. Target market CA, language English. S1: Example Novel, English ebook, CA, 2026-10-01. S2: Example Novel, English paperback, CA, 2027-02-01. S3: Example Novel, English audiobook, UK, 2026-09-01. Return JSON with exactly bookDate, bookSourceId, audioDate, audioSourceId. Book date means earliest ebook or print among supplied matching records. Unsupported fields must be null. Do not use prior knowledge or infer CA audio from UK.",
+      "maxOutputTokens": 2048,
+      "httpStatus": 503,
+      "latencyMs": 2058,
+      "response": {
+        "error": {
+          "code": 503,
+          "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
+          "status": "UNAVAILABLE"
+        }
+      },
+      "validation": {
+        "passed": false,
+        "expected": {
+          "bookDate": "2026-10-01",
+          "bookSourceId": "S1",
+          "audioDate": null,
+          "audioSourceId": null
+        }
+      }
+    },
+    {
+      "checkedAt": "2026-09-29T20:06:02.419Z",
+      "model": "gemini-3.8-flash",
+      "test": "synthetic evidence-only extraction; one bounded retry; no search tools",
+      "prompt": "Synthetic extraction test, not real publication facts. Use only these supplied records. Target market CA, language English. S1: Example Novel, English ebook, CA, 2026-10-01. S2: Example Novel, English paperback, CA, 2027-02-01. S3: Example Novel, English audiobook, UK, 2026-09-01. Return JSON with exactly bookDate, bookSourceId, audioDate, audioSourceId. Book date means earliest ebook or print among supplied matching records. Unsupported fields must be null. Do not use prior knowledge or infer CA audio from UK.",
+      "maxOutputTokens": 2048,
+      "httpStatus": 503,
+      "latencyMs": 828,
+      "response": {
+        "error": {
+          "code": 503,
+          "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
+          "status": "UNAVAILABLE"
+        }
+      },
+      "validation": {
+        "passed": false,
+        "expected": {
+          "bookDate": "2026-10-01",
+          "bookSourceId": "S1",
+          "audioDate": null,
+          "audioSourceId": null
+        }
+      }
+    }
+  ],
+  "groundedDiscoveryAttempted": false
+}

@@ -18,6 +18,9 @@ function editionGroup(edition: EditionEvidence): string {
 
 export function selectProposals(request: CheckRequest, evidence: EvidenceBundle, checkedAt: string, interpreted = false): Proposals {
   const empty: Proposals = { identity: null, identityAttribution: null, releases: { book: null, audio: null }, conflicts: [] };
+  // Current evidence cannot attest arbitrary custom ordering instructions.
+  // Keep retrieved links available without offering dependent facts to accept.
+  if (request.target.orderNote.trim()) return empty;
   const citedIdentities = evidence.identities.filter(identity =>
     identity.position === request.target.position && identity.citations.length > 0);
   const identities = new Set(citedIdentities.map(identity =>

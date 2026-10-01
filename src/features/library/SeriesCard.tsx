@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Format, Release, ReleaseState, Series } from './model';
 import { isCaughtUp, nextPosition } from './progress';
 import { displayRelease } from './releases';
+import { DiscoverySummary } from '../discovery/DiscoverySummary';
 
 export const releaseLabels: Record<ReleaseState, string> = {
   'not-checked': 'Not checked', 'not-found': 'No announcement found', announced: 'Announced, date unknown',
@@ -18,10 +19,14 @@ export function ReleaseSummary({ format, release, today }: { format: Format; rel
     <span className={`badge ${state}`}>{releaseLabels[state]}</span>
     <span className="sub">{release.date ? release.date : state === 'not-checked' ? 'No check recorded' : state === 'announced' ? 'Date unknown' : 'Manual entry'}</span>
     {release.source && /^https?:\/\//i.test(release.source.url) && <a href={release.source.url} target="_blank" rel="noreferrer">{release.source.title}</a>}
+    {release.provenance && <div className="small">English {release.provenance.editionFormat === 'audio' ? 'audiobook' : release.provenance.editionFormat} · {release.provenance.sourceMarket ? `Source country: ${release.provenance.sourceMarket}` : 'Source country unspecified'}
+      {release.date && <span className="sub">Earliest supported date in sources checked.</span>}
+      {release.date && release.provenance.sourceMarket !== release.provenance.preferredMarket && <span className="sub">Date from {release.provenance.sourceMarket ?? 'an unspecified country'}; no supported {release.provenance.preferredMarket} date found in sources checked.</span>}
+    </div>}
   </div>;
 }
-export function SeriesCard({ series, today, market, showCovers, compact = false, onEdit, onFinish }: {
-  series: Series; today: string; market: string; showCovers: boolean; compact?: boolean; onEdit: () => void; onFinish: () => void;
+export function SeriesCard({ series, today, market, showCovers, compact = false, onEdit, onFinish, onCheck, checking = false }: {
+  series: Series; today: string; market: string; showCovers: boolean; compact?: boolean; onEdit: () => void; onFinish: () => void; onCheck?: () => void; checking?: boolean;
 }) {
   const finished = series.lastFinished ? `Book ${series.lastFinished.position}: ${series.lastFinished.title}` : 'None yet';
   return <article className={`series-card ${compact ? 'compact' : ''}`}>
@@ -39,6 +44,7 @@ export function SeriesCard({ series, today, market, showCovers, compact = false,
       {series.formats.book && <ReleaseSummary format="book" release={series.releases.book} today={today} />}
       {series.formats.audio && <ReleaseSummary format="audio" release={series.releases.audio} today={today} />}
     </div>}
-    <div className="card-footer"><button onClick={onEdit}>Edit details</button>{series.readingStatus !== 'completed' && <button onClick={onFinish}>Mark finished</button>}</div>
+    <DiscoverySummary summary={series.lastCheck} />
+    <div className="card-footer"><button onClick={onEdit}>Edit details</button>{series.readingStatus !== 'completed' && <><button onClick={onFinish}>Mark finished</button>{onCheck && <button onClick={onCheck} disabled={checking}>{checking ? 'Checking…' : 'Check releases'}</button>}</>}</div>
   </article>;
 }

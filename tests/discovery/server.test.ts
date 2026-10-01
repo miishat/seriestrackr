@@ -45,8 +45,8 @@ test('capabilities expose only presence, caps, model and dated estimate without 
   const response = await fetch(`${url}/api/discovery/capabilities`);
   expect(response.status).toBe(200);
   const body = await response.json();
-  expect(body).toEqual({ search: true, ai: true, googleBooks: true, model: 'deepseek-flash',
-    limits: { search: 3, ai: 1, googleBooks: 2, outputTokens: 2048, inputBytes: 20000 }, pricingAsOf: '2026-09-29', estimatedMaxAiUsd: 0.0084576 });
+  expect(body).toEqual({ search: true, ai: true, googleBooks: true, hardcover: false, model: 'deepseek-flash',
+    limits: { search: 3, ai: 1, googleBooks: 2, hardcover: 1, outputTokens: 2048, inputBytes: 20000 }, pricingAsOf: '2026-09-29', estimatedMaxAiUsd: 0.0084576 });
   for (const key of ['fake-search-secret', 'fake-ai-secret', 'fake-google-secret']) expect(JSON.stringify(body)).not.toContain(key);
   expect(response.headers.get('cache-control')).toBe('no-store');
   expect(response.headers.has('access-control-allow-origin')).toBe(false);
@@ -142,4 +142,12 @@ test.each(['disconnect', 'server close'])('aborts pending provider work on %s', 
   req.on('error', () => {}); req.end(JSON.stringify(request())); await ready;
   if (mode === 'disconnect') req.destroy(); else server.close();
   await cancelled;
+});
+
+
+test.each([null, '', ' ', undefined, 'fake-hardcover-token'])('Hardcover capability exposes presence and one-call bound without secrets: %s', async hardcoverToken => {
+  const { url, deps } = await start(dependencies(), { ...config, hardcoverToken });
+  const result = await fetch(`${url}/api/discovery/capabilities`); const value = await result.json();
+  expect(value).toMatchObject({ hardcover: Boolean(hardcoverToken?.trim()), limits: { hardcover: 1 } });
+  expect(JSON.stringify(value)).not.toContain('fake-hardcover-token'); expect(deps.catalogs).not.toHaveBeenCalled();
 });

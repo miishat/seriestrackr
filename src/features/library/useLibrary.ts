@@ -4,6 +4,10 @@ import type { LibraryDocument, Result, Series } from './model';
 import { finishNext } from './progress';
 import { parseDocument } from './validation';
 import { loadBrowserLibrary, saveLibrary } from '../../storage/libraryStorage';
+import type { CheckResponse, CheckSummary, DiscoverySnapshot, Selection } from '../../../shared/discovery';
+import { parseCheckResponse, parseCheckSummary } from '../../../shared/discoveryValidation';
+import { applyDiscovery } from '../discovery/acceptDiscovery';
+import { createDiscoveryGuard } from '../discovery/discoveryGuard';
 
 export type LibraryMode = 'ready' | 'recovery' | 'unsaved';
 type Settings = LibraryDocument['settings'];
@@ -40,6 +44,7 @@ export function useLibrary() {
   const current = useRef(doc);
   const currentMode = useRef(mode);
   const undoSnapshot = useRef<LibraryDocument | null>(null);
+  const discoveryGuard = useRef(createDiscoveryGuard());
 
   const commit = (next: LibraryDocument): void => {
     current.current = next;
@@ -64,6 +69,7 @@ export function useLibrary() {
     const checked = validated(candidate);
     if (checked.ok === false) return invalid(checked.error);
     undoSnapshot.current = null;
+    discoveryGuard.current.touch(checked.value.series[checked.value.series.length - 1].id);
     commit(checked.value);
     return { ok: true, value: undefined };
   };
@@ -73,7 +79,24 @@ export function useLibrary() {
     if (allowed.ok === false) return allowed;
     const before = current.current.series.find((item) => item.id === changed.id);
     if (!before) return invalid('Series not found.');
-    const checkedInput = validated({ ...current.current, series: current.current.series.map((item) => item.id === changed.id ? changed : item) });
+    const changedIdentityInput = identityChanged(before, changed);
+    const changedMarketInput = (before.marketOverride ?? current.current.settings.market) !== (changed.marketOverride ?? current.current.settings.market);
+    const sanitized: Series = { ...changed,
+      next: { ...changed.next, attribution: changedIdentityInput ? null : changed.next.attribution },
+      lastCheck: changedIdentityInput || changedMarketInput ? null : changed.lastCheck,
+      releases: changedIdentityInput || changedMarketInput ? { book: emptyRelease(), audio: emptyRelease() }
+        : { ...changed.releases },
+    };
+    for (const format of ['book', 'audio'] as const) {
+      const previous = before.releases[format];
+      const edited = changed.releases[format];
+      if (!changedIdentityInput && !changedMarketInput && (previous.state !== edited.state || previous.date !== edited.date
+        || previous.source?.title !== edited.source?.title || previous.source?.url !== edited.source?.url
+        || previous.origin !== edited.origin || previous.lastCheckedAt !== edited.lastCheckedAt)) {
+        sanitized.releases[format] = { ...edited, provenance: null };
+      }
+    }
+    const checkedInput = validated({ ...current.current, series: current.current.series.map((item) => item.id === changed.id ? sanitized : item) });
     if (checkedInput.ok === false) return invalid(checkedInput.error);
     const after = checkedInput.value.series.find((item) => item.id === changed.id)!;
     const changedIdentity = identityChanged(before, after);
@@ -90,6 +113,7 @@ export function useLibrary() {
     const checked = validated({ ...current.current, series: current.current.series.map((item) => item.id === changed.id ? updated : item) });
     if (checked.ok === false) return invalid(checked.error);
     undoSnapshot.current = null;
+    discoveryGuard.current.touch(changed.id);
     commit(checked.value);
     return { ok: true, value: undefined };
   };
@@ -99,6 +123,7 @@ export function useLibrary() {
     if (allowed.ok === false) return allowed;
     if (!current.current.series.some((item) => item.id === id)) return invalid('Series not found.');
     undoSnapshot.current = null;
+    discoveryGuard.current.touch(id);
     commit({ ...current.current, series: current.current.series.filter((item) => item.id !== id) });
     return { ok: true, value: undefined };
   };
@@ -114,6 +139,7 @@ export function useLibrary() {
     const candidate = validated({ ...current.current, series: current.current.series.map((item) => item.id === id ? finished.value : item) });
     if (candidate.ok === false) return invalid(candidate.error);
     undoSnapshot.current = current.current;
+    discoveryGuard.current.touch(id);
     commit(candidate.value);
     return { ok: true, value: undefined };
   };
@@ -124,6 +150,7 @@ export function useLibrary() {
     if (!undoSnapshot.current) return invalid('There is no finish action to undo.');
     const previous = undoSnapshot.current;
     undoSnapshot.current = null;
+    discoveryGuard.current.replace();
     commit(previous);
     return { ok: true, value: undefined };
   };
@@ -131,9 +158,10 @@ export function useLibrary() {
   const updateSettings = (settings: Settings, confirmReset: boolean): Result<void> => {
     const allowed = requireReady();
     if (allowed.ok === false) return allowed;
-    const checkedSettings = validated({ ...current.current, settings });
-    if (checkedSettings.ok === false) return invalid(checkedSettings.error);
     const marketChanged = settings.market !== current.current.settings.market;
+    const checkedSettings = validated({ ...current.current, settings, series: current.current.series.map(item => marketChanged && item.marketOverride === null
+      ? { ...item, lastCheck: null, releases: { book: emptyRelease(), audio: emptyRelease() } } : item) });
+    if (checkedSettings.ok === false) return invalid(checkedSettings.error);
     const affected = marketChanged ? current.current.series.filter((item) => item.marketOverride === null) : [];
     if (affected.length > 0 && !confirmReset) {
       return invalid(`Changing the default market resets release information for ${affected.length} series. Confirm the reset to save it.`);
@@ -141,10 +169,11 @@ export function useLibrary() {
     const next: LibraryDocument = {
       ...checkedSettings.value,
       series: checkedSettings.value.series.map((item) => marketChanged && item.marketOverride === null
-        ? { ...item, releases: { book: emptyRelease(), audio: emptyRelease() } }
+        ? { ...item, lastCheck: null, releases: { book: emptyRelease(), audio: emptyRelease() } }
         : item),
     };
     undoSnapshot.current = null;
+    for (const item of affected) discoveryGuard.current.touch(item.id);
     commit(next);
     return { ok: true, value: undefined };
   };
@@ -153,16 +182,71 @@ export function useLibrary() {
     const checked = validated(replacement);
     if (checked.ok === false) return invalid(checked.error);
     undoSnapshot.current = null;
+    discoveryGuard.current.replace();
     commit(checked.value);
     return { ok: true, value: undefined };
   };
 
   const resetLibrary = (): Result<void> => {
     undoSnapshot.current = null;
+    discoveryGuard.current.replace();
     commit(emptyDocument());
     return { ok: true, value: undefined };
   };
 
+  const beginDiscovery = (id: string, requestId: string): Result<DiscoverySnapshot> => {
+    const allowed = requireReady();
+    if (allowed.ok === false) return allowed;
+    if (!current.current.series.some(item => item.id === id)) return { ok: false, error: 'Series not found.' };
+    if (!requestId.trim()) return { ok: false, error: 'Discovery request ID is required.' };
+    return { ok: true, value: discoveryGuard.current.begin(id, requestId) };
+  };
+
+  const isDiscoveryCurrent = (snapshot: DiscoverySnapshot): boolean => discoveryGuard.current.isCurrent(snapshot);
+  const cancelDiscovery = (id: string): void => discoveryGuard.current.cancel(id);
+
+  const recordDiscoveryCheck = (snapshot: DiscoverySnapshot, summary: CheckSummary): Result<void> => {
+    const allowed = requireReady();
+    if (allowed.ok === false) return allowed;
+    if (!isDiscoveryCurrent(snapshot)) return invalid('Discovery result is stale. Check again.');
+    const parsed = parseCheckSummary(summary);
+    if (parsed.ok === false) return parsed;
+    if (parsed.value.requestId !== snapshot.requestId) return invalid('Discovery request does not match.');
+    if (!current.current.series.some(item => item.id === snapshot.seriesId)) return invalid('Series not found.');
+    const checked = validated({ ...current.current, series: current.current.series.map(item => item.id === snapshot.seriesId
+      ? { ...item, lastCheck: parsed.value } : item) });
+    if (checked.ok === false) return invalid(checked.error);
+    undoSnapshot.current = null;
+    commit(checked.value);
+    return { ok: true, value: undefined };
+  };
+
+  const acceptDiscovery = (snapshot: DiscoverySnapshot, response: CheckResponse, selection: Selection): Result<void> => {
+    const allowed = requireReady();
+    if (allowed.ok === false) return allowed;
+    if (!isDiscoveryCurrent(snapshot)) return invalid('Discovery result is stale. Check again.');
+    const before = current.current.series.find(item => item.id === snapshot.seriesId);
+    if (!before) return invalid('Series not found.');
+    const parsed = parseCheckResponse(response);
+    if (parsed.ok === false) return parsed;
+    if (parsed.value.requestId !== snapshot.requestId || parsed.value.seriesId !== snapshot.seriesId) return invalid('Discovery request does not match.');
+    for (const format of ['book', 'audio'] as const) {
+      if (selection[format] && parsed.value.proposals.releases[format]?.provenance.preferredMarket !== (before.marketOverride ?? current.current.settings.market)) {
+        return invalid('Discovery market does not match.');
+      }
+    }
+    const accepted = applyDiscovery(before, parsed.value, selection);
+    if (accepted.ok === false) return accepted;
+    if (accepted.value === before) return { ok: true, value: undefined };
+    const checked = validated({ ...current.current, series: current.current.series.map(item => item.id === before.id ? accepted.value : item) });
+    if (checked.ok === false) return invalid(checked.error);
+    undoSnapshot.current = null;
+    discoveryGuard.current.touch(before.id);
+    commit(checked.value);
+    return { ok: true, value: undefined };
+  };
+
   return { doc, mode, error, recoveryRaw, canUndo: undoSnapshot.current !== null,
+    beginDiscovery, isDiscoveryCurrent, cancelDiscovery, recordDiscoveryCheck, acceptDiscovery,
     addSeries, updateSeries, deleteSeries, markFinished, undo, updateSettings, replaceLibrary, resetLibrary };
 }

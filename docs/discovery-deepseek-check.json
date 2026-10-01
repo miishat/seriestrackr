@@ -1,0 +1,48 @@
+{
+  "attempts": [
+    {
+      "checkedAt": "2026-09-30T00:37:40.308Z",
+      "model": "deepseek-flash",
+      "test": "synthetic evidence-only extraction; no retrieval or private library data",
+      "maxOutputTokens": 2048,
+      "thinking": "disabled",
+      "attempts": 1,
+      "httpStatus": 200,
+      "latencyMs": 1261,
+      "status": "completed",
+      "finishReason": "stop",
+      "usage": {
+        "prompt_tokens": 468,
+        "completion_tokens": 160,
+        "total_tokens": 628,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 468
+      },
+      "validation": {
+        "passed": true,
+        "cases": [
+          {
+            "id": "earliest",
+            "passed": true
+          },
+          {
+            "id": "market-language",
+            "passed": true
+          },
+          {
+            "id": "partial-date",
+            "passed": true
+          },
+          {
+            "id": "conflict",
+            "passed": true
+          },
+          {
+            "id": "source-instruction",
+            "passed": true
+          }
+        ]
+      }
+    }
+  ]
+}

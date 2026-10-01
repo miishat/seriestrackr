@@ -6,6 +6,7 @@ export interface DiscoveryConfig {
   tavilyKey: string | null;
   deepseekKey: string | null;
   googleBooksKey?: string | null;
+  hardcoverToken?: string | null;
   model: 'deepseek-flash';
 }
 
@@ -65,8 +66,9 @@ export function loadDiscoveryConfig(root: string): DiscoveryConfig {
   const search = readEnv(root, '.env.discovery.local');
   const ai = readEnv(root, '.env.deepseek.local');
   const google = readEnv(root, '.env.google-books.local');
+  const hardcover = readEnv(root, '.env.hardcover.local');
   const model = ai.DEEPSEEK_MODEL?.trim() || 'deepseek-flash';
   if (model !== 'deepseek-flash') throw invalidConfig();
   return { tavilyKey: key(search.TAVILY_API_KEY), deepseekKey: key(ai.DEEPSEEK_API_KEY),
-    googleBooksKey: key(google.GOOGLE_BOOKS_API_KEY), model };
+    googleBooksKey: key(google.GOOGLE_BOOKS_API_KEY), hardcoverToken: key(hardcover.HARDCOVER_API_TOKEN), model };
 }
