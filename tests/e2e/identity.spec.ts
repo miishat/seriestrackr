@@ -3,6 +3,34 @@ import { expect, test, type Locator } from '@playwright/test';
 import { response } from '../discovery/fixtures';
 import { identitySeries, seedIdentity } from './identity-fixtures';
 
+test('long and mixed-script text fits all views and themes', async ({ page }) => {
+  const series = identitySeries();
+  series[0].name = 'X'.repeat(160) + ' L’Été 世界';
+  series[0].author = 'A very long author name with several words and diacritics Éléonore';
+  series[0].next.title = 'Y'.repeat(120) + ' & the next chapter';
+  await seedIdentity(page, 'dark', series); await page.goto('/');
+  await page.evaluate(() => document.fonts.ready.then(() => undefined));
+  await mkdir('node_modules/.cache/playwright-visual', { recursive: true });
+  for (const width of [390, 1024]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const theme of ['light', 'dark'] as const) {
+      const toggle = page.getByRole('button', { name: theme === 'light' ? 'Light theme' : 'Dark theme', exact: true });
+      if (await toggle.count()) await toggle.click();
+      for (const view of ['Grid', 'Compact', 'Table']) {
+        await page.getByRole('button', { name: view, exact: true }).click();
+        await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+        if (view === 'Table') await expect(page.getByRole('region', { name: 'Release table' })).toBeVisible();
+        else {
+          const clipped = await page.locator('.card-header h2, .card-next strong').evaluateAll(elements =>
+            elements.filter(el => el.getBoundingClientRect().width > 0 && el.scrollWidth > el.getBoundingClientRect().width + 1).length);
+          expect(clipped).toBe(0);
+        }
+        await page.screenshot({ path: `node_modules/.cache/playwright-visual/mixed-${width}-${theme}-${view}.png`, fullPage: true });
+      }
+    }
+  }
+});
+
 test('L2 has a stable decorative mark and readable wordmark', async ({ page }) => {
   await seedIdentity(page); await page.goto('/');
   const mark = page.locator('.brand .brand-mark');

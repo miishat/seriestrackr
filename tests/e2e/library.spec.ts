@@ -137,8 +137,9 @@ test('keyboard reaches setup, editor, backups and deletion controls', async ({ p
   await expect(page.getByText('Your bookshelf is empty')).toBeVisible();
 });
 
-test('manual tracking remains available with remote requests blocked', async ({ page }) => {
-  await page.route(/^https?:\/\/(?!127\.0\.0\.1:3000)/, (route) => route.abort());
+test('manual tracking remains available with remote requests blocked', async ({ page, baseURL }) => {
+  const localOrigin = new URL(baseURL!).origin;
+  await page.route('**/*', route => new URL(route.request().url()).origin === localOrigin ? route.continue() : route.abort());
   await start(page);
   await addSeries(page, 'Offline series');
   await page.getByRole('button', { name: 'Save series' }).click();

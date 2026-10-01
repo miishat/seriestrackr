@@ -857,3 +857,7 @@ legend {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+.card-header > div:not(.cover-frame) { min-width: 0; }
+.card-header h2, .card-next strong, .table-wrap td { overflow-wrap: anywhere; }
+.table-wrap td:first-child { max-width: 280px; }
+.table-wrap td button, .table-wrap .badge { overflow-wrap: normal; }

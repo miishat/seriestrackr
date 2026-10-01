@@ -48,14 +48,16 @@ test('approved desktop card states fit both widths, themes and 200% effective zo
   }));
   await page.route('https://covers.example.test/missing.svg', (route) => route.abort());
   await page.addInitScript((seed) => localStorage.setItem('seriestrackr:v1', JSON.stringify(seed)), seedDocument);
+  await page.addInitScript(() => { Math.random = () => 0; });
   await page.goto('/');
+  await page.evaluate(() => document.fonts.ready.then(() => undefined));
   await expect(page.locator('.series-card')).toHaveCount(3);
   await expect(page.getByText('No cover available')).toHaveCount(2);
   await expect(page.locator('.cover-image')).toHaveCount(1);
   await expect.poll(() => page.locator('.cover-image').evaluate((img: HTMLImageElement) => img.naturalWidth)).toBe(600);
   await mkdir(output, { recursive: true });
 
-  for (const width of [1440, 1024]) {
+  for (const width of [1440, 1024, 390]) {
     await page.setViewportSize({ width, height: 900 });
     for (const theme of ['light', 'dark'] as const) {
       await setTheme(page, theme);
