@@ -9,7 +9,17 @@
 
 * {
   box-sizing: border-box;
+  scrollbar-color: var(--control-line) var(--panel);
 }
+
+::-webkit-scrollbar { width: 12px; height: 12px; }
+::-webkit-scrollbar-track { background: var(--panel); }
+::-webkit-scrollbar-thumb {
+  background: var(--control-line);
+  border: 3px solid var(--panel);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
 body {
   margin: 0;
@@ -270,6 +280,49 @@ input::placeholder,textarea::placeholder {
 
 input[type='checkbox'],input[type='radio'] {
   accent-color: var(--accent);
+}
+
+input[type='checkbox'] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  flex: none;
+  display: inline-grid;
+  place-content: center;
+  vertical-align: middle;
+  border: 1px solid var(--control-line);
+  border-radius: 3px;
+  background: var(--panel);
+  cursor: pointer;
+}
+
+input[type='checkbox']::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background: var(--accent-ink);
+  clip-path: polygon(14% 44%, 0 60%, 40% 100%, 100% 18%, 82% 0, 37% 65%);
+  transform: scale(0);
+}
+
+input[type='checkbox']:checked,
+input[type='checkbox']:indeterminate {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+input[type='checkbox']:checked::before,
+input[type='checkbox']:indeterminate::before { transform: scale(1); }
+input[type='checkbox']:indeterminate::before { clip-path: inset(40% 0); }
+input[type='checkbox']:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+@media (forced-colors: active) {
+  input[type='checkbox'] { appearance: auto; }
+  input[type='checkbox']::before { display: none; }
 }
 
 .library-tools select {
@@ -570,6 +623,7 @@ dialog {
 
 dialog::backdrop {
   background: var(--backdrop);
+  backdrop-filter: blur(4px);
 }
 
 dialog h2 {
@@ -634,10 +688,6 @@ legend {
 .checkbox-row label,.checkbox-label {
   flex-direction: row;
   align-items: center;
-}
-
-.checkbox-row input,.checkbox-label input {
-  width: auto;
 }
 
 .release-fields {
@@ -815,10 +865,6 @@ legend {
   padding: 5px;
   font-weight: 400;
   white-space: nowrap;
-}
-
-.filter-panel input {
-  width: auto;
 }
 
 .discovery-content {
