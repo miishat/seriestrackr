@@ -1,0 +1,4522 @@
+{
+  "provider": "hardcover",
+  "startedAt": "2026-10-01T03:13:53.183Z",
+  "endpoint": "https://api.hardcover.app/v1/graphql",
+  "requestsMade": 8,
+  "caseIds": [
+    "hierarchy",
+    "ana-and-din",
+    "scholomance",
+    "path-to-ascendancy-gb"
+  ],
+  "bounds": {
+    "maxBooksPerCase": 20,
+    "maxEditionsRecorded": 20,
+    "maxTotalRequests": 10,
+    "maxBytes": 1048576,
+    "spacingMs": 1100,
+    "timeoutMs": 20000,
+    "retries": 0
+  },
+  "results": [
+    {
+      "caseId": "hierarchy",
+      "series": "Hierarchy",
+      "author": "James Islington",
+      "position": 2,
+      "preferredMarket": "CA",
+      "startedAt": "2026-10-01T03:13:43.573Z",
+      "books": {
+        "failure": null,
+        "summary": {
+          "bookCount": 20,
+          "books": [
+            {
+              "id": 582191,
+              "title": "Das Erbe der Seher",
+              "subtitle": null,
+              "release_date": "2017-04-27",
+              "release_year": 2017,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 2996026,
+              "title": "The Strength of the Few. La forza dei pochi",
+              "subtitle": null,
+              "release_date": null,
+              "release_year": null,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 2,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "The Hierarchy",
+                  "primary_books_count": 2,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 566032,
+              "title": "Das Echo der Zukunft",
+              "subtitle": "Die Licanius-Saga 2",
+              "release_date": "2017-08-24",
+              "release_year": 2017,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 1200879,
+              "title": "Stín věcí ztracených",
+              "subtitle": null,
+              "release_date": null,
+              "release_year": null,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 2323766,
+              "title": "The Light of All That Falls",
+              "subtitle": "Let God’s Love Rewrite Your Story",
+              "release_date": "2019-01-01",
+              "release_year": 2019,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 3,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "The Licanius Trilogy",
+                  "primary_books_count": 3,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 2333013,
+              "title": "The Justice of One",
+              "subtitle": null,
+              "release_date": "2027-01-01",
+              "release_year": 2027,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 3,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "Hierarchy",
+                  "primary_books_count": 3,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": "2027-01-01",
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": "B0G95K45P3",
+                  "language_id": 1,
+                  "country_id": null,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 2790339,
+              "title": "Siła Nielicznych",
+              "subtitle": null,
+              "release_date": "2025-01-01",
+              "release_year": 2025,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 2,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Hierarchia",
+                  "primary_books_count": 1,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 2783431,
+              "title": "Hierarchy - 02 - The Strength of the Few",
+              "subtitle": null,
+              "release_date": null,
+              "release_year": null,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": null,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Hierarchy",
+                  "primary_books_count": 3,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 2992155,
+              "title": "Vôľa väčšiny",
+              "subtitle": null,
+              "release_date": "2023-01-01",
+              "release_year": 2023,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 1,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Hierarchia",
+                  "primary_books_count": 1,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 445584,
+              "title": "The Shadow of What Was Lost",
+              "subtitle": "Licanius, Book 1",
+              "release_date": "2014-01-01",
+              "release_year": 2014,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 1,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "The Licanius Trilogy",
+                  "primary_books_count": 3,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": {
+                "release_date": "2016-07-19",
+                "edition_format": "Kindle",
+                "physical_format": null,
+                "isbn_13": "9780316552745",
+                "isbn_10": null,
+                "asin": null,
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": null
+              },
+              "default_audio_edition": {
+                "release_date": "2015-02-10",
+                "edition_format": null,
+                "physical_format": null,
+                "isbn_13": "9781772300192",
+                "isbn_10": null,
+                "asin": "B00S5AAHLY",
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": 91680
+              },
+              "editions": [
+                {
+                  "release_date": null,
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2014-08-03",
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9780356507750",
+                  "isbn_10": "0356507750",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2016-07-19",
+                  "edition_format": "Kindle",
+                  "physical_format": null,
+                  "isbn_13": "9780316552745",
+                  "isbn_10": "0316552747",
+                  "asin": "B01HMRF5FI",
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": null,
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2014-08-03",
+                  "edition_format": "Kindle Edition",
+                  "physical_format": null,
+                  "isbn_13": "9780992580216",
+                  "isbn_10": "0992580218",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2014-01-01",
+                  "edition_format": "Audible Audio",
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2017-05-05",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9780316274074",
+                  "isbn_10": "0316274070",
+                  "asin": "0316274070",
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2021-02-18",
+                  "edition_format": "eBook",
+                  "physical_format": null,
+                  "isbn_13": "9788834741726",
+                  "isbn_10": "8834741722",
+                  "asin": null,
+                  "language_id": 76,
+                  "country_id": 112,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2015-05-11",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9780356507774",
+                  "isbn_10": "0356507777",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 236,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": null,
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": null,
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": null,
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": null,
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": null,
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2014-08-03",
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9788834740811",
+                  "isbn_10": "8834740815",
+                  "asin": null,
+                  "language_id": 76,
+                  "country_id": 158,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2014-08-03",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9788379646432",
+                  "isbn_10": "8379646436",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 152,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2014-08-03",
+                  "edition_format": "Kindle Edition",
+                  "physical_format": null,
+                  "isbn_13": "9780356507743",
+                  "isbn_10": "0356507742",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 158,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2021-05-05",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9788379646555",
+                  "isbn_10": "837964655X",
+                  "asin": null,
+                  "language_id": 129,
+                  "country_id": 179,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2014-08-01",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9780992580209",
+                  "isbn_10": "099258020X",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": null,
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 2709600,
+              "title": "The Strength of the Few: Hiérarchie, T2",
+              "subtitle": "Hiérarchie, T2",
+              "release_date": null,
+              "release_year": null,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 1009118,
+              "title": "La luce del tempo presente. Licanius trilogy",
+              "subtitle": null,
+              "release_date": "2021-01-01",
+              "release_year": 2021,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 1223732,
+              "title": "L'Ombre du savoir perdu",
+              "subtitle": null,
+              "release_date": "2014-08-03",
+              "release_year": 2014,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 441085,
+              "title": "The Light of All That Falls",
+              "subtitle": "Licanius, Book 3",
+              "release_date": "2019-01-01",
+              "release_year": 2019,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 3,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "The Licanius Trilogy",
+                  "primary_books_count": 3,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": {
+                "release_date": "2019-12-10",
+                "edition_format": "",
+                "physical_format": null,
+                "isbn_13": "9780316274173",
+                "isbn_10": null,
+                "asin": null,
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": null
+              },
+              "default_audio_edition": {
+                "release_date": "2019-12-10",
+                "edition_format": null,
+                "physical_format": null,
+                "isbn_13": "9781774241677",
+                "isbn_10": null,
+                "asin": "1774241676",
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": 110340
+              },
+              "editions": [
+                {
+                  "release_date": "2019-01-01",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780310353997",
+                  "isbn_10": "0310353998",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": null,
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2019-01-01",
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2019-01-01",
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9780316274180",
+                  "isbn_10": "0316274186",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2019-12-10",
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": "9781774241677",
+                  "isbn_10": "1774241676",
+                  "asin": "1774241676",
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": 110340
+                },
+                {
+                  "release_date": "2019-01-01",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780356507842",
+                  "isbn_10": "035650784X",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 158,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": null,
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": "9788027506330",
+                  "isbn_10": "8027506336",
+                  "asin": null,
+                  "language_id": 36,
+                  "country_id": 61,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2019-12-10",
+                  "edition_format": "ebook",
+                  "physical_format": null,
+                  "isbn_13": "9788834741740",
+                  "isbn_10": "8834741749",
+                  "asin": null,
+                  "language_id": 76,
+                  "country_id": 158,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": null,
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": null,
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2019-01-01",
+                  "edition_format": "Trade Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9780356507828",
+                  "isbn_10": "0356507823",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2019-12-10",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9788379647231",
+                  "isbn_10": "8379647238",
+                  "asin": null,
+                  "language_id": 129,
+                  "country_id": 179,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2019-12-10",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9780356507859",
+                  "isbn_10": "0356507858",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 236,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2019-12-10",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9780316274159",
+                  "isbn_10": "0316274151",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2019-12-10",
+                  "edition_format": "ebook",
+                  "physical_format": null,
+                  "isbn_13": "9780356507835",
+                  "isbn_10": "0356507831",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 109,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2019-12-10",
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9788834741047",
+                  "isbn_10": "8834741048",
+                  "asin": null,
+                  "language_id": 76,
+                  "country_id": 158,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2024-04-18",
+                  "edition_format": "Kindle Edition",
+                  "physical_format": null,
+                  "isbn_13": "9782493405500",
+                  "isbn_10": "2493405501",
+                  "asin": "B0CZV75NRN",
+                  "language_id": 47,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2019-12-10",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780316274173",
+                  "isbn_10": "0316274178",
+                  "asin": "B077Y6N98P",
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 671943,
+              "title": "Echo of Things to Come",
+              "subtitle": null,
+              "release_date": "2017-08-22",
+              "release_year": 2017,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 2136850,
+              "title": "La Trilogia di Licanius",
+              "subtitle": null,
+              "release_date": "2020-01-01",
+              "release_year": 2020,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 1,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "The Licanius Trilogy",
+                  "primary_books_count": 3,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 1280559,
+              "title": "The Will of the Many",
+              "subtitle": null,
+              "release_date": null,
+              "release_year": null,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 824777,
+              "title": "The Strength of the Few",
+              "subtitle": "Hierarchy, Book 2",
+              "release_date": "2025-01-01",
+              "release_year": 2025,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 2,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "Hierarchy",
+                  "primary_books_count": 3,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": {
+                "release_date": "2025-11-11",
+                "edition_format": "ebook",
+                "physical_format": null,
+                "isbn_13": "9781982141257",
+                "isbn_10": null,
+                "asin": null,
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": null
+              },
+              "default_audio_edition": {
+                "release_date": "2025-11-11",
+                "edition_format": "Audible",
+                "physical_format": null,
+                "isbn_13": null,
+                "isbn_10": null,
+                "asin": "B0F6F54HND",
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": 112200
+              },
+              "editions": [
+                {
+                  "release_date": null,
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9781911231493",
+                  "isbn_10": "1911231499",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 236,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2025-11-11",
+                  "edition_format": "ebook",
+                  "physical_format": null,
+                  "isbn_13": "9781982141257",
+                  "isbn_10": "1982141255",
+                  "asin": "B0F2BBKX6B",
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2025-11-11",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9781668216774",
+                  "isbn_10": "1668216779",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2025-11-11",
+                  "edition_format": "Audible",
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": "B0F6F41SBN",
+                  "language_id": 1,
+                  "country_id": null,
+                  "audio_seconds": 112080
+                },
+                {
+                  "release_date": null,
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9788834747247",
+                  "isbn_10": "8834747240",
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2025-11-11",
+                  "edition_format": "ebook",
+                  "physical_format": null,
+                  "isbn_13": "9781923059436",
+                  "isbn_10": "1923059432",
+                  "asin": "B0F495FJ3F",
+                  "language_id": 1,
+                  "country_id": 15,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": null,
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2025-12-02",
+                  "edition_format": "ebook",
+                  "physical_format": null,
+                  "isbn_13": "9783985853328",
+                  "isbn_10": "3985853320",
+                  "asin": null,
+                  "language_id": 51,
+                  "country_id": 85,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2025-11-11",
+                  "edition_format": "Audible",
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": "B0F6F54HND",
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": 112200
+                },
+                {
+                  "release_date": null,
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": 112980
+                },
+                {
+                  "release_date": "2025-11-11",
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9781911231431",
+                  "isbn_10": "191123143X",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 15,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2025-11-11",
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9781982141233",
+                  "isbn_10": "1982141239",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2026-01-01",
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9788410163959",
+                  "isbn_10": "8410163950",
+                  "asin": "8410163950",
+                  "language_id": 148,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2025-10-11",
+                  "edition_format": "Unabridged Audiobook",
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": "B0F6F4GKJY",
+                  "language_id": 1,
+                  "country_id": 15,
+                  "audio_seconds": 112080
+                },
+                {
+                  "release_date": null,
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": "9781911231509",
+                  "isbn_10": "1911231502",
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": null,
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2026-06-26",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9788383752204",
+                  "isbn_10": "8383752202",
+                  "asin": null,
+                  "language_id": 129,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2025-11-11",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9781923058507",
+                  "isbn_10": "1923058509",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 15,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2025-01-01",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2025-11-11",
+                  "edition_format": "Audible",
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": "B0F6F26LSS",
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": 112080
+                }
+              ]
+            },
+            {
+              "id": 2183943,
+              "title": "A vontade de muitos",
+              "subtitle": null,
+              "release_date": "2023-05-23",
+              "release_year": 2023,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 1,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "Hierarchy",
+                  "primary_books_count": 3,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 1200884,
+              "title": "Ozvěna věcí budoucích",
+              "subtitle": null,
+              "release_date": null,
+              "release_year": null,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            }
+          ]
+        }
+      },
+      "seriesMatch": {
+        "failure": null,
+        "summary": {
+          "seriesCount": 2,
+          "series": [
+            {
+              "name": "Hierarchy",
+              "primary_books_count": 3,
+              "is_completed": false,
+              "books": [
+                {
+                  "position": null,
+                  "featured": false,
+                  "title": "Hierarchy - 02 - The Strength of the Few",
+                  "release_date": null,
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 1,
+                  "featured": true,
+                  "title": "The Will of the Many",
+                  "release_date": "2023-01-01",
+                  "audio_seconds": null,
+                  "default_ebook_edition": {
+                    "release_date": "2023-05-23",
+                    "edition_format": "Kindle",
+                    "physical_format": null,
+                    "isbn_13": "9781982141196",
+                    "isbn_10": null,
+                    "asin": null,
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": null
+                  },
+                  "default_audio_edition": {
+                    "release_date": "2023-05-23",
+                    "edition_format": "Audible",
+                    "physical_format": null,
+                    "isbn_13": null,
+                    "isbn_10": null,
+                    "asin": "B0BXTVJK3Q",
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": 101640
+                  }
+                },
+                {
+                  "position": 2,
+                  "featured": true,
+                  "title": "The Strength of the Few",
+                  "release_date": "2025-01-01",
+                  "audio_seconds": null,
+                  "default_ebook_edition": {
+                    "release_date": "2025-11-11",
+                    "edition_format": "ebook",
+                    "physical_format": null,
+                    "isbn_13": "9781982141257",
+                    "isbn_10": null,
+                    "asin": null,
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": null
+                  },
+                  "default_audio_edition": {
+                    "release_date": "2025-11-11",
+                    "edition_format": "Audible",
+                    "physical_format": null,
+                    "isbn_13": null,
+                    "isbn_10": null,
+                    "asin": "B0F6F54HND",
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": 112200
+                  }
+                },
+                {
+                  "position": 1,
+                  "featured": true,
+                  "title": "A vontade de muitos",
+                  "release_date": "2023-05-23",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 3,
+                  "featured": true,
+                  "title": "The Justice of One",
+                  "release_date": "2027-01-01",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                }
+              ]
+            },
+            {
+              "name": "Hierarchy",
+              "primary_books_count": 0,
+              "is_completed": false,
+              "books": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "caseId": "ana-and-din",
+      "series": "Ana and Din",
+      "author": "Robert Jackson Bennett",
+      "position": 3,
+      "preferredMarket": "CA",
+      "startedAt": "2026-10-01T03:13:46.070Z",
+      "books": {
+        "failure": null,
+        "summary": {
+          "bookCount": 20,
+          "books": [
+            {
+              "id": 2526354,
+              "title": "Город чудес",
+              "subtitle": null,
+              "release_date": "2017-01-01",
+              "release_year": 2017,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 3,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Божественные города",
+                  "primary_books_count": 3,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 2733335,
+              "title": "The Lion’s Tusk",
+              "subtitle": null,
+              "release_date": "2026-07-28",
+              "release_year": 2026,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 3,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "Magic & Mystery",
+                  "primary_books_count": 7,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": {
+                "release_date": "2026-07-28",
+                "edition_format": null,
+                "physical_format": null,
+                "isbn_13": "9781662543319",
+                "isbn_10": null,
+                "asin": null,
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": null
+              },
+              "default_audio_edition": {
+                "release_date": "2026-07-28",
+                "edition_format": null,
+                "physical_format": null,
+                "isbn_13": null,
+                "isbn_10": null,
+                "asin": "B0H8FQCSWG",
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": 4440
+              },
+              "editions": [
+                {
+                  "release_date": "2026-07-28",
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": "B0H8FQCSWG",
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": 4440
+                },
+                {
+                  "release_date": "2026-07-28",
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": "9781662543319",
+                  "isbn_10": "166254331X",
+                  "asin": "B0GTMT2FCS",
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 1884839,
+              "title": "Pohár smrti",
+              "subtitle": null,
+              "release_date": "2024-02-06",
+              "release_year": 2024,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 1,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "Ana and Din Mysteries",
+                  "primary_books_count": 3,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 2646027,
+              "title": "La Cité des lames - Les Cités divines - tome 2",
+              "subtitle": null,
+              "release_date": "2024-10-02",
+              "release_year": 2024,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 2,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "The Divine Cities",
+                  "primary_books_count": 3,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 974955,
+              "title": "Entremuros - Foundryside",
+              "subtitle": null,
+              "release_date": "2022-10-01",
+              "release_year": 2022,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 498550,
+              "title": "The Divine Cities Trilogy",
+              "subtitle": null,
+              "release_date": "2018-01-01",
+              "release_year": 2018,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 1,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "The Divine Cities",
+                  "primary_books_count": 3,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": "2018-01-01",
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": "9781984822116",
+                  "isbn_10": "198482211X",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 461444,
+              "title": "The Troupe",
+              "subtitle": null,
+              "release_date": "2012-01-01",
+              "release_year": 2012,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": {
+                "release_date": null,
+                "edition_format": null,
+                "physical_format": null,
+                "isbn_13": null,
+                "isbn_10": null,
+                "asin": null,
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": null
+              },
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": "2012-01-01",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780316187527",
+                  "isbn_10": "0316187526",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": null,
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2012-02-21",
+                  "edition_format": "Kindle Edition",
+                  "physical_format": null,
+                  "isbn_13": "9780316192712",
+                  "isbn_10": "0316192716",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 2977498,
+              "title": "Shadow of the Leviathan Collection (2 Hardcover Books) - Tainted Cup, Drop of Corruption",
+              "subtitle": null,
+              "release_date": null,
+              "release_year": null,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": null,
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 2885274,
+              "title": "À lire à ton réveil",
+              "subtitle": null,
+              "release_date": "2012-01-01",
+              "release_year": 2012,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 1328702,
+              "title": "Clarkesworld Magazine, Issue 64, January 2012",
+              "subtitle": null,
+              "release_date": "2012-01-01",
+              "release_year": 2012,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 64,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "Clarkesworld Magazine",
+                  "primary_books_count": 211,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": "2012-01-01",
+                  "edition_format": "Kindle Edition",
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": "B00749AEME",
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 2626841,
+              "title": "The Company Man",
+              "subtitle": null,
+              "release_date": "2009-01-01",
+              "release_year": 2009,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 2054126,
+              "title": "Founders Trilogy Series 2 Books Collection Set",
+              "subtitle": null,
+              "release_date": null,
+              "release_year": null,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 1,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "The Founders Trilogy",
+                  "primary_books_count": 3,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": null,
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9789124142896",
+                  "isbn_10": "9124142891",
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 2449956,
+              "title": "Zatruty kielich",
+              "subtitle": null,
+              "release_date": "2025-01-01",
+              "release_year": 2025,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 607290,
+              "title": "Die Stadt der tausend Treppen",
+              "subtitle": null,
+              "release_date": "2017-02-16",
+              "release_year": 2017,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 2918644,
+              "title": "Kılıçlar Kenti",
+              "subtitle": null,
+              "release_date": "2016-01-01",
+              "release_year": 2016,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 2,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "İlahi Kentler",
+                  "primary_books_count": 3,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 1238294,
+              "title": "Orașul scărilor",
+              "subtitle": null,
+              "release_date": null,
+              "release_year": null,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 958988,
+              "title": "Der Schlüssel der Magie - Die Götter",
+              "subtitle": null,
+              "release_date": "2023-01-18",
+              "release_year": 2023,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 784729,
+              "title": "Miasto schodów",
+              "subtitle": null,
+              "release_date": "2014-09-09",
+              "release_year": 2014,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 1394779,
+              "title": "Die Diebin",
+              "subtitle": null,
+              "release_date": "2018-08-21",
+              "release_year": 2018,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 41398,
+              "title": "Foundryside",
+              "subtitle": null,
+              "release_date": "2018-01-01",
+              "release_year": 2018,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 1,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "The Founders Trilogy",
+                  "primary_books_count": 3,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": {
+                "release_date": "2018-08-21",
+                "edition_format": "Kindle",
+                "physical_format": null,
+                "isbn_13": "9781524760373",
+                "isbn_10": null,
+                "asin": null,
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": null
+              },
+              "default_audio_edition": {
+                "release_date": "2018-08-21",
+                "edition_format": "Audible Audio",
+                "physical_format": null,
+                "isbn_13": "9781786487865",
+                "isbn_10": null,
+                "asin": null,
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": null
+              },
+              "editions": [
+                {
+                  "release_date": "2018-08-21",
+                  "edition_format": "Kindle Edition",
+                  "physical_format": null,
+                  "isbn_13": "9786586015256",
+                  "isbn_10": "6586015251",
+                  "asin": null,
+                  "language_id": 130,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2018-08-21",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9780525573845",
+                  "isbn_10": "0525573844",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2018-08-21",
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": "9781786487858",
+                  "isbn_10": "1786487853",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 236,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2018-08-21",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9783734162664",
+                  "isbn_10": "3734162661",
+                  "asin": null,
+                  "language_id": 51,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2018-08-21",
+                  "edition_format": "ebook",
+                  "physical_format": null,
+                  "isbn_13": "9781786487872",
+                  "isbn_10": "178648787X",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2018-08-21",
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2018-08-21",
+                  "edition_format": "paperback",
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2018-08-21",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": 148,
+                  "country_id": 42,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2018-08-21",
+                  "edition_format": "Kindle",
+                  "physical_format": null,
+                  "isbn_13": "9781524760373",
+                  "isbn_10": "1524760374",
+                  "asin": "B077RG422Z",
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2018-08-21",
+                  "edition_format": "Audible Audio",
+                  "physical_format": null,
+                  "isbn_13": "9781786487865",
+                  "isbn_10": "1786487861",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2018-08-21",
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9788027504466",
+                  "isbn_10": "8027504465",
+                  "asin": null,
+                  "language_id": 36,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2018-08-21",
+                  "edition_format": "Audiobook",
+                  "physical_format": null,
+                  "isbn_13": "9780525643722",
+                  "isbn_10": "0525643729",
+                  "asin": "B07DJVDLL9",
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": 70477
+                },
+                {
+                  "release_date": "2018-08-21",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9789878474557",
+                  "isbn_10": "9878474550",
+                  "asin": null,
+                  "language_id": 148,
+                  "country_id": 158,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2018-01-01",
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": "9781524760366",
+                  "isbn_10": "1524760366",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2018-08-21",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9788418711619",
+                  "isbn_10": "8418711612",
+                  "asin": null,
+                  "language_id": 148,
+                  "country_id": 42,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2018-08-21",
+                  "edition_format": "Kindle Edition",
+                  "physical_format": null,
+                  "isbn_13": "9788835720973",
+                  "isbn_10": "8835720974",
+                  "asin": null,
+                  "language_id": 76,
+                  "country_id": 16,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2020-10-19",
+                  "edition_format": "Kindle Edition",
+                  "physical_format": null,
+                  "isbn_13": "9783641257194",
+                  "isbn_10": "3641257190",
+                  "asin": "B086V3XWW4",
+                  "language_id": 51,
+                  "country_id": 85,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2018-08-21",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9782226441515",
+                  "isbn_10": "2226441514",
+                  "asin": null,
+                  "language_id": 47,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2018-08-21",
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9788027502141",
+                  "isbn_10": "8027502144",
+                  "asin": null,
+                  "language_id": 36,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2025-05-15",
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9788367715997",
+                  "isbn_10": "8367715993",
+                  "asin": null,
+                  "language_id": 129,
+                  "country_id": 179,
+                  "audio_seconds": null
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "seriesMatch": {
+        "failure": null,
+        "summary": {
+          "seriesCount": 1,
+          "series": [
+            {
+              "name": "Ana and Din Mysteries",
+              "primary_books_count": 3,
+              "is_completed": false,
+              "books": [
+                {
+                  "position": 1,
+                  "featured": true,
+                  "title": "The Tainted Cup",
+                  "release_date": "2024-02-06",
+                  "audio_seconds": null,
+                  "default_ebook_edition": {
+                    "release_date": "2024-02-06",
+                    "edition_format": "Kindle",
+                    "physical_format": null,
+                    "isbn_13": "9781984820723",
+                    "isbn_10": null,
+                    "asin": null,
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": null
+                  },
+                  "default_audio_edition": {
+                    "release_date": "2024-02-06",
+                    "edition_format": "Audible.com",
+                    "physical_format": null,
+                    "isbn_13": "9780593823859",
+                    "isbn_10": null,
+                    "asin": "B0C6YM8Q3B",
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": 49860
+                  }
+                },
+                {
+                  "position": 1,
+                  "featured": true,
+                  "title": "Pohár smrti",
+                  "release_date": "2024-02-06",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 3,
+                  "featured": true,
+                  "title": "A Trade of Blood",
+                  "release_date": "2026-08-04",
+                  "audio_seconds": null,
+                  "default_ebook_edition": {
+                    "release_date": "2026-08-04",
+                    "edition_format": "Kindle",
+                    "physical_format": null,
+                    "isbn_13": "9780593723869",
+                    "isbn_10": null,
+                    "asin": null,
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": null
+                  },
+                  "default_audio_edition": {
+                    "release_date": "2026-08-04",
+                    "edition_format": null,
+                    "physical_format": null,
+                    "isbn_13": "9798217279296",
+                    "isbn_10": null,
+                    "asin": "B0FKVBM6MV",
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": 50824
+                  }
+                },
+                {
+                  "position": 2,
+                  "featured": true,
+                  "title": "A Drop of Corruption",
+                  "release_date": "1995-11-24",
+                  "audio_seconds": null,
+                  "default_ebook_edition": {
+                    "release_date": "2025-04-01",
+                    "edition_format": "Audiobook",
+                    "physical_format": null,
+                    "isbn_13": "9781399725422",
+                    "isbn_10": null,
+                    "asin": null,
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": null
+                  },
+                  "default_audio_edition": {
+                    "release_date": null,
+                    "edition_format": null,
+                    "physical_format": null,
+                    "isbn_13": null,
+                    "isbn_10": null,
+                    "asin": null,
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": 57060
+                  }
+                },
+                {
+                  "position": 2,
+                  "featured": true,
+                  "title": "A Drop of Corruption: An Ana and Din Mystery",
+                  "release_date": "2025-04-01",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 1,
+                  "featured": true,
+                  "title": "Затруєна чаша",
+                  "release_date": "2024-02-06",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "caseId": "scholomance",
+      "series": "Scholomance",
+      "author": "Naomi Novik",
+      "position": 2,
+      "preferredMarket": "CA",
+      "startedAt": "2026-10-01T03:13:48.459Z",
+      "books": {
+        "failure": null,
+        "summary": {
+          "bookCount": 20,
+          "books": [
+            {
+              "id": 597370,
+              "title": "Un cuento oscuro",
+              "subtitle": null,
+              "release_date": "2015-05-19",
+              "release_year": 2015,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 97407,
+              "title": "De Jaden Troon",
+              "subtitle": "Takhta Negeri Tiongkok",
+              "release_date": "2006-04-25",
+              "release_year": 2006,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 1905936,
+              "title": "The Summer War",
+              "subtitle": null,
+              "release_date": "2025-09-16",
+              "release_year": 2025,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": {
+                "release_date": "2025-09-16",
+                "edition_format": "Kindle",
+                "physical_format": null,
+                "isbn_13": "9780593984710",
+                "isbn_10": null,
+                "asin": null,
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": null
+              },
+              "default_audio_edition": {
+                "release_date": "2025-09-16",
+                "edition_format": "audio",
+                "physical_format": null,
+                "isbn_13": "9798217159246",
+                "isbn_10": null,
+                "asin": "B0DVD9X59M",
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": 13620
+              },
+              "editions": [
+                {
+                  "release_date": "2025-09-16",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9781804956618",
+                  "isbn_10": "1804956619",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2025-09-16",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9781804956601",
+                  "isbn_10": "1804956600",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2025-09-16",
+                  "edition_format": "Kindle",
+                  "physical_format": null,
+                  "isbn_13": "9780593984710",
+                  "isbn_10": "0593984714",
+                  "asin": "B0DQNCJ6MW",
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2025-09-16",
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9780593984703",
+                  "isbn_10": "0593984706",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2025-09-16",
+                  "edition_format": "audio",
+                  "physical_format": null,
+                  "isbn_13": "9798217159246",
+                  "isbn_10": null,
+                  "asin": "B0DVD9X59M",
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": 13620
+                }
+              ]
+            },
+            {
+              "id": 1570658,
+              "title": "John Barleycorn",
+              "subtitle": null,
+              "release_date": "2020-01-01",
+              "release_year": 2020,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 505762,
+              "title": "Un mundo helado",
+              "subtitle": null,
+              "release_date": "2018-07-10",
+              "release_year": 2018,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 1121940,
+              "title": "The Golden Enclaves",
+              "subtitle": null,
+              "release_date": null,
+              "release_year": null,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 1980224,
+              "title": "Victory of Eagles",
+              "subtitle": null,
+              "release_date": "2008-01-01",
+              "release_year": 2008,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 1233510,
+              "title": "Unfettered II",
+              "subtitle": "New Tales By Masters of Fantasy",
+              "release_date": "2016-11-15",
+              "release_year": 2016,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 15.2,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "The Dresden Files",
+                  "primary_books_count": 19,
+                  "is_completed": false
+                },
+                {
+                  "position": 0,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Annwn Cycle",
+                  "primary_books_count": 3,
+                  "is_completed": false
+                },
+                {
+                  "position": 0,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Gunnie Rose",
+                  "primary_books_count": 6,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": {
+                "release_date": "2016-11-21",
+                "edition_format": "Audible Audio",
+                "physical_format": null,
+                "isbn_13": "9781944145088",
+                "isbn_10": null,
+                "asin": null,
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": null
+              },
+              "editions": [
+                {
+                  "release_date": "2016-11-15",
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9781944145057",
+                  "isbn_10": "1944145052",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": null,
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2016-11-21",
+                  "edition_format": "Audible Audio",
+                  "physical_format": null,
+                  "isbn_13": "9781944145088",
+                  "isbn_10": "1944145095",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 469876,
+              "title": "The Mythic Dream",
+              "subtitle": null,
+              "release_date": "2019-09-03",
+              "release_year": 2019,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 1570663,
+              "title": "Drachenzorn",
+              "subtitle": null,
+              "release_date": "2006-05-30",
+              "release_year": 2006,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 2523487,
+              "title": "Uncanny Magazine, Issue 22, May/June 2018",
+              "subtitle": null,
+              "release_date": "2018-05-01",
+              "release_year": 2018,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": null,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "The Universe of Xuya",
+                  "primary_books_count": 33,
+                  "is_completed": false
+                },
+                {
+                  "position": 22,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "Uncanny Magazine ",
+                  "primary_books_count": 69,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": {
+                "release_date": "2018-05-01",
+                "edition_format": "Kindle Edition",
+                "physical_format": null,
+                "isbn_13": null,
+                "isbn_10": null,
+                "asin": null,
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": null
+              },
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": "2018-05-01",
+                  "edition_format": "Kindle Edition",
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": "B07CLHRX8T",
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 2841349,
+              "title": "After Hours",
+              "subtitle": null,
+              "release_date": null,
+              "release_year": null,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": null,
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 1994099,
+              "title": "The Mammoth Book of Best New SF 24",
+              "subtitle": null,
+              "release_date": "2011-01-01",
+              "release_year": 2011,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": "2011-01-01",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9781849013734",
+                  "isbn_10": "184901373X",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 377367,
+              "title": "League of Dragons",
+              "subtitle": null,
+              "release_date": "2016-01-01",
+              "release_year": 2016,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 9,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "Temeraire",
+                  "primary_books_count": 9,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": {
+                "release_date": "2016-06-14",
+                "edition_format": "Audiobook",
+                "physical_format": null,
+                "isbn_13": "9781494597382",
+                "isbn_10": null,
+                "asin": null,
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": null
+              },
+              "editions": [
+                {
+                  "release_date": "2016-01-01",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780008121150",
+                  "isbn_10": "000812115X",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2016-06-14",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9783734161643",
+                  "isbn_10": "3734161649",
+                  "asin": null,
+                  "language_id": 51,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2016-01-01",
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9780345522924",
+                  "isbn_10": "0345522923",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2016-06-14",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9783641199005",
+                  "isbn_10": "364119900X",
+                  "asin": null,
+                  "language_id": 51,
+                  "country_id": 16,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": null,
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": "9780008338954",
+                  "isbn_10": "0008338957",
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2016-01-01",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9780008121167",
+                  "isbn_10": "0008121168",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 216,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2016-06-14",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780593359624",
+                  "isbn_10": "0593359623",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 216,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2016-06-14",
+                  "edition_format": "Mass Market Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9780345522931",
+                  "isbn_10": "0345522931",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2016-06-14",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9783764530754",
+                  "isbn_10": "3764530758",
+                  "asin": null,
+                  "language_id": 51,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2016-06-14",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9781494567385",
+                  "isbn_10": "1494567385",
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2016-06-14",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9788380621947",
+                  "isbn_10": "8380621948",
+                  "asin": null,
+                  "language_id": 129,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2016-01-01",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780345522948",
+                  "isbn_10": "034552294X",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 16,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2016-06-14",
+                  "edition_format": "Audiobook",
+                  "physical_format": null,
+                  "isbn_13": "9781494597382",
+                  "isbn_10": "1494597381",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 2104934,
+              "title": "Ezüstfonás",
+              "subtitle": null,
+              "release_date": "2018-07-10",
+              "release_year": 2018,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 474273,
+              "title": "Year's Best Fantasy #9",
+              "subtitle": null,
+              "release_date": "2009-08-14",
+              "release_year": 2009,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": null,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Year's Best Fantasy",
+                  "primary_books_count": 6,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": "2009-08-14",
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": "9780765324498",
+                  "isbn_10": "0765324490",
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 893857,
+              "title": "Scholomance: Freshman Student Handbook",
+              "subtitle": "Freshman Student Handbook",
+              "release_date": null,
+              "release_year": null,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 1095314,
+              "title": "Ve stínu Hvozdu",
+              "subtitle": null,
+              "release_date": "2015-05-19",
+              "release_year": 2015,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 1147683,
+              "title": "The Year's Best Dark Fantasy & Horror 2012",
+              "subtitle": null,
+              "release_date": "2011-07-01",
+              "release_year": 2011,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": null,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "The Year's Best Dark Fantasy & Horror",
+                  "primary_books_count": 10,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": "2011-07-01",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9781607013457",
+                  "isbn_10": "1607013452",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2011-07-01",
+                  "edition_format": "Kindle Edition",
+                  "physical_format": null,
+                  "isbn_13": "9781607013686",
+                  "isbn_10": "1607013681",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 2099457,
+              "title": "Random House 2014 Free Sampler",
+              "subtitle": null,
+              "release_date": "2014-07-15",
+              "release_year": 2014,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": {
+                "release_date": "2014-07-15",
+                "edition_format": "Kindle Edition",
+                "physical_format": null,
+                "isbn_13": "9780804180924",
+                "isbn_10": null,
+                "asin": null,
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": null
+              },
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": "2014-07-15",
+                  "edition_format": "Kindle Edition",
+                  "physical_format": null,
+                  "isbn_13": "9780804180924",
+                  "isbn_10": "080418092X",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": null,
+                  "audio_seconds": null
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "seriesMatch": {
+        "failure": null,
+        "summary": {
+          "seriesCount": 4,
+          "series": [
+            {
+              "name": "The Scholomance",
+              "primary_books_count": 0,
+              "is_completed": false,
+              "books": []
+            },
+            {
+              "name": "The Scholomance",
+              "primary_books_count": 3,
+              "is_completed": false,
+              "books": [
+                {
+                  "position": 1,
+                  "featured": true,
+                  "title": "A Deadly Education",
+                  "release_date": "2020-01-01",
+                  "audio_seconds": null,
+                  "default_ebook_edition": {
+                    "release_date": "2020-09-29",
+                    "edition_format": "Kindle",
+                    "physical_format": null,
+                    "isbn_13": "9780593128497",
+                    "isbn_10": null,
+                    "asin": null,
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": null
+                  },
+                  "default_audio_edition": {
+                    "release_date": "2020-09-29",
+                    "edition_format": "Audiobook",
+                    "physical_format": null,
+                    "isbn_13": "9780593287422",
+                    "isbn_10": null,
+                    "asin": null,
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": 39540
+                  }
+                },
+                {
+                  "position": 2,
+                  "featured": true,
+                  "title": "The Last Graduate",
+                  "release_date": "2021-01-01",
+                  "audio_seconds": null,
+                  "default_ebook_edition": {
+                    "release_date": "2021-09-28",
+                    "edition_format": "Kindle",
+                    "physical_format": null,
+                    "isbn_13": "9780593128879",
+                    "isbn_10": null,
+                    "asin": null,
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": null
+                  },
+                  "default_audio_edition": {
+                    "release_date": "2021-09-28",
+                    "edition_format": "Kindle",
+                    "physical_format": null,
+                    "isbn_13": null,
+                    "isbn_10": null,
+                    "asin": "B08M4DMT5J",
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": 48420
+                  }
+                },
+                {
+                  "position": 3,
+                  "featured": true,
+                  "title": "The Golden Enclaves",
+                  "release_date": "2022-01-01",
+                  "audio_seconds": null,
+                  "default_ebook_edition": {
+                    "release_date": "2022-09-27",
+                    "edition_format": "Kindle",
+                    "physical_format": null,
+                    "isbn_13": null,
+                    "isbn_10": null,
+                    "asin": null,
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": null
+                  },
+                  "default_audio_edition": {
+                    "release_date": "2022-09-27",
+                    "edition_format": "Hardcover",
+                    "physical_format": null,
+                    "isbn_13": "9780593158357",
+                    "isbn_10": null,
+                    "asin": null,
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": null
+                  }
+                },
+                {
+                  "position": 2,
+                  "featured": true,
+                  "title": "Poslední absolvent",
+                  "release_date": "2021-09-28",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 3,
+                  "featured": true,
+                  "title": "Zlaté enklávy",
+                  "release_date": "2022-09-27",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 1,
+                  "featured": true,
+                  "title": "Una educación mortal",
+                  "release_date": "2020-09-29",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 1,
+                  "featured": true,
+                  "title": "Uma Educação Mortal",
+                  "release_date": "2020-09-29",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 2,
+                  "featured": true,
+                  "title": "The Last Graduate",
+                  "release_date": "2021-01-01",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 1,
+                  "featured": true,
+                  "title": "The Scholomance Series: Books 1-3",
+                  "release_date": null,
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 3,
+                  "featured": true,
+                  "title": "Scholomance – Die goldenen Enklaven",
+                  "release_date": "2022-09-27",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 0.5,
+                  "featured": true,
+                  "title": "Scholomance Freshman Student Handbook",
+                  "release_date": null,
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 3,
+                  "featured": true,
+                  "title": "Les Enclaves dorées",
+                  "release_date": "2022-09-27",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 2,
+                  "featured": true,
+                  "title": "Promotion Funeste",
+                  "release_date": "2021-09-28",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 1,
+                  "featured": true,
+                  "title": "Éducation Meurtrière",
+                  "release_date": "2020-09-29",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 1,
+                  "featured": true,
+                  "title": "A ​Végzet Iskolája",
+                  "release_date": "2020-09-29",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 1,
+                  "featured": true,
+                  "title": "Смъртоносна академия",
+                  "release_date": "2020-09-29",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 3,
+                  "featured": true,
+                  "title": "La Cerchia d'Oro",
+                  "release_date": "2022-09-27",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 2,
+                  "featured": true,
+                  "title": "La Prova Finale",
+                  "release_date": "2021-09-28",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                }
+              ]
+            },
+            {
+              "name": "Scholomance",
+              "primary_books_count": 0,
+              "is_completed": false,
+              "books": []
+            },
+            {
+              "name": "Scholomance",
+              "primary_books_count": 12,
+              "is_completed": false,
+              "books": [
+                {
+                  "position": 10,
+                  "featured": true,
+                  "title": "Scholomance 10",
+                  "release_date": "2021-05-31",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 9,
+                  "featured": true,
+                  "title": "Scholomance 9",
+                  "release_date": "2021-04-05",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 8,
+                  "featured": true,
+                  "title": "Scholomance 8",
+                  "release_date": "2021-01-25",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 6,
+                  "featured": true,
+                  "title": "Scholomance 6",
+                  "release_date": "2020-11-09",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 7,
+                  "featured": true,
+                  "title": "Scholomance 7",
+                  "release_date": "2020-12-14",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 12,
+                  "featured": true,
+                  "title": "Scholomance 12",
+                  "release_date": "2021-09-13",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 11,
+                  "featured": true,
+                  "title": "Scholomance 11",
+                  "release_date": "2021-07-26",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 5,
+                  "featured": true,
+                  "title": "Scholomance 5: The Devil's Academy",
+                  "release_date": "2020-10-09",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 3,
+                  "featured": true,
+                  "title": "Scholomance 3: The Devil's Academy",
+                  "release_date": "2020-06-23",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": {
+                    "release_date": null,
+                    "edition_format": "Audible",
+                    "physical_format": null,
+                    "isbn_13": null,
+                    "isbn_10": null,
+                    "asin": null,
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": null
+                  }
+                },
+                {
+                  "position": 4,
+                  "featured": true,
+                  "title": "Scholomance 4: The Devil's Academy",
+                  "release_date": "2020-08-10",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": {
+                    "release_date": null,
+                    "edition_format": "Audible",
+                    "physical_format": null,
+                    "isbn_13": null,
+                    "isbn_10": null,
+                    "asin": null,
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": null
+                  }
+                },
+                {
+                  "position": 2,
+                  "featured": true,
+                  "title": "Scholomance 2: The Devil's Academy",
+                  "release_date": "2020-05-18",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": {
+                    "release_date": "2021-10-11",
+                    "edition_format": "Audible",
+                    "physical_format": null,
+                    "isbn_13": null,
+                    "isbn_10": null,
+                    "asin": null,
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": null
+                  }
+                },
+                {
+                  "position": 1,
+                  "featured": true,
+                  "title": "Scholomance: The Devil's Academy",
+                  "release_date": "2020-07-22",
+                  "audio_seconds": 42420,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": {
+                    "release_date": "2020-07-22",
+                    "edition_format": "Audible",
+                    "physical_format": null,
+                    "isbn_13": null,
+                    "isbn_10": null,
+                    "asin": "B08DDC1WC4",
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": 42420
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "caseId": "path-to-ascendancy-gb",
+      "series": "Path to Ascendancy",
+      "author": "Ian C. Esslemont",
+      "position": 2,
+      "preferredMarket": "GB",
+      "startedAt": "2026-10-01T03:13:50.824Z",
+      "books": {
+        "failure": null,
+        "summary": {
+          "bookCount": 20,
+          "books": [
+            {
+              "id": 1179738,
+              "title": "Untitled",
+              "subtitle": null,
+              "release_date": null,
+              "release_year": null,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 5,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "Path to Ascendancy",
+                  "primary_books_count": 6,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": null,
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 2915697,
+              "title": "Jablko Žezlo Trůn",
+              "subtitle": null,
+              "release_date": null,
+              "release_year": null,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 4,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazská říše",
+                  "primary_books_count": 5,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": null,
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 1179737,
+              "title": "Untitled",
+              "subtitle": null,
+              "release_date": null,
+              "release_year": null,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 6,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "Path to Ascendancy",
+                  "primary_books_count": 6,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": null,
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 687327,
+              "title": "The Malazan Empire Series",
+              "subtitle": null,
+              "release_date": "2017-10-10",
+              "release_year": 2017,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": "2017-10-10",
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": "9781250176455",
+                  "isbn_10": "125017645X",
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 913000,
+              "title": "Blood and Bone",
+              "subtitle": null,
+              "release_date": "2013-01-01",
+              "release_year": 2013,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 2915696,
+              "title": "Krev a kosti",
+              "subtitle": null,
+              "release_date": "2012-01-01",
+              "release_year": 2012,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 5,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazská říše",
+                  "primary_books_count": 5,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": "2012-01-01",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 2143463,
+              "title": "Writing Fantasy Heroes",
+              "subtitle": null,
+              "release_date": "2008-01-01",
+              "release_year": 2008,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": null,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "Clash of Steel",
+                  "primary_books_count": 1,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": "2008-01-01",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9780982053683",
+                  "isbn_10": "0982053681",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": null,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 446297,
+              "title": "Return of the Crimson Guard",
+              "subtitle": null,
+              "release_date": "2008-01-01",
+              "release_year": 2008,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 2,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "Novels of the Malazan Empire",
+                  "primary_books_count": 6,
+                  "is_completed": true
+                },
+                {
+                  "position": 20,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazan Authors’ Suggested Reading Order",
+                  "primary_books_count": 32,
+                  "is_completed": false
+                },
+                {
+                  "position": 11,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazan",
+                  "primary_books_count": 17,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": {
+                "release_date": "2008-08-15",
+                "edition_format": "",
+                "physical_format": null,
+                "isbn_13": "9781429910897",
+                "isbn_10": null,
+                "asin": null,
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": null
+              },
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": "2008-08-15",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780765363480",
+                  "isbn_10": "0765363488",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2008-01-01",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780765323729",
+                  "isbn_10": "0765323729",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2008-01-01",
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9780765323705",
+                  "isbn_10": "0765323702",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2008-08-15",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780553824476",
+                  "isbn_10": "0553824473",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2008-01-01",
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2010-10-15",
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": "9781409057635",
+                  "isbn_10": "1409057631",
+                  "asin": "B004D4Y2X0",
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2008-08-15",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9780593058107",
+                  "isbn_10": "0593058100",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2008-01-01",
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9780593058091",
+                  "isbn_10": "0593058097",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2008-01-01",
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9781906301927",
+                  "isbn_10": "1906301921",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2008-08-15",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9781429910897",
+                  "isbn_10": "1429910895",
+                  "asin": "B003FQM34M",
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 458681,
+              "title": "Blood and Bone",
+              "subtitle": "Novels of the Malazan Empire, Book 5",
+              "release_date": "2012-11-22",
+              "release_year": 2012,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 5,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Novels of the Malazan Empire",
+                  "primary_books_count": 6,
+                  "is_completed": true
+                },
+                {
+                  "position": null,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazan",
+                  "primary_books_count": 17,
+                  "is_completed": false
+                },
+                {
+                  "position": 26,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazan (In-World Chronological Order)",
+                  "primary_books_count": 30,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": {
+                "release_date": "2012-11-22",
+                "edition_format": null,
+                "physical_format": null,
+                "isbn_13": "9781409043379",
+                "isbn_10": null,
+                "asin": null,
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": null
+              },
+              "default_audio_edition": {
+                "release_date": "2012-01-01",
+                "edition_format": "Audible Audio",
+                "physical_format": null,
+                "isbn_13": null,
+                "isbn_10": null,
+                "asin": null,
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": null
+              },
+              "editions": [
+                {
+                  "release_date": "2012-01-01",
+                  "edition_format": "Audible Audio",
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2012-11-22",
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2012-11-22",
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": "9780765329974",
+                  "isbn_10": "0765329972",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2012-11-22",
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": "9781409043379",
+                  "isbn_10": "1409043371",
+                  "asin": "B008UAOT4A",
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2012-11-22",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780553824735",
+                  "isbn_10": "0553824732",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2012-11-22",
+                  "edition_format": "Kindle Edition",
+                  "physical_format": null,
+                  "isbn_13": "9780765330017",
+                  "isbn_10": "0765330016",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2012-01-01",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780593064467",
+                  "isbn_10": "0593064461",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 485161,
+              "title": "Forge of the High Mage",
+              "subtitle": "A Novel of the Malazan Empire",
+              "release_date": "2023-04-06",
+              "release_year": 2023,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 4,
+                  "featured": true,
+                  "compilation": null,
+                  "series": "Path to Ascendancy",
+                  "primary_books_count": 6,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": "2023-01-01",
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9781250788610",
+                  "isbn_10": "1250788617",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2024-04-09",
+                  "edition_format": "Audible",
+                  "physical_format": null,
+                  "isbn_13": "9781713554264",
+                  "isbn_10": "1713554267",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": null,
+                  "audio_seconds": 61980
+                },
+                {
+                  "release_date": "2023-04-06",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9781250788627",
+                  "isbn_10": "1250788625",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2023-01-01",
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": "9781473571242",
+                  "isbn_10": "1473571243",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2023-01-01",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9781787632561",
+                  "isbn_10": "1787632563",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2020-11-17",
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9781250251954",
+                  "isbn_10": "1250251958",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 590423,
+              "title": "Stonewielder",
+              "subtitle": "A Novel of the Malazan Empire",
+              "release_date": "2010-01-01",
+              "release_year": 2010,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 3,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Novels of the Malazan Empire",
+                  "primary_books_count": 6,
+                  "is_completed": true
+                },
+                {
+                  "position": null,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazan",
+                  "primary_books_count": 17,
+                  "is_completed": false
+                },
+                {
+                  "position": 22,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazan (In-World Chronological Order)",
+                  "primary_books_count": 30,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 2732457,
+              "title": "Blood and Bone: Novels of the Malazan Empire, Book 5",
+              "subtitle": "Novels of the Malazan Empire, Book 5",
+              "release_date": "2012-01-01",
+              "release_year": 2012,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 5,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Novels of the Malazan Empire",
+                  "primary_books_count": 6,
+                  "is_completed": true
+                },
+                {
+                  "position": 26,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazan Authors’ Suggested Reading Order",
+                  "primary_books_count": 32,
+                  "is_completed": false
+                },
+                {
+                  "position": null,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazan",
+                  "primary_books_count": 17,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 458775,
+              "title": "Assail",
+              "subtitle": null,
+              "release_date": "2013-11-07",
+              "release_year": 2013,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 6,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Novels of the Malazan Empire",
+                  "primary_books_count": 6,
+                  "is_completed": true
+                },
+                {
+                  "position": null,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazan",
+                  "primary_books_count": 17,
+                  "is_completed": false
+                },
+                {
+                  "position": 27,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazan (In-World Chronological Order)",
+                  "primary_books_count": 30,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": {
+                "release_date": "2014-08-14",
+                "edition_format": null,
+                "physical_format": null,
+                "isbn_13": "9781409043348",
+                "isbn_10": null,
+                "asin": null,
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": null
+              },
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": "2013-11-07",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9781429948616",
+                  "isbn_10": "1429948612",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2013-11-07",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780593064498",
+                  "isbn_10": "0593064496",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2014-08-14",
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": "9781409043348",
+                  "isbn_10": "1409043347",
+                  "asin": "B00GO9BNSE",
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2013-11-07",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780593064481",
+                  "isbn_10": "0593064488",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2014-01-01",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9780765330000",
+                  "isbn_10": "0765330008",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2013-11-07",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780553824759",
+                  "isbn_10": "0553824759",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2013-11-07",
+                  "edition_format": "Mass Market Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9780553824742",
+                  "isbn_10": "0553824740",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2013-11-07",
+                  "edition_format": "Hardcover",
+                  "physical_format": null,
+                  "isbn_13": "9780765329981",
+                  "isbn_10": "0765329980",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2019-01-01",
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": "9788071977070",
+                  "isbn_10": "8071977071",
+                  "asin": null,
+                  "language_id": 36,
+                  "country_id": 61,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 461371,
+              "title": "Kellanved's Reach",
+              "subtitle": "Path to Ascendancy, Book 3",
+              "release_date": "2019-01-01",
+              "release_year": 2019,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 3,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Path to Ascendancy",
+                  "primary_books_count": 6,
+                  "is_completed": false
+                },
+                {
+                  "position": null,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazan",
+                  "primary_books_count": 17,
+                  "is_completed": false
+                },
+                {
+                  "position": 6,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazan (In-World Chronological Order)",
+                  "primary_books_count": 30,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": "2019-02-19",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780857502858",
+                  "isbn_10": "0857502859",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2019-01-01",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9781466868601",
+                  "isbn_10": "1466868600",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2019-04-02",
+                  "edition_format": "Audible",
+                  "physical_format": null,
+                  "isbn_13": "9781511377256",
+                  "isbn_10": "1511377259",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": null,
+                  "audio_seconds": 47220
+                },
+                {
+                  "release_date": "2019-02-19",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780857504395",
+                  "isbn_10": "0857504398",
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2019-02-21",
+                  "edition_format": null,
+                  "physical_format": null,
+                  "isbn_13": "9780593074756",
+                  "isbn_10": "0593074750",
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2019-02-19",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780765379481",
+                  "isbn_10": "0765379481",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2019-01-01",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9781473510609",
+                  "isbn_10": "1473510600",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2019-02-19",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780765379498",
+                  "isbn_10": "076537949X",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 1379719,
+              "title": "Stonewielder: A Novel of the Malazan Empire",
+              "subtitle": "A Novel of the Malazan Empire",
+              "release_date": "2010-01-01",
+              "release_year": 2010,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 2915752,
+              "title": "Návrat rudé gardy",
+              "subtitle": null,
+              "release_date": "2008-01-01",
+              "release_year": 2008,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 2,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Novels of the Malazan Empire",
+                  "primary_books_count": 6,
+                  "is_completed": true
+                },
+                {
+                  "position": 20,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazan Authors’ Suggested Reading Order",
+                  "primary_books_count": 32,
+                  "is_completed": false
+                },
+                {
+                  "position": null,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazan",
+                  "primary_books_count": 17,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": "2008-01-01",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": null,
+                  "isbn_10": null,
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                }
+              ]
+            },
+            {
+              "id": 461372,
+              "title": "Deadhouse Landing",
+              "subtitle": "Path to Ascendancy Book 2",
+              "release_date": "2017-11-14",
+              "release_year": 2017,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 2,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Path to Ascendancy",
+                  "primary_books_count": 6,
+                  "is_completed": false
+                },
+                {
+                  "position": null,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazan",
+                  "primary_books_count": 17,
+                  "is_completed": false
+                },
+                {
+                  "position": 5,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazan (In-World Chronological Order)",
+                  "primary_books_count": 30,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": {
+                "release_date": "2017-11-14",
+                "edition_format": "",
+                "physical_format": null,
+                "isbn_13": "9781466868595",
+                "isbn_10": null,
+                "asin": null,
+                "language_id": null,
+                "country_id": null,
+                "audio_seconds": null
+              },
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": "2017-11-14",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780857503831",
+                  "isbn_10": "0857503839",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2017-11-14",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780765379467",
+                  "isbn_10": "0765379465",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2017-11-14",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9781466868595",
+                  "isbn_10": "1466868597",
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2017-11-14",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780765379474",
+                  "isbn_10": "0765379473",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2017-11-14",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9781511377201",
+                  "isbn_10": "1511377208",
+                  "asin": null,
+                  "language_id": null,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2017-11-14",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780857502841",
+                  "isbn_10": "0857502840",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": null,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2017-11-14",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9781511377218",
+                  "isbn_10": "1511377216",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 1,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2017-11-14",
+                  "edition_format": "",
+                  "physical_format": null,
+                  "isbn_13": "9780593074732",
+                  "isbn_10": "0593074734",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": 16,
+                  "audio_seconds": null
+                },
+                {
+                  "release_date": "2017-11-14",
+                  "edition_format": "Audible",
+                  "physical_format": null,
+                  "isbn_13": "9781511377195",
+                  "isbn_10": "1511377194",
+                  "asin": null,
+                  "language_id": 1,
+                  "country_id": null,
+                  "audio_seconds": 56280
+                }
+              ]
+            },
+            {
+              "id": 1661881,
+              "title": "Notte dei Coltelli",
+              "subtitle": null,
+              "release_date": "2004-07-24",
+              "release_year": 2004,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 1,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Novels of the Malazan Empire",
+                  "primary_books_count": 6,
+                  "is_completed": true
+                },
+                {
+                  "position": null,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazan",
+                  "primary_books_count": 17,
+                  "is_completed": false
+                },
+                {
+                  "position": 7,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazan (In-World Chronological Order)",
+                  "primary_books_count": 30,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 2711711,
+              "title": "Dancer's Lament: Path to Ascendancy Book 1",
+              "subtitle": "Path to Ascendancy Book 1",
+              "release_date": null,
+              "release_year": null,
+              "audio_seconds": null,
+              "book_series": [],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": []
+            },
+            {
+              "id": 1452984,
+              "title": "La noche de los cuchillos",
+              "subtitle": null,
+              "release_date": "2004-01-01",
+              "release_year": 2004,
+              "audio_seconds": null,
+              "book_series": [
+                {
+                  "position": 1,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Novels of the Malazan Empire",
+                  "primary_books_count": 6,
+                  "is_completed": true
+                },
+                {
+                  "position": null,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazan",
+                  "primary_books_count": 17,
+                  "is_completed": false
+                },
+                {
+                  "position": 7,
+                  "featured": false,
+                  "compilation": null,
+                  "series": "Malazan (In-World Chronological Order)",
+                  "primary_books_count": 30,
+                  "is_completed": false
+                }
+              ],
+              "default_ebook_edition": null,
+              "default_audio_edition": null,
+              "editions": [
+                {
+                  "release_date": "2004-01-01",
+                  "edition_format": "Paperback",
+                  "physical_format": null,
+                  "isbn_13": "9788498007817",
+                  "isbn_10": "849800781X",
+                  "asin": null,
+                  "language_id": 148,
+                  "country_id": 1,
+                  "audio_seconds": null
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "seriesMatch": {
+        "failure": null,
+        "summary": {
+          "seriesCount": 1,
+          "series": [
+            {
+              "name": "Path to Ascendancy",
+              "primary_books_count": 6,
+              "is_completed": false,
+              "books": [
+                {
+                  "position": 4,
+                  "featured": true,
+                  "title": "Forge of the High Mage",
+                  "release_date": "2023-04-06",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 1,
+                  "featured": false,
+                  "title": "La Complainte de Danseur",
+                  "release_date": "2016-02-25",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 6,
+                  "featured": true,
+                  "title": "Untitled",
+                  "release_date": null,
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 5,
+                  "featured": true,
+                  "title": "Untitled",
+                  "release_date": null,
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 3,
+                  "featured": false,
+                  "title": "Kellanved's Reach",
+                  "release_date": "2019-01-01",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 2,
+                  "featured": false,
+                  "title": "Deadhouse Landing",
+                  "release_date": "2017-11-14",
+                  "audio_seconds": null,
+                  "default_ebook_edition": {
+                    "release_date": "2017-11-14",
+                    "edition_format": "",
+                    "physical_format": null,
+                    "isbn_13": "9781466868595",
+                    "isbn_10": null,
+                    "asin": null,
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": null
+                  },
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 2,
+                  "featured": false,
+                  "title": "Deadhouse Landing: A Novel of the Malazan Empire",
+                  "release_date": "2017-11-14",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 1,
+                  "featured": false,
+                  "title": "Dancer's Lament",
+                  "release_date": "2016-02-25",
+                  "audio_seconds": null,
+                  "default_ebook_edition": null,
+                  "default_audio_edition": null
+                },
+                {
+                  "position": 1,
+                  "featured": true,
+                  "title": "Dancer's Lament",
+                  "release_date": "2016-01-01",
+                  "audio_seconds": null,
+                  "default_ebook_edition": {
+                    "release_date": "2016-01-01",
+                    "edition_format": "",
+                    "physical_format": null,
+                    "isbn_13": "9781473509627",
+                    "isbn_10": null,
+                    "asin": null,
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": null
+                  },
+                  "default_audio_edition": {
+                    "release_date": "2016-05-31",
+                    "edition_format": "Audible",
+                    "physical_format": null,
+                    "isbn_13": "9781511376983",
+                    "isbn_10": null,
+                    "asin": null,
+                    "language_id": null,
+                    "country_id": null,
+                    "audio_seconds": 60540
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

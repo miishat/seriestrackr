@@ -31,7 +31,7 @@ test('invalid stored JSON is exposed without a write', () => {
 });
 
 test('unsupported version is exposed without a write', () => {
-  const raw = JSON.stringify({ ...emptyDocument(), version: 2 });
+  const raw = JSON.stringify({ ...emptyDocument(), version: 99 });
   const storage = { getItem: () => raw, setItem: vi.fn() } as unknown as Storage;
   expect(loadLibrary(storage)).toMatchObject({ kind: 'recovery', raw });
   expect(storage.setItem).not.toHaveBeenCalled();

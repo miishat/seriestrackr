@@ -387,6 +387,7 @@ input,select {
 
 .card-footer {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: 8px;
@@ -740,4 +741,108 @@ legend {
 
 .filter-panel input {
   width: auto;
+}
+
+.discovery-content {
+  padding-top: 8px;
+}
+
+.series-card > .discovery-summary,
+.table-wrap .discovery-summary {
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--soft);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.series-card > .discovery-summary.warn,
+.table-wrap .discovery-summary.warn {
+  background: var(--amberbg);
+}
+
+.discovery-content p {
+  margin: 8px 0;
+}
+
+.discovery-content .small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.discovery-content .note {
+  padding: 14px;
+  border-radius: 8px;
+  background: var(--soft);
+  margin: 16px 0;
+}
+
+.discovery-content .warn {
+  background: var(--amberbg);
+}
+
+.discovery-content .row {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 12px;
+  border-top: 1px solid var(--line);
+  padding: 18px 0;
+}
+
+.discovery-content .row > input {
+  width: 18px;
+  height: 18px;
+  margin-top: 4px;
+  accent-color: var(--accent);
+}
+
+.discovery-content .row h3 {
+  font-size: 15px;
+  margin: 0 0 8px;
+}
+
+.discovery-content .compare {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
+  margin: 10px 0;
+}
+
+.discovery-content .compare > div {
+  padding: 10px 12px;
+  border-radius: 7px;
+  background: var(--bg);
+  overflow-wrap: anywhere;
+}
+
+.discovery-content a {
+  color: var(--accent);
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+.discovery-content .discovery-sources {
+  padding-left: 18px;
+  margin: 10px 0;
+}
+
+.discovery-content blockquote {
+  margin: 8px 0;
+  padding-left: 12px;
+  border-left: 2px solid var(--line);
+  color: var(--muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.discovery-footer {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 650px) {
+  .discovery-content .compare {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

@@ -1,0 +1,11 @@
+{
+  "search": { "numFound": 2, "docs": [
+    { "key": "/works/OL100W", "title": "Second", "author_name": ["Example Author"], "author_key": ["OL10A"], "first_publish_year": 2025, "language": ["eng", "fre"], "edition_key": ["OL101M", "OL102M", "OL103M"] },
+    { "key": "/works/OL200W", "title": "Second Study Guide", "author_name": ["Example Author"], "author_key": ["OL10A"], "first_publish_year": 2024, "edition_key": ["OL201M"] }
+  ] },
+  "editions": [
+    { "key": "/books/OL101M", "title": "Second", "authors": [{ "key": "/authors/OL10A" }], "works": [{ "key": "/works/OL100W" }], "languages": [{ "key": "/languages/eng" }], "isbn_13": ["9780000000042"], "physical_format": "Ebook", "publish_date": "March 1, 2027" },
+    { "key": "/books/OL102M", "title": "Second", "authors": [{ "key": "/authors/OL10A" }], "works": [{ "key": "/works/OL100W" }], "languages": [{ "key": "/languages/eng" }], "physical_format": "Paperback", "publish_date": "April 2, 2027" },
+    { "key": "/books/OL103M", "title": "Second", "authors": [{ "key": "/authors/OL10A" }], "works": [{ "key": "/works/OL100W" }], "languages": [{ "key": "/languages/fre" }], "physical_format": "Paperback", "publish_date": "2026" }
+  ]
+}

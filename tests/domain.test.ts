@@ -22,7 +22,7 @@ test('finishing advances both-format progress and clears next metadata', () => {
   if (result.ok === false) throw new Error(result.error);
   expect(result.value.lastFinished).toEqual({ position: 2, title: 'Second' });
   expect(nextPosition(result.value)).toBe(3);
-  expect(result.value.next).toEqual({ positionOverride: null, title: '', orderNote: '' });
+  expect(result.value.next).toEqual({ positionOverride: null, title: '', orderNote: '', attribution: null });
   expect(result.value.coverUrl).toBeNull();
   expect(result.value.releases).toEqual({ book: emptyRelease(), audio: emptyRelease() });
   expect(before.lastFinished?.position).toBe(1);
@@ -30,7 +30,7 @@ test('finishing advances both-format progress and clears next metadata', () => {
 });
 
 test('unknown title cannot fabricate a finished book', () => {
-  const s = seriesFixture({ next: { title: '  ', positionOverride: null, orderNote: '' } });
+  const s = seriesFixture({ next: { title: '  ', positionOverride: null, orderNote: '', attribution: null } });
   expect(finishNext(s).ok).toBe(false);
 });
 
@@ -39,7 +39,7 @@ test('completed series cannot advance', () => {
 });
 
 test('decimal override becomes finished position and next defaults to main sequence', () => {
-  const s = seriesFixture({ next: { title: 'Interlude', positionOverride: 2.5, orderNote: 'side story' } });
+  const s = seriesFixture({ next: { title: 'Interlude', positionOverride: 2.5, orderNote: 'side story', attribution: null } });
   expect(nextPosition(s)).toBe(2.5);
   const result = finishNext(s);
   if (result.ok === false) throw new Error(result.error);
@@ -94,7 +94,7 @@ test('parser accepts a valid library and removes unrecognized fields', () => {
 });
 
 test('parser rejects wrong versions, types, and duplicate IDs', () => {
-  expect(parsed({ ...valid(), version: 2 })).toBe(false);
+  expect(parsed({ ...valid(), version: 99 })).toBe(false);
   expect(parsed({ ...valid(), settings: { ...valid().settings, showCovers: 'yes' } })).toBe(false);
   expect(parsed({ ...valid(), series: [seriesFixture(), seriesFixture()] })).toBe(false);
 });

@@ -187,4 +187,21 @@ test('failed storage write retains imported data in memory and shows an export w
   expect(screen.getByRole('alert')).toHaveTextContent(/quota exceeded/i);
   expect(screen.getByRole('button', { name: 'Export now' })).toBeEnabled();
   expect(JSON.parse(localStorage.getItem(key)!)).toEqual(documentWithSeries());
+  vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+  await user.click(screen.getByRole('button', { name: 'Export now' }));
+  const blob = vi.mocked(URL.createObjectURL).mock.calls[0][0] as Blob;
+  expect(JSON.parse(await readBlob(blob))).toEqual(replacement);
+});
+
+test('version 1 recovery download retains the exact original bytes', async () => {
+  const raw = JSON.stringify({ version: 1, settings: { market: 'CA' }, series: [{ id: 'legacy' }] }, null, 2);
+  localStorage.setItem(key, raw);
+  vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+  const user = userEvent.setup();
+  render(<App />);
+  await user.click(screen.getByRole('button', { name: 'Backups' }));
+  await user.click(screen.getByRole('button', { name: 'Download stored data' }));
+  const blob = vi.mocked(URL.createObjectURL).mock.calls[0][0] as Blob;
+  expect(await readBlob(blob)).toBe(raw);
+  expect(localStorage.getItem(key)).toBe(raw);
 });

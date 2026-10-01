@@ -1,0 +1,5529 @@
+{
+  "provider": "google-books",
+  "startedAt": "2026-09-30T21:33:40.614Z",
+  "completedAt": "2026-09-30T21:34:10.144Z",
+  "runStatus": "complete",
+  "additionalAttempts": 19,
+  "reusedAttempts": 1,
+  "totalAttempts": 20,
+  "maximumTotalAttempts": 20,
+  "maxResults": 20,
+  "showPreorders": true,
+  "timeoutMs": 20000,
+  "byteLimit": 1048576,
+  "spacingMs": 1100,
+  "quotaRemaining": null,
+  "billingVerified": false,
+  "globalStopReason": null,
+  "cases": [
+    {
+      "caseId": "hierarchy",
+      "arm": "series-empty-title",
+      "series": "Hierarchy",
+      "author": "James Islington",
+      "title": "",
+      "query": "\"Hierarchy\" inauthor:\"James Islington\"",
+      "checkedAt": "2026-09-30T21:28:34.484Z",
+      "status": 200,
+      "errorReason": null,
+      "attempted": false,
+      "reused": true,
+      "totalItems": 14,
+      "volumes": [
+        {
+          "id": "EsnY0QEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=EsnY0QEACAAJ",
+          "title": "The Strength of the Few",
+          "subtitle": "Deluxe Hardback Edition",
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2026-06-30",
+          "publishedDatePrecision": "day",
+          "identifiers": [],
+          "printType": null,
+          "isEbook": false,
+          "saleability": null,
+          "saleCountry": "CA",
+          "accessCountry": null,
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "ZZNdEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=ZZNdEQAAQBAJ",
+          "title": "The Will of the Many",
+          "subtitle": null,
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2025-06-10",
+          "publishedDatePrecision": "day",
+          "identifiers": [],
+          "printType": null,
+          "isEbook": false,
+          "saleability": null,
+          "saleCountry": "CA",
+          "accessCountry": null,
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "d-ww0gEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=d-ww0gEACAAJ",
+          "title": "The Will of the Many: Deluxe Edition Hardcover",
+          "subtitle": null,
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2026-12-10",
+          "publishedDatePrecision": "day",
+          "identifiers": [],
+          "printType": null,
+          "isEbook": false,
+          "saleability": null,
+          "saleCountry": "CA",
+          "accessCountry": null,
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "jvRQEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=jvRQEQAAQBAJ",
+          "title": "The Strength of the Few",
+          "subtitle": null,
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2025-11-11",
+          "publishedDatePrecision": "day",
+          "identifiers": [],
+          "printType": null,
+          "isEbook": true,
+          "saleability": null,
+          "saleCountry": "CA",
+          "accessCountry": null,
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "2vUU0gEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=2vUU0gEACAAJ",
+          "title": "The Will of the Many",
+          "subtitle": "Winner of the 2023 Aurealis Award for Best Fantasy Novel",
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2025-06-10",
+          "publishedDatePrecision": "day",
+          "identifiers": [],
+          "printType": null,
+          "isEbook": false,
+          "saleability": null,
+          "saleCountry": "CA",
+          "accessCountry": null,
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "UEXf0QEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=UEXf0QEACAAJ",
+          "title": "Scion",
+          "subtitle": null,
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2026-09-01",
+          "publishedDatePrecision": "day",
+          "identifiers": [],
+          "printType": null,
+          "isEbook": false,
+          "saleability": null,
+          "saleCountry": "CA",
+          "accessCountry": null,
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "bI_OEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=bI_OEQAAQBAJ",
+          "title": "Scion",
+          "subtitle": "Book 1",
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2026-09-01",
+          "publishedDatePrecision": "day",
+          "identifiers": [],
+          "printType": null,
+          "isEbook": false,
+          "saleability": null,
+          "saleCountry": "CA",
+          "accessCountry": null,
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "tuPZ0QEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=tuPZ0QEACAAJ",
+          "title": "The Will of the Many",
+          "subtitle": "Deluxe Hardback Edition",
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2026-06-30",
+          "publishedDatePrecision": "day",
+          "identifiers": [],
+          "printType": null,
+          "isEbook": false,
+          "saleability": null,
+          "saleCountry": "CA",
+          "accessCountry": null,
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "Pia00AEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=Pia00AEACAAJ",
+          "title": "Hierarchy",
+          "subtitle": null,
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2023",
+          "publishedDatePrecision": "year",
+          "identifiers": [],
+          "printType": null,
+          "isEbook": false,
+          "saleability": null,
+          "saleCountry": "CA",
+          "accessCountry": null,
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "F48AEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=F48AEQAAQBAJ",
+          "title": "The Will of the Many. La volontà dei molti - Hierarchy vol. 1",
+          "subtitle": null,
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": null,
+          "language": "it",
+          "publishedDate": "2024-04-19",
+          "publishedDatePrecision": "day",
+          "identifiers": [],
+          "printType": null,
+          "isEbook": false,
+          "saleability": null,
+          "saleCountry": "CA",
+          "accessCountry": null,
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "4hhQEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=4hhQEQAAQBAJ",
+          "title": "The will of the many",
+          "subtitle": "Ausgabe ebook",
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": null,
+          "language": "de",
+          "publishedDate": "2025-03-18",
+          "publishedDatePrecision": "day",
+          "identifiers": [],
+          "printType": null,
+          "isEbook": false,
+          "saleability": null,
+          "saleCountry": "CA",
+          "accessCountry": null,
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "La5jEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=La5jEQAAQBAJ",
+          "title": "The strength of the few",
+          "subtitle": "Ausgabe ebook",
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": null,
+          "language": "de",
+          "publishedDate": "2025-12-02",
+          "publishedDatePrecision": "day",
+          "identifiers": [],
+          "printType": null,
+          "isEbook": false,
+          "saleability": null,
+          "saleCountry": "CA",
+          "accessCountry": null,
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "rAI-0QEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=rAI-0QEACAAJ",
+          "title": "The will of the many",
+          "subtitle": "Der Fantasy-Erfolg endlich als Taschenbuchausgabe",
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": null,
+          "language": "de",
+          "publishedDate": "2025",
+          "publishedDatePrecision": "year",
+          "identifiers": [],
+          "printType": null,
+          "isEbook": false,
+          "saleability": null,
+          "saleCountry": "CA",
+          "accessCountry": null,
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "w6xZ0QEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=w6xZ0QEACAAJ",
+          "title": "The strength of the few",
+          "subtitle": "Der Fantasy-Erfolg endlich auf Deutsch - limitierte Schmuckausgabe mit Farbschnitt",
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": null,
+          "language": "de",
+          "publishedDate": "2025",
+          "publishedDatePrecision": "year",
+          "identifiers": [],
+          "printType": null,
+          "isEbook": false,
+          "saleability": null,
+          "saleCountry": "CA",
+          "accessCountry": null,
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        }
+      ],
+      "showPreorders": "omitted in saved controller request",
+      "metadataLimit": "saved controller selection has no publisher/identifier/description/order fields",
+      "summary": {
+        "retainedVolumes": 14,
+        "englishVolumes": 9,
+        "excludedLanguageVolumes": 5,
+        "englishExactAuthorVolumes": 9,
+        "englishExactTitleAuthorVolumes": null,
+        "exactTitleAuthorDayVolumes": null,
+        "exactTitleAuthorEbookVolumes": null,
+        "proposalValidation": "not-performed"
+      }
+    },
+    {
+      "caseId": "witness",
+      "arm": "series-empty-title",
+      "series": "Witness",
+      "author": "Steven Erikson",
+      "title": "",
+      "query": "\"Witness\" inauthor:\"Steven Erikson\"",
+      "checkedAt": "2026-09-30T21:33:41.719Z",
+      "status": 200,
+      "errorReason": null,
+      "attempted": true,
+      "reused": false,
+      "elapsedMs": 626,
+      "responseBytes": 77697,
+      "totalItems": 300,
+      "volumes": [
+        {
+          "id": "5ZRaEAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=5ZRaEAAAQBAJ",
+          "title": "The God Is Not Willing",
+          "subtitle": "Book One of the Witness Trilogy: A Novel of the Malazan World",
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": "Tor Fantasy",
+          "language": "en",
+          "publishedDate": "2022-09-27",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780765363442"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0765363445"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "BUwDEAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=BUwDEAAAQBAJ",
+          "title": "The God is Not Willing",
+          "subtitle": "The First Tale of Witness",
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": "Random House",
+          "language": "en",
+          "publishedDate": "2021-07-01",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781409032823"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1409032825"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "zyZYEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=zyZYEQAAQBAJ",
+          "title": "No Life Forsaken",
+          "subtitle": null,
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2025-10-28",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780765323606"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0765323605"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "VJW60QEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=VJW60QEACAAJ",
+          "title": "No Life Forsaken",
+          "subtitle": "The Second Tale of Witness",
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": "Penguin UK",
+          "language": "en",
+          "publishedDate": "2026-08-20",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1804997684"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781804997680"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "a17V0QEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=a17V0QEACAAJ",
+          "title": "Legacies of Betrayal: The Third Tale of Witness",
+          "subtitle": null,
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": "Bantam",
+          "language": "en",
+          "publishedDate": "2026-10",
+          "publishedDatePrecision": "month",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1787632849"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781787632844"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "cQ-OEAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=cQ-OEAAAQBAJ",
+          "title": "The Second Collected Tales of Bauchelain & Korbal Broach",
+          "subtitle": "Three Short Novels of the Malazan Empire",
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": "National Geographic Books",
+          "language": "en",
+          "publishedDate": "2018-10-23",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780593063965"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0593063961"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "OfDKEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=OfDKEQAAQBAJ",
+          "title": "Legacies of Betrayal",
+          "subtitle": "The Third Tale of Witness: A Novel of the Malazan World",
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2026-10-06",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780765399960"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0765399962"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "efv3PQAACAAJ",
+          "volumeLink": "https://books.google.com/books?id=efv3PQAACAAJ",
+          "title": "The Tales of Bauchelain and Korbal Broach",
+          "subtitle": null,
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": "Bantam Press",
+          "language": "en",
+          "publishedDate": "2018-09-20",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "059306397X"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9780593063972"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "Z3cTEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=Z3cTEQAAQBAJ",
+          "title": "No Life Forsaken",
+          "subtitle": "The epic fantasy sequence continues with the new book from the bestselling author",
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": "Random House",
+          "language": "en",
+          "publishedDate": "2025-10-23",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781409032854"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "140903285X"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "htV90QEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=htV90QEACAAJ",
+          "title": "“The” Witness Trilogy",
+          "subtitle": null,
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2021",
+          "publishedDatePrecision": "year",
+          "identifiers": [
+            {
+              "type": "OTHER",
+              "identifier": "OCLC:1528910605"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "61Ot0AEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=61Ot0AEACAAJ",
+          "title": "Gardens of the Moon",
+          "subtitle": "(Malazan Book of the Fallen 1)",
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2024-08-27",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1804995517"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781804995518"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "gQWQ0AEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=gQWQ0AEACAAJ",
+          "title": "The Bonehunters",
+          "subtitle": "Malazan Book of Fallen 6",
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": "Transworld",
+          "language": "en",
+          "publishedDate": "2024-02",
+          "publishedDatePrecision": "month",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1804995223"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781804995228"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "CSaofnwTrD0C",
+          "volumeLink": "https://books.google.com/books?id=CSaofnwTrD0C",
+          "title": "Dust of Dreams",
+          "subtitle": "Book Nine of The Malazan Book of the Fallen",
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": "Macmillan",
+          "language": "en",
+          "publishedDate": "2010-01-19",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781429969550"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1429969555"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "Vaan0AEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=Vaan0AEACAAJ",
+          "title": "Midnight Tides",
+          "subtitle": "(Malazan Book of the Fallen 5)",
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2024-08-27",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1804995525"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781804995525"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "mcKn0AEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=mcKn0AEACAAJ",
+          "title": "Deadhouse Gates",
+          "subtitle": "Malazan Book of the Fallen 2",
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2024-08-27",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "180499555X"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781804995556"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "Oxnv04gItNAC",
+          "volumeLink": "https://books.google.com/books?id=Oxnv04gItNAC",
+          "title": "Deadhouse Gates",
+          "subtitle": "Book Two of The Malazan Book of the Fallen",
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": "Macmillan",
+          "language": "en",
+          "publishedDate": "2006-02-07",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781429926492"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "142992649X"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "XgSo0AEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=XgSo0AEACAAJ",
+          "title": "House of Chains",
+          "subtitle": "Malazan Book of the Fallen 4",
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2024-08-27",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1804995541"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781804995549"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "CHv0OJIJBfEC",
+          "volumeLink": "https://books.google.com/books?id=CHv0OJIJBfEC",
+          "title": "Memories of Ice",
+          "subtitle": "Book Three of The Malazan Book of the Fallen",
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2006-08-01",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781429926638"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1429926635"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "DPZd0AEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=DPZd0AEACAAJ",
+          "title": "Reaper's Gale",
+          "subtitle": "The Malazan Book of the Fallen 7",
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2024-08-27",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1804995185"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781804995181"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "ukJE9lRkgt8C",
+          "volumeLink": "https://books.google.com/books?id=ukJE9lRkgt8C",
+          "title": "House of Chains",
+          "subtitle": "Book Four of The Malazan Book of the Fallen",
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": "Macmillan",
+          "language": "en",
+          "publishedDate": "2006-08-22",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781429926607"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1429926600"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        }
+      ],
+      "summary": {
+        "retainedVolumes": 20,
+        "englishVolumes": 20,
+        "excludedLanguageVolumes": 0,
+        "englishExactAuthorVolumes": 20,
+        "englishExactTitleAuthorVolumes": null,
+        "exactTitleAuthorDayVolumes": null,
+        "exactTitleAuthorEbookVolumes": null,
+        "proposalValidation": "not-performed"
+      }
+    },
+    {
+      "caseId": "last-horizon",
+      "arm": "series-empty-title",
+      "series": "Last Horizon",
+      "author": "Will Wight",
+      "title": "",
+      "query": "\"Last Horizon\" inauthor:\"Will Wight\"",
+      "checkedAt": "2026-09-30T21:33:43.448Z",
+      "status": 200,
+      "errorReason": null,
+      "attempted": true,
+      "reused": false,
+      "elapsedMs": 404,
+      "responseBytes": 49,
+      "totalItems": 0,
+      "volumes": [],
+      "summary": {
+        "retainedVolumes": 0,
+        "englishVolumes": 0,
+        "excludedLanguageVolumes": 0,
+        "englishExactAuthorVolumes": 0,
+        "englishExactTitleAuthorVolumes": null,
+        "exactTitleAuthorDayVolumes": null,
+        "exactTitleAuthorEbookVolumes": null,
+        "proposalValidation": "not-performed"
+      }
+    },
+    {
+      "caseId": "ana-and-din",
+      "arm": "series-empty-title",
+      "series": "Ana and Din",
+      "author": "Robert Jackson Bennett",
+      "title": "",
+      "query": "\"Ana and Din\" inauthor:\"Robert Jackson Bennett\"",
+      "checkedAt": "2026-09-30T21:33:44.961Z",
+      "status": 200,
+      "errorReason": null,
+      "attempted": true,
+      "reused": false,
+      "elapsedMs": 395,
+      "responseBytes": 49152,
+      "totalItems": 10,
+      "volumes": [
+        {
+          "id": "v84YEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=v84YEQAAQBAJ",
+          "title": "The Tainted Cup",
+          "subtitle": null,
+          "authors": [
+            "Robert Jackson Bennett"
+          ],
+          "publisher": "Random House",
+          "language": "en",
+          "publishedDate": "2024-11-05",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781984820716"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1984820710"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "F-rBEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=F-rBEQAAQBAJ",
+          "title": "A Trade of Blood",
+          "subtitle": null,
+          "authors": [
+            "Robert Jackson Bennett"
+          ],
+          "publisher": "Random House",
+          "language": "en",
+          "publishedDate": "2026-08-04",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780593723852"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0593723856"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "lRQcAwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=lRQcAwAAQBAJ",
+          "title": "City of Stairs",
+          "subtitle": "Book One of the Divine Cities Trilogy",
+          "authors": [
+            "Robert Jackson Bennett"
+          ],
+          "publisher": "Del Rey",
+          "language": "en",
+          "publishedDate": "2014-09-09",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780804137188"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0804137188"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "fVEZEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=fVEZEQAAQBAJ",
+          "title": "A Drop of Corruption",
+          "subtitle": "An Ana and Din Mystery",
+          "authors": [
+            "Robert Jackson Bennett"
+          ],
+          "publisher": "Random House",
+          "language": "en",
+          "publishedDate": "2025-04-01",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780593723821"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0593723821"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "q-eTDwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=q-eTDwAAQBAJ",
+          "title": "Shorefall",
+          "subtitle": "A Novel",
+          "authors": [
+            "Robert Jackson Bennett"
+          ],
+          "publisher": "Del Rey",
+          "language": "en",
+          "publishedDate": "2020-04-21",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781524760397"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1524760390"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "3V-UDwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=3V-UDwAAQBAJ",
+          "title": "Foundryside",
+          "subtitle": "A Novel",
+          "authors": [
+            "Robert Jackson Bennett"
+          ],
+          "publisher": "Del Rey",
+          "language": "en",
+          "publishedDate": "2019-05-21",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780525573845"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0525573844"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "aF0_EAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=aF0_EAAAQBAJ",
+          "title": "Locklands",
+          "subtitle": "A Novel",
+          "authors": [
+            "Robert Jackson Bennett"
+          ],
+          "publisher": "Del Rey",
+          "language": "en",
+          "publishedDate": "2022-06-28",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781984820693"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1984820699"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "bleWBgAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=bleWBgAAQBAJ",
+          "title": "City of Blades",
+          "subtitle": "Book Two of the Divine Cities Trilogy",
+          "authors": [
+            "Robert Jackson Bennett"
+          ],
+          "publisher": "Del Rey",
+          "language": "en",
+          "publishedDate": "2016-01-26",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780553419726"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0553419722"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "rqrNDAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=rqrNDAAAQBAJ",
+          "title": "City of Miracles",
+          "subtitle": "Book Three of the Divine Cities Trilogy",
+          "authors": [
+            "Robert Jackson Bennett"
+          ],
+          "publisher": "Del Rey",
+          "language": "en",
+          "publishedDate": "2017-05-02",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780553419740"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0553419749"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "kEJPDwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=kEJPDwAAQBAJ",
+          "title": "The Divine Cities Trilogy",
+          "subtitle": "City of Stairs, City of Blades, and City of Miracles, with an excerpt from Foundryside",
+          "authors": [
+            "Robert Jackson Bennett"
+          ],
+          "publisher": "Del Rey",
+          "language": "en",
+          "publishedDate": "2018-08-07",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781984822116"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "198482211X"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        }
+      ],
+      "summary": {
+        "retainedVolumes": 10,
+        "englishVolumes": 10,
+        "excludedLanguageVolumes": 0,
+        "englishExactAuthorVolumes": 10,
+        "englishExactTitleAuthorVolumes": null,
+        "exactTitleAuthorDayVolumes": null,
+        "exactTitleAuthorEbookVolumes": null,
+        "proposalValidation": "not-performed"
+      }
+    },
+    {
+      "caseId": "bound-and-broken",
+      "arm": "series-empty-title",
+      "series": "Bound and the Broken",
+      "author": "Ryan Cahill",
+      "title": "",
+      "query": "\"Bound and the Broken\" inauthor:\"Ryan Cahill\"",
+      "checkedAt": "2026-09-30T21:33:46.460Z",
+      "status": 200,
+      "errorReason": null,
+      "attempted": true,
+      "reused": false,
+      "elapsedMs": 406,
+      "responseBytes": 62377,
+      "totalItems": 18,
+      "volumes": [
+        {
+          "id": "1urIEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=1urIEQAAQBAJ",
+          "title": "Of Darkness and Light: Signed Collector's Edition",
+          "subtitle": "Book 2 of The Bound and the Broken",
+          "authors": [
+            "Ryan Cahill"
+          ],
+          "publisher": "Watkins Media Limited (US, CA)",
+          "language": "en",
+          "publishedDate": "2026-11-10",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781836980155"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1836980159"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "pBU00gEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=pBU00gEACAAJ",
+          "title": "Of Darkness and Light",
+          "subtitle": "Book 2 of the Bound and the Broken",
+          "authors": [
+            "Ryan Cahill"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2026-11-10",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1836980175"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781836980179"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "ffgtzwEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=ffgtzwEACAAJ",
+          "title": "The Exile",
+          "subtitle": "The Bound and The Broken Novella",
+          "authors": [
+            "Ryan Cahill"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2022-05-31",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1838381880"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781838381882"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "9Sy4EQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=9Sy4EQAAQBAJ",
+          "title": "The Fall",
+          "subtitle": "The Bound and the Broken Novella, The Sunday Times Bestseller",
+          "authors": [
+            "Ryan Cahill"
+          ],
+          "publisher": "Watkins Media Limited (US, CA)",
+          "language": "en",
+          "publishedDate": "2026-06-23",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781836980063"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "183698006X"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "ZgvDEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=ZgvDEQAAQBAJ",
+          "title": "The Fall: Signed Collector's Edition",
+          "subtitle": "The Bound and the Broken Novella",
+          "authors": [
+            "Ryan Cahill"
+          ],
+          "publisher": "Watkins Media Limited (US, CA)",
+          "language": "en",
+          "publishedDate": "2026-06-23",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781836980070"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1836980078"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "fpxqzgEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=fpxqzgEACAAJ",
+          "title": "Of Blood and Fire",
+          "subtitle": null,
+          "authors": [
+            "Ryan Cahill"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2021-04-24",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1838381813"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781838381813"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "AGAl0gEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=AGAl0gEACAAJ",
+          "title": "Of Blood and Fire",
+          "subtitle": "Book 1 of The Bound and the Broken",
+          "authors": [
+            "Ryan Cahill"
+          ],
+          "publisher": "Broken Binding Publishing",
+          "language": "en",
+          "publishedDate": "2027-01-19",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1836980302"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781836980308"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "42yuzwEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=42yuzwEACAAJ",
+          "title": "Of War and Ruin",
+          "subtitle": null,
+          "authors": [
+            "Ryan Cahill"
+          ],
+          "publisher": "Bound and the Broken",
+          "language": "en",
+          "publishedDate": "2023-02-28",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1739620917"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781739620912"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "X4Il0AEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=X4Il0AEACAAJ",
+          "title": "The Ice",
+          "subtitle": "The Bound and The Broken Novella",
+          "authors": [
+            "Ryan Cahill"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2023-09-23",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1739620941"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781739620943"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "9SUl0gEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=9SUl0gEACAAJ",
+          "title": "The Fall",
+          "subtitle": "Book 0.5 of The Bound and the Broken",
+          "authors": [
+            "Ryan Cahill"
+          ],
+          "publisher": "Broken Binding Publishing",
+          "language": "en",
+          "publishedDate": "2027-01-19",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1836980310"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781836980315"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "OU_RzgEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=OU_RzgEACAAJ",
+          "title": "Of Darkness and Light",
+          "subtitle": null,
+          "authors": [
+            "Ryan Cahill"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2021-12-31",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1838381864"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781838381868"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "Ymxp0QEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=Ymxp0QEACAAJ",
+          "title": "Of Empires and Dust",
+          "subtitle": null,
+          "authors": [
+            "Ryan Cahill"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2025-06-04",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1739620976"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781739620974"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "QrCazgEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=QrCazgEACAAJ",
+          "title": "The Fall",
+          "subtitle": null,
+          "authors": [
+            "Ryan Cahill"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2021-06-29",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "183838183X"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781838381837"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "MqiO0QEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=MqiO0QEACAAJ",
+          "title": "Di oscurità e luce. The bound and the broken",
+          "subtitle": null,
+          "authors": [
+            "Ryan Cahill"
+          ],
+          "publisher": null,
+          "language": "it",
+          "publishedDate": "2025",
+          "publishedDatePrecision": "year",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "8834746465"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9788834746462"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "P9ri0AEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=P9ri0AEACAAJ",
+          "title": "Di sangue e fuoco. The bound and the broken",
+          "subtitle": null,
+          "authors": [
+            "Ryan Cahill"
+          ],
+          "publisher": null,
+          "language": "it",
+          "publishedDate": "2024",
+          "publishedDatePrecision": "year",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "8834745833"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9788834745830"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "reZ1EQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=reZ1EQAAQBAJ",
+          "title": "Di oscurità e luce - The Bound and the Broken vol. 2",
+          "subtitle": null,
+          "authors": [
+            "Ryan Cahill"
+          ],
+          "publisher": "Fanucci Editore",
+          "language": "it",
+          "publishedDate": "2025-08-29",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9788834747162"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "883474716X"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "u2QXEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=u2QXEQAAQBAJ",
+          "title": "Di sangue e fuoco - The Bound and the Broken vol. 1",
+          "subtitle": null,
+          "authors": [
+            "Ryan Cahill"
+          ],
+          "publisher": "Fanucci Editore",
+          "language": "it",
+          "publishedDate": "2024-08-09",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9788834746172"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "8834746171"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "PqN80QEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=PqN80QEACAAJ",
+          "title": "The Fall",
+          "subtitle": "The and the Broken Novella",
+          "authors": [
+            "Ryan Cahill"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2021",
+          "publishedDatePrecision": "year",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1838381821"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781838381820"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        }
+      ],
+      "summary": {
+        "retainedVolumes": 18,
+        "englishVolumes": 14,
+        "excludedLanguageVolumes": 4,
+        "englishExactAuthorVolumes": 14,
+        "englishExactTitleAuthorVolumes": null,
+        "exactTitleAuthorDayVolumes": null,
+        "exactTitleAuthorEbookVolumes": null,
+        "proposalValidation": "not-performed"
+      }
+    },
+    {
+      "caseId": "devils",
+      "arm": "series-empty-title",
+      "series": "Devils",
+      "author": "Joe Abercrombie",
+      "title": "",
+      "query": "\"Devils\" inauthor:\"Joe Abercrombie\"",
+      "checkedAt": "2026-09-30T21:33:47.978Z",
+      "status": 200,
+      "errorReason": null,
+      "attempted": true,
+      "reused": false,
+      "elapsedMs": 418,
+      "responseBytes": 72095,
+      "totalItems": 18,
+      "volumes": [
+        {
+          "id": "zqEJEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=zqEJEQAAQBAJ",
+          "title": "The Devils",
+          "subtitle": null,
+          "authors": [
+            "Joe Abercrombie"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2025-05-06",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781250880055"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "125088005X"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "sxofzwEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=sxofzwEACAAJ",
+          "title": "The Devils",
+          "subtitle": "2025's Biggest Fantasy Sensation - Prepare for a Wickedly Dark and Twisted Adventure",
+          "authors": [
+            "Joe Abercrombie"
+          ],
+          "publisher": "Gollancz",
+          "language": "en",
+          "publishedDate": "2025-05-06",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1399603566"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781399603560"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "z_oUzwEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=z_oUzwEACAAJ",
+          "title": "UNTITLED ABERCROMBIE 2 OF 3",
+          "subtitle": null,
+          "authors": [
+            "JOE ABERCROMBIE"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2026-05-21",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1399603612"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781399603614"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "gWPYEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=gWPYEQAAQBAJ",
+          "title": "Tor May 2027 Title to Be Announced",
+          "subtitle": null,
+          "authors": [
+            "Announced",
+            "Tor May 2027 Author to Be Announced"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2027-05-11",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781250880086"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1250880084"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "Y4UuEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=Y4UuEQAAQBAJ",
+          "title": "The Devils",
+          "subtitle": "Roman",
+          "authors": [
+            "Joe Abercrombie"
+          ],
+          "publisher": "Heyne Verlag",
+          "language": "de",
+          "publishedDate": "2025-05-14",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9783641322977"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "3641322979"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "M00cFvKSZeUC",
+          "volumeLink": "https://books.google.com/books?id=M00cFvKSZeUC",
+          "title": "Blutklingen",
+          "subtitle": "Roman",
+          "authors": [
+            "Joe Abercrombie"
+          ],
+          "publisher": "Heyne Verlag",
+          "language": "de",
+          "publishedDate": "2013-04-09",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9783641103965"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "3641103967"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "3rEr0Arx6gYC",
+          "volumeLink": "https://books.google.com/books?id=3rEr0Arx6gYC",
+          "title": "Feuerklingen - Die Klingen-Saga",
+          "subtitle": "Roman",
+          "authors": [
+            "Joe Abercrombie"
+          ],
+          "publisher": "Heyne Verlag",
+          "language": "de",
+          "publishedDate": "2011-07-18",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9783641068806"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "3641068800"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "goY2DAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=goY2DAAAQBAJ",
+          "title": "Schattenklingen",
+          "subtitle": "Anthologie",
+          "authors": [
+            "Joe Abercrombie"
+          ],
+          "publisher": "Heyne Verlag",
+          "language": "de",
+          "publishedDate": "2017-01-09",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9783641197735"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "3641197732"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "MWSJ5eEOkFoC",
+          "volumeLink": "https://books.google.com/books?id=MWSJ5eEOkFoC",
+          "title": "Heldenklingen",
+          "subtitle": "Roman",
+          "authors": [
+            "Joe Abercrombie"
+          ],
+          "publisher": "Heyne Verlag",
+          "language": "de",
+          "publishedDate": "2011-09-05",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9783641062330"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "3641062330"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "WEDgBQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=WEDgBQAAQBAJ",
+          "title": "Königsjäger",
+          "subtitle": "Roman",
+          "authors": [
+            "Joe Abercrombie"
+          ],
+          "publisher": "Heyne Verlag",
+          "language": "de",
+          "publishedDate": "2015-08-10",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9783641155599"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "3641155592"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "0xyWSdylw7MC",
+          "volumeLink": "https://books.google.com/books?id=0xyWSdylw7MC",
+          "title": "Kriegsklingen - Die Klingen-Saga",
+          "subtitle": "Roman",
+          "authors": [
+            "Joe Abercrombie"
+          ],
+          "publisher": "Heyne Verlag",
+          "language": "de",
+          "publishedDate": "2011-07-18",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9783641068813"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "3641068819"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "CQCSDwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=CQCSDwAAQBAJ",
+          "title": "Zauberklingen - Die Klingen-Saga",
+          "subtitle": "Roman",
+          "authors": [
+            "Joe Abercrombie"
+          ],
+          "publisher": "Heyne Verlag",
+          "language": "de",
+          "publishedDate": "2020-02-10",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9783641164737"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "3641164737"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "FOomEAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=FOomEAAAQBAJ",
+          "title": "Silberklingen - Die Klingen-Saga",
+          "subtitle": "Roman",
+          "authors": [
+            "Joe Abercrombie"
+          ],
+          "publisher": "Heyne Verlag",
+          "language": "de",
+          "publishedDate": "2021-12-13",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9783641164751"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "3641164753"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "7Rl62sHlc6QC",
+          "volumeLink": "https://books.google.com/books?id=7Rl62sHlc6QC",
+          "title": "Racheklingen",
+          "subtitle": "Roman",
+          "authors": [
+            "Joe Abercrombie"
+          ],
+          "publisher": "Heyne Verlag",
+          "language": "de",
+          "publishedDate": "2010-06-28",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9783641037789"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "3641037786"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "Z_YqCwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=Z_YqCwAAQBAJ",
+          "title": "Königskrone",
+          "subtitle": "Roman",
+          "authors": [
+            "Joe Abercrombie"
+          ],
+          "publisher": "Heyne Verlag",
+          "language": "de",
+          "publishedDate": "2016-04-11",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9783641164720"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "3641164729"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "iDvoV3eQgHwC",
+          "volumeLink": "https://books.google.com/books?id=iDvoV3eQgHwC",
+          "title": "Königsklingen - Die Klingen-Saga",
+          "subtitle": "Roman",
+          "authors": [
+            "Joe Abercrombie"
+          ],
+          "publisher": "Heyne Verlag",
+          "language": "de",
+          "publishedDate": "2011-07-18",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9783641068820"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "3641068827"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "r1rbDwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=r1rbDwAAQBAJ",
+          "title": "Friedensklingen - Die Klingen-Saga",
+          "subtitle": "Roman",
+          "authors": [
+            "Joe Abercrombie"
+          ],
+          "publisher": "Heyne Verlag",
+          "language": "de",
+          "publishedDate": "2021-03-08",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9783641164744"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "3641164745"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "HRybAwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=HRybAwAAQBAJ",
+          "title": "Königsschwur",
+          "subtitle": "Roman",
+          "authors": [
+            "Joe Abercrombie"
+          ],
+          "publisher": "Heyne Verlag",
+          "language": "de",
+          "publishedDate": "2015-01-12",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9783641144326"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "3641144329"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        }
+      ],
+      "summary": {
+        "retainedVolumes": 18,
+        "englishVolumes": 4,
+        "excludedLanguageVolumes": 14,
+        "englishExactAuthorVolumes": 3,
+        "englishExactTitleAuthorVolumes": null,
+        "exactTitleAuthorDayVolumes": null,
+        "exactTitleAuthorEbookVolumes": null,
+        "proposalValidation": "not-performed"
+      }
+    },
+    {
+      "caseId": "book-of-dead",
+      "arm": "series-empty-title",
+      "series": "Book of the Dead",
+      "author": "RinoZ",
+      "title": "",
+      "query": "\"Book of the Dead\" inauthor:\"RinoZ\"",
+      "checkedAt": "2026-09-30T21:33:49.505Z",
+      "status": 200,
+      "errorReason": null,
+      "attempted": true,
+      "reused": false,
+      "elapsedMs": 998,
+      "responseBytes": 10340,
+      "totalItems": 3,
+      "volumes": [
+        {
+          "id": "b12Z0QEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=b12Z0QEACAAJ",
+          "title": "Book of the Dead 4",
+          "subtitle": "Vengeance: A LitRPG Adventure",
+          "authors": [
+            "Rinoz"
+          ],
+          "publisher": "Independently Published",
+          "language": "en",
+          "publishedDate": "2025-09-10",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9798263835491"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "hP1k0AEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=hP1k0AEACAAJ",
+          "title": "Book of the Dead 2",
+          "subtitle": "Sacrifice: A LitRPG Adventure",
+          "authors": [
+            "Rinoz"
+          ],
+          "publisher": "Independently Published",
+          "language": "en",
+          "publishedDate": "2023-12",
+          "publishedDatePrecision": "month",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9798870521770"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "smQZ0AEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=smQZ0AEACAAJ",
+          "title": "Book of the Dead",
+          "subtitle": "Awakening: A LitRPG Adventure",
+          "authors": [
+            "Rinoz"
+          ],
+          "publisher": "Independently Published",
+          "language": "en",
+          "publishedDate": "2023-08-25",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9798859016006"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        }
+      ],
+      "summary": {
+        "retainedVolumes": 3,
+        "englishVolumes": 3,
+        "excludedLanguageVolumes": 0,
+        "englishExactAuthorVolumes": 3,
+        "englishExactTitleAuthorVolumes": null,
+        "exactTitleAuthorDayVolumes": null,
+        "exactTitleAuthorEbookVolumes": null,
+        "proposalValidation": "not-performed"
+      }
+    },
+    {
+      "caseId": "path-to-ascendancy",
+      "arm": "series-empty-title",
+      "series": "Path to Ascendancy",
+      "author": "Ian C. Esslemont",
+      "title": "",
+      "query": "\"Path to Ascendancy\" inauthor:\"Ian C. Esslemont\"",
+      "checkedAt": "2026-09-30T21:33:51.621Z",
+      "status": 200,
+      "errorReason": null,
+      "attempted": true,
+      "reused": false,
+      "elapsedMs": 404,
+      "responseBytes": 40503,
+      "totalItems": 9,
+      "volumes": [
+        {
+          "id": "Z4vVCgAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=Z4vVCgAAQBAJ",
+          "title": "Dancer's Lament",
+          "subtitle": "Epic fantasy from a superb storyteller (Path to Ascendancy 1)",
+          "authors": [
+            "Ian C Esslemont"
+          ],
+          "publisher": "Random House",
+          "language": "en",
+          "publishedDate": "2016-02-25",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781473509627"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1473509629"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "k_jtDQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=k_jtDQAAQBAJ",
+          "title": "Deadhouse Landing",
+          "subtitle": "Path to Ascendancy, Book 2 (A Novel of the Malazan Empire)",
+          "authors": [
+            "Ian C. Esslemont"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2017-11-14",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781466868595"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1466868597"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "DkePEAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=DkePEAAAQBAJ",
+          "title": "Deadhouse Landing",
+          "subtitle": "Path to Ascendancy Book 2",
+          "authors": [
+            "Ian C. Esslemont"
+          ],
+          "publisher": "National Geographic Books",
+          "language": "en",
+          "publishedDate": "2019-03-26",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780857502841"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0857502840"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "9NRbDwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=9NRbDwAAQBAJ",
+          "title": "Kellanved's Reach",
+          "subtitle": "(Path to Ascendancy Book 3): full of adventure and magic, this is the spellbinding final chapter in Ian C. Esslemont's awesome epic fantasy sequence",
+          "authors": [
+            "Ian C Esslemont"
+          ],
+          "publisher": "Random House",
+          "language": "en",
+          "publishedDate": "2019-02-21",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781473510609"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1473510600"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "4rZ5EAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=4rZ5EAAAQBAJ",
+          "title": "Forge of the High Mage",
+          "subtitle": null,
+          "authors": [
+            "Ian C Esslemont"
+          ],
+          "publisher": "Random House",
+          "language": "en",
+          "publishedDate": "2023-04-06",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781473571242"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1473571243"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "IPgxDwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=IPgxDwAAQBAJ",
+          "title": "The Malazan Empire Series",
+          "subtitle": "(Night of Knives, Return of the Crimson Guard, Stonewielder, Orb Sceptre Throne, Blood and Bone, Assail)",
+          "authors": [
+            "Ian C. Esslemont"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2017-10-10",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781250176455"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "125017645X"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "GkePEAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=GkePEAAAQBAJ",
+          "title": "Dancer's Lament",
+          "subtitle": "Path to Ascendancy Book 1",
+          "authors": [
+            "Ian C. Esslemont"
+          ],
+          "publisher": "National Geographic Books",
+          "language": "en",
+          "publishedDate": "2017-09-26",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780857503541"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0857503545"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "kPvRxgEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=kPvRxgEACAAJ",
+          "title": "Path to Ascendancy",
+          "subtitle": null,
+          "authors": [
+            "Ian C. Esslemont"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2016",
+          "publishedDatePrecision": "year",
+          "identifiers": [
+            {
+              "type": "OTHER",
+              "identifier": "OCLC:1104116216"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "3_G1DQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=3_G1DQAAQBAJ",
+          "title": "Dancer's Lament",
+          "subtitle": null,
+          "authors": [
+            "Ian C. Esslemont"
+          ],
+          "publisher": "Random House",
+          "language": "en",
+          "publishedDate": "2017-01-12",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780857502834"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0857502832"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        }
+      ],
+      "summary": {
+        "retainedVolumes": 9,
+        "englishVolumes": 9,
+        "excludedLanguageVolumes": 0,
+        "englishExactAuthorVolumes": 6,
+        "englishExactTitleAuthorVolumes": null,
+        "exactTitleAuthorDayVolumes": null,
+        "exactTitleAuthorEbookVolumes": null,
+        "proposalValidation": "not-performed"
+      }
+    },
+    {
+      "caseId": "mistborn",
+      "arm": "series-empty-title",
+      "series": "Mistborn",
+      "author": "Brandon Sanderson",
+      "title": "",
+      "query": "\"Mistborn\" inauthor:\"Brandon Sanderson\"",
+      "checkedAt": "2026-09-30T21:33:53.129Z",
+      "status": 200,
+      "errorReason": null,
+      "attempted": true,
+      "reused": false,
+      "elapsedMs": 654,
+      "responseBytes": 89358,
+      "totalItems": 300,
+      "volumes": [
+        {
+          "id": "F8u01NaEZU0C",
+          "volumeLink": "https://books.google.com/books?id=F8u01NaEZU0C",
+          "title": "Mistborn Trilogy",
+          "subtitle": "The Final Empire, The Well of Ascension, The Hero of Ages",
+          "authors": [
+            "Brandon Sanderson"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2011-02-01",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781429989817"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1429989815"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "89oTmwEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=89oTmwEACAAJ",
+          "title": "Mistborn RPG",
+          "subtitle": null,
+          "authors": [
+            "Crafty Games",
+            "Brandon Sanderson",
+            "Alex Flagg",
+            "Will Hindmarch",
+            "Ben McSweeney",
+            "Shivam Bhatt",
+            "Logan Bonner",
+            "David Hill",
+            "Jeremy Keller",
+            "John Snead",
+            "Filamena Young"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2012-07-01",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "098268438X"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9780982684382"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "Y-41Q9zk32kC",
+          "volumeLink": "https://books.google.com/books?id=Y-41Q9zk32kC",
+          "title": "The Well of Ascension",
+          "subtitle": "Book Two of Mistborn",
+          "authors": [
+            "Brandon Sanderson"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2010-04-01",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781429961813"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1429961813"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "TjiYUm-47bQC",
+          "volumeLink": "https://books.google.com/books?id=TjiYUm-47bQC",
+          "title": "The Alloy of Law",
+          "subtitle": "A Mistborn Novel",
+          "authors": [
+            "Brandon Sanderson"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2011-11-08",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781429994897"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1429994894"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "Df6WDgAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=Df6WDgAAQBAJ",
+          "title": "Brandon Sanderson's Fantasy Firsts",
+          "subtitle": "(The Way of Kings, Mistborn: The Final Empire, Rithmatist, Alcatraz vs. The Evil Librarians)",
+          "authors": [
+            "Brandon Sanderson"
+          ],
+          "publisher": "Macmillan",
+          "language": "en",
+          "publishedDate": "2017-06-13",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780765399557"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0765399555"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "UBCYZwEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=UBCYZwEACAAJ",
+          "title": "Mistborn",
+          "subtitle": "The Final Empire - The Well of Ascension - The Hero of Ages",
+          "authors": [
+            "Brandon Sanderson"
+          ],
+          "publisher": "Gollancz",
+          "language": "en",
+          "publishedDate": "2011-11-24",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "0575118563"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9780575118560"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "uTt-H5MAGT0C",
+          "volumeLink": "https://books.google.com/books?id=uTt-H5MAGT0C",
+          "title": "The Hero of Ages",
+          "subtitle": "Book Three of Mistborn",
+          "authors": [
+            "Brandon Sanderson"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2008-10-14",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781429960304"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1429960302"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "X4qKzgEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=X4qKzgEACAAJ",
+          "title": "THE BANDS OF MOURNING",
+          "subtitle": null,
+          "authors": [
+            "BRANDON SANDERSON"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2022-09-15",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1473233364"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781473233362"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "rGvfAwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=rGvfAwAAQBAJ",
+          "title": "Brandon Sanderson Sampler",
+          "subtitle": "The Way of Kings and Mistborn",
+          "authors": [
+            "Brandon Sanderson"
+          ],
+          "publisher": "Macmillan",
+          "language": "en",
+          "publishedDate": "2014-07-15",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781466877726"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1466877723"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "OozUDAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=OozUDAAAQBAJ",
+          "title": "Mistborn: Secret History",
+          "subtitle": null,
+          "authors": [
+            "Brandon Sanderson"
+          ],
+          "publisher": "Macmillan",
+          "language": "en",
+          "publishedDate": "2016-09-01",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780765395498"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0765395495"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "_Y1FPgAACAAJ",
+          "volumeLink": "https://books.google.com/books?id=_Y1FPgAACAAJ",
+          "title": "The Hero of Ages",
+          "subtitle": null,
+          "authors": [
+            "Brandon Sanderson"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2010",
+          "publishedDatePrecision": "year",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "0575089946"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9780575089945"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "Ge4kngEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=Ge4kngEACAAJ",
+          "title": "The Bands of Mourning",
+          "subtitle": null,
+          "authors": [
+            "Brandon Sanderson"
+          ],
+          "publisher": "Gollancz",
+          "language": "en",
+          "publishedDate": "2016-01-27",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1473208254"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781473208254"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "PTBQEAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=PTBQEAAAQBAJ",
+          "title": "The Lost Metal",
+          "subtitle": "A Mistborn Novel",
+          "authors": [
+            "Brandon Sanderson"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2022-11-15",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780765391209"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0765391201"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "BHHhBQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=BHHhBQAAQBAJ",
+          "title": "Shadows of Self",
+          "subtitle": "A Mistborn Novel",
+          "authors": [
+            "Brandon Sanderson"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2015-10-06",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781466862661"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1466862661"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "6uv-CwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=6uv-CwAAQBAJ",
+          "title": "Arcanum Unbounded: The Cosmere Collection",
+          "subtitle": null,
+          "authors": [
+            "Brandon Sanderson"
+          ],
+          "publisher": "Macmillan",
+          "language": "en",
+          "publishedDate": "2016-11-22",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780765391179"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0765391171"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "t_ZYYXZq4RgC",
+          "volumeLink": "https://books.google.com/books?id=t_ZYYXZq4RgC",
+          "title": "Mistborn",
+          "subtitle": "The Final Empire",
+          "authors": [
+            "Brandon Sanderson"
+          ],
+          "publisher": "Macmillan",
+          "language": "en",
+          "publishedDate": "2010-04-01",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781429914567"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1429914564"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "F_T2DwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=F_T2DwAAQBAJ",
+          "title": "Steelheart",
+          "subtitle": null,
+          "authors": [
+            "Brandon Sanderson"
+          ],
+          "publisher": "Delacorte Press",
+          "language": "en",
+          "publishedDate": "2020-09-08",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780593307120"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0593307127"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "vlc5BAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=vlc5BAAAQBAJ",
+          "title": "Mistborn Trilogy Boxed Set",
+          "subtitle": "Mistborn, The Well of Ascension, The Hero of Ages",
+          "authors": [
+            "Brandon Sanderson"
+          ],
+          "publisher": "Hachette UK",
+          "language": "en",
+          "publishedDate": "2014-09-25",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781473211070"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1473211077"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "QMAaAgAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=QMAaAgAAQBAJ",
+          "title": "Mitosis: A Reckoners Story",
+          "subtitle": null,
+          "authors": [
+            "Brandon Sanderson"
+          ],
+          "publisher": "Delacorte Press",
+          "language": "en",
+          "publishedDate": "2013-12-03",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780449818435"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0449818438"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "iABpAwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=iABpAwAAQBAJ",
+          "title": "The Rithmatist",
+          "subtitle": null,
+          "authors": [
+            "Brandon Sanderson"
+          ],
+          "publisher": "Pan Macmillan",
+          "language": "en",
+          "publishedDate": "2014-05-22",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781447266167"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1447266161"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        }
+      ],
+      "summary": {
+        "retainedVolumes": 20,
+        "englishVolumes": 20,
+        "excludedLanguageVolumes": 0,
+        "englishExactAuthorVolumes": 20,
+        "englishExactTitleAuthorVolumes": null,
+        "exactTitleAuthorDayVolumes": null,
+        "exactTitleAuthorEbookVolumes": null,
+        "proposalValidation": "not-performed"
+      }
+    },
+    {
+      "caseId": "murderbot",
+      "arm": "series-empty-title",
+      "series": "Murderbot Diaries",
+      "author": "Martha Wells",
+      "title": "",
+      "query": "\"Murderbot Diaries\" inauthor:\"Martha Wells\"",
+      "checkedAt": "2026-09-30T21:33:54.891Z",
+      "status": 200,
+      "errorReason": null,
+      "attempted": true,
+      "reused": false,
+      "elapsedMs": 364,
+      "responseBytes": 79090,
+      "totalItems": 300,
+      "volumes": [
+        {
+          "id": "ZSu2DQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=ZSu2DQAAQBAJ",
+          "title": "All Systems Red",
+          "subtitle": "The Murderbot Diaries",
+          "authors": [
+            "Martha Wells"
+          ],
+          "publisher": "Tordotcom",
+          "language": "en",
+          "publishedDate": "2017-05-02",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780765397522"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0765397528"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "nY8hEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=nY8hEQAAQBAJ",
+          "title": "The Murderbot Diaries Vol. 1",
+          "subtitle": "All Systems Red, Artificial Condition",
+          "authors": [
+            "Martha Wells"
+          ],
+          "publisher": "Tordotcom",
+          "language": "en",
+          "publishedDate": "2025-01-07",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781250389824"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1250389828"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "Vwf60AEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=Vwf60AEACAAJ",
+          "title": "Network Effect",
+          "subtitle": "A Murderbot Novel",
+          "authors": [
+            "Martha Wells"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2020-05-05",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1250229863"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781250229861"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "fHF-EQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=fHF-EQAAQBAJ",
+          "title": "Platform Decay",
+          "subtitle": null,
+          "authors": [
+            "Martha Wells"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2026-05-05",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781250827012"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1250827019"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "bbKiEAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=bbKiEAAAQBAJ",
+          "title": "System Collapse",
+          "subtitle": "The Murderbot Diaries",
+          "authors": [
+            "Martha Wells"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2023-11-14",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781250826985"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1250826985"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "oTU0DwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=oTU0DwAAQBAJ",
+          "title": "Artificial Condition",
+          "subtitle": "The Murderbot Diaries",
+          "authors": [
+            "Martha Wells"
+          ],
+          "publisher": "Tordotcom",
+          "language": "en",
+          "publishedDate": "2018-05-08",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781250186935"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1250186935"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "0AGrDwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=0AGrDwAAQBAJ",
+          "title": "Network Effect",
+          "subtitle": "A Murderbot Novel",
+          "authors": [
+            "Martha Wells"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2020-05-05",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781250229847"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1250229847"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "KlHTEAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=KlHTEAAAQBAJ",
+          "title": "The Murderbot Diaries",
+          "subtitle": "All Systems Red, Artificial Condition, Rogue Protocol, Exit Strategy, Network Effect, Fugitive Telemetry",
+          "authors": [
+            "Martha Wells"
+          ],
+          "publisher": "Tordotcom",
+          "language": "en",
+          "publishedDate": "2023-09-19",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781250350862"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1250350867"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "KDgnEAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=KDgnEAAAQBAJ",
+          "title": "Home: Habitat, Range, Niche, Territory",
+          "subtitle": "A Tor.com Original Murderbot Diaries Short Story",
+          "authors": [
+            "Martha Wells"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2021-04-19",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781250838865"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "125083886X"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "hCBGDwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=hCBGDwAAQBAJ",
+          "title": "Exit Strategy",
+          "subtitle": "The Murderbot Diaries",
+          "authors": [
+            "Martha Wells"
+          ],
+          "publisher": "Tordotcom",
+          "language": "en",
+          "publishedDate": "2018-10-02",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781250185464"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1250185467"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "1Vyy0AEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=1Vyy0AEACAAJ",
+          "title": "Fugitive Telemetry",
+          "subtitle": null,
+          "authors": [
+            "Martha Wells"
+          ],
+          "publisher": "Tordotcom",
+          "language": "en",
+          "publishedDate": "2021-04-27",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1250765374"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781250765376"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "JvAyDwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=JvAyDwAAQBAJ",
+          "title": "Rogue Protocol",
+          "subtitle": "The Murderbot Diaries",
+          "authors": [
+            "Martha Wells"
+          ],
+          "publisher": "Tordotcom",
+          "language": "en",
+          "publishedDate": "2018-08-07",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781250185433"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1250185432"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "x1FXzQEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=x1FXzQEACAAJ",
+          "title": "The Murderbot Diaries",
+          "subtitle": null,
+          "authors": [
+            "Martha Wells"
+          ],
+          "publisher": "Tor.com",
+          "language": "en",
+          "publishedDate": "2020-09-22",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1250784271"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781250784278"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "RFlozwEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=RFlozwEACAAJ",
+          "title": "The Murderbot Diaries",
+          "subtitle": null,
+          "authors": [
+            "Martha Wells"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2022",
+          "publishedDatePrecision": "year",
+          "identifiers": [
+            {
+              "type": "OTHER",
+              "identifier": "OCLC:1345548230"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "n48hEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=n48hEQAAQBAJ",
+          "title": "The Murderbot Diaries Vol. 2",
+          "subtitle": null,
+          "authors": [
+            "Martha Wells"
+          ],
+          "publisher": "Tordotcom",
+          "language": "en",
+          "publishedDate": "2025-01-07",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781250389831"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1250389836"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "USbu5EwKNHYC",
+          "volumeLink": "https://books.google.com/books?id=USbu5EwKNHYC",
+          "title": "The Ships of Air",
+          "subtitle": "The Fall of Ile-Rien",
+          "authors": [
+            "Martha Wells"
+          ],
+          "publisher": "Harper Collins",
+          "language": "en",
+          "publishedDate": "2009-10-13",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780061835193"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0061835196"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "R3MjxwEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=R3MjxwEACAAJ",
+          "title": "The Serpent Sea",
+          "subtitle": "Volume Two of the Books of the Raksura",
+          "authors": [
+            "Martha Wells"
+          ],
+          "publisher": "Night Shade",
+          "language": "en",
+          "publishedDate": "2020-01-21",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1949102297"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781949102291"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "p48hEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=p48hEQAAQBAJ",
+          "title": "The Murderbot Diaries Vol. 3",
+          "subtitle": null,
+          "authors": [
+            "Martha Wells"
+          ],
+          "publisher": "Tordotcom",
+          "language": "en",
+          "publishedDate": "2025-01-07",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781250389848"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1250389844"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "HdgmxwEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=HdgmxwEACAAJ",
+          "title": "The Siren Depths",
+          "subtitle": "Volume Three of the Books of the Raksura",
+          "authors": [
+            "Martha Wells"
+          ],
+          "publisher": "Night Shade",
+          "language": "en",
+          "publishedDate": "2020-02-11",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1949102300"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781949102307"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "SFlpEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=SFlpEQAAQBAJ",
+          "title": "Rapport: Friendship, Solidarity, Communion, Empathy",
+          "subtitle": "A Tor Original",
+          "authors": [
+            "Martha Wells"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2025-07-11",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781250425362"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1250425360"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        }
+      ],
+      "summary": {
+        "retainedVolumes": 20,
+        "englishVolumes": 20,
+        "excludedLanguageVolumes": 0,
+        "englishExactAuthorVolumes": 20,
+        "englishExactTitleAuthorVolumes": null,
+        "exactTitleAuthorDayVolumes": null,
+        "exactTitleAuthorEbookVolumes": null,
+        "proposalValidation": "not-performed"
+      }
+    },
+    {
+      "caseId": "scholomance",
+      "arm": "series-empty-title",
+      "series": "Scholomance",
+      "author": "Naomi Novik",
+      "title": "",
+      "query": "\"Scholomance\" inauthor:\"Naomi Novik\"",
+      "checkedAt": "2026-09-30T21:33:56.371Z",
+      "status": 200,
+      "errorReason": null,
+      "attempted": true,
+      "reused": false,
+      "elapsedMs": 370,
+      "responseBytes": 83882,
+      "totalItems": 300,
+      "volumes": [
+        {
+          "id": "nolJEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=nolJEQAAQBAJ",
+          "title": "Buried Deep and Other Stories",
+          "subtitle": null,
+          "authors": [
+            "Naomi Novik"
+          ],
+          "publisher": "Random House",
+          "language": "en",
+          "publishedDate": "2025-06-17",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780593600375"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0593600371"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "7kRYEAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=7kRYEAAAQBAJ",
+          "title": "The Golden Enclaves",
+          "subtitle": "The triumphant conclusion to the Sunday Times bestselling dark academia fantasy trilogy",
+          "authors": [
+            "Naomi Novik"
+          ],
+          "publisher": "Random House",
+          "language": "en",
+          "publishedDate": "2022-09-27",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781529157994"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1529157994"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "7qBSEAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=7qBSEAAAQBAJ",
+          "title": "The Golden Enclaves",
+          "subtitle": "A Novel",
+          "authors": [
+            "Naomi Novik"
+          ],
+          "publisher": "Del Rey",
+          "language": "en",
+          "publishedDate": "2022-09-27",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780593158364"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0593158369"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "qKkFEAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=qKkFEAAAQBAJ",
+          "title": "The Last Graduate",
+          "subtitle": "The Sunday Times bestselling dark academia fantasy and sequel to A Deadly Education",
+          "authors": [
+            "Naomi Novik"
+          ],
+          "publisher": "Random House",
+          "language": "en",
+          "publishedDate": "2021-09-28",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781473577848"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1473577845"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "YJv_DwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=YJv_DwAAQBAJ",
+          "title": "The Last Graduate",
+          "subtitle": "A Novel",
+          "authors": [
+            "Naomi Novik"
+          ],
+          "publisher": "Del Rey",
+          "language": "en",
+          "publishedDate": "2021-09-28",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780593128879"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0593128877"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "gj79zQEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=gj79zQEACAAJ",
+          "title": "A Deadly Education",
+          "subtitle": "The Sunday Times Bestseller",
+          "authors": [
+            "Naomi Novik"
+          ],
+          "publisher": "Random House UK",
+          "language": "en",
+          "publishedDate": "2021",
+          "publishedDatePrecision": "year",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1529100879"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781529100877"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "KeUQ0QEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=KeUQ0QEACAAJ",
+          "title": "The Scholomance Series 3 Books Set (Hardcover)",
+          "subtitle": null,
+          "authors": [
+            "Naomi Novik"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2022-09-27",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9798897221837"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "0YDJDwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=0YDJDwAAQBAJ",
+          "title": "A Deadly Education",
+          "subtitle": "A Novel",
+          "authors": [
+            "Naomi Novik"
+          ],
+          "publisher": "Del Rey",
+          "language": "en",
+          "publishedDate": "2020-09-29",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780593128497"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0593128494"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "HnpfEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=HnpfEQAAQBAJ",
+          "title": "The Summer War",
+          "subtitle": null,
+          "authors": [
+            "Naomi Novik"
+          ],
+          "publisher": "Random House",
+          "language": "en",
+          "publishedDate": "2025-09-16",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9798217169986"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "XgJozQEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=XgJozQEACAAJ",
+          "title": "A Deadly Education",
+          "subtitle": null,
+          "authors": [
+            "Naomi Novik"
+          ],
+          "publisher": "Del Rey",
+          "language": "en",
+          "publishedDate": "2020-09-29",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1529100860"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781529100860"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "HeHrEAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=HeHrEAAAQBAJ",
+          "title": "Buried Deep and Other Stories",
+          "subtitle": "From internationally bestselling fantasy author of A Deadly Education",
+          "authors": [
+            "Naomi Novik"
+          ],
+          "publisher": "Random House",
+          "language": "en",
+          "publishedDate": "2024-09-17",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781804947074"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1804947075"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "DRkd0QEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=DRkd0QEACAAJ",
+          "title": "A Deadly Education: Deluxe Edition",
+          "subtitle": null,
+          "authors": [
+            "Naomi Novik"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2020-09-29",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1964910137"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781964910130"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "ypJXEAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=ypJXEAAAQBAJ",
+          "title": "Scholomance (Tome 1) - Éducation meurtrière",
+          "subtitle": null,
+          "authors": [
+            "Naomi Novik"
+          ],
+          "publisher": "Pygmalion",
+          "language": "fr",
+          "publishedDate": "2022-01-26T00:00:00+01:00",
+          "publishedDatePrecision": "invalid",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9782756434346"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "2756434345"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "bKQeEAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=bKQeEAAAQBAJ",
+          "title": "Scholomance – Der letzte Absolvent",
+          "subtitle": "Ein episches Dark-Fantasy-Highlight",
+          "authors": [
+            "Naomi Novik"
+          ],
+          "publisher": "cbj Verlag",
+          "language": "de",
+          "publishedDate": "2021-10-11",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9783641270285"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "3641270286"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "9s7cEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=9s7cEQAAQBAJ",
+          "title": "A Deadly Education (The Scholomance #1)",
+          "subtitle": null,
+          "authors": [
+            "Naomi Novik"
+          ],
+          "publisher": "Elex Media Komputindo",
+          "language": "id",
+          "publishedDate": "2026-05-22",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9786230074370"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "6230074370"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "ehD0EAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=ehD0EAAAQBAJ",
+          "title": "Scholomance (Tome 3) - Les enclaves dorées",
+          "subtitle": null,
+          "authors": [
+            "Naomi Novik"
+          ],
+          "publisher": "Pygmalion",
+          "language": "fr",
+          "publishedDate": "2024-02-14T00:00:00+01:00",
+          "publishedDatePrecision": "invalid",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9782756434421"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "2756434426"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "mpF2EAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=mpF2EAAAQBAJ",
+          "title": "De Gouden Enclaves",
+          "subtitle": null,
+          "authors": [
+            "Naomi Novik"
+          ],
+          "publisher": "Luitingh Sijthoff",
+          "language": "nl",
+          "publishedDate": "2022-11-22",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9789021033808"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "9021033801"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "-bdfzwEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=-bdfzwEACAAJ",
+          "title": "The Golden Enclaves",
+          "subtitle": "TikTok Made Me Read It",
+          "authors": [
+            "Naomi Novik"
+          ],
+          "publisher": "Del Rey",
+          "language": "en",
+          "publishedDate": "2023-06-27",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1529100933"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781529100938"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "4b1gEAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=4b1gEAAAQBAJ",
+          "title": "Scholomance – Die Goldenen Enklaven",
+          "subtitle": "Das furiose Finale der Dark-Fantasy-Trilogie",
+          "authors": [
+            "Naomi Novik"
+          ],
+          "publisher": "cbj Verlag",
+          "language": "de",
+          "publishedDate": "2022-11-09",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9783641270292"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "3641270294"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "Q5EAEAAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=Q5EAEAAAQBAJ",
+          "title": "Scholomance – Tödliche Lektion",
+          "subtitle": "Das epische Dark-Fantasy-Highlight und Band 1 der New-York-Times-Bestsellertrilogie",
+          "authors": [
+            "Naomi Novik"
+          ],
+          "publisher": "cbj Verlag",
+          "language": "de",
+          "publishedDate": "2021-03-01",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9783641270278"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "3641270278"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        }
+      ],
+      "summary": {
+        "retainedVolumes": 20,
+        "englishVolumes": 13,
+        "excludedLanguageVolumes": 7,
+        "englishExactAuthorVolumes": 13,
+        "englishExactTitleAuthorVolumes": null,
+        "exactTitleAuthorDayVolumes": null,
+        "exactTitleAuthorEbookVolumes": null,
+        "proposalValidation": "not-performed"
+      }
+    },
+    {
+      "caseId": "masquerade",
+      "arm": "series-empty-title",
+      "series": "The Masquerade",
+      "author": "Seth Dickinson",
+      "title": "",
+      "query": "\"The Masquerade\" inauthor:\"Seth Dickinson\"",
+      "checkedAt": "2026-09-30T21:33:57.848Z",
+      "status": 200,
+      "errorReason": null,
+      "attempted": true,
+      "reused": false,
+      "elapsedMs": 495,
+      "responseBytes": 13303,
+      "totalItems": 4,
+      "volumes": [
+        {
+          "id": "yeg_jwEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=yeg_jwEACAAJ",
+          "title": "The Traitor Baru Cormorant",
+          "subtitle": null,
+          "authors": [
+            "Seth Dickinson"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2016-11-29",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "0765380730"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9780765380739"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "4CZGDwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=4CZGDwAAQBAJ",
+          "title": "The Monster Baru Cormorant",
+          "subtitle": null,
+          "authors": [
+            "Seth Dickinson"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2018-10-30",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781466875135"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1466875135"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "VGr5zQEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=VGr5zQEACAAJ",
+          "title": "The Masquerade",
+          "subtitle": null,
+          "authors": [
+            "Seth Dickinson"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2015",
+          "publishedDatePrecision": "year",
+          "identifiers": [
+            {
+              "type": "OTHER",
+              "identifier": "OCLC:1199059567"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "4_aVDwAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=4_aVDwAAQBAJ",
+          "title": "The Monster: Masquerade Book 2",
+          "subtitle": null,
+          "authors": [
+            "Seth Dickinson"
+          ],
+          "publisher": "Tor UK",
+          "language": "en",
+          "publishedDate": "2019-09-24",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781760787813"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1760787817"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        }
+      ],
+      "summary": {
+        "retainedVolumes": 4,
+        "englishVolumes": 4,
+        "excludedLanguageVolumes": 0,
+        "englishExactAuthorVolumes": 4,
+        "englishExactTitleAuthorVolumes": null,
+        "exactTitleAuthorDayVolumes": null,
+        "exactTitleAuthorEbookVolumes": null,
+        "proposalValidation": "not-performed"
+      }
+    },
+    {
+      "caseId": "witness",
+      "arm": "known-title-assisted",
+      "series": "Witness",
+      "author": "Steven Erikson",
+      "title": "Legacies of Betrayal",
+      "query": "intitle:\"Legacies of Betrayal\" inauthor:\"Steven Erikson\"",
+      "checkedAt": "2026-09-30T21:33:59.456Z",
+      "status": 200,
+      "errorReason": null,
+      "attempted": true,
+      "reused": false,
+      "elapsedMs": 362,
+      "responseBytes": 8668,
+      "totalItems": 2,
+      "volumes": [
+        {
+          "id": "wc2nEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=wc2nEQAAQBAJ",
+          "title": "Legacies of Betrayal: The Third Tale of Witness",
+          "subtitle": null,
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": "Random House",
+          "language": "en",
+          "publishedDate": "2026-10-01",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781409032786"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1409032787"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_PREORDER",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": "2026-10-01T04:00:00.000Z",
+          "onSaleDatePrecision": "datetime"
+        },
+        {
+          "id": "OfDKEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=OfDKEQAAQBAJ",
+          "title": "Legacies of Betrayal",
+          "subtitle": "The Third Tale of Witness: A Novel of the Malazan World",
+          "authors": [
+            "Steven Erikson"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2026-10-06",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780765399960"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0765399962"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        }
+      ],
+      "summary": {
+        "retainedVolumes": 2,
+        "englishVolumes": 2,
+        "excludedLanguageVolumes": 0,
+        "englishExactAuthorVolumes": 2,
+        "englishExactTitleAuthorVolumes": 1,
+        "exactTitleAuthorDayVolumes": 1,
+        "exactTitleAuthorEbookVolumes": 0,
+        "proposalValidation": "not-performed"
+      }
+    },
+    {
+      "caseId": "hierarchy",
+      "arm": "known-title-assisted",
+      "series": "Hierarchy",
+      "author": "James Islington",
+      "title": "The Strength of the Few",
+      "query": "intitle:\"The Strength of the Few\" inauthor:\"James Islington\"",
+      "checkedAt": "2026-09-30T21:34:00.933Z",
+      "status": 200,
+      "errorReason": null,
+      "attempted": true,
+      "reused": false,
+      "elapsedMs": 497,
+      "responseBytes": 23769,
+      "totalItems": 7,
+      "volumes": [
+        {
+          "id": "jvRQEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=jvRQEQAAQBAJ",
+          "title": "The Strength of the Few",
+          "subtitle": null,
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": "Simon and Schuster",
+          "language": "en",
+          "publishedDate": "2025-11-11",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781982141257"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1982141255"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "La5jEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=La5jEQAAQBAJ",
+          "title": "The strength of the few",
+          "subtitle": "Ausgabe ebook",
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": "Adrian & Wimmelbuchverlag",
+          "language": "de",
+          "publishedDate": "2025-12-02",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9783985853328"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "3985853320"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "2j_o0QEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=2j_o0QEACAAJ",
+          "title": "La forza dei pochi. The strength of the few",
+          "subtitle": null,
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": null,
+          "language": "it",
+          "publishedDate": "2026",
+          "publishedDatePrecision": "year",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "8834747240"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9788834747247"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "xPXCEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=xPXCEQAAQBAJ",
+          "title": "The Strength of the Few. La forza dei pochi - Heirarchy vol. 2",
+          "subtitle": null,
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": "Fanucci Editore",
+          "language": "it",
+          "publishedDate": "2026-03-03",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9788834747667"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "8834747666"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "EsnY0QEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=EsnY0QEACAAJ",
+          "title": "The Strength of the Few",
+          "subtitle": "Deluxe Hardback Edition",
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": "Text Publishing",
+          "language": "en",
+          "publishedDate": "2026-06-30",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1923058886"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781923058880"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "w6xZ0QEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=w6xZ0QEACAAJ",
+          "title": "The strength of the few",
+          "subtitle": "Der Fantasy-Erfolg endlich auf Deutsch - limitierte Schmuckausgabe mit Farbschnitt",
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": null,
+          "language": "de",
+          "publishedDate": "2025",
+          "publishedDatePrecision": "year",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "3985852480"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9783985852482"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "2QzsEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=2QzsEQAAQBAJ",
+          "title": "The Strength of the Few",
+          "subtitle": "Hiérarchie, T2",
+          "authors": [
+            "James Islington"
+          ],
+          "publisher": "Elder-Craft",
+          "language": "fr",
+          "publishedDate": "2026-10-07",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9782380241112"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "2380241112"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        }
+      ],
+      "summary": {
+        "retainedVolumes": 7,
+        "englishVolumes": 2,
+        "excludedLanguageVolumes": 5,
+        "englishExactAuthorVolumes": 2,
+        "englishExactTitleAuthorVolumes": 2,
+        "exactTitleAuthorDayVolumes": 2,
+        "exactTitleAuthorEbookVolumes": 1,
+        "proposalValidation": "not-performed"
+      }
+    },
+    {
+      "caseId": "last-horizon",
+      "arm": "known-title-assisted",
+      "series": "Last Horizon",
+      "author": "Will Wight",
+      "title": "The Pilot",
+      "query": "intitle:\"The Pilot\" inauthor:\"Will Wight\"",
+      "checkedAt": "2026-09-30T21:34:02.534Z",
+      "status": 200,
+      "errorReason": null,
+      "attempted": true,
+      "reused": false,
+      "elapsedMs": 388,
+      "responseBytes": 6140,
+      "totalItems": 2,
+      "volumes": [
+        {
+          "id": "sWh20QEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=sWh20QEACAAJ",
+          "title": "The Pilot",
+          "subtitle": "The Last Horizon, Book Four",
+          "authors": [
+            "Will Wight"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2026-09",
+          "publishedDatePrecision": "month",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1959001744"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781959001744"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "uHFB0QEACAAJ",
+          "volumeLink": "https://books.google.com/books?id=uHFB0QEACAAJ",
+          "title": "The Pilot",
+          "subtitle": "The Last Horizon, Book Four",
+          "authors": [
+            "Will Wight"
+          ],
+          "publisher": null,
+          "language": "en",
+          "publishedDate": "2025-07",
+          "publishedDatePrecision": "month",
+          "identifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1959001736"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781959001737"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        }
+      ],
+      "summary": {
+        "retainedVolumes": 2,
+        "englishVolumes": 2,
+        "excludedLanguageVolumes": 0,
+        "englishExactAuthorVolumes": 2,
+        "englishExactTitleAuthorVolumes": 2,
+        "exactTitleAuthorDayVolumes": 0,
+        "exactTitleAuthorEbookVolumes": 0,
+        "proposalValidation": "not-performed"
+      }
+    },
+    {
+      "caseId": "ana-and-din",
+      "arm": "known-title-assisted",
+      "series": "Ana and Din",
+      "author": "Robert Jackson Bennett",
+      "title": "A Trade of Blood",
+      "query": "intitle:\"A Trade of Blood\" inauthor:\"Robert Jackson Bennett\"",
+      "checkedAt": "2026-09-30T21:34:04.027Z",
+      "status": 200,
+      "errorReason": null,
+      "attempted": true,
+      "reused": false,
+      "elapsedMs": 511,
+      "responseBytes": 4965,
+      "totalItems": 1,
+      "volumes": [
+        {
+          "id": "fQB1EQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=fQB1EQAAQBAJ",
+          "title": "A Trade of Blood",
+          "subtitle": null,
+          "authors": [
+            "Robert Jackson Bennett"
+          ],
+          "publisher": "Del Rey",
+          "language": "en",
+          "publishedDate": "2026-08-04",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9780593723869"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "0593723864"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": true,
+          "saleability": "FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        }
+      ],
+      "summary": {
+        "retainedVolumes": 1,
+        "englishVolumes": 1,
+        "excludedLanguageVolumes": 0,
+        "englishExactAuthorVolumes": 1,
+        "englishExactTitleAuthorVolumes": 1,
+        "exactTitleAuthorDayVolumes": 1,
+        "exactTitleAuthorEbookVolumes": 1,
+        "proposalValidation": "not-performed"
+      }
+    },
+    {
+      "caseId": "bound-and-broken",
+      "arm": "known-title-assisted",
+      "series": "Bound and the Broken",
+      "author": "Ryan Cahill",
+      "title": "Of Empires and Dust",
+      "query": "intitle:\"Of Empires and Dust\" inauthor:\"Ryan Cahill\"",
+      "checkedAt": "2026-09-30T21:34:05.652Z",
+      "status": 200,
+      "errorReason": null,
+      "attempted": true,
+      "reused": false,
+      "elapsedMs": 304,
+      "responseBytes": 49,
+      "totalItems": 0,
+      "volumes": [],
+      "summary": {
+        "retainedVolumes": 0,
+        "englishVolumes": 0,
+        "excludedLanguageVolumes": 0,
+        "englishExactAuthorVolumes": 0,
+        "englishExactTitleAuthorVolumes": 0,
+        "exactTitleAuthorDayVolumes": 0,
+        "exactTitleAuthorEbookVolumes": 0,
+        "proposalValidation": "not-performed"
+      }
+    },
+    {
+      "caseId": "devils",
+      "arm": "known-title-assisted",
+      "series": "Devils",
+      "author": "Joe Abercrombie",
+      "title": "The Heretics",
+      "query": "intitle:\"The Heretics\" inauthor:\"Joe Abercrombie\"",
+      "checkedAt": "2026-09-30T21:34:07.068Z",
+      "status": 200,
+      "errorReason": null,
+      "attempted": true,
+      "reused": false,
+      "elapsedMs": 381,
+      "responseBytes": 5806,
+      "totalItems": 2,
+      "volumes": [
+        {
+          "id": "RLXeEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=RLXeEQAAQBAJ",
+          "title": "The Heretics",
+          "subtitle": "The Devils Book Two",
+          "authors": [
+            "Joe Abercrombie"
+          ],
+          "publisher": "Hachette UK",
+          "language": "en",
+          "publishedDate": "2027-05-04",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781399603645"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1399603647"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        },
+        {
+          "id": "gWPYEQAAQBAJ",
+          "volumeLink": "https://books.google.com/books?id=gWPYEQAAQBAJ",
+          "title": "Tor May 2027 Title to Be Announced",
+          "subtitle": null,
+          "authors": [
+            "Announced",
+            "Tor May 2027 Author to Be Announced"
+          ],
+          "publisher": "Tor Books",
+          "language": "en",
+          "publishedDate": "2027-05-11",
+          "publishedDatePrecision": "day",
+          "identifiers": [
+            {
+              "type": "ISBN_13",
+              "identifier": "9781250880086"
+            },
+            {
+              "type": "ISBN_10",
+              "identifier": "1250880084"
+            }
+          ],
+          "printType": "BOOK",
+          "isEbook": false,
+          "saleability": "NOT_FOR_SALE",
+          "saleCountry": "CA",
+          "accessCountry": "CA",
+          "onSaleDate": null,
+          "onSaleDatePrecision": "missing"
+        }
+      ],
+      "summary": {
+        "retainedVolumes": 2,
+        "englishVolumes": 2,
+        "excludedLanguageVolumes": 0,
+        "englishExactAuthorVolumes": 1,
+        "englishExactTitleAuthorVolumes": 1,
+        "exactTitleAuthorDayVolumes": 1,
+        "exactTitleAuthorEbookVolumes": 0,
+        "proposalValidation": "not-performed"
+      }
+    },
+    {
+      "caseId": "book-of-dead",
+      "arm": "known-title-assisted",
+      "series": "Book of the Dead",
+      "author": "RinoZ",
+      "title": "Ascension",
+      "query": "intitle:\"Ascension\" inauthor:\"RinoZ\"",
+      "checkedAt": "2026-09-30T21:34:08.565Z",
+      "status": 200,
+      "errorReason": null,
+      "attempted": true,
+      "reused": false,
+      "elapsedMs": 202,
+      "responseBytes": 49,
+      "totalItems": 0,
+      "volumes": [],
+      "summary": {
+        "retainedVolumes": 0,
+        "englishVolumes": 0,
+        "excludedLanguageVolumes": 0,
+        "englishExactAuthorVolumes": 0,
+        "englishExactTitleAuthorVolumes": 0,
+        "exactTitleAuthorDayVolumes": 0,
+        "exactTitleAuthorEbookVolumes": 0,
+        "proposalValidation": "not-performed"
+      }
+    },
+    {
+      "caseId": "path-to-ascendancy",
+      "arm": "known-title-assisted",
+      "series": "Path to Ascendancy",
+      "author": "Ian C. Esslemont",
+      "title": "Deadhouse Landing",
+      "query": "intitle:\"Deadhouse Landing\" inauthor:\"Ian C. Esslemont\"",
+      "checkedAt": "2026-09-30T21:34:09.881Z",
+      "status": 200,
+      "errorReason": null,
+      "attempted": true,
+      "reused": false,
+      "elapsedMs": 261,
+      "responseBytes": 49,
+      "totalItems": 0,
+      "volumes": [],
+      "summary": {
+        "retainedVolumes": 0,
+        "englishVolumes": 0,
+        "excludedLanguageVolumes": 0,
+        "englishExactAuthorVolumes": 0,
+        "englishExactTitleAuthorVolumes": 0,
+        "exactTitleAuthorDayVolumes": 0,
+        "exactTitleAuthorEbookVolumes": 0,
+        "proposalValidation": "not-performed"
+      }
+    }
+  ],
+  "skipped": [],
+  "scope": "12 empty-title series queries; 8 assisted known-title queries; candidate metadata only",
+  "offlineNormalizationNote": "Metadata-only offline clarification: documented onSaleDate datetimes calendar-validated separately; probe does not run proposal validation. No further network calls."
+}

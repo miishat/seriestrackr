@@ -13,8 +13,8 @@ function FilterMenu<T extends string>({ label, allLabel, options, selected, onCh
     <div className="filter-panel" role="group" aria-label={label}>{options.map(([value, text]) => <label key={value}><input type="checkbox" aria-label={`${label}: ${text}`} checked={selected.includes(value)} onChange={(event) => toggle(value, event.target.checked)} />{text}</label>)}</div>
   </details>;
 }
-export function LibraryView({ doc, today, onEdit, onFinish, onAdd, onView }: {
-  doc: LibraryDocument; today: string; onEdit: (series: Series) => void; onFinish: (series: Series) => void; onAdd: () => void; onView: (view: LibraryDocument['settings']['view']) => void;
+export function LibraryView({ doc, today, onEdit, onFinish, onCheck, checkingSeriesId = null, onAdd, onView }: {
+  doc: LibraryDocument; today: string; onEdit: (series: Series) => void; onFinish: (series: Series) => void; onCheck?: (series: Series) => void; checkingSeriesId?: string | null; onAdd: () => void; onView: (view: LibraryDocument['settings']['view']) => void;
 }) {
   const [query, setQuery] = useState('');
   const [reading, setReading] = useState<ReadingStatus[]>([]);
@@ -39,8 +39,8 @@ export function LibraryView({ doc, today, onEdit, onFinish, onAdd, onView }: {
     </div>
     {doc.series.length === 0 ? <div className="empty"><div className="eyebrow">A fresh start</div><h2>Your bookshelf is empty</h2><p>Add a series, then keep its next book and audiobook releases in one place.</p><button className="primary" onClick={onAdd}>Add your first series</button></div>
       : filtered.length === 0 ? <div className="empty"><h2>No matching series</h2><p>Try another search or filter.</p></div>
-      : doc.settings.view === 'list' ? <SeriesTable series={filtered} today={today} market={doc.settings.market ?? ''} onEdit={onEdit} onFinish={onFinish} />
-      : <div className={`cards ${doc.settings.view === 'compact' ? 'compact-cards' : ''}`}>{filtered.map((s) => <SeriesCard key={s.id} series={s} today={today} market={doc.settings.market ?? ''} showCovers={doc.settings.showCovers} compact={doc.settings.view === 'compact'} onEdit={() => onEdit(s)} onFinish={() => onFinish(s)} />)}</div>}
-    <p className="library-note">English releases · {doc.settings.market ?? 'Market not selected'} unless overridden · Manual entries</p>
+      : doc.settings.view === 'list' ? <SeriesTable series={filtered} today={today} market={doc.settings.market ?? ''} onEdit={onEdit} onFinish={onFinish} onCheck={onCheck} checkingSeriesId={checkingSeriesId} />
+      : <div className={`cards ${doc.settings.view === 'compact' ? 'compact-cards' : ''}`}>{filtered.map((s) => <SeriesCard key={s.id} series={s} today={today} market={doc.settings.market ?? ''} showCovers={doc.settings.showCovers} compact={doc.settings.view === 'compact'} onEdit={() => onEdit(s)} onFinish={() => onFinish(s)} onCheck={onCheck ? () => onCheck(s) : undefined} checking={checkingSeriesId === s.id} />)}</div>}
+    <p className="library-note">English releases · Preferred country: {doc.settings.market ?? 'Market not selected'} unless overridden · Source countries shown with supported details</p>
   </main>;
 }

@@ -1,0 +1,16 @@
+{
+  "witness": { "series": "Witness", "author": "Steven Erikson", "position": 3, "title": "", "preferredMarket": "CA", "formats": ["book", "audio"] },
+  "hierarchy": { "series": "Hierarchy", "author": "James Islington", "position": 2, "title": "", "preferredMarket": "CA", "formats": ["book", "audio"] },
+  "last-horizon": { "series": "Last Horizon", "author": "Will Wight", "position": 4, "title": "", "preferredMarket": "CA", "formats": ["book", "audio"] },
+  "ana-and-din": { "series": "Ana and Din", "author": "Robert Jackson Bennett", "position": 3, "title": "", "preferredMarket": "CA", "formats": ["book", "audio"] },
+  "bound-and-broken": { "series": "Bound and the Broken", "author": "Ryan Cahill", "position": 4, "title": "", "preferredMarket": "CA", "formats": ["book", "audio"] },
+  "devils": { "series": "Devils", "author": "Joe Abercrombie", "position": 2, "title": "", "preferredMarket": "CA", "formats": ["book", "audio"] },
+  "book-of-dead": { "series": "Book of the Dead", "author": "RinoZ", "position": 5, "title": "", "preferredMarket": "CA", "formats": ["book", "audio"] },
+  "path-to-ascendancy": { "series": "Path to Ascendancy", "author": "Ian C. Esslemont", "position": 2, "title": "", "preferredMarket": "CA", "formats": ["book", "audio"] },
+  "mistborn": { "series": "Mistborn", "author": "Brandon Sanderson", "position": 2, "title": "", "preferredMarket": "CA", "formats": ["book", "audio"] },
+  "murderbot": { "series": "Murderbot Diaries", "author": "Martha Wells", "position": 2, "title": "", "preferredMarket": "CA", "formats": ["book", "audio"] },
+  "scholomance": { "series": "Scholomance", "author": "Naomi Novik", "position": 2, "title": "", "preferredMarket": "CA", "formats": ["book", "audio"] },
+  "masquerade": { "series": "The Masquerade", "author": "Seth Dickinson", "position": 2, "title": "", "preferredMarket": "CA", "formats": ["book", "audio"] },
+  "ana-and-din-withheld-ca": { "series": "Ana and Din", "author": "Robert Jackson Bennett", "position": 3, "title": "", "preferredMarket": "CA", "formats": ["book", "audio"] },
+  "path-to-ascendancy-gb": { "series": "Path to Ascendancy", "author": "Ian C. Esslemont", "position": 2, "title": "", "preferredMarket": "GB", "formats": ["book", "audio"] }
+}

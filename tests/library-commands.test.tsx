@@ -156,7 +156,7 @@ test('completed status requires publication completion and clears current book',
 });
 
 test('changing format visibility retains hidden release data and deliberate overrides', () => {
-  const original = seriesFixture({ releases: dated(), next: { positionOverride: 2.5, title: 'Interlude', orderNote: 'side story' } });
+  const original = seriesFixture({ releases: dated(), next: { positionOverride: 2.5, title: 'Interlude', orderNote: 'side story', attribution: null } });
   const { result } = mount(seeded([original]));
   act(() => {
     expect(result.current.updateSeries({ ...original, formats: { book: false, audio: true } }, false).ok).toBe(true);
@@ -165,7 +165,7 @@ test('changing format visibility retains hidden release data and deliberate over
   act(() => {
     expect(result.current.updateSeries({ ...result.current.doc.series[0], next: { ...original.next, orderNote: 'revised side story' } }, true).ok).toBe(true);
   });
-  expect(result.current.doc.series[0].next).toEqual({ positionOverride: 2.5, title: 'Interlude', orderNote: 'revised side story' });
+  expect(result.current.doc.series[0].next).toEqual({ positionOverride: 2.5, title: 'Interlude', orderNote: 'revised side story', attribution: null });
   expect(result.current.doc.series[0].releases).toEqual({ book: emptyRelease(), audio: emptyRelease() });
   act(() => {
     expect(result.current.updateSeries({ ...result.current.doc.series[0], formats: { book: true, audio: false }, releases: dated() }, false).ok).toBe(true);
@@ -174,7 +174,7 @@ test('changing format visibility retains hidden release data and deliberate over
 });
 
 test('a failed finish leaves an earlier undo available', () => {
-  const { result } = mount(seeded([seriesFixture(), seriesFixture({ id: 's2', next: { positionOverride: null, title: '', orderNote: '' } })]));
+  const { result } = mount(seeded([seriesFixture(), seriesFixture({ id: 's2', next: { positionOverride: null, title: '', orderNote: '', attribution: null } })]));
   act(() => { expect(result.current.markFinished('s1').ok).toBe(true); });
   act(() => { expect(result.current.markFinished('s2').ok).toBe(false); });
   expect(result.current.canUndo).toBe(true);

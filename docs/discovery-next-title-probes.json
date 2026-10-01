@@ -1,0 +1,179 @@
+[
+  {
+    "series": "The Witness Trilogy",
+    "author": "Steven Erikson",
+    "syntheticLastFinished": 2,
+    "expectedTitle": "Legacies of Betrayal",
+    "query": "https://openlibrary.org/search.json?title=Legacies%20of%20Betrayal&author=Steven%20Erikson&limit=3&fields=key,title,author_name,first_publish_year,edition_count",
+    "checkedAt": "2026-09-29T19:46:22.4231671Z",
+    "status": 200,
+    "numFound": 0,
+    "docs": [],
+    "cors": [
+      "*"
+    ],
+    "error": null
+  },
+  {
+    "series": "The Hierarchy",
+    "author": "James Islington",
+    "syntheticLastFinished": 1,
+    "expectedTitle": "The Strength of the Few",
+    "query": "https://openlibrary.org/search.json?title=The%20Strength%20of%20the%20Few&author=James%20Islington&limit=3&fields=key,title,author_name,first_publish_year,edition_count",
+    "checkedAt": "2026-09-29T19:46:23.8748181Z",
+    "status": 200,
+    "numFound": 1,
+    "docs": [
+      {
+        "author_name": [
+          "James Islington"
+        ],
+        "edition_count": 4,
+        "first_publish_year": 2025,
+        "key": "/works/OL44370085W",
+        "title": "The Strength of the Few"
+      }
+    ],
+    "cors": [
+      "*"
+    ],
+    "error": null
+  },
+  {
+    "series": "The Last Horizon",
+    "author": "Will Wight",
+    "syntheticLastFinished": 3,
+    "expectedTitle": "The Pilot",
+    "query": "https://openlibrary.org/search.json?title=The%20Pilot&author=Will%20Wight&limit=3&fields=key,title,author_name,first_publish_year,edition_count",
+    "checkedAt": "2026-09-29T19:46:25.2502865Z",
+    "status": 200,
+    "numFound": 0,
+    "docs": [],
+    "cors": [
+      "*"
+    ],
+    "error": null
+  },
+  {
+    "series": "Ana and Din Mysteries",
+    "author": "Robert Jackson Bennett",
+    "syntheticLastFinished": 2,
+    "expectedTitle": "A Trade of Blood",
+    "query": "https://openlibrary.org/search.json?title=A%20Trade%20of%20Blood&author=Robert%20Jackson%20Bennett&limit=3&fields=key,title,author_name,first_publish_year,edition_count",
+    "checkedAt": "2026-09-29T19:46:26.7936881Z",
+    "status": 200,
+    "numFound": 1,
+    "docs": [
+      {
+        "author_name": [
+          "Robert Jackson Bennett"
+        ],
+        "edition_count": 1,
+        "key": "/works/OL45345316W",
+        "title": "A Trade of Blood"
+      }
+    ],
+    "cors": [
+      "*"
+    ],
+    "error": null
+  },
+  {
+    "series": "The Bound and the Broken",
+    "author": "Ryan Cahill",
+    "syntheticLastFinished": 3,
+    "expectedTitle": "Of Empires and Dust",
+    "query": "https://openlibrary.org/search.json?title=Of%20Empires%20and%20Dust&author=Ryan%20Cahill&limit=3&fields=key,title,author_name,first_publish_year,edition_count",
+    "checkedAt": "2026-09-29T19:46:28.2782372Z",
+    "status": 200,
+    "numFound": 1,
+    "docs": [
+      {
+        "author_name": [
+          "Ryan Cahill"
+        ],
+        "edition_count": 1,
+        "first_publish_year": 2025,
+        "key": "/works/OL43408400W",
+        "title": "Of Empires and Dust"
+      }
+    ],
+    "cors": [
+      "*"
+    ],
+    "error": null
+  },
+  {
+    "series": "The Devils",
+    "author": "Joe Abercrombie",
+    "syntheticLastFinished": 1,
+    "expectedTitle": "The Heretics",
+    "query": "https://openlibrary.org/search.json?title=The%20Heretics&author=Joe%20Abercrombie&limit=3&fields=key,title,author_name,first_publish_year,edition_count",
+    "checkedAt": "2026-09-29T19:46:29.6816721Z",
+    "status": 200,
+    "numFound": 0,
+    "docs": [],
+    "cors": [
+      "*"
+    ],
+    "error": null
+  },
+  {
+    "series": "Book of the Dead",
+    "author": "RinoZ",
+    "syntheticLastFinished": 4,
+    "expectedTitle": "Ascension",
+    "query": "https://openlibrary.org/search.json?title=Ascension&author=RinoZ&limit=3&fields=key,title,author_name,first_publish_year,edition_count",
+    "checkedAt": "2026-09-29T19:46:31.0316500Z",
+    "status": 200,
+    "numFound": 0,
+    "docs": [],
+    "cors": [
+      "*"
+    ],
+    "error": null
+  },
+  {
+    "series": "Path to Ascendancy",
+    "author": "Ian C. Esslemont",
+    "syntheticLastFinished": 1,
+    "expectedTitle": "Deadhouse Landing",
+    "query": "https://openlibrary.org/search.json?title=Deadhouse%20Landing&author=Ian%20C.%20Esslemont&limit=3&fields=key,title,author_name,first_publish_year,edition_count",
+    "checkedAt": "2026-09-29T19:46:32.4262823Z",
+    "status": 200,
+    "numFound": 4,
+    "docs": [
+      {
+        "author_name": [
+          "Ian C. Esslemont"
+        ],
+        "edition_count": 6,
+        "first_publish_year": 2017,
+        "key": "/works/OL20732723W",
+        "title": "Deadhouse Landing"
+      },
+      {
+        "author_name": [
+          "Ian C. Esslemont"
+        ],
+        "edition_count": 1,
+        "first_publish_year": 2017,
+        "key": "/works/OL19830667W",
+        "title": "Deadhouse Landing: Path to Ascendancy, Book 2 (A Novel of the Malazan Empire)"
+      },
+      {
+        "author_name": [
+          "Ian C. Esslemont"
+        ],
+        "edition_count": 1,
+        "first_publish_year": 2017,
+        "key": "/works/OL19359442W",
+        "title": "Deadhouse Landing: Path to Ascendancy Book 2"
+      }
+    ],
+    "cors": [
+      "*"
+    ],
+    "error": null
+  }
+]

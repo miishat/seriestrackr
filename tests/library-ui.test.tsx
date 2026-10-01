@@ -225,7 +225,7 @@ test('search and release filters use the displayed status after local midnight',
 });
 
 test('mark finished asks for an unknown title and offers one-step undo', async () => {
-  const user = userEvent.setup(); seed([seriesFixture({ next: { positionOverride: null, title: '', orderNote: '' } })]); render(<App />);
+  const user = userEvent.setup(); seed([seriesFixture({ next: { positionOverride: null, title: '', orderNote: '', attribution: null } })]); render(<App />);
   await user.click(screen.getByRole('button', { name: 'Mark finished' }));
   await user.type(screen.getByLabelText('Finished book title'), 'Second');
   await user.click(screen.getByRole('button', { name: 'Finish book' }));
