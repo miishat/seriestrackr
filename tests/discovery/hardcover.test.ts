@@ -57,6 +57,18 @@ test('aliases are request-derived bounded literals', () => {
   expect(hardcoverAliases('The Example Series')).toContain('Example');
   expect(hardcoverAliases('The Example Series').length).toBeLessThanOrEqual(8);
 });
+
+test.each(['Witness', 'Example [A]'])('singular Tale of %s resolves plural catalog alias using literal request text', base => {
+  const series = `The Tale of ${base}`;
+  const aliases = hardcoverAliases(series);
+  expect(aliases).toContain(`Tales of ${base}`);
+  expect(aliases).toContain(base);
+  expect(aliases).not.toContain(`Tales of Tale of ${base}`);
+  expect(aliases.length).toBeLessThanOrEqual(8);
+  const target = { ...req, target: { ...req.target, series } };
+  expect(normalizeHardcover(envelope([row({ series: { name: `Tales of ${base}` } })]), target, checkedAt).identities).toHaveLength(1);
+  expect(normalizeHardcover(envelope([row({ series: { name: `Tales of ${base} Other` } })]), target, checkedAt).identities).toEqual([]);
+});
 test('missing token performs no calls and abort before queue performs no attempt', async () => {
   const fetcher = vi.fn<typeof fetch>(); const signal = new AbortController().signal;
   expect((await collectHardcover(req, null, signal, fetcher)).usage.hardcover).toBe(0);

@@ -1,6 +1,7 @@
 import type { CheckRequest, EditionEvidence, EvidenceBundle, Source } from '../../shared/discovery';
 import { normalizeIdentity } from '../../shared/discoveryPolicy';
 import { hardcoverAliases } from './hardcover';
+import { orderedTitle } from './seriesOrder';
 
 const empty = (): EvidenceBundle => ({ sources: [], identities: [], editions: [] });
 const object = (value: unknown): Record<string, unknown> => value !== null && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {};
@@ -23,6 +24,8 @@ export function appleCanonicalTitle(edition: EditionEvidence, request: CheckRequ
   if (!canonical || normalizeIdentity(edition.author) !== normalizeIdentity(request.target.author)) return null;
   const actual = normalizeIdentity(edition.title);
   if (actual === normalizeIdentity(canonical)) return canonical;
+  const explicit = orderedTitle(edition.title, request);
+  if (explicit && normalizeIdentity(explicit.title) === normalizeIdentity(canonical)) return canonical;
   if (edition.format !== 'audio') return null;
   const labels = [`${canonical} (Unabridged)`];
   if (Number.isInteger(request.target.position)) for (const series of hardcoverAliases(request.target.series)) {
@@ -126,7 +129,10 @@ export function normalizeAppleProductPage(html: string, source: Source, edition:
   const date = exactDate(product.datePublished);
   const sourceId = `apple-page:${/^apple:(\d+):/.exec(edition.id)![1]}:${edition.market}:${edition.format}`;
   const languageQuote = hasLanguage ? `inLanguage: ${JSON.stringify(product.inLanguage)}.` : 'Product LANGUAGE badge: English.';
-  const relationship = title === edition.title ? '' : ` Canonical title: ${title}. Literal audio label: ${edition.title}. Requested series: ${request.target.series}. Requested position: ${request.target.position}. Exact supported unabridged title relationship.`;
+  const explicitOrder = orderedTitle(edition.title, request);
+  const relationship = title === edition.title ? '' : explicitOrder && normalizeIdentity(explicitOrder.title) === normalizeIdentity(title)
+    ? ` Canonical title: ${title}. Literal catalog label: ${edition.title}. Requested series: ${request.target.series}. Requested position: ${request.target.position}. Exact supported series-order title relationship.`
+    : ` Canonical title: ${title}. Literal audio label: ${edition.title}. Requested series: ${request.target.series}. Requested position: ${request.target.position}. Exact supported unabridged title relationship.`;
   const quote = `Title: ${edition.title}. Author: ${edition.author}. Format: ${edition.format}. Language: en. ${languageQuote} Market: ${edition.market}. Date: ${date ?? 'unknown'}. Precision: ${date ? 'day' : 'none'}. Edition: ${edition.editionKey}.${relationship}`;
   const normalizedSource: Source = { id: sourceId, title: edition.title, url: source.url, provider: 'apple', market: edition.market, retrievedAt: checkedAt, text: quote };
   result.sources.push(normalizedSource);

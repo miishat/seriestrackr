@@ -14,6 +14,69 @@ const volume = () => ({ id: 'Fictional01', volumeInfo: {
   onSaleDate: '2027-03-01T00:15:00+14:00' } });
 const unknownTitle = () => request({ target: { ...request().target, title: '' } });
 
+const witnessRequest = () => request({ target: { ...request().target, series: 'The Tale of Witness', author: 'Steven Erikson', title: '', position: 3 } });
+const ordinalVolume = () => {
+  const item = volume();
+  Object.assign(item.volumeInfo, { title: 'Legacies of Betrayal', subtitle: 'The Third Tale of Witness', authors: ['Steven Erikson'] });
+  return item;
+};
+
+test('embedded ordinal title and separate subtitle yield one canonical work with literal evidence', () => {
+  const embedded = ordinalVolume();
+  embedded.volumeInfo.title = 'Legacies of Betrayal: The Third Tale of Witness';
+  delete (embedded.volumeInfo as Record<string, unknown>).subtitle;
+  const separate = ordinalVolume(); separate.id = 'Fictional02';
+  separate.volumeInfo.subtitle = 'The Third Tale of Witness: A Novel of the Malazan World';
+  const evidence = normalizeGoogleBooks({ items: [embedded, separate] }, witnessRequest(), at);
+  expect(evidence.identities.map(item => item.title)).toEqual(['Legacies of Betrayal', 'Legacies of Betrayal']);
+  expect(evidence.sources[0].text).toContain('Catalog title: Legacies of Betrayal: The Third Tale of Witness.');
+  expect(parseExtraction(evidence, evidence.sources).ok).toBe(true);
+  expect(selectProposals(witnessRequest(), evidence, at).identity?.position).toBe(3);
+});
+
+test.each([null, '', 123])('embedded ordinal cannot conceal invalid declared subtitle %j', subtitle => {
+  const item = ordinalVolume(); item.volumeInfo.title += ': The Third Tale of Witness';
+  Object.assign(item.volumeInfo, { subtitle });
+  expect(normalizeGoogleBooks({ items: [item] }, witnessRequest(), at).identities).toEqual([]);
+});
+
+test('ordinal Tale subtitle establishes unknown-title identity without inventing a release date', () => {
+  const item = ordinalVolume();
+  Object.assign(item.saleInfo, { saleability: 'NOT_FOR_SALE' });
+  const evidence = normalizeGoogleBooks({ items: [item] }, witnessRequest(), at);
+  expect(evidence.identities[0]).toMatchObject({ title: 'Legacies of Betrayal', author: 'Steven Erikson', position: 3 });
+  expect(evidence.editions[0]).toMatchObject({ title: 'Legacies of Betrayal', position: 3, date: null, precision: 'none' });
+  expect(evidence.sources[0].text).toContain('Subtitle: The Third Tale of Witness.');
+  expect(selectProposals(witnessRequest(), evidence, at).identity?.title).toBe('Legacies of Betrayal');
+});
+
+test.each(['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth'])('request-derived ordinal %s works for another Tale series', ordinal => {
+  const position = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth'].indexOf(ordinal) + 1;
+  const item = volume();
+  item.volumeInfo.subtitle = `The ${ordinal} Tale of Example [A]`;
+  const req = request({ target: { ...request().target, series: 'Tales of Example [A]', title: '', position } });
+  expect(normalizeGoogleBooks({ items: [item] }, req, at).identities[0]?.position).toBe(position);
+});
+
+test.each(['The Second Tale of Witness', 'The Third Tale of Witnesses', 'The Third Tale of Other',
+  'The Third Tale of Witness and The Fourth Tale of Witness', 'The Third Tale of Witness: A Different Series',
+  'The Third Tale of Witness (Guide)', 'The Third Tale of Witness boxed set', 'The Eleventh Tale of Witness'])('ordinal subtitle %s cannot establish the requested identity', subtitle => {
+  const item = ordinalVolume(); item.volumeInfo.subtitle = subtitle;
+  const evidence = normalizeGoogleBooks({ items: [item] }, witnessRequest(), at);
+  expect(evidence.identities).toEqual([]);
+  expect(selectProposals(witnessRequest(), evidence, at).identity).toBeNull();
+});
+
+test.each([{ authors: ['Other Author'] }, { language: 'fr' }, { title: 'Legacies of Betrayal Companion' }])('ordinal series preserves author, language and companion guards %j', change => {
+  const item = ordinalVolume(); Object.assign(item.volumeInfo, change);
+  expect(normalizeGoogleBooks({ items: [item] }, witnessRequest(), at)).toEqual({ sources: [], identities: [], editions: [] });
+});
+
+test('ordinal series does not relax known-title matching', () => {
+  const req = witnessRequest(); req.target.title = 'Another Title';
+  expect(normalizeGoogleBooks({ items: [ordinalVolume()] }, req, at)).toEqual({ sources: [], identities: [], editions: [] });
+});
+
 test.each(['Short Stories', 'short-stories', 'short  stories', 'short\tstories',
   'Boxed Sets', 'boxed-sets', 'boxed\tsets', 'Anthologies', 'Novellas',
   'Companions', 'Omnibuses', 'Guides', 'Samplers', 'RPGs'])('rejects plural companion %s despite qualified sale facts', marker => {

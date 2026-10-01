@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import type { CheckRequest, Citation, EditionEvidence, EvidenceBundle, IdentityEvidence, Source } from '../../shared/discovery';
 import { normalizeIdentity } from '../../shared/discoveryPolicy';
+import { ordinalSubtitlePosition, orderedTitle } from './seriesOrder';
 
 const object = (input: unknown): Record<string, unknown> => input !== null && typeof input === 'object' && !Array.isArray(input)
   ? input as Record<string, unknown> : {};
@@ -20,6 +21,8 @@ function excluded(title: string, subtitle: string | null): boolean {
 
 function subtitlePosition(subtitle: string | null, request: CheckRequest): number | null {
   if (!subtitle || !Number.isSafeInteger(request.target.position) || request.target.position <= 0) return null;
+  const explicitOrdinal = ordinalSubtitlePosition(subtitle, request);
+  if (explicitOrdinal !== null) return explicitOrdinal;
   const series = normalizeIdentity(request.target.series).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   if (!series) return null;
   const ordinal = '(\\d+|one|two|three|four|five|six|seven|eight|nine|ten)';
@@ -79,11 +82,15 @@ export function normalizeGoogleBooks(input: unknown, request: CheckRequest, chec
     const raw = object(item);
     if (typeof raw.id !== 'string' || !/^[A-Za-z0-9_-]{1,64}$/.test(raw.id)) continue;
     const info = object(raw.volumeInfo);
-    const title = text(info.title);
+    const catalogTitle = text(info.title);
+    const embedded = catalogTitle ? orderedTitle(catalogTitle, request) : null;
+    const title = embedded?.title ?? catalogTitle;
     const authors = list(info.authors);
     const author = authors.length === 1 ? text(authors[0]) : null;
-    const subtitle = Object.hasOwn(info, 'subtitle') ? text(info.subtitle) : null;
-    if (!title || !author || (Object.hasOwn(info, 'subtitle') && !subtitle) || info.language !== 'en' ||
+    const declaredSubtitle = Object.hasOwn(info, 'subtitle') ? text(info.subtitle) : null;
+    if (embedded && declaredSubtitle && normalizeIdentity(declaredSubtitle) !== normalizeIdentity(embedded.subtitle)) continue;
+    const subtitle = declaredSubtitle ?? embedded?.subtitle ?? null;
+    if (!title || !author || (Object.hasOwn(info, 'subtitle') && !declaredSubtitle) || info.language !== 'en' ||
       normalizeIdentity(author) !== normalizeIdentity(request.target.author) ||
       (request.target.title && normalizeIdentity(title) !== normalizeIdentity(request.target.title)) || excluded(title, subtitle)) continue;
     const sale = object(raw.saleInfo);
@@ -98,6 +105,7 @@ export function normalizeGoogleBooks(input: unknown, request: CheckRequest, chec
       saleCountry !== null && timestamp !== null && saleDay === calendarDay(info.publishedDate);
     const id = `googlebooks:${raw.id}`;
     const facts = `Title: ${title}. Author: ${author}.` +
+      (embedded ? ` Catalog title: ${catalogTitle}.` : '') +
       (subtitle ? ` Subtitle: ${subtitle}.` : '') +
       ` Language: en. Format: ${isEbook ? 'ebook' : 'unknown'}. Edition: ${key}.` +
       (qualified ? ` Saleability: ${sale.saleability}. Market: ${saleCountry}. On sale: ${timestamp}. Date: ${saleDay}. Precision: day.`

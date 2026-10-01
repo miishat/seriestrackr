@@ -3,7 +3,7 @@ import type { CheckSummary, Reason } from '../../../shared/discovery';
 const reasonLabels: Record<Reason, string> = {
   'missing-key': 'An optional service is not configured.', quota: 'A source quota was reached.',
   timeout: 'A source timed out.', 'provider-error': 'A source could not be checked.',
-  'invalid-evidence': 'Some source details could not be verified.', budget: 'The check reached its request limit.',
+  'invalid-evidence': 'Some source details could not be verified.', budget: 'Some source results or requests exceeded this check\'s limits.',
   'unknown-identity': 'The next title could not be established.', cancelled: 'The check was cancelled.',
 };
 const statusLabels: Record<CheckSummary['status'], string> = {
