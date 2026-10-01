@@ -84,10 +84,10 @@ export async function runDiagnosticPilot(args: string[], options: {
   }
   const output = reserve(root, name!); const counts = zeroCounts();
   const sink = createDiagnosticSink(); let complete = false;
-  writeFileSync(resolve(output, 'reservation.json'), JSON.stringify({ caseId, caps, retries: 0 }), { flag: 'wx' });
   const saveCounts = () => writeFileSync(resolve(output, 'counts.json'), JSON.stringify(counts, null, 2));
-  saveCounts();
   try {
+    writeFileSync(resolve(output, 'reservation.json'), JSON.stringify({ caseId, caps, retries: 0 }), { flag: 'wx' });
+    saveCounts();
     await runPilot(['--run', '--case', caseId, '--ai'], {
       root, fetcher: createDiagnosticFetch(options.fetcher ?? fetch, counts, saveCounts),
       onDiagnostic: sink.observe,

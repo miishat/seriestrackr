@@ -6,6 +6,13 @@ import { afterEach, expect, test, vi } from 'vitest';
 import { runDiagnosticPilot, createDiagnosticFetch, createDiagnosticSink } from '../../scripts/discovery-diagnostic-pilot';
 import { runPilot } from '../../scripts/discovery-pilot';
 import * as runtimeModule from '../../server/discovery/runtime';
+import * as filesystem from 'node:fs';
+
+vi.mock('node:fs', async importOriginal => {
+  const actual = await importOriginal<typeof import('node:fs')>();
+  return { ...actual, writeFileSync: vi.fn(actual.writeFileSync) };
+});
+const originalFileWrite = (await vi.importActual<typeof import('node:fs')>('node:fs')).writeFileSync;
 
 test('persistence sink validates fixed fields, caps events and exposes immutable snapshots', () => {
   const sink = createDiagnosticSink();
@@ -35,7 +42,7 @@ function root(keys = true) {
   }
   return path;
 }
-afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); roots.splice(0).forEach(path => rmSync(path, { recursive: true, force: true })); });
+afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); vi.mocked(filesystem.writeFileSync).mockImplementation(originalFileWrite); roots.splice(0).forEach(path => rmSync(path, { recursive: true, force: true })); });
 const counts = () => ({ googlebooks: 0, apple: 0, openlibrary: 0, tavily: 0, deepseek: 0 });
 const args = ['--run', '--case', 'example', '--output', 'first'];
 
@@ -167,4 +174,18 @@ test('failure after started requests persists counts and cannot replay or expose
   const before = fetcher.mock.calls.length;
   await expect(runDiagnosticPilot(args, { root: path, fetcher })).rejects.toThrow('output-already-reserved');
   expect(fetcher).toHaveBeenCalledTimes(before);
+});
+
+test.each(['reservation.json', 'counts.json'])('initial %s persistence failure is safe and cannot replay', async filename => {
+  const path = root(); let failed = false;
+  vi.mocked(filesystem.writeFileSync).mockImplementation((file, data, options) => {
+    if (!failed && String(file).endsWith(filename)) { failed = true; throw new Error('FAKE_SECRET filesystem failure'); }
+    return originalFileWrite(file, data, options);
+  });
+  const fetcher = vi.fn();
+  await expect(runDiagnosticPilot(args, { root: path, fetcher, print: () => {} })).rejects.toThrow('diagnostic-pilot-failed');
+  const report = JSON.parse(readFileSync(resolve(path, workspace, 'first/diagnostics.json'), 'utf8'));
+  expect(report.complete).toBe(false); expect(Object.values(report.counts)).toEqual([0, 0, 0, 0, 0]);
+  expect(JSON.stringify(report)).not.toContain('FAKE_SECRET'); expect(fetcher).not.toHaveBeenCalled();
+  await expect(runDiagnosticPilot(args, { root: path, fetcher })).rejects.toThrow('output-already-reserved');
 });
