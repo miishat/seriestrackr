@@ -23,6 +23,9 @@ export function applyDiscovery(series: Series, response: CheckResponse, selectio
     if (!series.formats[format] || !proposal || response.proposals.conflicts.some(conflict => conflict.format === format)) {
       return { ok: false, error: 'Selected release is unavailable or conflicted.' };
     }
+    if (proposal.state === 'released' && proposal.date === null && proposal.provenance.sourceMarket === null) {
+      return { ok: false, error: 'An undated available release needs a source market, so it cannot be accepted.' };
+    }
     if (proposal.position !== nextPosition(series) || normalizeIdentity(proposal.title) !== normalizeIdentity(targetTitle)) {
       return { ok: false, error: 'Accept the matching title before accepting its release.' };
     }

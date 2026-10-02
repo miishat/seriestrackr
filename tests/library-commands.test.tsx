@@ -258,3 +258,12 @@ test('failed v2 recovery import retains recoveryRaw and the stored bytes', () =>
   expect(result.current.recoveryRaw).toBe(raw);
   expect(window.localStorage.getItem(key)).toBe(raw);
 });
+
+test('a saved identity change clears an attributed cover that targets another title even when it was picked this session', () => {
+  const original = seriesFixture({ coverUrl: 'https://example.com/a.jpg', coverAttribution: attribution });
+  const { result } = mount(seeded([original]));
+  const stale = { ...attribution, title: 'Elsewhere', source: { ...attribution.source, id: 'z' } };
+  act(() => { expect(result.current.updateSeries({ ...original, author: 'Someone Else',
+    coverUrl: 'https://example.com/z.jpg', coverAttribution: stale }, true).ok).toBe(true); });
+  expect(result.current.doc.series[0]).toMatchObject({ coverUrl: null, coverAttribution: null });
+});

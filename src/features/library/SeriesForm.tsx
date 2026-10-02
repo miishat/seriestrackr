@@ -52,7 +52,11 @@ export function SeriesForm({ series, market, onCreate, onUpdate, onCancel, onDel
     setLocalError(null);
     if (series) onUpdate(changed as Series); else onCreate(changed as Input);
   };
-  const effective: Series = { id: series?.id ?? '', ...value };
+  // The draft progress and override feed the cover search key, so editing them invalidates any pending or ready result.
+  const draftLast = lastPosition && Number.isFinite(Number(lastPosition)) ? { position: Number(lastPosition), title: lastTitle.trim() } : null;
+  const draftOverride = override.trim() && Number.isFinite(Number(override)) ? Number(override) : null;
+  const effective: Series = { id: series?.id ?? '', ...value, lastFinished: draftLast, next: { ...value.next, positionOverride: draftOverride } };
+  const coverMarket = value.marketOverride === 'XX' ? otherMarket.trim().toUpperCase() || market : value.marketOverride ?? market;
   const position = override ? override : String(nextPosition(effective));
   return <form onSubmit={submit} noValidate>
     <p>Keep your place. Release dates refer to your preferred country, {displayMarket}, when supported. Each English format can use another country when no supported preferred-country date is found. Manual details stay yours to edit.</p>
@@ -68,14 +72,14 @@ export function SeriesForm({ series, market, onCreate, onUpdate, onCancel, onDel
       {value.marketOverride === 'XX' && <label>Other market code<input maxLength={2} value={otherMarket} onChange={(event) => setOtherMarket(event.target.value)} /></label>}
     </div>
     <fieldset><legend>Last finished</legend><div className="form-grid">
-      <label>Last finished book number<input type="number" min="1" step="1" value={lastPosition} onChange={(event) => setLastPosition(event.target.value)} /></label>
-      <label>Last finished title<input value={lastTitle} onChange={(event) => setLastTitle(event.target.value)} /></label>
+      <label>Last finished book number<input type="number" min="1" step="1" value={lastPosition} onChange={(event) => { setLastPosition(event.target.value); update(dropAutomaticCover()); }} /></label>
+      <label>Last finished title<input value={lastTitle} onChange={(event) => { setLastTitle(event.target.value); update(dropAutomaticCover()); }} /></label>
     </div><p className="small">Leave both blank if you have not finished a book. Finishing either format counts.</p></fieldset>
     <fieldset><legend>Next unread · Book {position}</legend>
       <div className="form-grid"><label>Next book title<input value={value.next.title} onChange={(event) => update({ next: { ...value.next, title: event.target.value, attribution: event.target.value === value.next.title ? value.next.attribution : null }, ...(event.target.value === value.next.title ? {} : dropAutomaticCover()) })} placeholder="Title not entered" /></label>
         <label>Cover URL<input type="url" value={value.coverUrl ?? ''} onChange={(event) => update({ coverUrl: event.target.value || null, coverAttribution: null })} placeholder="https://example.com/cover.jpg" /></label>
       </div>
-      <CoverPicker series={effective} market={value.marketOverride === 'XX' ? market : value.marketOverride ?? market} onSelect={(url, attribution) => update({ coverUrl: url, coverAttribution: attribution })} />
+      <CoverPicker series={effective} market={coverMarket} onSelect={(url, attribution) => update({ coverUrl: url, coverAttribution: attribution })} />
       <div className="checkbox-row"><label><input type="checkbox" checked={value.formats.book} onChange={(event) => update({ formats: { ...value.formats, book: event.target.checked } })} /> Track book</label>
         <label><input type="checkbox" checked={value.formats.audio} onChange={(event) => update({ formats: { ...value.formats, audio: event.target.checked } })} /> Track audiobook</label></div>
       <ReleaseFields format="book" value={value.releases.book} onChange={(book) => update({ releases: { ...value.releases, book: { ...book, provenance: null } } })} />
@@ -84,7 +88,7 @@ export function SeriesForm({ series, market, onCreate, onUpdate, onCancel, onDel
     <details><summary>Optional progress and series details</summary><div className="form-grid">
       <label>Current book number<input type="number" min="1" step="any" value={currentPosition} onChange={(event) => setCurrentPosition(event.target.value)} /></label>
       <label>Current book title<input value={currentTitle} onChange={(event) => setCurrentTitle(event.target.value)} /></label>
-      <label>Next position override<input type="number" min="0.1" step="any" value={override} onChange={(event) => setOverride(event.target.value)} /></label>
+      <label>Next position override<input type="number" min="0.1" step="any" value={override} onChange={(event) => { setOverride(event.target.value); update(dropAutomaticCover()); }} /></label>
       <label>Next order note<input value={value.next.orderNote} onChange={(event) => update({ next: { ...value.next, orderNote: event.target.value } })} /></label>
       <label>Latest published book number<input type="number" min="1" step="any" value={latest} onChange={(event) => setLatest(event.target.value)} /></label>
       <label className="checkbox-label"><input type="checkbox" checked={value.publicationRunComplete} onChange={(event) => update({ publicationRunComplete: event.target.checked })} /> Publication run complete</label>

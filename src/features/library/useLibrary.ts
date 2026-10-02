@@ -6,6 +6,7 @@ import { parseDocument } from './validation';
 import { loadBrowserLibrary, saveLibrary } from '../../storage/libraryStorage';
 import type { CheckResponse, CheckSummary, DiscoverySnapshot, Selection } from '../../../shared/discovery';
 import { parseCheckResponse, parseCheckSummary } from '../../../shared/discoveryValidation';
+import { normalizeIdentity } from '../../../shared/discoveryPolicy';
 import { applyDiscovery } from '../discovery/acceptDiscovery';
 import { createDiscoveryGuard } from '../discovery/discoveryGuard';
 
@@ -33,6 +34,14 @@ function identityChanged(before: Series, after: Series): boolean {
 
 function sameAttribution(a: Series['coverAttribution'], b: Series['coverAttribution']): boolean {
   return JSON.stringify(a) === JSON.stringify(b);
+}
+
+// An automatic cover is kept only while it names the saved target: the next or last finished title, and the author.
+function coverTargets(series: Series): boolean {
+  const cover = series.coverAttribution;
+  if (!cover) return true;
+  const title = cover.role === 'next' ? series.next.title : series.lastFinished?.title ?? '';
+  return !!title.trim() && normalizeIdentity(cover.title) === normalizeIdentity(title) && normalizeIdentity(cover.author) === normalizeIdentity(series.author);
 }
 
 function invalid(error: string): Result<void> {
@@ -111,7 +120,7 @@ export function useLibrary() {
     const updated: Series = {
       ...after,
       currentBook: after.readingStatus === 'completed' ? null : after.currentBook,
-      ...(changedIdentity && after.coverAttribution !== null && sameAttribution(before.coverAttribution, after.coverAttribution)
+      ...(changedIdentity && after.coverAttribution !== null && (sameAttribution(before.coverAttribution, after.coverAttribution) || !coverTargets(after))
         ? { coverUrl: null, coverAttribution: null } : {}),
       releases: changedIdentity || changedMarket ? { book: emptyRelease(), audio: emptyRelease() } : after.releases,
     };

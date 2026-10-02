@@ -219,3 +219,8 @@ test('v1 and v2 backups import as version 3 and exports omit unaccepted discover
   const text = encodeBackup(polluted);
   expect(text).not.toMatch(/coverCandidates|related|diagnostics|Daughters/);
 });
+
+test('encodeBackup refuses to serialize a document that fails validation', () => {
+  const doc = { ...emptyDocument(), series: [{ id: 'broken' }] } as unknown as LibraryDocument;
+  expect(() => encodeBackup(doc)).toThrow(/backup/i);
+});

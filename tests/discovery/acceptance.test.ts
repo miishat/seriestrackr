@@ -150,13 +150,12 @@ test.each(['catalogued', 'announced', 'released'] as const)('a %s proposal is ac
   expect(reparsed.ok).toBe(true);
 });
 
-test('undated released without a verified source market is rejected', () => {
+test('undated released without a verified source market is rejected up front', () => {
   const checked = withProposal('released');
   checked.proposals.releases.book!.provenance.sourceMarket = null;
   const result = applyDiscovery(seriesFixture(), checked, { title: false, book: true, audio: false });
-  if (result.ok === false) throw new Error(result.error);
-  const doc = { ...emptyDocument(), settings: { ...emptyDocument().settings, market: 'CA' }, series: [result.value] };
-  expect(parseDocument(doc).ok).toBe(false);
+  expect(result.ok).toBe(false);
+  if (result.ok === false) expect(result.error).toMatch(/source market/i);
 });
 
 const candidate = (overrides = {}) => ({ id: 'c1', title: 'Second', author: 'Example Author', role: 'next' as const, format: 'ebook' as const,
