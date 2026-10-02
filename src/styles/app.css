@@ -555,6 +555,11 @@ input[type='checkbox']:disabled {
   white-space: nowrap;
 }
 .compact .cover-frame { width: 88px; height: 132px; }
+.cover-unverified,.evidence-old {
+  color: var(--amber);
+  font-weight: 600;
+}
+.evidence-old button { margin-left: 4px; }
 .compact-last-read {
   margin: 0;
   min-width: 0;

@@ -35,6 +35,7 @@ export function CoverPicker({ series, market, onSelect, onUndo, onAuthorSuggesti
     setStored(null);
   };
   return <div className="cover-picker">
+    {series.coverUrl && !series.coverAttribution && <p className="small cover-unverified">Current cover is unverified. It was entered as a URL and is not checked against this title and author. Choosing a named cover replaces it.</p>}
     <div className="cover-picker-bar">
       <button type="button" onClick={() => { setStored(current => current && { ...current, chosenId: '' }); void search(); }} disabled={busy}>{busy ? 'Searching...' : 'Find cover'}</button>
       <span className="small">Optional. Covers are only searched when you ask.</span>
