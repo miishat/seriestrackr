@@ -1,0 +1,102 @@
+{
+ "request": {
+  "requestId": "replay-book-of-the-dead",
+  "seriesId": "replay-book-of-the-dead",
+  "target": {
+   "series": "Book of the Dead",
+   "author": "RinoZ",
+   "position": 5,
+   "title": "Ascension",
+   "orderNote": ""
+  },
+  "preferredMarket": "US",
+  "formats": [
+   "book",
+   "audio"
+  ],
+  "useAi": false
+ },
+ "responses": [
+  {
+   "url": "https://api.hardcover.app/v1/graphql",
+   "query": {
+    "names": [
+     "Book of the Dead",
+     "The Book of the Dead",
+     "Book of the Dead Series",
+     "Book of the Dead Mysteries",
+     "Book of the Dead Trilogy",
+     "Tales of Book of the Dead"
+    ],
+    "position": 5,
+    "author": "RinoZ"
+   },
+   "status": 200,
+   "contentType": "application/json; charset=utf-8",
+   "body": "{\"data\":{\"series\":[{\"name\":\"Book of the Dead\",\"book_series\":[]},{\"name\":\"Book of the Dead\",\"book_series\":[]},{\"name\":\"Book of the Dead\",\"book_series\":[{\"id\":654968,\"position\":5,\"featured\":true,\"compilation\":false,\"details\":\"5\",\"book\":{\"id\":2176532,\"slug\":\"book-of-the-dead-5-ascension\",\"title\":\"Ascension\",\"compilation\":false,\"contributions\":[{\"author\":{\"name\":\"RinoZ\"},\"contributor_role\":{\"name\":\"Author\"}}],\"editions\":[{\"id\":32392216,\"title\":\"Ascension\",\"edition_format\":\"Kindle\",\"reading_format\":{\"format\":\"Ebook\"},\"isbn_10\":null,\"isbn_13\":null,\"language\":{\"code2\":\"en\",\"code3\":\"eng\"}},{\"id\":33213232,\"title\":\"Ascension\",\"edition_format\":\"Audible\",\"reading_format\":{\"format\":\"Listened\"},\"isbn_10\":null,\"isbn_13\":null,\"language\":{\"code2\":\"en\",\"code3\":\"eng\"}}]}}]},{\"name\":\"Book of the Dead\",\"book_series\":[]}]}}"
+  },
+  {
+   "url": "https://www.googleapis.com/books/v1/volumes?q=intitle%3AAscension+inauthor%3ARinoZ&maxResults=20&showPreorders=true&langRestrict=en",
+   "query": null,
+   "status": 200,
+   "contentType": "application/json; charset=UTF-8",
+   "body": "{\"kind\":\"books#volumes\",\"totalItems\":0}"
+  },
+  {
+   "url": "https://itunes.apple.com/search?term=Ascension+RinoZ&country=us&entity=ebook&limit=20",
+   "query": null,
+   "status": 200,
+   "contentType": "text/javascript; charset=utf-8",
+   "body": "{\"resultCount\":0,\"results\":[]}"
+  },
+  {
+   "url": "https://itunes.apple.com/search?term=Ascension+RinoZ&country=us&entity=audiobook&limit=20",
+   "query": null,
+   "status": 200,
+   "contentType": "text/javascript; charset=utf-8",
+   "body": "{\"resultCount\":1,\"results\":[{\"wrapperType\":\"audiobook\",\"artistId\":1238991543,\"collectionId\":6793687365,\"artistName\":\"Rinoz\",\"collectionName\":\"Ascension: A LitRPG Adventure (Book of the Dead 5) (Unabridged)\",\"collectionViewUrl\":\"https://books.apple.com/us/audiobook/ascension-a-litrpg-adventure-book-of-the-dead-5-unabridged/id6793687365?uo=4\",\"artworkUrl60\":\"https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/bc/40/b8/bc40b880-f41a-4010-09b1-1c682a839b1e/rm_image.jpg/60x60bb.jpg\",\"artworkUrl100\":\"https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/bc/40/b8/bc40b880-f41a-4010-09b1-1c682a839b1e/rm_image.jpg/100x100bb.jpg\",\"copyright\":\"© 2026 Aethon Audio\",\"country\":\"USA\",\"releaseDate\":\"2026-08-19T07:00:00Z\",\"primaryGenreName\":\"Sci-Fi & Fantasy\"}]}"
+  },
+  {
+   "url": "https://books.apple.com/us/audiobook/ascension-a-litrpg-adventure-book-of-the-dead-5-unabridged/id6793687365?uo=4",
+   "query": null,
+   "status": 200,
+   "contentType": "text/html",
+   "body": "<!doctype html><html><head><link rel=\"canonical\" href=\"https://books.apple.com/us/audiobook/ascension-a-litrpg-adventure-book-of-the-dead-5-unabridged/id6793687365\"><script type=\"application/ld+json\">{\"@context\":\"http://schema.org\",\"@type\":\"Audiobook\",\"additionalType\":\"Product\",\"author\":\"Rinoz\",\"datePublished\":\"2026-08-19T00:00:00.000Z\",\"duration\":\"PT22H22M9S\",\"genre\":\"Sci-Fi &amp; Fantasy\",\"image\":\"https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/bc/40/b8/bc40b880-f41a-4010-09b1-1c682a839b1e/rm_image.jpg/1200x630wp.png\",\"name\":\"Ascension: A LitRPG Adventure (Book of the Dead 5) (Unabridged)\",\"provider\":\"Aethon Audio\",\"readBy\":\"Phil Thron\",\"thumbnailUrl\":[\"https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/bc/40/b8/bc40b880-f41a-4010-09b1-1c682a839b1e/rm_image.jpg/1200x675wf.jpg\",\"https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/bc/40/b8/bc40b880-f41a-4010-09b1-1c682a839b1e/rm_image.jpg/1200x900wf.jpg\",\"https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/bc/40/b8/bc40b880-f41a-4010-09b1-1c682a839b1e/rm_image.jpg/1200x1200wf.jpg\"],\"aggregateRating\":{\"@type\":\"AggregateRating\",\"ratingValue\":4.8,\"reviewCount\":5}}</script></head><body><main class=\"is-books-theme\"><article><section class=\"product-hero\"><h1 class=\"product-header__title book-header__title\">Ascension: A LitRPG Adventure (Book of the Dead 5) (Unabridged‪)‬</h1></section><section class=\"l-content-width l-row l-row--peek section section--book-infobar\">\n    <figure class=\"book-badge\">\n    <div class=\"book-badge__content\" role=\"text\">\n      <div class=\"book-badge__eyebrow\">GENRE</div>\n        <picture class=\"we-artwork we-artwork--downloaded we-artwork--not-round we-artwork--no-border we-artwork--book-badge book-badge__artwork\" id=\"ember1107058\">\n\n<!---->\n      <source srcset=\"https://is1-ssl.mzstatic.com/image/thumb/Features128/v4/d5/3b/b0/d53bb078-f65d-8e80-f3a2-9b34c747f783/mza_3052926938204134456.png/24x24sr.png 24w, https://is1-ssl.mzstatic.com/image/thumb/Features128/v4/d5/3b/b0/d53bb078-f65d-8e80-f3a2-9b34c747f783/mza_3052926938204134456.png/24x24sr.png 24w, https://is1-ssl.mzstatic.com/image/thumb/Features128/v4/d5/3b/b0/d53bb078-f65d-8e80-f3a2-9b34c747f783/mza_3052926938204134456.png/24x24sr.png 24w, https://is1-ssl.mzstatic.com/image/thumb/Features128/v4/d5/3b/b0/d53bb078-f65d-8e80-f3a2-9b34c747f783/mza_3052926938204134456.png/48x48sr.png 48w, https://is1-ssl.mzstatic.com/image/thumb/Features128/v4/d5/3b/b0/d53bb078-f65d-8e80-f3a2-9b34c747f783/mza_3052926938204134456.png/48x48sr.png 48w, https://is1-ssl.mzstatic.com/image/thumb/Features128/v4/d5/3b/b0/d53bb078-f65d-8e80-f3a2-9b34c747f783/mza_3052926938204134456.png/48x48sr.png 48w\" sizes=\"(max-width: 734px) 24px, (min-width: 735px) and (max-width: 1068px) 24px, 24px\" type=\"image/png\">\n\n      <img src=\"/assets/artwork/1x1-42817eea7ade52607a760cbee00d1495.gif\" decoding=\"async\" loading=\"lazy\" class=\"we-artwork__image ember1107058  we-artwork__image--lazyload\" alt role=\"presentation\" height=\"24\" width=\"24\">\n\n\n  <style>\n    .ember1107058, #ember1107058::before {\n           width: 24px;\n           height: 24px;\n         }\n         .ember1107058::before {\n           padding-top: 100%;\n         }\n@media (min-width: 735px) {\n           .ember1107058, #ember1107058::before {\n           width: 24px;\n           height: 24px;\n         }\n         .ember1107058::before {\n           padding-top: 100%;\n         }\n         }\n@media (min-width: 1069px) {\n           .ember1107058, #ember1107058::before {\n           width: 24px;\n           height: 24px;\n         }\n         .ember1107058::before {\n           padding-top: 100%;\n         }\n         }\n  </style>\n</picture>\n\n      <div class=\"book-badge__caption\">Sci-Fi &amp; Fantasy</div>\n    </div>\n  </figure>\n    <figure class=\"book-badge\">\n    <div class=\"book-badge__content\" role=\"text\">\n      <div class=\"book-badge__eyebrow\">NARRATOR</div>\n        <div class=\"book-badge__value\">\n          PT\n        </div>\n      <div class=\"book-badge__caption\">Phil Thron</div>\n    </div>\n  </figure>\n    <figure class=\"book-badge\">\n    <div class=\"book-badge__content\" role=\"text\">\n      <div class=\"book-badge__eyebrow\">LANGUAGE</div>\n      <div class=\"book-badge__value\">EN</div>\n      <div class=\"book-badge__caption\">English</div>\n    </div>\n  </figure>\n    <figure class=\"book-badge\">\n    <div class=\"book-badge__content\" role=\"text\">\n      <div class=\"book-badge__eyebrow\">LENGTH</div>\n      <div class=\"book-badge__value\">22:22</div>\n      <div class=\"book-badge__caption book-badge__caption--duration\">\n        <span class=\"book-badge__caption__hours\">hr</span>\n        <span class=\"book-badge__caption__minutes\">min</span>\n      </div>\n    </div>\n  </figure>\n    <figure class=\"book-badge\">\n    <div class=\"book-badge__content\" role=\"text\">\n      <div class=\"book-badge__eyebrow\">\nRELEASED      </div>\n      <div class=\"book-badge__value\">2026</div>\n      <div class=\"book-badge__caption\">August 19\n      </div>\n    </div>\n  </figure>\n    <figure class=\"book-badge\">\n    <div class=\"book-badge__content\" role=\"text\">\n      <div class=\"book-badge__eyebrow\">PUBLISHER</div>\n      <div class=\"book-badge__caption\">Aethon Audio</div>\n    </div>\n  </figure>\n    <figure class=\"book-badge\">\n    <div class=\"book-badge__content\" role=\"text\">\n      <div class=\"book-badge__eyebrow\">PRESENTED BY</div>\n      <div class=\"book-badge__caption\">Audible.com</div>\n    </div>\n  </figure>\n    <figure class=\"book-badge\">\n    <div class=\"book-badge__content\" role=\"text\">\n      <div class=\"book-badge__eyebrow\">SIZE</div>\n      <div class=\"book-badge__value\">1.2</div>\n      <div class=\"book-badge__caption\">GB</div>\n    </div>\n  </figure>\n</section></article></main></body></html>"
+  },
+  {
+   "url": "https://openlibrary.org/search.json?title=Ascension&author=RinoZ&limit=20&fields=key%2Ctitle%2Cauthor_name%2Cauthor_key%2Cedition_key%2Cfirst_publish_year%2Clanguage",
+   "query": null,
+   "status": 200,
+   "contentType": "application/json",
+   "body": "{\"numFound\":0,\"start\":0,\"numFoundExact\":true,\"num_found\":0,\"documentation_url\":\"https://openlibrary.org/dev/docs/api/search\",\"q\":\"\",\"offset\":null,\"docs\":[]}"
+  },
+  {
+   "url": "https://itunes.apple.com/search?term=Ascension+RinoZ&country=gb&entity=ebook&limit=20",
+   "query": null,
+   "status": 200,
+   "contentType": "text/javascript; charset=utf-8",
+   "body": "{\"resultCount\":0,\"results\":[]}"
+  },
+  {
+   "url": "https://itunes.apple.com/search?term=Ascension+RinoZ&country=ca&entity=ebook&limit=20",
+   "query": null,
+   "status": 200,
+   "contentType": "text/javascript; charset=utf-8",
+   "body": "{\"resultCount\":0,\"results\":[]}"
+  },
+  {
+   "url": "https://www.googleapis.com/books/v1/volumes?q=Book+of+the+Dead+inauthor%3ARinoZ&maxResults=20&showPreorders=true&langRestrict=en",
+   "query": null,
+   "status": 200,
+   "contentType": "application/json; charset=UTF-8",
+   "body": "{\"kind\":\"books#volumes\",\"totalItems\":0}"
+  },
+  {
+   "url": "https://api.tavily.com/search",
+   "query": "Ascension RinoZ ebook hardcover publication release date English US",
+   "status": 200,
+   "contentType": "application/json",
+   "body": "{\"query\":\"Ascension RinoZ ebook hardcover publication release date English US\",\"follow_up_questions\":null,\"answer\":null,\"images\":[],\"results\":[{\"url\":\"https://www.booknotification.com/authors/rinoz\",\"title\":\"RinoZ List of Books - Book Notification\",\"content\":\"RinoZ\\nUpcoming RinoZ Books\\nNovember 11th, 2026: Chrysalis 10 (Chrysalis, #10)\\nAscension (Book of the Dead, #5) was the most recently released book by RinoZ, on July 22nd, 2026.\\nRinoZ Stats: The highest rated book by RinoZ on Book Notification is Antelligent Design, the 3rd novel in the Chrysalis series. The second-highest rated book is Between a Rock and a Carapace (Chrysalis #4). [...] 8. Michael Atamanov, author of the Reality Benders Series.\\n9. Tristan Rye, author of the Creature Farm Series.\\n10. Pirateaba, author of The Wandering Inn Series.\\nRinoZ: F.A.Q\\nWhat was the first book RinoZ wrote?\\nThe first book written by RinoZ was The Antventure Begins, published in 2022.\\nWhat was the most re\",\"score\":0.7300017,\"raw_content\":\"Book Notification\\nBook Notification\\nAuthor Search\\nAuthor Search\\nBook Search\\nSeries Search\\nGenre Search\\n\\nRinoZ\\nUpcoming RinoZ Books\\nNovember 11th, 2026: Chrysalis 10 (Chrysalis, #10)\\nAscension (Book of the Dead, #5) was the most recently released book by RinoZ, on July 22nd, 2026.\\nRinoZ Stats: The highest rated book by RinoZ on Book Notification is Antelligent Design, the 3rd novel in the Chrysalis series. The second-highest rated book is Between a Rock and a Carapace (Chrysalis #4).\\nThe most read book by RinoZ on Book Notification is The Antventure Begins, the first novel in the Chrysalis series. The second most read book is Antelligent Design (Chrysalis #3).\\nBelow is a complete list of Rino\",\"id\":\"7fa108-00\"},{\"url\":\"https://www.risingshadow.net/author/12281-rinoz\",\"title\":\"Author :: RinoZ\",\"content\":\"★ 9.34 (6)\\nChrysalis 3: Antelligent Design (Chrysalis #3) by RinoZ\\\")\\n★ 9.00 (5)\\nChrysalis 2: Upping the Ante (Chrysalis #2) by RinoZ\\\")\\n★ 8.66 (6)\\nChrysalis 1: The Antventure Begins (Chrysalis #1) by RinoZ\\\")\\n★ 8.10 (10)\\nSeries by RinoZ\\nChrysalis (9 books)\\nBook of the Dead (5 books)\\nSpeculative Fiction Books\\nBook of the Dead 6 (Book of the Dead #6)\\n2027 | fantasy, litrpg\\nChrysalis 10 (Chrysalis #10)\\n2026 | fantasy, litrpg | Release date November 11, 2026\\nBook of the Dead 5 (Book of the Dead #5) [...] 2026 | fantasy, litrpg\\nChrysalis 9 (Chrysalis #9)\\n2026 | fantasy, litrpg\\nChrysalis 8 (Chrysalis #8)\\n2026 | fantasy, litrpg\\nBook of the Dead 4 (Book of the Dead #4)\\n2025 | fantasy, litrpg\\nChrysalis\",\"score\":0.5530473,\"raw_content\":\"RisingshadowScience Fiction & Fantasy\\n RinoZ\\nIn the ever-evolving world of LitRPG and progression fantasy, few voices resonate quite like that of RinoZ. An Australian writer who started his journey not in the spotlight of publishing houses but in the quiet corners of web fiction forums, RinoZ carved out a name for himself with stories that do more than entertain. They pull you in, level you up, and leave you questioning the very mechanics of the worlds you thought you knew.\\nWhat sets RinoZ apart is not just his knack for crafting immersive game-like systems or his obsession with stat sheets, though both are present in spades. It is the way he uses those systems as a lens through which to exp\",\"id\":\"f907a7-01\"},{\"url\":\"https://aethonbooks.com/book/book-of-the-dead-5\",\"title\":\"Book of the Dead 5: Ascension | Aethon Books\",\"content\":\"9798187479214\\nPublication Date\\nJuly 22, 2026\\nAethon Books icon\\nAethon Books\\n About\\n Books\\n Series\\n Blog\\nMenu\\n© 2026 Aethon Books · Login [...] You Might Also Like\\nThe Renegade   See The Book\\nThe Renegade Firebrand Book 6\\nTooth & Paw   See The Book\\nPlay Sample\\nTooth & Paw Fate & Freedom Online Book 1\\nDefiance of the Fall 4   See The Book\\nPlay Sample\\nDefiance of the Fall 4 Defiance of the Fall Book 4\\nThe Children of Loki   See The Book\\nPlay Sample\\nThe Children of Loki The Family Jewels Book 2\\nBook Details\\nSeries\\nBook of the Dead\\nAuthor\\nRinoZ\\nPublisher\\nAethon Books\\nPage Count\\n730\\nPrice Ebook\\n6.99\\nPrice Paper\\n20\\nIsbn13\\n9798187479214 [...] Home\\n Series\\n Books\\n+ All Books\\n+ Author Index\\n+ Aethon:V\",\"score\":0.5457947,\"raw_content\":\"Home\\n Series\\n Books\\n+ All Books\\n+ Author Index\\n+ Aethon:Vault\\n+ Fantasy\\n+ GAMELIT/LitRPG\\n+ Horror\\n+ Post Apocalyptic\\n+ Romantasy\\n+ Science Fiction\\n+ Superhero\\n+ Thriller\\n Webcomics\\n Comics\\nAethon Books\\n About\\n+ About\\n+ Blog\\n+ Event Calendar\\n+ The Team\\n+ Contact\\n+ Submissions\\n Newsletter\\n Merch\\n Join Our Discord\\nMenu\\nBook of the Dead 5: Ascension\\nBook of the Dead Book 5\\nBy RinoZ\\nEven if his heart no longer beats, Tyron will not be stopped on his path to vengeance. The Western Province has fallen, its population purged and the survivors have fled over the mountains and into a magick scoured wasteland. No matter how far they go, or how well they hide, the Empire will not rest until the heretics\",\"id\":\"4e9ac4-02\"},{\"url\":\"https://www.goodreads.com/series/377177-book-of-the-dead\",\"title\":\"Book of the Dead Series by RinoZ\",\"content\":\"Witchy Books for Fall\\nDismiss\\n\\nBook of the Dead Series\\nBook 1\\nAwakening\\nDismiss\\nShelve Awakening\\nBook 2\\nSacrifice\\nDismiss\\nShelve Sacrifice\\nBook 3\\nMasquerade\\nDismiss\\nShelve Masquerade\\nBook 4\\nVengeance\\nDismiss\\nShelve Vengeance\\nBook 5\\nAscension\\nDismiss\\nShelve Ascension\\nRelated series\\n\\nCompany\\n\\nWork with us\\nConnect\\nGoodreads on Facebook\\nGoodreads on Twitter\\nGoodreads on Instagram\\nGoodreads on LinkedIn\\nDownload app for iOS\\nDownload app for Android\\nAn Amazon Company\",\"score\":0.30219588,\"raw_content\":\"Witchy Books for Fall\\nDismiss\\n\\nBook of the Dead Series\\nBook 1\\nAwakening\\nDismiss\\nShelve Awakening\\nBook 2\\nSacrifice\\nDismiss\\nShelve Sacrifice\\nBook 3\\nMasquerade\\nDismiss\\nShelve Masquerade\\nBook 4\\nVengeance\\nDismiss\\nShelve Vengeance\\nBook 5\\nAscension\\nDismiss\\nShelve Ascension\\nRelated series\\n\\nCompany\\n\\nWork with us\\nConnect\\nGoodreads on Facebook\\nGoodreads on Twitter\\nGoodreads on Instagram\\nGoodreads on LinkedIn\\nDownload app for iOS\\nDownload app for Android\\nAn Amazon Company\",\"id\":\"25d390-03\"},{\"url\":\"https://portal-books.com\",\"title\":\"Portal Books | LitRPG, Progression & Cultivation Publisher\",\"content\":\"Meet Our Authors\\nAced · Ascension of a Street Rat · Crossroads of Fate · Dear Spellbook · Elemental Dungeon · God Core · Manifest Fantasy · The Beast Realms · The Ripple System · Titan Online · Gods & Kings · Deepest Dungeon · Aether Frontier · Aced · Ascension of a Street Rat · Crossroads of Fate · Dear Spellbook · Elemental Dungeon · God Core · Manifest Fantasy · The Beast Realms · The Ripple System · Titan Online · Gods & Kings · Deepest Dungeon · Aether Frontier · [...] Aced · Ascension of a Street Rat · Crossroads of Fate · Dear Spellbook · Elemental Dungeon · God Core · Manifest Fantasy · The Beast Realms · The Ripple System · Titan Online · Gods & Kings · Deepest Dungeon · Aether Fron\",\"score\":0.062749125,\"raw_content\":\"Portal Books\\nSubmit Work\\nNewsletter\\nDiscord\\nLitRPG · Progression Fantasy · Cultivation\\nEnter Worlds. Live Stories.\\nPortal Books publishes stories that pull you in and do not let go. Discover complete and ongoing series from today’s defining LitRPG, Progression and Cultivation authors.\\nBrowse All Books\\nMeet Our Authors\\nAced · Ascension of a Street Rat · Crossroads of Fate · Dear Spellbook · Elemental Dungeon · God Core · Manifest Fantasy · The Beast Realms · The Ripple System · Titan Online · Gods & Kings · Deepest Dungeon · Aether Frontier · Aced · Ascension of a Street Rat · Crossroads of Fate · Dear Spellbook · Elemental Dungeon · God Core · Manifest Fantasy · The Beast Realms · The Ripple\",\"id\":\"f82bc1-04\"}],\"response_time\":0,\"request_id\":\"d9747dc2-8b53-4cf8-af45-f5964857c6e4\"}"
+  }
+ ]
+}

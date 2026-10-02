@@ -1,4 +1,4 @@
-import type { Attribution, CheckRequest, Citation, Conflict, EditionEvidence, EvidenceBundle, IdentityEvidence, Proposals, ReleaseProposal, SourceLink } from './discovery';
+import type { Attribution, CheckRequest, Citation, Conflict, EditionEvidence, EvidenceBundle, IdentityEvidence, Proposals, RelatedWorkEvidence, ReleaseProposal, SourceLink } from './discovery';
 
 export const normalizeIdentity = (s: string) => s.normalize('NFKC')
   .toLocaleLowerCase('en').replace(/\s+/g, ' ').trim();
@@ -9,6 +9,14 @@ function citedSources(citations: Citation[], evidence: EvidenceBundle): SourceLi
     .map(({ id, title, url }) => ({ id, title, url }));
 }
 
+// Absent publication is catalogued: a null date alone never implies an announcement.
+// Only explicit publication evidence with a verified market can be released.
+const publicationRank = (edition: EditionEvidence) =>
+  edition.publication === 'published' && edition.market !== null ? 2 : edition.publication === 'announced' ? 1 : 0;
+const originRank = (edition: EditionEvidence) => edition.id.startsWith('ai:') ? 1 : 0;
+export const undatedState = (edition: EditionEvidence): ReleaseProposal['state'] =>
+  publicationRank(edition) === 2 ? 'released' : publicationRank(edition) === 1 ? 'announced' : 'catalogued';
+
 function editionGroup(edition: EditionEvidence): string {
   const key = edition.editionKey === null
     ? `work:${normalizeIdentity(edition.title)}:${normalizeIdentity(edition.author)}`
@@ -16,8 +24,34 @@ function editionGroup(edition: EditionEvidence): string {
   return JSON.stringify([edition.market, edition.format, key]);
 }
 
+// Validated relationship evidence only. A relation never enters identity
+// selection or release-title narrowing. Contradictory claims for one title
+// are suppressed so a later cap cannot hide the ambiguity.
+export function relatedCandidates(request: CheckRequest, evidence: EvidenceBundle): RelatedWorkEvidence[] {
+  const sourceIds = new Set(evidence.sources.map(source => source.id));
+  const valid = (evidence.related ?? []).filter(item =>
+    item.position === null && normalizeIdentity(item.author) === normalizeIdentity(request.target.author) &&
+    item.citations.length > 0 && item.citations.every(citation => sourceIds.has(citation.sourceId)));
+  const relationships = new Map<string, Set<string>>();
+  for (const item of valid) {
+    const key = normalizeIdentity(item.title);
+    relationships.set(key, (relationships.get(key) ?? new Set()).add(item.relationship));
+  }
+  const seen = new Set<string>();
+  return valid.filter(item => {
+    const key = `${normalizeIdentity(item.title)}:${item.relationship}`;
+    if (relationships.get(normalizeIdentity(item.title))!.size > 1 || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+export function selectRelatedWorks(request: CheckRequest, evidence: EvidenceBundle): RelatedWorkEvidence[] {
+  return relatedCandidates(request, evidence).slice(0, 6);
+}
+
 export function selectProposals(request: CheckRequest, evidence: EvidenceBundle, checkedAt: string, interpreted = false): Proposals {
-  const empty: Proposals = { identity: null, identityAttribution: null, releases: { book: null, audio: null }, conflicts: [] };
+  const empty: Proposals = { identity: null, identityAttribution: null, releases: { book: null, audio: null }, conflicts: [], related: [] };
+  if (!request.target.orderNote.trim()) empty.related = selectRelatedWorks(request, evidence);
   // Current evidence cannot attest arbitrary custom ordering instructions.
   // Keep retrieved links available without offering dependent facts to accept.
   if (request.target.orderNote.trim()) return empty;
@@ -38,7 +72,7 @@ export function selectProposals(request: CheckRequest, evidence: EvidenceBundle,
 
   const identityAttribution: Attribution | null = identity
     ? { checkedAt, sources: citedSources(identity.citations, evidence) } : null;
-  const result: Proposals = { identity, identityAttribution, releases: { book: null, audio: null }, conflicts: [] };
+  const result: Proposals = { identity, identityAttribution, releases: { book: null, audio: null }, conflicts: [], related: empty.related };
   const target = { title };
   const matching = evidence.editions.filter(e =>
     normalizeIdentity(e.title) === normalizeIdentity(target.title) &&
@@ -73,11 +107,13 @@ export function selectProposals(request: CheckRequest, evidence: EvidenceBundle,
     const local = dated.filter(e => e.market === request.preferredMarket);
     const pool = local.length ? local : dated;
     const chosen = [...pool].sort((a, b) => a.date!.localeCompare(b.date!) || a.id.localeCompare(b.id))[0]
-      ?? [...valid].sort((a, b) => Number(b.market === request.preferredMarket) - Number(a.market === request.preferredMarket) || a.id.localeCompare(b.id))[0];
+      ?? [...valid].sort((a, b) => Number(b.market === request.preferredMarket) - Number(a.market === request.preferredMarket) ||
+        publicationRank(b) - publicationRank(a) || originRank(a) - originRank(b) || a.id.localeCompare(b.id))[0];
     if (!chosen) continue;
+    const exact = chosen.precision === 'day' && chosen.date !== null;
     result.releases[format] = {
       title, position: request.target.position,
-      state: chosen.precision === 'day' && chosen.date !== null ? 'scheduled' : 'announced',
+      state: exact ? 'scheduled' : undatedState(chosen),
       date: chosen.precision === 'day' ? chosen.date : null,
       provenance: {
         checkedAt, sources: citedSources(chosen.citations, evidence),
@@ -89,4 +125,19 @@ export function selectProposals(request: CheckRequest, evidence: EvidenceBundle,
     } satisfies ReleaseProposal;
   }
   return result;
+}
+
+// A model's publication claim counts only when a cited quote carries availability language
+// that is not a future or negated statement. Announcement language clamps to announced.
+const AVAILABILITY_LANGUAGE = /\b(?:released|available now|on sale|out now)\b/i;
+const NOT_AVAILABLE_YET = /\b(?:not yet|to be|will be|going to be|upcoming|coming|expected|scheduled)\b[^.]{0,30}\b(?:released?|available)\b|\bunreleased\b/i;
+const ANNOUNCEMENT_LANGUAGE = /\b(?:pre-?orders?|coming|upcoming|will be released|expected|publication date)\b/i;
+export function supportedPublication(edition: EditionEvidence): EditionEvidence {
+  const claim = edition.publication ?? 'catalogued';
+  if (claim === 'catalogued') return edition;
+  const quotes = edition.citations.map(citation => citation.quote);
+  const announced = quotes.some(quote => ANNOUNCEMENT_LANGUAGE.test(quote));
+  if (claim === 'published' && quotes.some(quote => AVAILABILITY_LANGUAGE.test(quote) && !NOT_AVAILABLE_YET.test(quote))) return edition;
+  if (announced) return claim === 'announced' ? edition : { ...edition, publication: 'announced' };
+  return { ...edition, publication: 'catalogued' };
 }

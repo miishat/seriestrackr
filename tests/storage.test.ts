@@ -57,3 +57,10 @@ test('quota failure is reported and leaves the in-memory document available', ()
   expect(saveLibrary(storage, doc)).toEqual({ ok: false, error: 'quota' });
   expect(doc).toEqual(emptyDocument());
 });
+
+test('v2 storage loads as version 3 in memory without writing', () => {
+  const raw = JSON.stringify({ ...emptyDocument(), version: 2 });
+  const setItem = vi.fn();
+  expect(loadLibrary({ getItem: () => raw, setItem } as unknown as Storage)).toEqual({ kind: 'ready', doc: emptyDocument() });
+  expect(setItem).not.toHaveBeenCalled();
+});

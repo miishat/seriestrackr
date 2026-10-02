@@ -30,7 +30,7 @@ test('check sends only parsed public target data and strictly parses the respons
   const fetcher = vi.fn<typeof fetch>(async () => Response.json(response()));
   vi.stubGlobal('fetch', fetcher);
   const abort = signal();
-  await expect(checkDiscovery(request(), abort)).resolves.toEqual(response());
+  await expect(checkDiscovery(request(), abort)).resolves.toEqual({ ...response(), coverCandidates: [] });
   expect(fetcher).toHaveBeenCalledExactlyOnceWith('/api/discovery/check', expect.objectContaining({
     method: 'POST', signal: abort, body: JSON.stringify(request()), mode: 'same-origin',
     headers: { Accept: 'application/json', 'Content-Type': 'application/json' },

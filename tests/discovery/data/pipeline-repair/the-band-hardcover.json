@@ -1,0 +1,44 @@
+{
+  "target": {
+    "series": "The Band",
+    "author": "Nicholas Eames",
+    "position": 2,
+    "title": "Bloody Rose",
+    "orderNote": ""
+  },
+  "response": {
+    "data": {
+      "series": [
+        {
+          "name": "The Band",
+          "book_series": [
+            {
+              "id": 735826,
+              "position": 2,
+              "featured": true,
+              "compilation": false,
+              "details": "2",
+              "book": {
+                "id": 2454605,
+                "slug": "a-rosa-sanguinaria",
+                "title": "A Rosa Sanguin\u00e1ria",
+                "compilation": false,
+                "contributions": [
+                  {
+                    "author": {
+                      "name": "Nicholas Eames"
+                    },
+                    "contributor_role": {
+                      "name": "Author"
+                    }
+                  }
+                ],
+                "editions": []
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

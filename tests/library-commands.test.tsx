@@ -101,7 +101,7 @@ test('unavailable storage starts an editable unsaved document', () => {
   expect(result.current.mode).toBe('ready');
 });
 
-test('identity changes require confirmation and reset metadata and cover, but cover edit retains dates', () => {
+test('identity changes require confirmation and reset release metadata but keep a legacy manual cover; a cover edit retains dates', () => {
   const original = seriesFixture({ coverUrl: 'https://example.com/next.jpg', releases: dated() });
   const { result } = mount(seeded([original]));
   act(() => { expect(result.current.updateSeries({ ...original, coverUrl: 'https://example.com/replacement.jpg' }, false).ok).toBe(true); });
@@ -115,7 +115,7 @@ test('identity changes require confirmation and reset metadata and cover, but co
   expect(result.current.doc.series[0].releases).toEqual(dated());
   act(() => { expect(result.current.updateSeries(changed, true).ok).toBe(true); });
   expect(result.current.doc.series[0].releases).toEqual({ book: emptyRelease(), audio: emptyRelease() });
-  expect(result.current.doc.series[0].coverUrl).toBeNull();
+  expect(result.current.doc.series[0].coverUrl).toBe('https://example.com/replacement.jpg');
 });
 
 test('next-book identity and effective market changes use distinct cover behavior', () => {
@@ -129,7 +129,7 @@ test('next-book identity and effective market changes use distinct cover behavio
   act(() => { expect(result.current.updateSeries(withDates, false).ok).toBe(true); });
   act(() => { expect(result.current.updateSeries({ ...withDates, next: { ...withDates.next, orderNote: 'alternate order' } }, false).ok).toBe(false); });
   act(() => { expect(result.current.updateSeries({ ...withDates, next: { ...withDates.next, orderNote: 'alternate order' } }, true).ok).toBe(true); });
-  expect(result.current.doc.series[0].coverUrl).toBeNull();
+  expect(result.current.doc.series[0].coverUrl).toBe(original.coverUrl);
   expect(result.current.doc.series[0].releases).toEqual({ book: emptyRelease(), audio: emptyRelease() });
 });
 
@@ -209,4 +209,61 @@ test('failed recovery reset keeps original raw text available for download', () 
   act(() => { expect(result.current.resetLibrary().ok).toBe(true); });
   expect(result.current.mode).toBe('unsaved');
   expect(result.current.recoveryRaw).toBe('{broken');
+});
+
+const attribution = { title: 'Second', author: 'Example Author', role: 'next' as const,
+  source: { id: 's', title: 'Second', url: 'https://openlibrary.org/works/OL1W' }, editionKey: null };
+
+test('finishing clears the cover URL and attribution together', () => {
+  const { result } = mount(seeded([seriesFixture({ coverUrl: 'https://example.com/a.jpg', coverAttribution: attribution })]));
+  act(() => { expect(result.current.markFinished('s1').ok).toBe(true); });
+  expect(result.current.doc.series[0]).toMatchObject({ coverUrl: null, coverAttribution: null });
+});
+
+test.each([
+  ['title', (s: Series) => ({ ...s, next: { ...s.next, title: 'Other', attribution: null } })],
+  ['author', (s: Series) => ({ ...s, author: 'Someone Else' })],
+  ['progress', (s: Series) => ({ ...s, lastFinished: { position: 2, title: 'Second' } })],
+])('a %s change clears an automatic target cover', (_name, edit) => {
+  const original = seriesFixture({ coverUrl: 'https://example.com/a.jpg', coverAttribution: attribution });
+  const { result } = mount(seeded([original]));
+  act(() => { expect(result.current.updateSeries(edit(original), true).ok).toBe(true); });
+  expect(result.current.doc.series[0]).toMatchObject({ coverUrl: null, coverAttribution: null });
+});
+
+test('a legacy manual cover survives an identity change but a changed manual URL is kept', () => {
+  const original = seriesFixture({ coverUrl: 'https://example.com/manual.jpg' });
+  const { result } = mount(seeded([original]));
+  act(() => { expect(result.current.updateSeries({ ...original, author: 'Someone Else' }, true).ok).toBe(true); });
+  expect(result.current.doc.series[0].coverUrl).toBe('https://example.com/manual.jpg');
+});
+
+test('picking a new cover during a title edit keeps the new automatic cover', () => {
+  const original = seriesFixture({ coverUrl: 'https://example.com/a.jpg', coverAttribution: attribution });
+  const { result } = mount(seeded([original]));
+  const picked = { ...attribution, title: 'Other' };
+  act(() => { expect(result.current.updateSeries({ ...original, next: { ...original.next, title: 'Other' },
+    coverUrl: 'https://example.com/b.jpg', coverAttribution: picked }, true).ok).toBe(true); });
+  expect(result.current.doc.series[0]).toMatchObject({ coverUrl: 'https://example.com/b.jpg', coverAttribution: picked });
+});
+
+test('failed v2 recovery import retains recoveryRaw and the stored bytes', () => {
+  const raw = JSON.stringify({ version: 2, settings: 'broken', series: [] });
+  window.localStorage.setItem(key, raw);
+  const { result } = renderHook(() => useLibrary(), { wrapper: StrictMode });
+  expect(result.current.mode).toBe('recovery');
+  vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('quota'); });
+  act(() => { expect(result.current.replaceLibrary(seeded([seriesFixture()])).ok).toBe(true); });
+  expect(result.current.mode).toBe('unsaved');
+  expect(result.current.recoveryRaw).toBe(raw);
+  expect(window.localStorage.getItem(key)).toBe(raw);
+});
+
+test('a saved identity change clears an attributed cover that targets another title even when it was picked this session', () => {
+  const original = seriesFixture({ coverUrl: 'https://example.com/a.jpg', coverAttribution: attribution });
+  const { result } = mount(seeded([original]));
+  const stale = { ...attribution, title: 'Elsewhere', source: { ...attribution.source, id: 'z' } };
+  act(() => { expect(result.current.updateSeries({ ...original, author: 'Someone Else',
+    coverUrl: 'https://example.com/z.jpg', coverAttribution: stale }, true).ok).toBe(true); });
+  expect(result.current.doc.series[0]).toMatchObject({ coverUrl: null, coverAttribution: null });
 });

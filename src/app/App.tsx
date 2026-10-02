@@ -43,13 +43,24 @@ export function App() {
   const [pending, setPending] = useState<Pending | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [backupsOpen, setBackupsOpen] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
+  const exportUnsaved = () => {
+    try { downloadJson(encodeBackup(library.doc), 'seriestrackr-unsaved.json'); setExportError(null); }
+    catch (cause) { setExportError(`Could not export: ${cause instanceof Error ? cause.message : String(cause)}`); }
+  };
   const [setupMarket, setSetupMarket] = useState('');
   const [setupError, setSetupError] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Series | null>(null);
   const [finishTarget, setFinishTarget] = useState<Series | null>(null);
   const [finishTitle, setFinishTitle] = useState('');
   const [toast, setToast] = useState<string | null>(null);
+  const [undoError, setUndoError] = useState<string | null>(null);
   const notify = (message: string) => { setToast(message); window.setTimeout(() => setToast(null), 6000); };
+  const undoLast = () => {
+    const result = library.undo();
+    if (result.ok === false) { setUndoError(`Could not undo. ${result.error}`); window.setTimeout(() => setUndoError(null), 6000); }
+    else setUndoError(null);
+  };
   const closeEditor = () => { setEditor(null); setDialogError(null); };
   const handleUpdate = (value: Series) => {
     const result = library.updateSeries(value, false);
@@ -86,6 +97,7 @@ export function App() {
     const result = library.updateSettings({ ...library.doc.settings, market }, false);
     if (result.ok === false) setSetupError(result.error);
   };
+  useEffect(() => { if (library.mode !== 'unsaved') setExportError(null); }, [library.mode]);
   useEffect(() => { document.documentElement.dataset.theme = library.doc.settings.theme; }, [library.doc.settings.theme]);
   const availableCount = library.doc.series.filter((s) => s.readingStatus !== 'completed' && s.formats.book && displayRelease(s.releases.book, today) === 'released').length;
   const availableAudioCount = library.doc.series.filter((s) => s.readingStatus !== 'completed' && s.formats.audio && displayRelease(s.releases.audio, today) === 'released').length;
@@ -94,14 +106,14 @@ export function App() {
       <nav aria-label="Library tools"><button onClick={() => setSettingsOpen(true)}>Market: {library.doc.settings.market ?? 'Choose'}</button><button onClick={() => library.updateSettings({ ...library.doc.settings, theme: library.doc.settings.theme === 'dark' ? 'light' : 'dark' }, false)}>{library.doc.settings.theme === 'dark' ? 'Light Theme' : 'Dark Theme'}</button><button onClick={() => setBackupsOpen(true)}>Backups</button></nav></header>
     {library.mode === 'recovery' && <div className="warning" role="alert"><strong>Stored library needs recovery.</strong> {library.error} Download the original data, restore a backup, or reset explicitly.
       <button onClick={() => setBackupsOpen(true)}>Open backups</button></div>}
-    {library.mode === 'unsaved' && <div className="warning" role="alert"><strong>Changes are in memory and may be lost.</strong> {library.error} <button onClick={() => downloadJson(encodeBackup(library.doc), 'seriestrackr-unsaved.json')}>Export now</button>{library.recoveryRaw !== null && <button onClick={() => setBackupsOpen(true)}>Open backups</button>}</div>}
+    {library.mode === 'unsaved' && <div className="warning" role="alert"><strong>Changes are in memory and may be lost.</strong> {library.error} <button onClick={exportUnsaved}>Export now</button>{exportError && <span className="form-error" role="alert"> {exportError}</span>}{library.recoveryRaw !== null && <button onClick={() => setBackupsOpen(true)}>Open backups</button>}</div>}
     <section className="intro"><div><div className="eyebrow">Your library</div><h1>What comes next?</h1><p>A bookshelf for the stories you are following. Your next read stays in focus.</p></div>
       {library.doc.series.length > 0 && <div className="summary"><div><b>{library.doc.series.length}</b><span>Tracked series</span></div><div><b>{availableCount}</b><span>Next book available</span></div><div><b>{availableAudioCount}</b><span>Next audiobook available</span></div></div>}</section>
     {library.doc.settings.market && library.mode !== 'recovery' && <LibraryView doc={library.doc} today={today} onEdit={(s) => { setDialogError(null); setEditor(s); }} onFinish={finish} onCheck={(series) => discovery.open(series.id)} onCheckAll={discovery.runBatch} batchRunning={discovery.batch.running} checkingSeriesId={discovery.session?.phase === 'checking' ? discovery.session.seriesId : null} onAdd={() => { setDialogError(null); setEditor('new'); }} onView={(view) => library.updateSettings({ ...library.doc.settings, view }, false)} />}
     {discovery.batch.total > 0 && <section className="batch-results" aria-label="Release check results">
       <div className="batch-results-header"><div>
         <h2>{discovery.batch.running ? 'Checking releases' : 'Release check results'}</h2>
-        <p role="status">{discovery.batch.done} of {discovery.batch.total} checked · Review results before saving.</p>
+        <p role="status">{discovery.batch.done} of {discovery.batch.total} checked Â· Review results before saving.</p>
       </div>{discovery.batch.running && <button onClick={discovery.cancelBatch}>Cancel checks</button>}</div>
       {discovery.batch.running && <progress value={discovery.batch.done} max={discovery.batch.total} aria-label="Release check progress" />}
       <ul className="batch-results-list">{discovery.batch.results.map(result => {
@@ -110,7 +122,7 @@ export function App() {
         const status = result.error ? 'Check failed' : result.response?.summary.status === 'failed' ? 'Check failed' : supported ? 'Ready to review' : 'No supported result';
         const preview = result.error ?? [proposals?.identity?.title,
           proposals?.releases.book ? `Book: ${proposals.releases.book.date ?? 'Date unknown'}` : null,
-          proposals?.releases.audio ? `Audio: ${proposals.releases.audio.date ?? 'Date unknown'}` : null].filter(Boolean).join(' · ');
+          proposals?.releases.audio ? `Audio: ${proposals.releases.audio.date ?? 'Date unknown'}` : null].filter(Boolean).join(' Â· ');
         return <li className="batch-result-row" key={result.seriesId}>
           <div className="batch-result-description"><strong>{library.doc.series.find(s => s.id === result.seriesId)?.name ?? 'Removed series'}</strong>
             {preview && <p>{preview}</p>}
@@ -122,8 +134,11 @@ export function App() {
       })}</ul>
     </section>}
     <aside className="next-phase"><span>YOUR CHOICE</span><div><strong>Discovery, when you ask for it.</strong><p>Check releases, review sources and choose what to save. Manual tracking works independently.</p></div></aside>
-    {library.canUndo && <div className="undo" role="status">Most recent finish can be undone until another change or reload. <button onClick={() => library.undo()}>Undo finish</button></div>}
+    {library.canUndo && (library.undoKind === 'cover'
+      ? <div className="undo" role="status">Most recent cover choice can be undone until another change or reload. <button onClick={undoLast}>Undo cover</button></div>
+      : <div className="undo" role="status">Most recent finish can be undone until another change or reload. <button onClick={undoLast}>Undo finish</button></div>)}
     {toast && <div className="toast" role="status">{toast}</div>}
+    {undoError && <div className="undo" role="alert">{undoError}</div>}
     <Dialog open={library.doc.settings.market === null && library.mode !== 'recovery' && library.recoveryRaw === null} title="Which releases should we track?" onClose={() => {}} closable={false}><p>Choose your preferred country for English releases. Each format can use another country when no supported preferred-country date is found. You can override the preference for each series.</p><MarketSelect value={setupMarket} onChange={setSetupMarket} />{setupError && <p role="alert" className="form-error">{setupError}</p>}<div className="actions"><button className="primary" onClick={setup}>Start tracking</button></div></Dialog>
     <Dialog open={editor !== null} title={editor === 'new' ? 'Add series' : 'Edit series'} onClose={closeEditor}>{editor && <SeriesForm key={editor === 'new' ? 'new' : editor.id} series={editor === 'new' ? undefined : editor} market={library.doc.settings.market ?? ''} onCreate={(input) => { const result = library.addSeries(input); if (result.ok === true) closeEditor(); else setDialogError(result.error); }} onUpdate={handleUpdate} onCancel={closeEditor} onDelete={() => { if (editor !== 'new') setDeleteTarget(editor); }} error={dialogError} />}</Dialog>
     <Dialog open={pending !== null} title="Confirm metadata reset" onClose={() => setPending(null)}><p>{pending?.message}</p><p>Release information will be cleared. A changed next-book identity also clears its cover.</p><div className="actions"><button onClick={() => setPending(null)}>Cancel</button><button className="primary" onClick={confirmReset}>Confirm reset</button></div></Dialog>

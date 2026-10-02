@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { collectCatalogs, normalizeApple, normalizeOpenLibrary } from '../../server/discovery/catalogs';
 import { selectProposals } from '../../shared/discoveryPolicy';
 import { parseExtraction } from '../../shared/discoveryValidation';
+import { createRetrievalContext } from '../../server/discovery/retrievalContext';
 import { request } from './fixtures';
 
 const checkedAt = '2026-09-29T12:00:00Z';
@@ -542,4 +543,42 @@ test('cancellation after successful evidence stops remaining retrieval and retai
   expect(result.reasons).toEqual(['cancelled']);
   expect(urls).toHaveLength(2);
   expect(result.evidence.editions[0].date).toBe('2027-03-01');
+});
+
+const appleRow = (trackId: number, title: string, releaseDate: string) => ({ ...apple.ebook.results[1], trackId, trackName: title, releaseDate,
+  trackViewUrl: `https://books.apple.com/ca/book/x/id${trackId}`, isbn13: undefined });
+
+test('a 22-record Apple response keeps the exact target and its conflicting alternative past the 20th row', async () => {
+  const rows = [...Array.from({ length: 20 }, (_, i) => appleRow(i + 1, `Other Work ${i}`, '2027-05-01T00:00:00Z')),
+    appleRow(500, 'Second', '2027-03-01T00:00:00Z'), appleRow(500, 'Second', '2027-02-01T00:00:00Z')];
+  const { result } = await collect(request({ formats: ['book'] }), ['CA'], url => url.hostname === 'itunes.apple.com' ? json({ results: rows }) : json({ docs: [] }));
+  expect(result.reasons).toContain('budget');
+  const second = result.evidence.editions.filter(item => item.title === 'Second');
+  expect(second.map(item => item.date).sort()).toEqual(['2027-02-01', '2027-03-01']);
+  expect(result.evidence.editions).toHaveLength(20);
+  expect(selectProposals(request(), result.evidence, checkedAt).conflicts).toHaveLength(1);
+});
+
+test('a shared context carries counters across collections and reuses cached metadata queries', async () => {
+  vi.useFakeTimers(); const context = createRetrievalContext(); const urls: URL[] = [];
+  const fetcher: typeof fetch = async input => { const url = new URL(String(input)); urls.push(url); return json({ results: [], docs: [] }); };
+  const run = async (phase: 'initial' | 'enrich') => {
+    const pending = collectCatalogs(request({ formats: ['book'] }), ['CA'], new AbortController().signal, fetcher, { context, phase });
+    await vi.runAllTimersAsync(); return pending;
+  };
+  const first = await run('initial'); const startsAfterFirst = urls.length;
+  const second = await run('enrich');
+  expect(urls.length).toBe(startsAfterFirst);
+  expect(second.usage).toEqual(first.usage);
+  expect(first.usage.apple).toBe(urls.filter(url => url.hostname === 'itunes.apple.com').length);
+  expect(first.usage.openlibrary + first.usage.apple).toBe(urls.length);
+});
+
+test('exhausting a shared Apple ledger stops further starts and signals budget', async () => {
+  vi.useFakeTimers(); const context = createRetrievalContext(); for (let i = 0; i < 12; i++) context.claim('apple');
+  const fetcher = vi.fn<typeof fetch>(async () => json({ results: [], docs: [] }));
+  const pending = collectCatalogs(request({ formats: ['book'] }), ['CA'], new AbortController().signal, fetcher, { context });
+  await vi.runAllTimersAsync(); const result = await pending;
+  expect(fetcher.mock.calls.every(([input]) => new URL(String(input)).hostname !== 'itunes.apple.com')).toBe(true);
+  expect(result.reasons).toContain('budget'); expect(result.usage.apple).toBe(12);
 });

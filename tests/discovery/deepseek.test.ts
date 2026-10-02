@@ -139,7 +139,7 @@ test('explicit canonical prose supports identity and edition despite decorated d
   const req = request({ useAi: true, target: { ...enabled().target, title: '' } });
   const result = await extractEvidence(req, fromSources([supplied]), config, signal(), fetcher);
   expect(result.evidence.identities).toEqual([identity()]);
-  expect(result.evidence.editions).toEqual([audio]);
+  expect(result.evidence.editions).toEqual([{ ...audio, publication: 'catalogued' }]);
   expect(result.reasons ?? []).toEqual([]);
   expect(result.evidence.sources[0].title).toBe(supplied.title);
   const proposals = selectProposals(req, result.evidence, supplied.retrievedAt, true);
@@ -257,7 +257,7 @@ test('invalid identity batch makes one call and does not repair itself', async (
 test('uses one fixed JSON extraction request without thinking, tools or retries', async () => {
   const fetcher = vi.fn<typeof fetch>(async () => response({ identities: [], editions: [edition()] }));
   const result = await extractEvidence(enabled(), bundle([edition()]), config, signal(), fetcher);
-  expect(result.evidence.editions).toEqual([edition()]);
+  expect(result.evidence.editions).toEqual([{ ...edition(), publication: 'catalogued' }]);
   expect(result.evidence.identities).toEqual([]);
   expect(result.reasons ?? []).toEqual([]);
   expect(result.usage).toEqual({ apple: 0, openlibrary: 0, googlebooks: 0, tavily: 0, hardcover: 0, deepseek: 1, inputTokens: 100, outputTokens: 50 });

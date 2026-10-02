@@ -19,8 +19,8 @@ export function BackupDialog({ doc, mode, recoveryRaw, onReplace, onReset, onClo
   const [error, setError] = useState<string | null>(null);
   const selectionId = useRef(0);
 
-  const download = (text: string, name: string) => {
-    try { downloadJson(text, name); setError(null); }
+  const download = (text: string | (() => string), name: string) => {
+    try { downloadJson(typeof text === 'function' ? text() : text, name); setError(null); }
     catch (cause) { setError(cause instanceof Error ? cause.message : String(cause)); }
   };
 
@@ -63,7 +63,7 @@ export function BackupDialog({ doc, mode, recoveryRaw, onReplace, onReset, onClo
     <section className="backup-section" aria-labelledby="backup-export-heading">
       <h3 id="backup-export-heading">Export library</h3>
       <p>Download all {doc.series.length} tracked series and your preferences as a JSON file.</p>
-      <button className="primary" type="button" disabled={mode === 'recovery'} onClick={() => download(encodeBackup(doc), 'seriestrackr-backup.json')}>Export</button>
+      <button className="primary" type="button" disabled={mode === 'recovery'} onClick={() => download(() => encodeBackup(doc), 'seriestrackr-backup.json')}>Export</button>
     </section>
     {(mode === 'recovery' || recoveryRaw !== null) && <section className="backup-section backup-recovery" aria-label="Recover stored data">
       <p>The stored data could not be loaded. Download it before restoring a backup or resetting the library.</p>
@@ -80,7 +80,7 @@ export function BackupDialog({ doc, mode, recoveryRaw, onReplace, onReset, onClo
     {preview && <section aria-label="Import preview">
       <p>{preview.series.length} series in backup. Default market: {preview.settings.market ?? 'not chosen'}.</p>
       <p>Confirming will replace the current library and settings, including all series and preferences.</p>
-      {mode !== 'recovery' && <button type="button" onClick={() => download(encodeBackup(doc), 'seriestrackr-before-import.json')}>Download current backup</button>}
+      {mode !== 'recovery' && <button type="button" onClick={() => download(() => encodeBackup(doc), 'seriestrackr-before-import.json')}>Download current backup</button>}
       <div className="actions"><button type="button" onClick={() => { selectionId.current++; setPreview(null); }}>Cancel replacement</button><button className="danger" type="button" onClick={replace}>Confirm replacement</button></div>
     </section>}
     </section>

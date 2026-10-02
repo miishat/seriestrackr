@@ -1,0 +1,23 @@
+{
+  "target": {
+    "series": "The Last Horizon",
+    "author": "Will Wight",
+    "position": 5,
+    "title": "",
+    "orderNote": ""
+  },
+  "response": {
+    "data": {
+      "series": [
+        {
+          "name": "Last Horizon",
+          "book_series": []
+        },
+        {
+          "name": "The Last Horizon",
+          "book_series": []
+        }
+      ]
+    }
+  }
+}

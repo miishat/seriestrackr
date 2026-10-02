@@ -168,3 +168,54 @@ test('market mismatch and hidden formats cannot be accepted without mutation', (
   if (hidden.ok === false) throw new Error(hidden.error);
   act(() => { expect(result.current.acceptDiscovery(hidden.value, response({ seriesId: 's1' }), { title: false, book: true, audio: false }).ok).toBe(false); });
 });
+
+test('accepting a dialog cover with a book date can be undone without reverting the other accepted fields', () => {
+  const { result } = mount();
+  const priorAttribution = { title: 'Second', author: 'Example Author', role: 'next' as const, source: { id: 'o', title: 'Second', url: 'https://example.com/old' }, editionKey: null };
+  act(() => { result.current.replaceLibrary({ ...result.current.doc, series: [seriesFixture({ coverUrl: 'https://example.com/old.jpg', coverAttribution: priorAttribution })] }); });
+  const started = result.current.beginDiscovery('s1', 'r1');
+  if (started.ok === false) throw new Error(started.error);
+  const checked = response({ seriesId: 's1', coverCandidates: [{ id: 'c1', title: 'Second', author: 'Example Author', role: 'next', format: 'ebook', provider: 'openlibrary',
+    source: { id: 's', title: 'Second', url: 'https://openlibrary.org/works/OL1W' }, imageUrl: 'https://covers.openlibrary.org/b/id/1-L.jpg',
+    workKey: 'second|example author', editionKey: null, width: 600, height: 900 }] });
+  act(() => { expect(result.current.acceptDiscovery(started.value, checked, { title: false, book: true, audio: false, coverId: 'c1' }).ok).toBe(true); });
+  expect(result.current.doc.series[0].coverUrl).toBe('https://covers.openlibrary.org/b/id/1-L.jpg');
+  expect(result.current.canUndo).toBe(true);
+  expect(result.current.undoKind).toBe('cover');
+  act(() => { expect(result.current.undo().ok).toBe(true); });
+  const restored = result.current.doc.series[0];
+  expect(restored.coverUrl).toBe('https://example.com/old.jpg');
+  expect(restored.coverAttribution).toEqual(priorAttribution);
+  expect(restored.releases.book.origin).toBe('discovery');
+  expect(result.current.canUndo).toBe(false);
+});
+
+function titleChangeWithCover(prior: { coverUrl: string | null; coverAttribution: ReturnType<typeof seriesFixture>['coverAttribution'] }) {
+  const { result } = mount();
+  act(() => { result.current.replaceLibrary({ ...result.current.doc, series: [seriesFixture(prior)] }); });
+  const started = result.current.beginDiscovery('s1', 'r1');
+  if (started.ok === false) throw new Error(started.error);
+  const checked = response({ seriesId: 's1', coverCandidates: [{ id: 'c1', title: 'New Second', author: 'Example Author', role: 'next', format: 'ebook', provider: 'openlibrary',
+    source: { id: 's', title: 'New Second', url: 'https://openlibrary.org/works/OL1W' }, imageUrl: 'https://covers.openlibrary.org/b/id/1-L.jpg',
+    workKey: 'new second|example author', editionKey: null, width: 600, height: 900 }] });
+  const proposal = checked.proposals.releases.book!;
+  checked.proposals.identity = { title: 'New Second', author: 'Example Author', position: 2, citations: proposal.citations };
+  checked.proposals.identityAttribution = { checkedAt: proposal.provenance.checkedAt, sources: proposal.provenance.sources };
+  checked.proposals.releases.book = { ...proposal, title: 'New Second' };
+  act(() => { expect(result.current.acceptDiscovery(started.value, checked, { title: true, book: false, audio: false, coverId: 'c1' }).ok).toBe(true); });
+  expect(result.current.doc.series[0].coverUrl).toBe('https://covers.openlibrary.org/b/id/1-L.jpg');
+  act(() => { expect(result.current.undo().ok).toBe(true); });
+  return result.current.doc.series[0];
+}
+
+test('undoing a cover after a title change never restores the older title cover as the next-book cover', () => {
+  const older = { title: 'Second', author: 'Example Author', role: 'next' as const, source: { id: 'o', title: 'Second', url: 'https://example.com/old' }, editionKey: null };
+  const restored = titleChangeWithCover({ coverUrl: 'https://example.com/old.jpg', coverAttribution: older });
+  expect(restored.next.title).toBe('New Second');
+  expect(restored.coverUrl).toBeNull(); expect(restored.coverAttribution).toBeNull();
+});
+
+test('undoing a cover restores a legacy manual URL that has no attribution', () => {
+  const restored = titleChangeWithCover({ coverUrl: 'https://example.com/manual.jpg', coverAttribution: null });
+  expect(restored.coverUrl).toBe('https://example.com/manual.jpg'); expect(restored.coverAttribution).toBeNull();
+});

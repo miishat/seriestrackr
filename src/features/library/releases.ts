@@ -1,5 +1,27 @@
 import type { Format, Release, ReleaseState, Series } from './model';
 
+export const releaseLabels: Record<ReleaseState, string> = {
+  'not-checked': 'Not checked', 'not-found': 'Not Found',
+  catalogued: 'Edition found; release unverified', announced: 'Announced; date unknown',
+  scheduled: 'Scheduled', released: 'Available',
+};
+
+// Accepted announcements backed only by Hardcover catalogue pages go stale quietly.
+// Evidence checked more than this many days before today is flagged for a new reviewed check.
+export const OLD_EVIDENCE_DAYS = 90;
+
+const hardcoverOnly = (release: Release): boolean => {
+  const urls = release.provenance ? release.provenance.sources.map(source => source.url) : release.source ? [release.source.url] : [];
+  return urls.length > 0 && urls.every(url => { try { return (host => host === 'hardcover.app' || host.endsWith('.hardcover.app'))(new URL(url).hostname); } catch { return false; } });
+};
+
+export function hasOldAnnouncementEvidence(release: Release, today: string): boolean {
+  const checked = (release.provenance?.checkedAt ?? release.lastCheckedAt)?.slice(0, 10);
+  if (release.origin !== 'discovery' || release.state !== 'announced' || !checked || !isCalendarDate(checked) || !isCalendarDate(today) || !hardcoverOnly(release)) return false;
+  const day = (value: string) => Date.UTC(Number(value.slice(0, 4)), Number(value.slice(5, 7)) - 1, Number(value.slice(8, 10)));
+  return (day(today) - day(checked)) / 86_400_000 > OLD_EVIDENCE_DAYS;
+}
+
 export function isCalendarDate(value: string): boolean {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
   if (!match) return false;

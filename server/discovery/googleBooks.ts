@@ -103,6 +103,10 @@ export function normalizeGoogleBooks(input: unknown, request: CheckRequest, chec
     const saleCountry = country(sale.country);
     const qualified = isEbook && (sale.saleability === 'FOR_PREORDER' || sale.saleability === 'FOR_SALE') &&
       saleCountry !== null && timestamp !== null && saleDay === calendarDay(info.publishedDate);
+    // Google sale metadata asserts neither stock nor a market date. Only a
+    // format-specific preorder with a partial publishedDate is an announcement.
+    const partial = typeof info.publishedDate === 'string' && /^\d{4}(?:-(?:0[1-9]|1[0-2]))?$/.test(info.publishedDate);
+    const publication = isEbook && !qualified && sale.saleability === 'FOR_PREORDER' && partial ? 'announced' as const : 'catalogued' as const;
     const id = `googlebooks:${raw.id}`;
     const facts = `Title: ${title}. Author: ${author}.` +
       (embedded ? ` Catalog title: ${catalogTitle}.` : '') +
@@ -115,7 +119,7 @@ export function normalizeGoogleBooks(input: unknown, request: CheckRequest, chec
       market: qualified ? saleCountry : null, retrievedAt: checkedAt, text: facts };
     const identity: IdentityEvidence | null = position === null ? null : { title, author, position, citations: cited };
     const edition: EditionEvidence | null = isEbook ? { id, title, author, position, editionKey: key, format: 'ebook', language: 'en',
-      market: qualified ? saleCountry : null, date: qualified ? saleDay : null, precision: qualified ? 'day' : 'none', citations: cited } : null;
+      market: qualified ? saleCountry : null, date: qualified ? saleDay : null, precision: qualified ? 'day' : 'none', publication, citations: cited } : null;
     append(bundle, source, identity, edition);
   }
   return bundle;

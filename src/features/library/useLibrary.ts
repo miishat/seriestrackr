@@ -6,6 +6,7 @@ import { parseDocument } from './validation';
 import { loadBrowserLibrary, saveLibrary } from '../../storage/libraryStorage';
 import type { CheckResponse, CheckSummary, DiscoverySnapshot, Selection } from '../../../shared/discovery';
 import { parseCheckResponse, parseCheckSummary } from '../../../shared/discoveryValidation';
+import { normalizeIdentity } from '../../../shared/discoveryPolicy';
 import { applyDiscovery } from '../discovery/acceptDiscovery';
 import { createDiscoveryGuard } from '../discovery/discoveryGuard';
 
@@ -31,9 +32,24 @@ function identityChanged(before: Series, after: Series): boolean {
     before.next.title !== after.next.title || before.next.orderNote !== after.next.orderNote;
 }
 
+function sameAttribution(a: Series['coverAttribution'], b: Series['coverAttribution']): boolean {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
+// An automatic cover is kept only while it names the saved target: the next or last finished title, and the author.
+function coverTargets(series: Series): boolean {
+  const cover = series.coverAttribution;
+  if (!cover) return true;
+  const title = cover.role === 'next' ? series.next.title : series.lastFinished?.title ?? '';
+  return !!title.trim() && normalizeIdentity(cover.title) === normalizeIdentity(title) && normalizeIdentity(cover.author) === normalizeIdentity(series.author);
+}
+
 function invalid(error: string): Result<void> {
   return { ok: false, error };
 }
+
+type UndoEntry = { kind: 'finish'; doc: LibraryDocument }
+  | { kind: 'cover'; seriesId: string; coverUrl: Series['coverUrl']; coverAttribution: Series['coverAttribution'] };
 
 export function useLibrary() {
   const [initial] = useState(loadBrowserLibrary);
@@ -43,7 +59,7 @@ export function useLibrary() {
   const [recoveryRaw, setRecoveryRaw] = useState<string | null>(initial.kind === 'recovery' ? initial.raw : null);
   const current = useRef(doc);
   const currentMode = useRef(mode);
-  const undoSnapshot = useRef<LibraryDocument | null>(null);
+  const undoSnapshot = useRef<UndoEntry | null>(null);
   const discoveryGuard = useRef(createDiscoveryGuard());
 
   const commit = (next: LibraryDocument): void => {
@@ -107,7 +123,8 @@ export function useLibrary() {
     const updated: Series = {
       ...after,
       currentBook: after.readingStatus === 'completed' ? null : after.currentBook,
-      coverUrl: changedIdentity ? null : after.coverUrl,
+      ...(changedIdentity && after.coverAttribution !== null && (sameAttribution(before.coverAttribution, after.coverAttribution) || !coverTargets(after))
+        ? { coverUrl: null, coverAttribution: null } : {}),
       releases: changedIdentity || changedMarket ? { book: emptyRelease(), audio: emptyRelease() } : after.releases,
     };
     const checked = validated({ ...current.current, series: current.current.series.map((item) => item.id === changed.id ? updated : item) });
@@ -138,7 +155,7 @@ export function useLibrary() {
     if (finished.ok === false) return invalid(finished.error);
     const candidate = validated({ ...current.current, series: current.current.series.map((item) => item.id === id ? finished.value : item) });
     if (candidate.ok === false) return invalid(candidate.error);
-    undoSnapshot.current = current.current;
+    undoSnapshot.current = { kind: 'finish', doc: current.current };
     discoveryGuard.current.touch(id);
     commit(candidate.value);
     return { ok: true, value: undefined };
@@ -147,11 +164,25 @@ export function useLibrary() {
   const undo = (): Result<void> => {
     const allowed = requireReady();
     if (allowed.ok === false) return allowed;
-    if (!undoSnapshot.current) return invalid('There is no finish action to undo.');
-    const previous = undoSnapshot.current;
+    const entry = undoSnapshot.current;
+    if (!entry) return invalid('There is nothing to undo.');
     undoSnapshot.current = null;
-    discoveryGuard.current.replace();
-    commit(previous);
+    if (entry.kind === 'finish') {
+      discoveryGuard.current.replace();
+      commit(entry.doc);
+      return { ok: true, value: undefined };
+    }
+    if (!current.current.series.some(item => item.id === entry.seriesId)) return invalid('Series not found.');
+    // The saved identity may have changed since the cover was replaced. A restored named
+    // cover that no longer targets the saved title and author is cleared, not reattached.
+    const restoreCover = (item: Series): Series => {
+      const candidate = { ...item, coverUrl: entry.coverUrl, coverAttribution: entry.coverAttribution };
+      return coverTargets(candidate) ? candidate : { ...item, coverUrl: null, coverAttribution: null };
+    };
+    const restored = validated({ ...current.current, series: current.current.series.map(item => item.id === entry.seriesId ? restoreCover(item) : item) });
+    if (restored.ok === false) return invalid(restored.error);
+    discoveryGuard.current.touch(entry.seriesId);
+    commit(restored.value);
     return { ok: true, value: undefined };
   };
 
@@ -240,13 +271,14 @@ export function useLibrary() {
     if (accepted.value === before) return { ok: true, value: undefined };
     const checked = validated({ ...current.current, series: current.current.series.map(item => item.id === before.id ? accepted.value : item) });
     if (checked.ok === false) return invalid(checked.error);
-    undoSnapshot.current = null;
+    const coverChanged = !!selection.coverId && (accepted.value.coverUrl !== before.coverUrl || accepted.value.coverAttribution !== before.coverAttribution);
+    undoSnapshot.current = coverChanged ? { kind: 'cover', seriesId: before.id, coverUrl: before.coverUrl, coverAttribution: before.coverAttribution } : null;
     discoveryGuard.current.touch(before.id);
     commit(checked.value);
     return { ok: true, value: undefined };
   };
 
-  return { doc, mode, error, recoveryRaw, canUndo: undoSnapshot.current !== null,
+  return { doc, mode, error, recoveryRaw, canUndo: undoSnapshot.current !== null, undoKind: undoSnapshot.current?.kind ?? null,
     beginDiscovery, isDiscoveryCurrent, cancelDiscovery, recordDiscoveryCheck, acceptDiscovery,
     addSeries, updateSeries, deleteSeries, markFinished, undo, updateSettings, replaceLibrary, resetLibrary };
 }

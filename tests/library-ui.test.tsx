@@ -132,10 +132,6 @@ test('editing release status, date, manual title and cover is visible on the car
   await user.click(screen.getByRole('button', { name: 'Save series' }));
   await user.click(screen.getByRole('button', { name: 'Confirm reset' }));
   expect(screen.getByText('The Next Volume')).toBeVisible();
-  expect(screen.getByText('No cover available')).toBeVisible();
-  await user.click(screen.getByRole('button', { name: 'Edit details' }));
-  await user.type(screen.getByLabelText('Cover URL'), 'https://example.com/cover.jpg');
-  await user.click(screen.getByRole('button', { name: 'Save series' }));
   expect(screen.getByRole('img', { name: /cover.*The Next Volume/i })).toHaveAttribute('src', 'https://example.com/cover.jpg');
 });
 
@@ -169,22 +165,39 @@ test('audiobook schedule and date persist when next-book identity stays the same
   expect(JSON.parse(localStorage.getItem(key)!).series[0].releases.audio).toMatchObject({ state: 'scheduled', date: '2028-04-20', origin: 'manual', lastCheckedAt: null });
 });
 
+const coverReply = (body: unknown) => ({ ok: true, status: 200, headers: new Headers({ 'Content-Type': 'application/json' }), json: async () => body });
+const coverBody = (init: { candidates?: unknown[]; outcomes?: unknown[] } = {}) => ({ requestId: '', seriesId: 's1', candidates: init.candidates ?? [], authorSuggestions: [],
+  outcomes: init.outcomes ?? [{ provider: 'openlibrary', state: 'no-match' }] });
+const serviceCover = { id: 'c1', title: 'Second', author: 'Example Author', role: 'next', format: 'ebook', provider: 'openlibrary',
+  source: { id: 's', title: 'Second', url: 'https://openlibrary.org/works/OL1W' }, imageUrl: 'https://covers.openlibrary.org/b/id/42-L.jpg',
+  workKey: 'second|example author', editionKey: null, width: null, height: null };
+function stubCoverService(respond: (body: { requestId: string }) => unknown) {
+  vi.stubGlobal('fetch', vi.fn(async (_url: string, init: RequestInit) => {
+    const request = JSON.parse(String(init.body));
+    return respond(request) === 'offline' ? Promise.reject(new Error('offline')) : coverReply({ ...(respond(request) as object), requestId: request.requestId, seriesId: request.seriesId });
+  }));
+}
+function stubImage() {
+  vi.stubGlobal('Image', class {
+    naturalWidth = 600; naturalHeight = 900; onload: (() => void) | null = null; onerror: (() => void) | null = null;
+    set src(value: string) { if (value) queueMicrotask(() => this.onload?.()); }
+  });
+}
+
 test('cover lookup failure gives retry feedback while manual editor stays usable', async () => {
   const user = userEvent.setup(); seed();
-  vi.stubGlobal('fetch', vi.fn(() => Promise.reject(new Error('offline'))));
+  stubCoverService(() => 'offline');
   render(<App />);
   await user.click(screen.getByRole('button', { name: 'Edit details' }));
   await user.click(screen.getByRole('button', { name: 'Find cover' }));
-  expect(await screen.findByRole('alert')).toHaveTextContent(/cover search failed/i);
+  expect(await screen.findByRole('alert')).toHaveTextContent(/cover service is unavailable|cover search failed/i);
   expect(screen.getByRole('button', { name: 'Save series' })).toBeEnabled();
   expect(screen.getByRole('button', { name: 'Find cover' })).toBeEnabled();
 });
 
 test('partial cover provider failure with no results warns that lookup was incomplete', async () => {
   const user = userEvent.setup(); seed();
-  vi.stubGlobal('fetch', vi.fn((url: string) => url.includes('openlibrary')
-    ? Promise.reject(new Error('offline'))
-    : Promise.resolve({ ok: true, json: async () => ({ items: [] }) })));
+  stubCoverService(() => coverBody({ outcomes: [{ provider: 'openlibrary', state: 'failed' }, { provider: 'googlebooks', state: 'no-match' }] }));
   render(<App />);
   await user.click(screen.getByRole('button', { name: 'Edit details' }));
   await user.click(screen.getByRole('button', { name: 'Find cover' }));
@@ -195,20 +208,17 @@ test('partial cover provider failure with no results warns that lookup was incom
 test.each(['success', 'empty'] as const)('a later failed cover lookup clears %s results', async (firstResult) => {
   const user = userEvent.setup(); seed();
   let fail = false;
-  vi.stubGlobal('fetch', vi.fn((url: string) => fail
-    ? Promise.reject(new Error('offline'))
-    : Promise.resolve({ ok: true, json: async () => url.includes('openlibrary')
-      ? { docs: firstResult === 'success' ? [{ cover_i: 42 }] : [] }
-      : { items: [] } })));
+  stubImage();
+  stubCoverService(() => fail ? 'offline' : coverBody({ candidates: firstResult === 'success' ? [serviceCover] : [] }));
   render(<App />);
   await user.click(screen.getByRole('button', { name: 'Edit details' }));
   await user.click(screen.getByRole('button', { name: 'Find cover' }));
-  if (firstResult === 'success') expect(await screen.findByRole('img', { name: 'Possible book cover' })).toBeVisible();
+  if (firstResult === 'success') expect(await screen.findByRole('button', { name: /Select cover: Second by Example Author/ })).toBeVisible();
   else expect(await screen.findByText(/No covers found/)).toBeVisible();
   fail = true;
   await user.click(screen.getByRole('button', { name: 'Find cover' }));
-  expect(await screen.findByRole('alert')).toHaveTextContent(/cover search failed/i);
-  expect(screen.queryByRole('img', { name: 'Possible book cover' })).toBeNull();
+  expect(await screen.findByRole('alert')).toHaveTextContent(/cover service is unavailable|cover search failed/i);
+  expect(screen.queryByRole('button', { name: /Select cover/ })).toBeNull();
   expect(screen.queryByText(/No covers found/)).toBeNull();
 });
 
@@ -239,9 +249,8 @@ test('announced release badge does not repeat its unknown date', async () => {
   seed([seriesFixture({ releases: { book: { ...emptyRelease(), state: 'announced' }, audio: emptyRelease() } })]);
   render(<App />);
   const card = screen.getByRole('article');
-  expect(within(card).getByText('Announced')).toBeVisible();
-  expect(within(card).getByText('Date Unknown')).toBeVisible();
-  expect(screen.queryByText('Announced, Date Unknown')).toBeNull();
+  expect(within(card).getByText('Announced; date unknown')).toBeVisible();
+  expect(within(card).queryByText('Date Unknown')).toBeNull();
 });
 
 test('compact source link uses the saved book title and preserves source details', async () => {

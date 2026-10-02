@@ -1,0 +1,77 @@
+{
+ "request": {
+  "requestId": "replay-cover-the-dark-profit-saga",
+  "seriesId": "replay-the-dark-profit-saga",
+  "series": "The Dark Profit Saga",
+  "author": "J. Zachary Pike",
+  "nextTitle": "",
+  "position": 4,
+  "previousTitle": "Dragonfired",
+  "preferredMarket": "US"
+ },
+ "responses": [
+  {
+   "url": "https://api.hardcover.app/v1/graphql",
+   "query": {
+    "names": [
+     "The Dark Profit Saga",
+     "Dark Profit Saga",
+     "Dark Profit Saga Series",
+     "Dark Profit Saga Mysteries",
+     "Dark Profit Saga Trilogy",
+     "Tales of Dark Profit Saga"
+    ],
+    "author": "J. Zachary Pike",
+    "positions": [
+     4,
+     3
+    ]
+   },
+   "status": 200,
+   "contentType": "application/json",
+   "body": "{\"data\":{\"series\":[]}}"
+  },
+  {
+   "url": "https://www.googleapis.com/books/v1/volumes?q=intitle%3ADragonfired+inauthor%3AJ.+Zachary+Pike&maxResults=20&langRestrict=en",
+   "query": null,
+   "status": 429,
+   "contentType": "application/json; charset=UTF-8",
+   "body": "{\"error\":{\"code\":429,\"message\":\"Quota exceeded for quota metric 'Queries' and limit 'Queries per day' of service 'books.googleapis.com' for consumer 'project_number:624717413613'.\",\"errors\":[{\"message\":\"Quota exceeded for quota metric 'Queries' and limit 'Queries per day' of service 'books.googleapis.com' for consumer 'project_number:624717413613'.\",\"domain\":\"global\",\"reason\":\"rateLimitExceeded\"}],\"status\":\"RESOURCE_EXHAUSTED\",\"details\":[{\"@type\":\"type.googleapis.com/google.rpc.ErrorInfo\",\"reason\":\"RATE_LIMIT_EXCEEDED\",\"domain\":\"googleapis.com\",\"metadata\":{\"quota_unit\":\"1/d/{project}\",\"quota_location\":\"global\",\"service\":\"books.googleapis.com\",\"quota_limit_value\":\"0\",\"quota_limit\":\"defaultPerDayPerProject\",\"quota_metric\":\"books.googleapis.com/default\",\"consumer\":\"projects/624717413613\"}},{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"url\":\"https://cloud.google.com/docs/quotas/help/request_increase\"}]}]}}"
+  },
+  {
+   "url": "https://openlibrary.org/search.json?title=Dragonfired&author=J.+Zachary+Pike&limit=20&fields=key%2Ctitle%2Cauthor_name%2Ccover_edition_key%2Ccover_i",
+   "query": null,
+   "status": 200,
+   "contentType": "application/json",
+   "body": "{\"numFound\":1,\"start\":0,\"numFoundExact\":true,\"num_found\":1,\"documentation_url\":\"https://openlibrary.org/dev/docs/api/search\",\"q\":\"\",\"offset\":null,\"docs\":[{\"author_key\":[\"OL7639117A\"],\"author_name\":[\"J. Zachary Pike\"],\"ebook_access\":\"no_ebook\",\"edition_count\":4,\"first_publish_year\":2023,\"has_fulltext\":false,\"key\":\"/works/OL37625983W\",\"language\":[\"eng\"],\"public_scan_b\":false,\"title\":\"Dragonfired\"}]}"
+  },
+  {
+   "url": "https://www.googleapis.com/books/v1/volumes?q=intitle%3ADragonfired&maxResults=20&langRestrict=en",
+   "query": null,
+   "status": 200,
+   "contentType": "application/json; charset=UTF-8",
+   "body": "{\"kind\":\"books#volumes\",\"totalItems\":0}"
+  },
+  {
+   "url": "https://openlibrary.org/search.json?title=Dragonfired&limit=20&fields=key%2Ctitle%2Cauthor_name%2Ccover_edition_key%2Ccover_i",
+   "query": null,
+   "status": 200,
+   "contentType": "application/json",
+   "body": "{\"numFound\":1,\"start\":0,\"numFoundExact\":true,\"num_found\":1,\"documentation_url\":\"https://openlibrary.org/dev/docs/api/search\",\"q\":\"\",\"offset\":null,\"docs\":[{\"author_key\":[\"OL7639117A\"],\"author_name\":[\"J. Zachary Pike\"],\"ebook_access\":\"no_ebook\",\"edition_count\":4,\"first_publish_year\":2023,\"has_fulltext\":false,\"key\":\"/works/OL37625983W\",\"language\":[\"eng\"],\"public_scan_b\":false,\"title\":\"Dragonfired\"}]}"
+  },
+  {
+   "url": "https://itunes.apple.com/search?term=+J.+Zachary+Pike&country=us&entity=ebook&limit=20",
+   "query": null,
+   "status": 200,
+   "contentType": "text/javascript; charset=utf-8",
+   "body": "{\"resultCount\":0,\"results\":[]}"
+  },
+  {
+   "url": "https://itunes.apple.com/search?term=+J.+Zachary+Pike&country=us&entity=audiobook&limit=20",
+   "query": null,
+   "status": 200,
+   "contentType": "text/javascript; charset=utf-8",
+   "body": "{\"resultCount\":0,\"results\":[]}"
+  }
+ ]
+}

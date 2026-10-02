@@ -2,7 +2,7 @@
 import { afterEach, expect, test, vi } from 'vitest';
 import { runDiscovery } from '../../server/discovery/runDiscovery';
 import { emptyUsage } from '../../shared/discovery';
-import type { EvidenceBundle } from '../../shared/discovery';
+import type { EditionEvidence, EvidenceBundle } from '../../shared/discovery';
 import type { DiscoveryDependencies } from '../../server/discovery/runDiscovery';
 import { bundle, edition, request } from './fixtures';
 import { ProviderError } from '../../server/discovery/http';
@@ -12,6 +12,7 @@ import { buildExtractionMessages } from '../../server/discovery/prompt';
 import { extractEvidence } from '../../server/discovery/deepseek';
 import { collectCatalogs, normalizeOpenLibrary } from '../../server/discovery/catalogs';
 import { normalizeGoogleBooks } from '../../server/discovery/googleBooks';
+import { createRetrievalContext } from '../../server/discovery/retrievalContext';
 
 afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
 
@@ -73,7 +74,7 @@ test.each(['Second', ''])('custom order note preserves source-only results and u
   const deps = dependencies(evidence);
   const result = await runDiscovery(req, deps, new AbortController().signal);
   expect(result.proposals).toEqual({ identity: null, identityAttribution: null,
-    releases: { book: null, audio: null }, conflicts: [] });
+    releases: { book: null, audio: null }, conflicts: [], related: [] });
   expect(result.summary.formats).toEqual({ book: 'unknown', audio: 'unknown' });
   expect(result.summary.status).toBe('complete');
   if (!title) expect(result.summary.reasons).toContain('unknown-identity');
@@ -252,7 +253,7 @@ test.each([
 
 test.each([
   { label: 'exact day', publishDate: 'March 1, 2027', date: '2027-03-01', precision: 'day', state: 'scheduled' },
-  { label: 'month only', publishDate: 'March 2027', date: null, precision: 'month', state: 'announced' },
+  { label: 'month only', publishDate: 'March 2027', date: null, precision: 'month', state: 'catalogued' },
 ])('country-unspecified English print with $label preserves date precision', async ({ publishDate, date, precision, state }) => {
   const catalog = normalizeOpenLibrary({ key: '/books/OL901M', title: 'Second', author_name: ['Example Author'],
     physical_format: 'paperback', languages: [{ key: '/languages/eng' }], publish_date: publishDate }, '2026-09-29T12:00:00Z');
@@ -667,4 +668,247 @@ test.each(['identity', 'conflict'] as const)('Google %s evidence over factual ca
   expect(result.proposals.releases.book).toBeNull(); expect(result.summary.reasons).toContain('budget');
   if (kind === 'identity') expect(result.proposals.identity).toBeNull();
   expect(evidence).toEqual(before);
+});
+
+test('a primary-source search result yields related works and never numbered identity, within three searches', async () => {
+  const req = request({ formats: ['book'], target: { series: 'The Dark Profit Saga', author: 'J. Zachary Pike', position: 4, title: '', orderNote: '' } });
+  const text = 'J. Zachary Pike\nHome Books Blog\nCrypt Currency is Coming\nCrypt Currency is the next book in The Dark Profit Saga, arriving soon as an ebook.';
+  const deps = dependencies();
+  deps.search = vi.fn(async () => ({ identities: [], editions: [], sources: [{ id: 'pike', title: 'Crypt Currency is Coming',
+    url: 'https://jzacharypike.com/blogs/highlights/crypt-currency-is-coming', provider: 'tavily' as const, market: null,
+    retrievedAt: '2026-09-29T12:00:00Z', text }] }));
+  const result = await runDiscovery(req, deps, new AbortController().signal);
+  expect(result.proposals.related).toMatchObject([{ title: 'Crypt Currency', relationship: 'continuation', position: null }]);
+  expect(result.proposals.identity).toBeNull();
+  expect(result.summary.usage.tavily).toBeLessThanOrEqual(3);
+  expect(parseCheckResponse(result).ok).toBe(true);
+});
+
+test('a late publisher identity survives 30 or more catalogue noise sources within the original counters', async () => {
+  const req = request({ formats: ['book'], target: { series: 'Novels of the Malazan Empire', author: 'Ian C. Esslemont', position: 5, title: '', orderNote: '' } });
+  const noise = Array.from({ length: 35 }, (_, i) => ({ id: `noise-${i}`, title: `Noise ${i}`, url: `https://example.com/noise-${i}`,
+    provider: 'tavily' as const, market: null, retrievedAt: '2026-09-29T12:00:00Z', text: `Unrelated catalogue entry number ${i}.` }));
+  const deps = dependencies({ sources: noise, identities: [], editions: [], related: [] });
+  const primary = 'Blood and Bone\nA Novel of the Malazan Empire\nNovels of the Malazan Empire (Volume 5)\nAuthor: Ian C. Esslemont\nBook Details';
+  deps.search = vi.fn(async () => ({ identities: [], editions: [], sources: [{ id: 'publisher', title: 'Blood and Bone',
+    url: 'https://us.macmillan.com/books/9781429943635/bloodandbone/', provider: 'tavily' as const, market: null,
+    retrievedAt: '2026-09-29T12:00:00Z', text: primary }] }));
+  const result = await runDiscovery(req, deps, new AbortController().signal);
+  expect(result.proposals.identity).toMatchObject({ title: 'Blood and Bone', position: 5 });
+  const ids = new Set(result.sources.map(item => item.id));
+  expect(result.sources.length).toBeLessThanOrEqual(30);
+  expect(result.proposals.identity!.citations.length).toBeGreaterThan(0);
+  expect(result.proposals.identity!.citations.every(item => ids.has(item.sourceId))).toBe(true);
+  expect(result.sources.some(item => item.url.includes('macmillan.com'))).toBe(true);
+  expect(result.summary.usage.tavily).toBeLessThanOrEqual(3);
+  expect(parseCheckResponse(result).ok).toBe(true);
+});
+
+test('more than 12 related claims are dropped whole under the budget, never capped', async () => {
+  const req = request({ formats: ['book'], target: { series: 'Example', author: 'Example Author', position: 2, title: 'Second', orderNote: '' } });
+  const sources = Array.from({ length: 13 }, (_, i) => ({ id: `rel-${i}`, title: `Prequel ${i}`, url: `https://example.com/rel-${i}`,
+    provider: 'tavily' as const, market: null, retrievedAt: '2026-09-29T12:00:00Z', text: `Prequel ${i} is a prequel to Example.` }));
+  const related = sources.map((item, i) => ({ title: `Prequel ${i}`, author: 'Example Author', relationship: 'prequel' as const,
+    position: null, citations: [{ sourceId: item.id, quote: `Prequel ${i} is a prequel to Example.` }] }));
+  const deps = dependencies({ sources, identities: [], editions: [], related }); deps.canSearch = false;
+  const result = await runDiscovery(req, deps, new AbortController().signal);
+  expect(result.proposals.related).toEqual([]);
+  expect(result.summary.reasons).toContain('budget');
+  expect(parseCheckResponse(result).ok).toBe(true);
+});
+
+// Late identity enrichment: real catalog transport, one shared ledger, scripted network.
+const publisherSource = (id: string, title: string) => ({ id, title, url: `https://us.macmillan.com/books/${id}/${id}/`, provider: 'tavily' as const,
+  market: null, retrievedAt: '2026-09-29T12:00:00Z',
+  text: `${title}\nA Novel of the Malazan Empire\nNovels of the Malazan Empire (Volume 5)\nAuthor: Ian C. Esslemont\nBook Details` });
+const appleRecord = (trackId: number, title: string, releaseDate: string) => ({ trackId, trackName: title, artistName: 'Ian C. Esslemont',
+  trackViewUrl: `https://books.apple.com/ca/book/${trackId}`, releaseDate, country: 'CA', language: 'English' });
+function lateIdentityHarness(appleResults: (title: string) => unknown[]) {
+  const fetched: URL[] = []; const phases: string[] = []; const contexts = new Set<unknown>();
+  const noise = { sources: Array.from({ length: 30 }, (_, i) => ({ id: `noise-${i}`, title: `Noise ${i}`, url: `https://example.com/noise-${i}`,
+    provider: 'tavily' as const, market: null, retrievedAt: '2026-09-29T12:00:00Z', text: `Unrelated catalogue entry number ${i}.` })), identities: [], editions: [] };
+  const fetcher = vi.fn<typeof fetch>(async input => {
+    const url = new URL(String(input)); fetched.push(url);
+    if (url.hostname === 'itunes.apple.com' && url.pathname === '/search') {
+      const title = (url.searchParams.get('term') ?? '').replace(' Ian C. Esslemont', '');
+      return Response.json({ results: appleResults(title) });
+    }
+    return Response.json({ results: [], docs: [] });
+  });
+  const deps = dependencies(); deps.canExtract = false;
+  deps.catalogs = (req, markets, signal, context, phase, seed) => {
+    phases.push(String(phase)); contexts.add(context);
+    return collectCatalogs(req, markets, signal, fetcher, phase === 'enrich' ? { context, phase, seedEvidence: seed }
+      : { context, phase, seedEvidence: noise });
+  };
+  return { deps, fetched, phases, contexts, fetcher };
+}
+const lateRequest = () => request({ formats: ['book'], target: { series: 'Novels of the Malazan Empire', author: 'Ian C. Esslemont', position: 5, title: '', orderNote: '' } });
+
+test('late numbered identity enriches once through one ledger, keeping identity and the dated Apple edition', async () => {
+  vi.useFakeTimers();
+  const { deps, fetched, phases, contexts } = lateIdentityHarness(title => title === 'Blood and Bone' ? [appleRecord(901, 'Blood and Bone', '2026-11-03T08:00:00Z')] : []);
+  deps.search = vi.fn(async () => ({ sources: [publisherSource('bloodandbone', 'Blood and Bone')], identities: [], editions: [] }));
+  const pending = runDiscovery(lateRequest(), deps, new AbortController().signal); await vi.runAllTimersAsync(); const result = await pending;
+  expect(phases).toEqual(['initial', 'enrich']); expect(contexts.size).toBe(1);
+  expect(result.proposals.identity).toMatchObject({ title: 'Blood and Bone', position: 5 });
+  expect(result.proposals.releases.book).toMatchObject({ date: '2026-11-03' });
+  expect(result.sources.length).toBeLessThanOrEqual(30);
+  const ids = new Set(result.sources.map(item => item.id));
+  expect(result.proposals.identity!.citations.every(item => ids.has(item.sourceId))).toBe(true);
+  expect(result.proposals.releases.book!.citations.every(item => ids.has(item.sourceId))).toBe(true);
+  const count = (host: string) => fetched.filter(url => url.hostname === host).length;
+  expect(count('itunes.apple.com')).toBe(result.summary.usage.apple); expect(result.summary.usage.apple).toBeLessThanOrEqual(12);
+  expect(count('openlibrary.org')).toBe(result.summary.usage.openlibrary); expect(result.summary.usage.openlibrary).toBeLessThanOrEqual(3);
+  expect(result.summary.usage.tavily).toBeLessThanOrEqual(3); expect(result.summary.usage.hardcover).toBeLessThanOrEqual(1);
+  expect(new Set(fetched.map(String)).size).toBe(fetched.length);
+  expect(JSON.stringify(result)).not.toContain('itunes.apple.com/search');
+});
+
+test('enrichment keeps a competing identity and a conflicting earlier date instead of narrowing them away', async () => {
+  vi.useFakeTimers();
+  const { deps, phases } = lateIdentityHarness(title => title === 'Blood and Bone'
+    ? [appleRecord(901, 'Blood and Bone', '2026-11-03T08:00:00Z'), appleRecord(901, 'Blood and Bone', '2026-10-01T08:00:00Z')] : []);
+  let calls = 0;
+  deps.search = vi.fn(async () => ({ sources: [publisherSource(calls++ === 0 ? 'bloodandbone' : 'otherwork', calls === 1 ? 'Blood and Bone' : 'Other Work')], identities: [], editions: [] }));
+  const pending = runDiscovery(lateRequest(), deps, new AbortController().signal); await vi.runAllTimersAsync(); const result = await pending;
+  expect(phases.filter(item => item === 'enrich')).toHaveLength(1);
+  expect(result.proposals.identity).toBeNull();
+  expect(result.sources.map(item => item.url)).toEqual(expect.arrayContaining([
+    'https://us.macmillan.com/books/bloodandbone/bloodandbone/', 'https://us.macmillan.com/books/otherwork/otherwork/']));
+  expect(result.proposals.releases.book).toBeNull();
+  expect(result.summary.usage.tavily).toBeLessThanOrEqual(3);
+});
+
+test('cancelled enrichment still reports the shared aggregate and stops without further starts', async () => {
+  vi.useFakeTimers(); const controller = new AbortController();
+  const { deps, fetched } = lateIdentityHarness(() => []);
+  const real = deps.catalogs;
+  deps.catalogs = (req, markets, signal, context, phase, seed) => { if (phase === 'enrich') controller.abort(); return real(req, markets, signal, context, phase, seed); };
+  deps.search = vi.fn(async () => ({ sources: [publisherSource('bloodandbone', 'Blood and Bone')], identities: [], editions: [] }));
+  const pending = runDiscovery(lateRequest(), deps, controller.signal); await vi.runAllTimersAsync(); const result = await pending;
+  expect(result.summary.status).toBe('cancelled');
+  expect(fetched.filter(url => url.hostname === 'itunes.apple.com').length).toBe(result.summary.usage.apple);
+  expect(result.proposals.identity).toMatchObject({ title: 'Blood and Bone' });
+});
+
+// Apple over-limit completeness: rows past the 20th may hide a conflicting or earlier date.
+const appleSecond = (trackId: number, title: string, releaseDate: string) => ({ trackId, trackName: title, artistName: 'Example Author',
+  trackViewUrl: `https://books.apple.com/ca/book/x/id${trackId}`, releaseDate, country: 'CA', language: 'English' });
+function appleOverLimit(rows: unknown[], req = request({ formats: ['book'] })) {
+  const deps = dependencies(); deps.canSearch = false; deps.canExtract = false;
+  const seen: Array<{ overflow?: string[] }> = [];
+  deps.catalogs = async (input, markets, signal, context, phase, seed) => {
+    const result = await collectCatalogs(input, markets, signal, async fetched => {
+      const url = new URL(String(fetched));
+      return Response.json(url.hostname === 'itunes.apple.com' && url.pathname === '/search' ? { results: rows } : { results: [], docs: [] });
+    }, { context, phase, seedEvidence: seed });
+    seen.push(result as { overflow?: string[] }); return result;
+  };
+  return { deps, seen, req };
+}
+const runOver = async (h: ReturnType<typeof appleOverLimit>) => {
+  vi.useFakeTimers(); const pending = runDiscovery(h.req, h.deps, new AbortController().signal); await vi.runAllTimersAsync(); return pending;
+};
+
+test('over-20 exact Apple rows suppress the affected book fact instead of keeping an arbitrary survivor', async () => {
+  const rows = Array.from({ length: 22 }, (_, i) => appleSecond(500 + i, 'Second', i === 21 ? '2027-02-01T00:00:00Z' : '2027-03-01T00:00:00Z'));
+  const h = appleOverLimit(rows); const result = await runOver(h);
+  expect(h.seen.some(item => item.overflow?.includes('book'))).toBe(true);
+  expect(result.summary.reasons).toContain('budget');
+  expect(result.proposals.releases.book).toBeNull();
+  expect(result.summary.formats.book).toBe('unknown');
+});
+
+test('unknown-title Apple response over 20 rows reports an overflow for the requested format', async () => {
+  const rows = Array.from({ length: 22 }, (_, i) => appleSecond(600 + i, `Other ${i}`, '2027-05-01T00:00:00Z'));
+  const req = request({ formats: ['book'] }); req.target.title = '';
+  const h = appleOverLimit(rows, req); const result = await runOver(h);
+  expect(h.seen[0].overflow).toEqual(['book']);
+  expect(result.proposals.releases.book).toBeNull();
+});
+
+test('over-20 Apple rows with all exact rows inside the limit keep the dated fact without suppression', async () => {
+  const rows = [...Array.from({ length: 21 }, (_, i) => appleSecond(700 + i, `Other ${i}`, '2027-05-01T00:00:00Z')), appleSecond(800, 'Second', '2027-03-01T00:00:00Z')];
+  const h = appleOverLimit(rows); const result = await runOver(h);
+  expect(h.seen.every(item => !item.overflow?.length)).toBe(true);
+  expect(result.summary.reasons).toContain('budget');
+  expect(result.proposals.releases.book).toMatchObject({ date: '2027-03-01' });
+});
+
+test('a preferred-market conflict past the 20th Apple row survives and never overwrites the accepted date', async () => {
+  const rows = [...Array.from({ length: 20 }, (_, i) => appleSecond(900 + i, `Other ${i}`, '2027-05-01T00:00:00Z')),
+    appleSecond(950, 'Second', '2027-03-01T00:00:00Z'), appleSecond(950, 'Second', '2027-02-01T00:00:00Z')];
+  const h = appleOverLimit(rows); const result = await runOver(h);
+  expect(h.seen.every(item => !item.overflow?.length)).toBe(true);
+  expect(result.proposals.conflicts.length).toBeGreaterThan(0);
+  expect(result.proposals.releases.book).toBeNull();
+});
+
+test('enrich output never leaves a dangling citation to a removed seed source', async () => {
+  vi.useFakeTimers();
+  const { deps } = lateIdentityHarness(title => title === 'Blood and Bone' ? [appleRecord(901, 'Blood and Bone', '2026-11-03T08:00:00Z')] : []);
+  deps.search = vi.fn(async () => ({ sources: [publisherSource('bloodandbone', 'Blood and Bone')], identities: [], editions: [] }));
+  const pending = runDiscovery(lateRequest(), deps, new AbortController().signal); await vi.runAllTimersAsync(); const result = await pending;
+  const ids = new Set(result.sources.map(item => item.id));
+  for (const item of [result.proposals.identity, result.proposals.releases.book, ...result.proposals.conflicts.flatMap(c => []), ...result.proposals.related])
+    for (const citation of (item as { citations?: Array<{ sourceId: string }> } | null)?.citations ?? []) expect(ids.has(citation.sourceId)).toBe(true);
+});
+
+// I1: a model-asserted publication status needs availability language in the cited quote itself.
+async function aiClaim(quote: string, claim: 'published' | 'announced', seed?: EditionEvidence) {
+  const base = bundle(seed ? [seed] : [edition({ id: 'seed', citations: [{ sourceId: 's9', quote }] })]);
+  if (!seed) base.editions = [];
+  base.sources[0].text = seed ? `${base.sources[0].text} ${seed.citations[0].quote} ${quote}` : `${quote} Second by Example Author.`;
+  const deps = dependencies(base); deps.canSearch = false;
+  deps.extract = vi.fn<DiscoveryDependencies['extract']>(async (_req, evidence) => ({ usage: emptyUsage(), evidence: { sources: evidence.sources, identities: [],
+    editions: [edition({ id: 'ai-1', editionKey: null, market: 'US', date: null, precision: 'none', publication: claim,
+      citations: [{ sourceId: evidence.sources[0].id, quote }] })] } }));
+  return runDiscovery(request({ formats: ['book'], useAi: true }), deps, new AbortController().signal);
+}
+test.each([
+  ['Title: Dawn.', 'published', 'catalogued'],
+  ['Pre-order now', 'published', 'announced'],
+  ['Publication date: TBA', 'published', 'announced'],
+  ['It will be released in 2027', 'published', 'announced'],
+  ['Pre-order now, publication date to be confirmed.', 'announced', 'announced'],
+  ['Title: Dawn.', 'announced', 'catalogued'],
+  ['Released August 19, 2026.', 'published', 'released'],
+] as const)('AI edition asserting %s citing %j resolves to %s', async (quote, claim, state) => {
+  const result = await aiClaim(quote, claim === 'published' ? 'published' : 'announced');
+  expect(result.proposals.releases.book).toMatchObject({ state });
+});
+
+test('AI published citing "not yet released" is not released', async () => {
+  const result = await aiClaim('Not yet released.', 'published');
+  expect(result.proposals.releases.book?.state).not.toBe('released');
+});
+
+test('deterministic catalogued record is not outranked by unsupported AI published', async () => {
+  const quote = 'Title: Dawn.';
+  const result = await aiClaim(quote, 'published', edition({ id: 'cat-1', editionKey: 'isbn:cat', market: 'US', date: null, precision: 'none', publication: 'catalogued',
+    citations: [{ sourceId: 's9', quote: 'Catalogue entry.' }] }));
+  expect(result.proposals.releases.book).toMatchObject({ state: 'catalogued' });
+  expect(result.proposals.releases.book?.provenance.editionKey).toBe('isbn:cat');
+  expect(result.proposals.releases.book?.citations.map(c => c.quote)).toEqual(['Catalogue entry.']);
+});
+
+test('deterministic announced record wins a tie against an AI announced record', async () => {
+  const result = await aiClaim('Pre-order now', 'announced', edition({ id: 'cat-1', editionKey: 'isbn:cat', market: 'US', date: null, precision: 'none', publication: 'announced',
+    citations: [{ sourceId: 's9', quote: 'Announced by publisher.' }] }));
+  expect(result.proposals.releases.book).toMatchObject({ state: 'announced' });
+  expect(result.proposals.releases.book?.provenance.editionKey).toBe('isbn:cat');
+  expect(result.proposals.releases.book?.citations.map(c => c.quote)).toEqual(['Announced by publisher.']);
+});
+
+// I4: decorated audio titles past the 20th row still count as qualifying matches.
+test('over-20 Apple audio rows with decorated qualifying titles flag overflow and suppress the format', async () => {
+  const audioRow = (id: number, name: string, date: string) => ({ collectionId: id, trackId: id, collectionName: name, artistName: 'Example Author',
+    collectionViewUrl: `https://books.apple.com/ca/audiobook/x/id${id}`, releaseDate: date, country: 'CA', language: 'English' });
+  const rows = [...Array.from({ length: 21 }, (_, i) => audioRow(300 + i, `Other ${i}`, '2027-05-01T00:00:00Z')),
+    ...Array.from({ length: 21 }, (_, i) => audioRow(400 + i, 'Second: Example, Book 2 (Unabridged)', i === 20 ? '2027-02-01T00:00:00Z' : '2027-04-01T00:00:00Z'))];
+  const h = appleOverLimit(rows, request({ formats: ['audio'] })); const result = await runOver(h);
+  expect(h.seen.some(item => item.overflow?.includes('audio'))).toBe(true);
+  expect(result.proposals.releases.audio).toBeNull();
+  expect(result.summary.formats.audio).toBe('unknown');
 });

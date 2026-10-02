@@ -2,6 +2,7 @@
 import { afterEach, expect, test, vi } from 'vitest';
 import { createDiscoveryRuntime } from '../../server/discovery/runtime';
 import { runDiscovery } from '../../server/discovery/runDiscovery';
+import { createRetrievalContext } from '../../server/discovery/retrievalContext';
 import { request } from './fixtures';
 
 afterEach(() => vi.useRealTimers());
@@ -140,3 +141,18 @@ test('runtime hydrates canonical Hardcover seed with keyless English Apple produ
   }
 });
 
+test('enrichment phase never spends a second Hardcover request and keeps the shared ledger', async () => {
+  vi.useFakeTimers(); const hosts: string[] = [];
+  const fetcher = vi.fn<typeof fetch>(async input => {
+    const url = new URL(String(input)); hosts.push(url.hostname);
+    return Response.json(url.hostname === 'api.hardcover.app' ? { data: { series: [] } } : { results: [], docs: [] });
+  });
+  const runtime = createDiscoveryRuntime({ tavilyKey: null, deepseekKey: null, hardcoverToken: 'fake-token', model: 'deepseek-flash' }, fetcher);
+  const context = createRetrievalContext(); const req = request({ formats: ['book'] });
+  const initial = runtime.catalogs(req, ['CA'], new AbortController().signal, context, 'initial'); await vi.runAllTimersAsync(); const first = await initial;
+  const enrich = runtime.catalogs(req, ['CA'], new AbortController().signal, context, 'enrich'); await vi.runAllTimersAsync(); const second = await enrich;
+  expect(hosts.filter(host => host === 'api.hardcover.app')).toHaveLength(1);
+  expect(first.usage.hardcover).toBe(1); expect(second.usage.hardcover).toBe(1);
+  expect(second.usage.apple).toBe(hosts.filter(host => host === 'itunes.apple.com').length);
+  expect(context.claim('hardcover')).toBe(false);
+});

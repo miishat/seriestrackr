@@ -1,5 +1,7 @@
 # Phase 2 release discovery: complete status report
 
+Release and cover pipeline repair, 2026-10-02: see section 19 for the offline replay of the 11 failures and two clean controls, the bounded pilot and the measured limitations. It supersedes the "featured main membership" requirement and the unsupported-case lists below where they conflict.
+
 Post-integration follow-up, 2026-10-01: the [Witness matching repair](discovery-witness-matching-fix.md) now establishes the user's Book 3 input and independently verifies CA ebook/audio dates of 2026-10-01 without AI. Witness's unsupported result in the earlier pilot below remains historical. The follow-up fixes ordinal subtitles and singular/plural aliases while preserving strict evidence guards.
 
 Updated 2026-10-01. Current status: Phase 2 implementation and verification are complete with named coverage and custom-order limits. Fresh final checks passed 1133 tests across 33 files, typecheck, build (55 modules) and all 24 browser tests (14 discovery, 10 existing workflows, 10.7 seconds). The sole final-review P2 was repaired with four expected failing regressions and approved by independent scoped re-review after 82 focused tests, with no new material findings.
@@ -224,3 +226,52 @@ These nine existing ledger rulings are retained in chronological order. They rec
 | 7 | Preserve legacy manual HTTP(S) validation and apply strict URL whitelists to new discovery metadata. Narrowing legacy inputs would break valid v1 recovery. | Legacy links retain the existing broader allowance. |
 | 8 | Use shared `normalizeIdentity` throughout acceptance and the dialog. | Equivalent spelling variants preserve unselected same-work facts. |
 | 9 | Leave nonblank custom-order notes source-only/manual because the current evidence schema cannot attest arbitrary custom-order semantics. Numeric identity does not prove agreement; fractional positions still require cited identity. | Valid custom-ordered series need manual entry. |
+
+## 19. 2026-10-02 release and cover pipeline repair: replayed failure matrix
+
+This section is the measured result of the repair. It is offline evidence: recorded provider responses were replayed with a fetcher that cannot reach the network (`tests/discovery/pipeline-repair.test.ts`, fixtures and manifest in `tests/discovery/data/pipeline-repair/`). The raw investigation lives in `docs/investigations/2026-10-01-release-pipeline/`. No live provider was called and no AI ran.
+
+### Saved-title recheck versus blank-title discovery
+
+A saved-title recheck feeds the title already stored in the library and verifies it. Blank-title autonomous discovery clears the title and asks the pipeline to find the next work. Witness, The Devils and Book of the Dead were rechecked with their saved titles, so their dates show format and market handling, not identity discovery. The other six failures (Blacktongue, Last Horizon, Dark Profit, Ana and Din, Malazan, Path to Ascendancy) are blank-title discovery. The bounded pilot makes the caller choose the mode (`--mode saved-title|blank-title`) and prints it in the dry run.
+
+### Replay results
+
+| Case | Mode | Replay outcome |
+| --- | --- | --- |
+| Blacktongue Thief, position 2 | blank-title | No identity; The Daughters' War offered as a prequel, review-only, no position. Primary evidence is a synthetic Macmillan sample. |
+| Dark Profit Saga, position 4 | blank-title | No identity; Crypt Currency offered as a continuation, review-only. Primary evidence is a synthetic author-site sample. Cover: Google Books quota, others no-match, no candidate. |
+| Malazan Empire, position 5 | blank-title | Blood and Bone at position 5 from the non-featured Hardcover row. Complete. Apple, Google Books and Tavily enrichment is not demonstrated: those rows are synthetic and empty. |
+| Book of the Dead, position 5 | saved-title | Ebook catalogued without a date (not announced); audiobook 2026-08-19 from the Apple product page. Cover: Hardcover 1617 by 2560 first, audio art last. |
+| Path to Ascendancy, position 5 | blank-title | No identity; the release path emits no cover candidates (cover art is a separate Find cover action, so the stored book 3 art is not exercised). Partial with budget and unknown-identity reasons. |
+| Tale of Witness, position 3 | saved-title | Book 2026-10-06, audio 2026-10-01. Cover: exact-work Apple ebook art labelled next. |
+| The Devils, position 2 | saved-title | Book 2027-05-11. Cover: every recorded candidate is The Heretics as next Apple ebook art and none carries the old square asset id (the previous-title search is never queried). |
+| Last Horizon, position 5 | blank-title | No identity, sparse primary control produces no candidate. Cover: honest empty result with Google Books quota apart from no-match. |
+| Ana and Din, position 4 | blank-title | No identity, no fabricated candidate. Cover: author suggestion Bennett for review, Foundryside rejected. |
+| Sun Eater, position 7 (control) | saved-title | Complete, no reasons, book 2025-11-18, audio 2025-11-20. |
+| The Band, position 2 (control) | saved-title | Complete, no reasons, book and audio 2018-08-28. |
+
+All 13 cases replay and every assertion holds. No case was skipped. Asserted release statuses: Blacktongue, Dark Profit, Path to Ascendancy and Ana and Din ended partial with reasons budget and unknown-identity; Last Horizon ended complete with only unknown-identity (unknown identity alone does not make a check partial); Malazan, Sun Eater, The Band and Book of the Dead ended complete. Witness and Devils ended partial with a budget reason.
+
+### Behavior measured
+
+- Primary-source search outranks audio while identity is unresolved, inside the three-search ceiling.
+- A numbered identity never comes from a prequel, continuation or search mention. Related works are review-only.
+- Hardcover `featured` no longer rejects a primary entry; compilation, author role, exact series, position and English edition guards remain.
+- An Apple response over 20 rows keeps qualifying rows first, using the same canonical-title and author rule as release binding (decorated audio and ordinal ebook forms included). The affected format's fact is suppressed only when the qualifying rows alone exceed 20 or the target title is unknown, since completeness cannot be proven then. Otherwise the over-limit response only adds the budget reason.
+- Catalogued, announced and published are separate lifecycle states; a date belongs to its own format.
+- The cover service is user-triggered and local, with budgets of Hardcover 1, Google Books 2, Apple 2 and Open Library 2 starts, nine candidates and a 90 second deadline.
+
+### Measured limitations and unverified items
+
+- Fixtures use three response origins, recorded in the manifest: captured, captured with a re-keyed request URL (the current builder adds Open Library fields and a limit, and the Google key), and synthetic. The Blacktongue and Dark Profit primary-search rows, the empty enrichment rows (11 of 12 Malazan rows) and the Hardcover series wrapper are synthetic.
+- Not verified against live data: the Hardcover `series.author` provider filter, the Apple badge markup, the Pike author-site grammar and the Macmillan numbered grammar (both from synthetic samples, since the saved publisher responses were HTTP 403 and 429), and the Hardcover `cached_image` shape.
+- The Ana and Din cover replay serves the Bennett control Google Books response under the Benett request URL, so the fuzzy Benett to Bennett match is inferred, not captured.
+- The pilot runs only the release path, so the cover service budgets are not live-checked.
+- Replay proves the pipeline rules, not live provider availability. Live source availability, Amazon-exclusive Will Wight ebooks and provider quota remain external limits.
+- Apple cover candidates carry no dimensions, so portrait or square shape is not asserted by the replay for them.
+- With the next title known, the previous-title Open Library search is not made, so The Devils does not offer its old square art as a previous cover.
+
+### Verification
+
+`npm test` passed 1449 of 1451 tests (46 files). The two failures are the known baseline compact poster test in `tests/library-ui.test.tsx` and a `tests/discovery/launcher.test.ts` timeout under load that passes alone (7 of 7). `npx tsc --noEmit -p .` is clean. Browser end-to-end tests, the build and credential scanning of rebuilt assets were not rerun for this task. The pilot's live `--run` path was not executed.

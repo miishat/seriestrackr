@@ -4,7 +4,7 @@ import { displaySeriesRelease } from './releases';
 import { SeriesCard } from './SeriesCard';
 import { SeriesTable } from './SeriesTable';
 
-const states: [ReleaseState, string][] = [['not-checked','Not checked'],['not-found','Not Found'],['announced','Announced'],['scheduled','Scheduled'],['released','Available']];
+const states: [ReleaseState, string][] = [['not-checked','Not checked'],['not-found','Not Found'],['catalogued','Edition found; release unverified'],['announced','Announced; date unknown'],['scheduled','Scheduled'],['released','Available']];
 function FilterMenu<T extends string>({ label, allLabel, options, selected, onChange }: {
   label: string; allLabel: string; options: readonly (readonly [T, string])[]; selected: T[]; onChange: (values: T[]) => void;
 }) {

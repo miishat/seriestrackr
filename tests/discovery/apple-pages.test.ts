@@ -182,3 +182,46 @@ test('combined API and HTML attempts never exceed twelve and HTML has its own si
   expect(appleCalls).toBe(12); expect(result.usage.apple).toBe(12); expect(htmlCalls).toBe(6);
   expect(result.reasons).toContain('budget');
 });
+
+const ascensionTitle = 'Ascension: A LitRPG Adventure (Book of the Dead 5) (Unabridged)';
+const ascensionUrl = 'https://books.apple.com/ca/audiobook/ascension/id6745';
+const ascensionReq = request({ target: { series: 'Book of the Dead', author: 'RinoZ', position: 5, title: 'Ascension', orderNote: '' } });
+const ascensionApi = (overrides: Record<string, unknown> = {}) => normalizeApple({ results: [{ trackId: 6745, collectionId: 6745, collectionName: ascensionTitle, artistName: 'RinoZ', collectionViewUrl: ascensionUrl, releaseDate: '2026-08-19T07:00:00Z', ...overrides }] }, 'CA', 'audio', checkedAt);
+const ascensionPage = (name = ascensionTitle, author = 'RinoZ', inLanguage?: string) => page({ '@type': 'Audiobook', name, author, bookFormat: undefined, inLanguage, datePublished: '2026-08-19', url: ascensionUrl }, badge(inLanguage === 'fr' ? 'French' : 'English'));
+test('recorded Ascension replay hydrates language and keeps the day', () => {
+  const api = ascensionApi();
+  expect(api.editions[0]).toMatchObject({ title: ascensionTitle, language: null, date: '2026-08-19' });
+  const result = normalizeAppleProductPage(ascensionPage(), api.sources[0], api.editions[0], ascensionReq, checkedAt);
+  expect(result.editions[0]).toMatchObject({ title: 'Ascension', language: 'en', date: '2026-08-19', format: 'audio' });
+  expect(result.sources[0].text).toContain(`Literal audio label: ${ascensionTitle}.`);
+  expect(parseExtraction(result, result.sources).ok).toBe(true);
+});
+test.each([
+  ['wrong author', () => ({ api: ascensionApi({ artistName: 'Other' }), html: ascensionPage(), url: ascensionUrl })],
+  ['wrong product id', () => ({ api: ascensionApi(), html: ascensionPage().replace(ascensionUrl, 'https://books.apple.com/ca/audiobook/ascension/id9999'), url: ascensionUrl })],
+  ['landscape unrelated product', () => ({ api: ascensionApi(), html: ascensionPage('Landscape Photography Basics'), url: ascensionUrl })],
+  ['wrong market', () => ({ api: ascensionApi(), html: ascensionPage(), url: ascensionUrl.replace('/ca/', '/us/') })],
+  ['french page', () => ({ api: ascensionApi(), html: ascensionPage(ascensionTitle, 'RinoZ', 'fr'), url: ascensionUrl })],
+])('Ascension replay fails closed: %s', (_name, build) => {
+  const { api, html, url } = build();
+  expect(normalizeAppleProductPage(html, { ...api.sources[0], url }, api.editions[0], ascensionReq, checkedAt).editions).toHaveLength(0);
+});
+
+const eyebrow = (label: string) => `<figure class="book-badge"><div class="book-badge__eyebrow">${label}</div><div class="book-badge__caption">x</div></figure>`;
+test.each([
+  ['RELEASED', 'published'], ['PREORDER', 'announced'], ['PRE-ORDER', 'announced'],
+])('bound infobar %s badge sets publication %s; API and bare pages stay catalogued', (label, expected) => {
+  const api = ascensionApi();
+  expect(api.editions[0].publication).toBe('catalogued');
+  const html = ascensionPage().replace('</section></article>', `${eyebrow(label)}</section></article>`);
+  const result = normalizeAppleProductPage(html, api.sources[0], api.editions[0], ascensionReq, checkedAt);
+  expect(result.editions[0]).toMatchObject({ publication: expected, date: '2026-08-19', precision: 'day' });
+  expect(result.sources[0].text).toContain(`Publication: ${expected}.`);
+  const bare = normalizeAppleProductPage(ascensionPage(), api.sources[0], api.editions[0], ascensionReq, checkedAt);
+  expect(bare.editions[0]).toMatchObject({ publication: 'catalogued' });
+});
+test('ambiguous or duplicate publication badges stay catalogued', () => {
+  const api = ascensionApi();
+  const html = ascensionPage().replace('</section></article>', `${eyebrow('RELEASED')}${eyebrow('PREORDER')}</section></article>`);
+  expect(normalizeAppleProductPage(html, api.sources[0], api.editions[0], ascensionReq, checkedAt).editions[0].publication).toBe('catalogued');
+});

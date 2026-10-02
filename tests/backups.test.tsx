@@ -7,6 +7,12 @@ import type { LibraryDocument } from '../src/features/library/model';
 import { decodeBackup, encodeBackup } from '../src/storage/backup';
 import { seriesFixture } from './fixtures';
 
+const encoder = vi.hoisted(() => ({ fail: false }));
+vi.mock('../src/storage/backup', async (importOriginal) => {
+  const real = await importOriginal<typeof import('../src/storage/backup')>();
+  return { ...real, encodeBackup: (doc: Parameters<typeof real.encodeBackup>[0]) => { if (encoder.fail) throw new Error('Library is not valid for export.'); return real.encodeBackup(doc); } };
+});
+
 const key = 'seriestrackr:v1';
 const limit = 5 * 1024 * 1024;
 
@@ -204,4 +210,56 @@ test('version 1 recovery download retains the exact original bytes', async () =>
   const blob = vi.mocked(URL.createObjectURL).mock.calls[0][0] as Blob;
   expect(await readBlob(blob)).toBe(raw);
   expect(localStorage.getItem(key)).toBe(raw);
+});
+
+test('v1 and v2 backups import as version 3 and exports omit unaccepted discovery data', () => {
+  for (const version of [1, 2]) {
+    const old = { ...documentWithSeries(), version, series: [{ ...seriesFixture({ coverUrl: 'https://example.com/m.jpg' }) }] };
+    delete (old.series[0] as Partial<typeof old.series[0]>).coverAttribution;
+    const decoded = decodeBackup(JSON.stringify(old));
+    expect(decoded.ok && decoded.value.version).toBe(3);
+    expect(decoded.ok && decoded.value.series[0]).toMatchObject({ coverUrl: 'https://example.com/m.jpg', coverAttribution: null });
+  }
+  const polluted = documentWithSeries();
+  Object.assign(polluted.series[0], { coverCandidates: [{ id: 'c1' }], related: [{ title: 'Daughters' }], diagnostics: { trace: 1 } });
+  const text = encodeBackup(polluted);
+  expect(text).not.toMatch(/coverCandidates|related|diagnostics|Daughters/);
+});
+
+test('encodeBackup refuses to serialize a document that fails validation', () => {
+  const doc = { ...emptyDocument(), series: [{ id: 'broken' }] } as unknown as LibraryDocument;
+  expect(() => encodeBackup(doc)).toThrow(/backup/i);
+});
+
+test('Export now shows a visible error instead of throwing when the document cannot be encoded', async () => {
+  const user = userEvent.setup(); seed(); render(<App />);
+  await user.click(screen.getByRole('button', { name: 'Backups' }));
+  const replacement = { ...documentWithSeries(), series: [seriesFixture({ id: 'new', name: 'Imported' })] };
+  chooseFile(JSON.stringify(replacement));
+  await screen.findByRole('button', { name: 'Confirm replacement' });
+  vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('quota exceeded'); });
+  await user.click(screen.getByRole('button', { name: 'Confirm replacement' }));
+  encoder.fail = true;
+  try {
+    await user.click(screen.getByRole('button', { name: 'Export now' }));
+    expect(screen.getByText(/Could not export: Library is not valid for export/)).toBeVisible();
+  } finally { encoder.fail = false; }
+});
+
+test('a stale export error is cleared once the library leaves unsaved mode', async () => {
+  const user = userEvent.setup(); seed(); render(<App />);
+  const save = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('quota exceeded'); });
+  await user.click(screen.getByRole('button', { name: /Dark Theme|Light Theme/ }));
+  encoder.fail = true;
+  try {
+    await user.click(await screen.findByRole('button', { name: 'Export now' }));
+    expect(screen.getByText(/Could not export/)).toBeVisible();
+    save.mockRestore();
+    await user.click(screen.getByRole('button', { name: /Dark Theme|Light Theme/ }));
+    expect(screen.queryByRole('button', { name: 'Export now' })).toBeNull();
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('quota exceeded'); });
+    await user.click(screen.getByRole('button', { name: /Dark Theme|Light Theme/ }));
+    await screen.findByRole('button', { name: 'Export now' });
+    expect(screen.queryByText(/Could not export/)).toBeNull();
+  } finally { encoder.fail = false; }
 });

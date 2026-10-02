@@ -8,11 +8,16 @@ import { appleCanonicalTitle, appleProductUrl, normalizeAppleProductPage } from 
 import { createRateQueue } from './rateQueue';
 import { normalizeGoogleBooks } from './googleBooks';
 import { diagnosticCounts, emitDiagnostic, type DiagnosticObserver } from './diagnostics';
+import type { CoverCandidate } from '../../shared/covers';
+import { createRetrievalContext, type RetrievalContext, type RetrievalPhase } from './retrievalContext';
 
-export type CatalogResult = { evidence: EvidenceBundle; usage: Usage; reasons: Reason[] };
-const appleQueue = createRateQueue(3100);
-const openLibraryQueue = createRateQueue(1100);
-const googleBooksQueue = createRateQueue(1100);
+// overflow names the formats whose exact Apple record set could not be proven complete within the record limit.
+export type CatalogResult = { evidence: EvidenceBundle; usage: Usage; reasons: Reason[]; overflow?: Array<'book' | 'audio'>; covers?: CoverCandidate[] };
+// Shared by every collection so cached metadata promises stay valid across phases.
+const unavailable = Symbol('unavailable');
+export const appleQueue = createRateQueue(3100);
+export const openLibraryQueue = createRateQueue(1100);
+export const googleBooksQueue = createRateQueue(1100);
 const empty = (): EvidenceBundle => ({ sources: [], identities: [], editions: [] });
 const object = (input: unknown): Record<string, unknown> => input !== null && typeof input === 'object' && !Array.isArray(input)
   ? input as Record<string, unknown> : {};
@@ -94,9 +99,37 @@ export function normalizeApple(input: unknown, market: string, format: 'ebook' |
   return normalizeAppleRecords(input, market, format, checkedAt);
 }
 
-function normalizeAppleRecords(input: unknown, market: string, format: 'ebook' | 'audio', checkedAt: string, languageStates?: Map<string, LanguageMetadata>): EvidenceBundle {
+const APPLE_RECORD_LIMIT = 20;
+// Over-limit responses are grouped deterministically by relevance: exact work
+// records (and records sharing their identifier) keep their response order and
+// come first, so a target or conflicting alternative past the 20th row survives.
+// The caller always marks any over-limit response with the budget reason.
+// `incomplete.value` is raised when the exact set cannot be proven complete: unknown
+// relevance, or more exact rows than the limit retains.
+function boundedAppleRecords(rows: unknown[], format: 'ebook' | 'audio', relevance?: { title: string; author: string; request?: CheckRequest }, incomplete?: { value: boolean }): unknown[] {
+  if (rows.length <= APPLE_RECORD_LIMIT) return rows;
+  if (!relevance?.title.trim()) { if (incomplete) incomplete.value = true; return rows.slice(0, APPLE_RECORD_LIMIT); }
+  const idOf = (raw: Record<string, unknown>) => format === 'ebook' ? raw.trackId : raw.collectionId ?? raw.trackId;
+  const titleOf = (raw: Record<string, unknown>) => format === 'ebook' ? raw.trackName : raw.collectionName ?? raw.trackName;
+  // Relevance mirrors release binding: the same canonical-title rule (decorated audio forms,
+  // ordinal ebook forms) and author check decide which rows qualify.
+  const qualifies = (raw: Record<string, unknown>) => {
+    const name = titleOf(raw);
+    if (typeof name !== 'string' || typeof raw.artistName !== 'string') return false;
+    if (normalizeIdentity(name) === normalizeIdentity(relevance.title) && normalizeIdentity(raw.artistName) === normalizeIdentity(relevance.author)) return true;
+    return relevance.request !== undefined && appleCanonicalTitle({ title: name, author: raw.artistName, format: format === 'audio' ? 'audio' : 'ebook' } as EditionEvidence, relevance.request) !== null;
+  };
+  const exactIds = new Set(rows.map(object).filter(qualifies).map(idOf));
+  const exact = rows.filter(row => exactIds.has(idOf(object(row))));
+  const rest = rows.filter(row => !exactIds.has(idOf(object(row))));
+  if (exact.length > APPLE_RECORD_LIMIT && incomplete) incomplete.value = true;
+  return [...exact, ...rest].slice(0, APPLE_RECORD_LIMIT);
+}
+
+function normalizeAppleRecords(input: unknown, market: string, format: 'ebook' | 'audio', checkedAt: string, languageStates?: Map<string, LanguageMetadata>,
+  relevance?: { title: string; author: string; request?: CheckRequest }, incomplete?: { value: boolean }): EvidenceBundle {
   const bundle = empty();
-  for (const item of list(object(input).results).slice(0, 20)) {
+  for (const item of boundedAppleRecords(list(object(input).results), format, relevance, incomplete)) {
     const raw = object(item);
     const identifier = format === 'ebook' ? raw.trackId : raw.collectionId ?? raw.trackId;
     if (!(typeof identifier === 'number' && Number.isSafeInteger(identifier) && identifier > 0)) continue;
@@ -118,7 +151,7 @@ function normalizeAppleRecords(input: unknown, market: string, format: 'ebook' |
       .flatMap(value => Array.isArray(value) ? value : [value]));
     const edition = { id, title, author, position: null, editionKey: isbn(raw.isbn13 ?? raw.isbn) ?? `apple:${identifier}`,
       format, language: metadata.value, market: contradictory ? null : actualMarket,
-      ...date(raw.releaseDate, true) } satisfies Omit<EditionEvidence, 'citations'>;
+      ...date(raw.releaseDate, true), publication: 'catalogued' as const } satisfies Omit<EditionEvidence, 'citations'>;
     const quote = bibliographicText(edition);
     const narrator = text(raw.narratorName);
     const source: Source = { id, title, url, provider: 'apple', market: edition.market, retrievedAt: checkedAt,
@@ -151,7 +184,7 @@ export function normalizeOpenLibrary(input: unknown, checkedAt: string): Evidenc
     const format = isEdition ? openLibraryFormat(raw.physical_format) : null;
     const id = `openlibrary:${key.split('/').pop()}`;
     const facts = { id, title, author, position: null, editionKey: isbn(raw.isbn_13 ?? raw.isbn_10) ?? key,
-      format, language: isEdition ? language(raw.languages) : null, market: null, ...(isEdition ? date(raw.publish_date) : { date: null, precision: 'none' as const }) };
+      format, language: isEdition ? language(raw.languages) : null, market: null, publication: 'catalogued' as const, ...(isEdition ? date(raw.publish_date) : { date: null, precision: 'none' as const }) };
     const quote = format ? bibliographicText({ ...facts, format })
       : `Title: ${title}. Author: ${author}. Format: unknown. Language: ${facts.language ?? 'unknown'}. Market: unknown. Date: ${facts.date ?? 'unknown'}. Precision: ${facts.precision}. Edition: ${isEdition ? facts.editionKey : 'unknown'}.`;
     const source: Source = { id, title, url: `https://openlibrary.org${key}`, provider: 'openlibrary', market: null, retrievedAt: checkedAt, text: quote };
@@ -204,12 +237,14 @@ function joinAppleLanguages(evidence: EvidenceBundle, originalLanguages: Map<str
 }
 
 export async function collectCatalogs(request: CheckRequest, markets: string[], signal: AbortSignal, fetcher: typeof fetch = fetch,
-  options: { googleBooksKey?: string | null; onDiagnostic?: DiagnosticObserver; appleIsbnJoin?: boolean; appleProductPages?: boolean; seedEvidence?: EvidenceBundle } = {}): Promise<CatalogResult> {
+  options: { googleBooksKey?: string | null; onDiagnostic?: DiagnosticObserver; appleIsbnJoin?: boolean; appleProductPages?: boolean; seedEvidence?: EvidenceBundle;
+  context?: RetrievalContext; phase?: RetrievalPhase } = {}): Promise<CatalogResult> {
   const evidence = empty();
-  const usage = emptyUsage();
+  const context = options.context ?? createRetrievalContext();
+  const seeded = { sources: new Set<string>(), identities: new Set<string>() };
   const reasons: Reason[] = [];
+  const overflow = new Set<'book' | 'audio'>();
   const originalLanguages = new Map<string, LanguageMetadata>();
-  const unavailable = Symbol('unavailable');
   const checkedAt = new Date().toISOString();
   const reason = (value: Reason) => {
     if (!reasons.includes(value)) reasons.push(value);
@@ -218,14 +253,20 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
   };
   if (options.seedEvidence) {
     const seed = parseExtraction(options.seedEvidence, options.seedEvidence.sources);
-    if (seed.ok) merge(evidence, seed.value); else reason('invalid-evidence');
+    if (seed.ok) {
+      merge(evidence, seed.value);
+      // Enrichment seeds are already retained by the caller; they are context, not new evidence.
+      if (options.phase === 'enrich') {
+        seed.value.sources.forEach(source => seeded.sources.add(source.id));
+        seed.value.identities.forEach(identity => seeded.identities.add(JSON.stringify(identity)));
+      }
+    } else reason('invalid-evidence');
   }
   const preferred = country(request.preferredMarket);
   const countries = [...new Set([preferred, ...markets.map(country)].filter((item): item is string => item !== null && (item === preferred || ['US', 'GB', 'CA'].includes(item))))].slice(0, 4);
   const formats = [...new Set(request.formats)];
-  const queries = new Map<string, Promise<unknown>>();
+  const queries = context.cache;
   const hydrated = new Set<string>();
-  let htmlStarted = 0;
   const googleBooksKey = options.googleBooksKey?.trim() ?? '';
   const seriesQuery = `${request.target.series} inauthor:${request.target.author}`;
   const titleQuery = (title: string) => `intitle:${title} inauthor:${request.target.author}`;
@@ -242,12 +283,11 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
     const cached = queries.get(key);
     if (cached) return cached;
     const queue = { apple: appleQueue, openlibrary: openLibraryQueue, googlebooks: googleBooksQueue }[provider];
-    const cap = { apple: 12, openlibrary: 3, googlebooks: 2 }[provider];
     if (signal.aborted) { reason('cancelled'); return Promise.resolve(unavailable); }
-    if (usage[provider] >= cap) { reason('budget'); return Promise.resolve(unavailable); }
+    if (!context.canClaim(provider)) { emitDiagnostic(options.onDiagnostic, { stage: 'catalog', category: 'bounds', ...diagnosticCounts(evidence), provider, rule: 'request-bound' }); reason('budget'); return Promise.resolve(unavailable); }
     const operation = queue.run(async () => {
-      usage[provider]++;
-      return fetchProviderJson(provider, path, {}, signal, fetcher);
+      if (!context.claim(provider)) throw new ProviderError(provider, 'budget');
+      return fetchProviderJson(provider, path, {}, signal, fetcher, options.onDiagnostic);
     }, signal).catch(error => {
       reason(signal.aborted ? 'cancelled' : error instanceof ProviderError ? error.reason : 'provider-error');
       return unavailable;
@@ -278,7 +318,10 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
     if (!Array.isArray(results)) { reason('invalid-evidence'); return; }
     if (results.length > 20) reason('budget');
     const languageStates = new Map<string, LanguageMetadata>();
-    const normalized = normalizeAppleRecords(raw, market, format === 'book' ? 'ebook' : 'audio', checkedAt, languageStates);
+    const incomplete = { value: false };
+    const normalized = normalizeAppleRecords(raw, market, format === 'book' ? 'ebook' : 'audio', checkedAt, languageStates,
+      { title: target.title, author: request.target.author, request: { ...request, target } }, incomplete);
+    if (incomplete.value) overflow.add(format);
     if (results.length && !normalized.sources.length) reason('invalid-evidence');
     for (const [incomingId, actualId] of merge(evidence, normalized)) {
       if (!originalLanguages.has(actualId) && languageStates.has(incomingId)) originalLanguages.set(actualId, languageStates.get(incomingId)!);
@@ -307,13 +350,12 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
       if (hydrated.has(key)) continue;
       const proposal = selectProposals(request, evidence, checkedAt).releases[edition.format === 'audio' ? 'audio' : 'book'];
       if (proposal?.date && proposal.provenance.sourceMarket === preferred) continue;
-      if (usage.apple >= 12 || htmlStarted >= 6) { reason('budget'); break; }
+      if (!context.canClaim('apple', true)) { reason('budget'); break; }
       hydrated.add(key);
       try {
         const html = await appleQueue.run(async () => {
-          if (usage.apple >= 12 || htmlStarted >= 6) throw new ProviderError('apple', 'budget');
-          usage.apple++; htmlStarted++;
-          return fetchAppleProductText(source.url, signal, fetcher);
+          if (!context.claim('apple', true)) throw new ProviderError('apple', 'budget');
+          return fetchAppleProductText(source.url, signal, fetcher, options.onDiagnostic);
         }, signal);
         const normalized = normalizeAppleProductPage(html, source, edition, targetRequest, checkedAt);
         if (!normalized.sources.length) reason('invalid-evidence');
@@ -437,6 +479,13 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
   if (options.appleIsbnJoin && !signal.aborted) await appleIsbnJoin();
   if (countries[0] && !signal.aborted) await hydrateApple(countries[0]);
   if (signal.aborted) reason('cancelled');
-  return { evidence, usage, reasons };
+  if (seeded.sources.size) {
+    evidence.sources = evidence.sources.filter(source => !seeded.sources.has(source.id));
+    evidence.identities = evidence.identities.filter(identity => !seeded.identities.has(JSON.stringify(identity)));
+  }
+  // Usage is the shared aggregate for this check, never a freshly reset counter.
+  const counts = context.snapshot();
+  const usage = { ...emptyUsage(), apple: counts.apple, openlibrary: counts.openlibrary, googlebooks: counts.googlebooks, hardcover: counts.hardcover };
+  return { evidence, usage, reasons, ...(overflow.size ? { overflow: [...overflow] } : {}) };
 }
 

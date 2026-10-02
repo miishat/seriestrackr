@@ -18,7 +18,7 @@ test('loads version 1 into version 2 memory without rewriting raw storage', () =
   const setItem = vi.fn();
   const getItem = vi.fn(() => raw);
   const loaded = loadLibrary({ getItem, setItem } as unknown as Storage);
-  expect(loaded).toMatchObject({ kind: 'ready', doc: { version: 2, series: [] } });
+  expect(loaded).toMatchObject({ kind: 'ready', doc: { version: 3, series: [] } });
   expect(getItem).toHaveBeenCalledExactlyOnceWith('seriestrackr:v1');
   expect(setItem).not.toHaveBeenCalled();
 });
@@ -52,9 +52,9 @@ test('populated legacy fields and preferences survive migration without invented
   const raw = JSON.stringify(legacy, null, 2);
   const setItem = vi.fn();
   const loaded = loadLibrary({ getItem: () => raw, setItem } as unknown as Storage);
-  expect(loaded).toEqual({ kind: 'ready', doc: { version: 2, settings, series: [legacySeries] } });
+  expect(loaded).toEqual({ kind: 'ready', doc: { version: 3, settings, series: [legacySeries] } });
   expect(setItem).not.toHaveBeenCalled();
-  expect(decodeBackup(raw)).toEqual({ ok: true, value: { version: 2, settings, series: [legacySeries] } });
+  expect(decodeBackup(raw)).toEqual({ ok: true, value: { version: 3, settings, series: [legacySeries] } });
 });
 
 test('version 2 attribution, provenance and history round trip through backup', () => {

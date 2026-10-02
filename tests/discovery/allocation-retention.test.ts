@@ -154,3 +154,31 @@ test.each(['CA', 'US'])('a nonfitting earlier whole citation closure still suppr
   expect(result.proposals.releases.book).toBeNull();
   expect(result.summary.reasons).toContain('budget');
 });
+
+test('related claims keep their sources and conflicting claims are retained together, then suppressed by selection', async () => {
+  const { allocationEvidence } = await import('../../server/discovery/evidenceAllocation');
+  const { selectRelatedWorks } = await import('../../shared/discoveryPolicy');
+  const base = bundle([]);
+  const sources = ['a', 'b', 'c'].map(id => ({ ...(base.sources[0] ?? { title: 't', url: `https://example.com/${id}`, provider: 'tavily' as const,
+    market: null, retrievedAt: '2026-09-29T12:00:00Z', text: 'Prequel. Sequel.' }), id, url: `https://example.com/${id}`, text: 'Prequel. Sequel.' }));
+  const claim = (relationship: 'prequel' | 'continuation', sourceId: string) => ({ title: 'Other Tale', author: 'Example Author',
+    relationship, position: null, citations: [{ sourceId, quote: 'Prequel.' }] });
+  const evidence = { sources, identities: [], editions: [], related: [claim('prequel', 'a'), claim('continuation', 'b')] };
+  const allocation = allocationEvidence(request(), evidence);
+  expect(allocation.related).toHaveLength(2);
+  expect(allocation.sources.map(source => source.id).sort()).toEqual(['a', 'b', 'c']);
+  expect(selectRelatedWorks(request(), allocation)).toEqual([]);
+});
+
+test('unrequested formats are filtered before ranking while date conflicts stay whole closures', () => {
+  const book = edition({ id: 'b1' });
+  const audio = edition({ id: 'a1', format: 'audio', editionKey: 'audio-1' });
+  const early = edition({ id: 'c1', editionKey: 'conflict', date: '2027-01-01', citations: [{ sourceId: 's1', quote: 'English ebook in Canada: 2027-01-01.' }] });
+  const late = edition({ id: 'c2', editionKey: 'conflict', date: '2027-02-01', citations: [{ sourceId: 's1', quote: 'English ebook in Canada: 2027-02-01.' }] });
+  const input = bundle([book, audio, early, late]);
+  const allocated = allocationEvidence(request({ formats: ['book'] }), input);
+  expect(allocated.editions.map(item => item.id).sort()).toEqual(['b1', 'c1', 'c2']);
+  expect(allocated.singletons.map(item => item.id)).toEqual(['b1']);
+  expect(allocated.conflicts.map(group => group.map(item => item.id).sort())).toEqual([['c1', 'c2']]);
+  expect(allocationEvidence(request({ formats: ['book', 'audio'] }), input).editions).toHaveLength(4);
+});

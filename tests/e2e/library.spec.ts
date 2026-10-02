@@ -149,9 +149,11 @@ test('manual tracking remains available with remote requests blocked', async ({ 
 
 test('empty cover lookup leaves manual entry and tracking available', async ({ page }) => {
   let requests = 0;
-  await page.route(/^https:\/\/(openlibrary\.org|www\.googleapis\.com)\//, (route) => {
+  await page.route('**/api/discovery/covers', (route) => {
     requests++;
-    return route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
+    const request = route.request().postDataJSON();
+    return route.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify({ requestId: request.requestId, seriesId: request.seriesId, candidates: [], authorSuggestions: [], outcomes: [{ provider: 'openlibrary', state: 'no-match' }] }) });
   });
   await start(page);
   await addSeries(page);
@@ -179,7 +181,7 @@ test('corrupted storage offers the original bytes and requires explicit reset', 
   await expect(page.getByRole('dialog', { name: 'Which releases should we track?' })).toBeVisible();
   const stored = await page.evaluate((storageKey) => localStorage.getItem(storageKey), key);
   expect(stored).not.toBeNull();
-  expect(JSON.parse(stored ?? '{}')).toMatchObject({ version: 2, settings: { market: null }, series: [] });
+  expect(JSON.parse(stored ?? '{}')).toMatchObject({ version: 3, settings: { market: null }, series: [] });
   const freshPage = await page.context().newPage();
   await freshPage.goto('/');
   await expect(freshPage.getByRole('dialog', { name: 'Which releases should we track?' })).toBeVisible();

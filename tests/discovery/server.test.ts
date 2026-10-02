@@ -151,3 +151,49 @@ test.each([null, '', ' ', undefined, 'fake-hardcover-token'])('Hardcover capabil
   expect(value).toMatchObject({ hardcover: Boolean(hardcoverToken?.trim()), limits: { hardcover: 1 } });
   expect(JSON.stringify(value)).not.toContain('fake-hardcover-token'); expect(deps.catalogs).not.toHaveBeenCalled();
 });
+
+const coverBody = { requestId: 'r1', seriesId: 'series-1', series: 'Example', author: 'Example Author', nextTitle: 'Second', position: 2, previousTitle: null, preferredMarket: 'CA' };
+function coverDeps(covers: NonNullable<ReturnType<typeof dependencies> & { covers?: unknown }['covers']> | ((request: unknown, signal: AbortSignal) => Promise<unknown>)) {
+  return { ...dependencies(), covers } as unknown as DiscoveryDependencies;
+}
+test('serves the cover route with the same guards and a validated result', async () => {
+  const covers = vi.fn(async (req: { requestId: string; seriesId: string }) => ({ requestId: req.requestId, seriesId: req.seriesId, candidates: [], authorSuggestions: [], outcomes: [] }));
+  const { port } = await start(coverDeps(covers));
+  const ok = await send(port, { path: '/api/discovery/covers', body: JSON.stringify(coverBody) });
+  expect(ok.status).toBe(200); expect(ok.headers['access-control-allow-origin']).toBeUndefined();
+  expect(covers).toHaveBeenCalledTimes(1);
+  expect((await send(port, { path: '/api/discovery/covers', method: 'GET' })).status).toBe(405);
+  expect((await fetch(`http://127.0.0.1:${port}/api/discovery/covers`, { method: 'POST', headers: { Origin: 'http://evil.example', 'Content-Type': 'application/json' }, body: JSON.stringify(coverBody) })).status).toBe(403);
+  expect((await send(port, { path: '/api/discovery/covers', body: JSON.stringify({ ...coverBody, extra: 1 }) })).status).toBe(400);
+  expect(covers).toHaveBeenCalledTimes(1);
+});
+
+test('cover results for another request or invalid candidates are service errors', async () => {
+  const mismatch = await start(coverDeps(async () => ({ requestId: 'other', seriesId: 'series-1', candidates: [], authorSuggestions: [], outcomes: [] })));
+  expect((await send(mismatch.port, { path: '/api/discovery/covers', body: JSON.stringify(coverBody) })).status).toBe(503);
+  const bad = await start(coverDeps(async () => ({ requestId: 'r1', seriesId: 'series-1', authorSuggestions: [], outcomes: [], candidates: [{ id: 'x' }] })));
+  const dropped = await send(bad.port, { path: '/api/discovery/covers', body: JSON.stringify(coverBody) });
+  expect(dropped.status).toBe(200);
+  expect(dropped.body).toMatchObject({ requestId: 'r1', candidates: [] });
+});
+
+test('oversized or over-long cover candidates are dropped from the cover route rather than failing it', async () => {
+  const good = { id: 'hardcover:1', title: 'T', author: 'A', role: 'next', format: 'print', provider: 'hardcover', imageUrl: 'https://assets.hardcover.app/a.jpg',
+    source: { id: 's', title: 't', url: 'https://hardcover.app/books/a' }, workKey: 'w', editionKey: null, width: 100, height: 160 };
+  const rows = [good, { ...good, id: 'hardcover:2', width: 50000 }, { ...good, id: 'hardcover:3', workKey: 'w'.repeat(401) }, { ...good, id: 'hardcover:4', title: 'T'.repeat(301) }];
+  const { port } = await start(coverDeps(async () => ({ requestId: 'r1', seriesId: 'series-1', authorSuggestions: [], outcomes: [], candidates: rows })));
+  const answer = await send(port, { path: '/api/discovery/covers', body: JSON.stringify(coverBody) });
+  expect(answer.status).toBe(200);
+  expect((answer.body as { candidates: { id: string }[] }).candidates.map(item => item.id)).toEqual(['hardcover:1']);
+});
+
+test('cover retrieval shares the busy lock', async () => {
+  let release!: () => void;
+  const gate = new Promise<void>(resolve => { release = resolve; });
+  const { port } = await start(coverDeps(async (req: unknown) => { await gate; const r = req as { requestId: string; seriesId: string };
+    return { requestId: r.requestId, seriesId: r.seriesId, candidates: [], authorSuggestions: [], outcomes: [] }; }));
+  const first = send(port, { path: '/api/discovery/covers', body: JSON.stringify(coverBody) });
+  await new Promise(resolve => setTimeout(resolve, 50));
+  expect((await send(port, { path: '/api/discovery/covers', body: JSON.stringify(coverBody) })).status).toBe(409);
+  release(); expect((await first).status).toBe(200);
+});

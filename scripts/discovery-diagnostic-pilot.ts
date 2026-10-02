@@ -43,9 +43,9 @@ export function createDiagnosticFetch(fetcher: typeof fetch, counts: Counts, onC
   };
 }
 
-function reserve(root: string, name: string): string {
+export function reserve(root: string, name: string, parts: readonly string[] = workspaceParts): string {
   let ancestor = realpathSync(root);
-  for (const part of workspaceParts) {
+  for (const part of parts) {
     const next = resolve(ancestor, part);
     if (existsSync(next)) {
       if (lstatSync(next).isSymbolicLink() || !lstatSync(next).isDirectory() || realpathSync(next).toLowerCase() !== next.toLowerCase()) throw new Error('invalid-output');

@@ -10,6 +10,7 @@ const staleMessage = 'The series changed. Check again before saving.';
 export function useDiscovery(library: ReturnType<typeof useLibrary>) {
   const [batch, setBatch] = useState<{ running: boolean; total: number; done: number; results: DiscoverySession[] }>({ running: false, total: 0, done: 0, results: [] });
   const batchToken = useRef(0);
+  const batchRunning = useRef(false);
   const retainedReviews = useRef(new Set<string>());
   const [session, setSession] = useState<DiscoverySession | null>(null);
   const sessionRef = useRef(session);
@@ -29,6 +30,26 @@ export function useDiscovery(library: ReturnType<typeof useLibrary>) {
     mounted.current = true;
     return () => { mounted.current = false; invalidate(); };
   }, []);
+  // Title, author, progress or market edits advance the generation and abort any in-flight check so
+  // a late response cannot reach review or be accepted.
+  const watched = library.doc.series.find(item => item.id === session?.seriesId);
+  const fingerprint = watched ? JSON.stringify([watched.id, watched.next.title, watched.author, watched.name, nextPosition(watched),
+    watched.marketOverride ?? library.doc.settings.market]) : null;
+  const lastFingerprint = useRef<string | null>(null);
+  useEffect(() => {
+    const previous = lastFingerprint.current;
+    lastFingerprint.current = fingerprint;
+    if (previous === null || fingerprint === null || previous === fingerprint) return;
+    if (JSON.parse(previous)[0] !== JSON.parse(fingerprint)[0]) return;
+    const current = sessionRef.current;
+    if (!current || batchRunning.current) return;
+    generation.current += 1;
+    controller.current?.abort();
+    if (current.phase === 'preparing' || current.phase === 'checking') {
+      libraryRef.current.cancelDiscovery(current.seriesId);
+      publish({ ...current, phase: 'error', error: staleMessage });
+    }
+  }, [fingerprint]);
   const currentGeneration = (token: number) => mounted.current && token === generation.current;
   const close = () => { invalidate(); publish(null); };
   const open = (seriesId: string) => {
@@ -84,6 +105,8 @@ export function useDiscovery(library: ReturnType<typeof useLibrary>) {
     const current = sessionRef.current;
     if (!current || current.phase !== 'review' || !current.snapshot || !current.response) return { ok: false, error: 'Check releases before saving changes.' };
     if (!libraryRef.current.isDiscoveryCurrent(current.snapshot)) return { ok: false, error: staleMessage };
+    if (current.response.requestId !== current.snapshot.requestId || current.response.seriesId !== current.snapshot.seriesId ||
+      current.snapshot.seriesId !== current.seriesId) return { ok: false, error: 'The check response did not match this request. Check again.' };
     const accepted = libraryRef.current.acceptDiscovery(current.snapshot, current.response, selection);
     if (accepted.ok) close();
     return accepted;
@@ -93,6 +116,7 @@ export function useDiscovery(library: ReturnType<typeof useLibrary>) {
     close();
     const token = ++batchToken.current;
     const ids = [...new Set(seriesIds)].filter(id => libraryRef.current.doc.series.some(s => s.id === id && s.readingStatus === 'active'));
+    batchRunning.current = true;
     setBatch({ running: true, total: ids.length, done: 0, results: [] });
     const results: DiscoverySession[] = [];
     for (const seriesId of ids) {
@@ -112,11 +136,13 @@ export function useDiscovery(library: ReturnType<typeof useLibrary>) {
     }
     if (token === batchToken.current && mounted.current) {
       publish(null);
+      batchRunning.current = false;
       setBatch({ running: false, total: ids.length, done: results.length, results: [...results] });
     }
   };
   const cancelBatch = () => {
     ++batchToken.current;
+    batchRunning.current = false;
     close();
     setBatch(previous => ({ ...previous, running: false }));
   };

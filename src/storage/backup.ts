@@ -4,7 +4,10 @@ import { parseDocument } from '../features/library/validation';
 export const MAX_BACKUP_BYTES = 5 * 1024 * 1024;
 
 export function encodeBackup(doc: LibraryDocument): string {
-  return JSON.stringify(doc, null, 2);
+  // Serialize the validated shape only so unaccepted candidates and diagnostics cannot ride along.
+  const parsed = parseDocument(doc);
+  if (parsed.ok === false) throw new Error(`Backup could not be created: ${parsed.error}`);
+  return JSON.stringify(parsed.value, null, 2);
 }
 
 export function decodeBackup(text: string): Result<LibraryDocument> {

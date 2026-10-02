@@ -21,6 +21,7 @@ function show(active = session(), overrides: Partial<Parameters<typeof Discovery
     onRun: vi.fn(), onClose: vi.fn(), onAccept: vi.fn(() => ({ ok: true as const, value: undefined })), ...overrides };
   return { ...render(<DiscoveryDialog {...props} />), props };
 }
+const open = (name: string) => userEvent.click(screen.getByRole('tab', { name: new RegExp(`^${name}`) }));
 beforeEach(() => {
   HTMLDialogElement.prototype.showModal = function () { this.setAttribute('open', ''); };
   HTMLDialogElement.prototype.close = function () { this.removeAttribute('open'); };
@@ -57,10 +58,12 @@ test('review starts empty and accepts whole format bundles only by selection', a
   const view = show();
   const save = screen.getByRole('button', { name: 'Save selected changes' });
   expect(save).toBeDisabled();
+  await open('Book');
   expect(screen.getByRole('checkbox', { name: 'Save Book' })).not.toBeChecked();
   await userEvent.click(screen.getByRole('checkbox', { name: 'Save Book' }));
   await userEvent.click(save);
   expect(view.props.onAccept).toHaveBeenCalledWith({ title: false, book: true, audio: false });
+  expect(screen.getByRole('tab', { name: /^Book/ })).toHaveAttribute('aria-selected', 'true');
 });
 test('changed title controls dependent selections and warns about clearing old values', async () => {
   const result = response();
@@ -68,37 +71,46 @@ test('changed title controls dependent selections and warns about clearing old v
   result.proposals.identityAttribution = { checkedAt: result.summary.checkedAt, sources: result.sources };
   result.proposals.releases.book!.title = 'Third';
   show(session('review', result));
-  const book = screen.getByRole('checkbox', { name: 'Save Book' });
   const title = screen.getByRole('checkbox', { name: 'Save Next title' });
-  expect(book).toBeDisabled();
   expect(screen.getByText(/clears both old release records.*Your selected cover is kept/)).toBeVisible();
-  await userEvent.click(title); await userEvent.click(book); await userEvent.click(title);
+  await open('Book');
+  const book = screen.getByRole('checkbox', { name: 'Save Book' });
+  expect(book).toBeDisabled();
+  await open('Next title'); await userEvent.click(title);
+  await open('Book'); await userEvent.click(book);
+  await open('Next title'); await userEvent.click(title);
+  await open('Book');
   expect(book).toBeDisabled(); expect(book).not.toBeChecked();
 });
-test('format title differing without an identity proposal cannot be selected', () => {
+test('format title differing without an identity proposal cannot be selected', async () => {
   const result = response(); result.proposals.releases.book!.title = 'Other title';
   show(session('review', result));
+  await open('Book');
   expect(screen.getByRole('checkbox', { name: 'Save Book' })).toBeDisabled();
 });
-test('conflict and absent proposals are disabled independently', () => {
+test('conflict and absent proposals are disabled independently', async () => {
   const result = response(); result.proposals.conflicts = [{ format: 'book', evidenceIds: ['e1'], reason: 'Dates disagree.' }];
   show(session('review', result));
+  await open('Book');
   expect(screen.getByRole('checkbox', { name: 'Save Book' })).toBeDisabled();
-  expect(screen.getByRole('checkbox', { name: 'Save Audiobook' })).toBeDisabled();
   expect(screen.getByText('Dates disagree.')).toBeVisible();
+  await open('Audiobook');
+  expect(screen.getByRole('checkbox', { name: 'Save Audiobook' })).toBeDisabled();
 });
 test('announced proposals retain unknown dates and unspecified source country', async () => {
   const result = response(); const proposal = result.proposals.releases.book!;
   proposal.state = 'announced'; proposal.date = null; proposal.provenance.sourceMarket = null; proposal.provenance.datePrecision = 'none';
   show(session('review', result));
-  expect(screen.getByText('Announced · Date Unknown')).toBeVisible();
+  await open('Book');
+  expect(screen.getByText('Announced; date unknown')).toBeVisible();
   expect(screen.getByText(/source country unspecified/)).toBeVisible();
   await userEvent.click(screen.getByRole('checkbox', { name: 'Save Book' }));
   expect(screen.getByRole('button', { name: 'Save selected changes' })).toBeEnabled();
 });
-test('fallback shows actual country and supported-date qualification with cited links', () => {
+test('fallback shows actual country and supported-date qualification with cited links', async () => {
   const result = response(); result.proposals.releases.book!.provenance.sourceMarket = 'GB';
   show(session('review', result));
+  await open('Book');
   expect(screen.getByText('Date from GB; no supported CA date found in sources checked.')).toBeVisible();
   expect(screen.getByText('Earliest supported date in sources checked.')).toBeVisible();
   expect(screen.getAllByRole('link')[0]).toHaveAttribute('href', 'https://example.com/second');
@@ -106,6 +118,7 @@ test('fallback shows actual country and supported-date qualification with cited 
 test('stale review disables saving and requires explicit refresh', async () => {
   const view = show(session(), { stale: true });
   expect(screen.getByText('The series changed. Check again before saving.')).toBeVisible();
+  await open('Book');
   await userEvent.click(screen.getByRole('checkbox', { name: 'Save Book' }));
   expect(screen.getByRole('button', { name: 'Save selected changes' })).toBeDisabled();
   expect(view.props.onRun).not.toHaveBeenCalled();
@@ -115,6 +128,7 @@ test('stale review disables saving and requires explicit refresh', async () => {
 test('recoverable save error preserves selection and current manual details', async () => {
   const saved = seriesFixture(); saved.releases.book = { ...saved.releases.book, state: 'scheduled', date: '2027-01-02' };
   const view = show(session(), { series: saved, onAccept: vi.fn(() => ({ ok: false as const, error: 'Storage is full.' })) });
+  await open('Book');
   await userEvent.click(screen.getByRole('checkbox', { name: 'Save Book' }));
   await userEvent.click(screen.getByRole('button', { name: 'Save selected changes' }));
   expect(screen.getByRole('alert')).toHaveTextContent('Storage is full.');
@@ -168,20 +182,24 @@ test('preparing cannot run and operational errors retry only on user click', asy
 
 test('new check results clear selections and partial results keep supported fields reviewable', async () => {
   const view = show();
+  await open('Book');
   await userEvent.click(screen.getByRole('checkbox', { name: 'Save Book' }));
   const result = response(); result.requestId = 'r2'; result.summary.requestId = 'r2'; result.summary.status = 'partial';
   view.rerender(<DiscoveryDialog {...view.props} session={session('review', result)} />);
+  await open('Book');
   expect(screen.getByRole('checkbox', { name: 'Save Book' })).not.toBeChecked();
   expect(screen.getByText(/this describes source coverage, not book or audiobook availability/i)).toBeVisible();
   await userEvent.click(screen.getByRole('checkbox', { name: 'Save Book' }));
   expect(screen.getByRole('button', { name: 'Save selected changes' })).toBeEnabled();
 });
 
-test('unknown outcomes do not offer a not-found state or any selectable release', () => {
+test('unknown outcomes do not offer a not-found state or any selectable release', async () => {
   const result = response(); result.proposals.releases = { book: null, audio: null };
   result.summary.formats = { book: 'unknown', audio: 'unknown' };
   show(session('review', result));
+  await open('Book');
   expect(screen.getByRole('checkbox', { name: 'Save Book' })).toBeDisabled();
+  await open('Audiobook');
   expect(screen.getByRole('checkbox', { name: 'Save Audiobook' })).toBeDisabled();
   expect(screen.getAllByText('Date Unknown · no supported change offered')).toHaveLength(2);
   expect(screen.queryByText('Not found')).toBeNull();
@@ -191,4 +209,35 @@ test.each(['preparing', 'checking'] as const)('%s focuses Close when the AI cont
   show(session(phase, null));
   await Promise.resolve();
   expect(screen.getByRole('button', { name: /^Close / })).toHaveFocus();
+});
+
+const receipt = (overrides: Partial<ReturnType<typeof response>['summary']>) => ({ ...response().summary, ...overrides });
+test.each([
+  ['Sun Eater clean receipt with one unknown format', { status: 'complete' as const, reasons: [], formats: { book: 'supported' as const, audio: 'unknown' as const } }],
+  ['The Band control clean receipt', { status: 'complete' as const, reasons: [], formats: { book: 'supported' as const, audio: 'supported' as const } }],
+  ['unknown identity alone', { status: 'complete' as const, reasons: ['unknown-identity' as const], formats: { book: 'unknown' as const, audio: 'unknown' as const } }],
+])('%s shows no partial badge', (_name, summary) => {
+  render(<DiscoverySummary summary={receipt(summary)} />);
+  expect(screen.getByRole('status')).toHaveTextContent('Check complete');
+  expect(screen.queryByText(/partial/i)).toBeNull();
+});
+test('a budget-affected run with valid dates still shows partial', () => {
+  render(<DiscoverySummary summary={receipt({ status: 'partial', reasons: ['budget'], formats: { book: 'supported', audio: 'supported' } })} />);
+  expect(screen.getByText('Check partially completed')).toBeVisible();
+  expect(screen.getByText(/exceeded this check's limits/)).toBeVisible();
+  expect(screen.getByText(/Supported dates and announcements are still usable/)).toBeVisible();
+});
+test('incomplete facts are a separate message from the coverage status', () => {
+  render(<DiscoverySummary summary={receipt({ status: 'complete', reasons: [], formats: { book: 'unknown', audio: 'supported' } })} />);
+  const message = screen.getByText(/Incomplete details: some formats have no supported details/);
+  expect(message).toBeVisible();
+  expect(screen.getByRole('status')).toHaveTextContent('Check complete');
+  expect(screen.queryByText(/partial/i)).toBeNull();
+});
+
+test('the outline tablist holds only tabs and every tabpanel is focusable', () => {
+  show();
+  const list = screen.getByRole('tablist', { name: 'Review outline' });
+  expect(Array.from(list.children).every(child => child.getAttribute('role') === 'tab')).toBe(true);
+  for (const panel of document.querySelectorAll('[role=tabpanel]')) expect(panel).toHaveAttribute('tabindex', '0');
 });
