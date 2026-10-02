@@ -43,6 +43,14 @@
       "fields": "synthetic",
       "purpose": "Placeholder Untitled title shape",
       "expectedRejectedRule": "placeholder-title"
+    },
+    {
+      "fixture": "inline in tests/discovery/primary-sources.test.ts",
+      "sourceArtifact": null,
+      "retrievalTimestamp": null,
+      "fields": "synthetic",
+      "purpose": "Synthetic Macmillan, Aethon, author-site and prequel parser shapes using real product URLs; no descriptions, prices, preview URLs or credentials. Macmillan HTTP403 bodies are not successful publisher content. Aethon heading/series/byline order follows the captured ascension-publisher.html structure.",
+      "expectedRejectedRule": null
     }
   ]
 }

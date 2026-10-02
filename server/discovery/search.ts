@@ -25,6 +25,10 @@ export function buildSearchQueries(request: CheckRequest, needs: { identity: boo
   if (needs.audio && request.formats.includes('audio')) {
     queries.push(`${subject} ${author} audiobook release date English ${request.preferredMarket}`);
   }
+  // Remaining slots go to a primary-host query built only from the request.
+  if (needs.identity && queries.length < 3) {
+    queries.push(`${series} ${author} book ${position} official publisher author announcement`);
+  }
   return [...new Set(queries.map(whitespace))].slice(0, 3);
 }
 

@@ -126,3 +126,31 @@ test('Hardcover contract provider and required usage counter are explicit', () =
   expect(parseCheckResponse({ ...valid, summary: { ...valid.summary, usage: withoutHardcover } }).ok).toBe(false);
   for (const count of [-1, 0.5, '1', null]) expect(parseCheckResponse({ ...valid, summary: { ...valid.summary, usage: { ...valid.summary.usage, hardcover: count } } }).ok).toBe(false);
 });
+
+test('extraction accepts related works with literal quotes and rejects invalid ones', () => {
+  const evidence = bundle([edition()]);
+  const quote = evidence.sources[0].text.slice(0, 10);
+  const related = { title: 'Prior Tale', author: 'Example Author', relationship: 'prequel', position: null,
+    citations: [{ sourceId: 's1', quote }] };
+  const ok = parseExtraction({ identities: [], editions: [], related: [related] }, evidence.sources);
+  expect(ok.ok && ok.value.related).toEqual([related]);
+  expect(parseExtraction({ identities: [], editions: [] }, evidence.sources)).toMatchObject({ ok: true });
+  const bad = (change: object) => parseExtraction({ identities: [], editions: [], related: [{ ...related, ...change }] }, evidence.sources).ok;
+  expect(bad({ position: 3 })).toBe(false);
+  expect(bad({ relationship: 'sequel' })).toBe(false);
+  expect(bad({ citations: [{ sourceId: 's1', quote: 'not present' }] })).toBe(false);
+  expect(parseExtraction({ identities: [], editions: [], related: Array(7).fill(related) }, evidence.sources).ok).toBe(false);
+});
+
+test('responses without related parse with an empty default and related is attributed', () => {
+  const valid = response();
+  const { related: omitted, ...legacy } = valid.proposals;
+  expect(omitted).toEqual([]);
+  const parsed = parseCheckResponse({ ...valid, proposals: legacy });
+  expect(parsed.ok && parsed.value.proposals.related).toEqual([]);
+  const item = { title: 'Prior Tale', author: 'Example Author', relationship: 'prequel', position: null,
+    citations: [{ sourceId: valid.sources[0].id, quote: 'q' }] };
+  expect(parseCheckResponse({ ...valid, proposals: { ...valid.proposals, related: [item] } }).ok).toBe(true);
+  expect(parseCheckResponse({ ...valid, proposals: { ...valid.proposals, related: [{ ...item, citations: [{ sourceId: 'zzz', quote: 'q' }] }] } }).ok).toBe(false);
+  expect(parseCheckResponse({ ...valid, proposals: { ...valid.proposals, related: [{ ...item, position: 2 }] } }).ok).toBe(false);
+});

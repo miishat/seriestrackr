@@ -17,8 +17,10 @@ export interface EditionEvidence { id: string; title: string; author: string;
   position: number | null; editionKey: string | null; format: EditionFormat;
   language: string | null; market: string | null; date: string | null;
   precision: Precision; citations: Citation[] }
+export interface RelatedWorkEvidence { title: string; author: string;
+  relationship: 'prequel' | 'continuation'; position: null; citations: Citation[] }
 export interface EvidenceBundle { sources: Source[]; identities: IdentityEvidence[];
-  editions: EditionEvidence[] }
+  editions: EditionEvidence[]; related?: RelatedWorkEvidence[] }
 export interface Attribution { checkedAt: string; sources: SourceLink[] }
 export interface Provenance extends Attribution { preferredMarket: string;
   sourceMarket: string | null; language: 'en'; editionFormat: EditionFormat;
@@ -29,7 +31,8 @@ export interface ReleaseProposal { title: string; position: number;
 export interface Conflict { format: Format; evidenceIds: string[]; reason: string }
 export interface Proposals { identity: IdentityEvidence | null;
   identityAttribution: Attribution | null;
-  releases: Record<Format, ReleaseProposal | null>; conflicts: Conflict[] }
+  releases: Record<Format, ReleaseProposal | null>; conflicts: Conflict[];
+  related: RelatedWorkEvidence[] }
 export type Reason = 'missing-key' | 'quota' | 'timeout' | 'provider-error' |
   'invalid-evidence' | 'budget' | 'unknown-identity' | 'cancelled';
 export interface Usage { apple: number; openlibrary: number; googlebooks: number; tavily: number;

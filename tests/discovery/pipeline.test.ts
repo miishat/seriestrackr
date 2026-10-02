@@ -73,7 +73,7 @@ test.each(['Second', ''])('custom order note preserves source-only results and u
   const deps = dependencies(evidence);
   const result = await runDiscovery(req, deps, new AbortController().signal);
   expect(result.proposals).toEqual({ identity: null, identityAttribution: null,
-    releases: { book: null, audio: null }, conflicts: [] });
+    releases: { book: null, audio: null }, conflicts: [], related: [] });
   expect(result.summary.formats).toEqual({ book: 'unknown', audio: 'unknown' });
   expect(result.summary.status).toBe('complete');
   if (!title) expect(result.summary.reasons).toContain('unknown-identity');
@@ -667,4 +667,18 @@ test.each(['identity', 'conflict'] as const)('Google %s evidence over factual ca
   expect(result.proposals.releases.book).toBeNull(); expect(result.summary.reasons).toContain('budget');
   if (kind === 'identity') expect(result.proposals.identity).toBeNull();
   expect(evidence).toEqual(before);
+});
+
+test('a primary-source search result yields related works and never numbered identity, within three searches', async () => {
+  const req = request({ formats: ['book'], target: { series: 'The Dark Profit Saga', author: 'J. Zachary Pike', position: 4, title: '', orderNote: '' } });
+  const text = 'J. Zachary Pike\nHome Books Blog\nCrypt Currency is Coming\nCrypt Currency is the next book in The Dark Profit Saga, arriving soon as an ebook.';
+  const deps = dependencies();
+  deps.search = vi.fn(async () => ({ identities: [], editions: [], sources: [{ id: 'pike', title: 'Crypt Currency is Coming',
+    url: 'https://jzacharypike.com/blogs/highlights/crypt-currency-is-coming', provider: 'tavily' as const, market: null,
+    retrievedAt: '2026-09-29T12:00:00Z', text }] }));
+  const result = await runDiscovery(req, deps, new AbortController().signal);
+  expect(result.proposals.related).toMatchObject([{ title: 'Crypt Currency', relationship: 'continuation', position: null }]);
+  expect(result.proposals.identity).toBeNull();
+  expect(result.summary.usage.tavily).toBeLessThanOrEqual(3);
+  expect(parseCheckResponse(result).ok).toBe(true);
 });

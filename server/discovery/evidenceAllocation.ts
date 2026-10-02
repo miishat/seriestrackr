@@ -17,7 +17,10 @@ export function allocationEvidence(request: CheckRequest, input: EvidenceBundle,
   if (request.target.title.trim()) titles.add(normalizeIdentity(request.target.title));
   const editions = input.editions.filter(item => matchingAuthor(item.author) &&
     (!titles.size || titles.has(normalizeIdentity(item.title))) && (item.position === null || item.position === request.target.position));
-  const retainedItems = new Set([...identities, ...editions]);
+  // Relation claims are retained as one closure, conflicting ones included, so
+  // truncation can never leave a single surviving claim looking unambiguous.
+  const related = (input.related ?? []).filter(item => matchingAuthor(item.author) && item.position === null);
+  const retainedItems = new Set<unknown>([...identities, ...editions]);
   for (const item of [...input.identities, ...input.editions]) {
     if (retainedItems.has(item)) continue;
     const firstSource = input.sources.find(source => item.citations.some(c => c.sourceId === source.id));
@@ -27,8 +30,8 @@ export function allocationEvidence(request: CheckRequest, input: EvidenceBundle,
       recordRef: diagnosticRecordRef('id' in item && typeof item.id === 'string' ? item.id : JSON.stringify(item.citations.map(c => c.sourceId).sort())),
     });
   }
-  const referenced = new Set([...input.identities, ...input.editions].flatMap(item => item.citations.map(citation => citation.sourceId)));
-  const relevant = new Set([...identities, ...editions].flatMap(item => item.citations.map(citation => citation.sourceId)));
+  const referenced = new Set([...input.identities, ...input.editions, ...(input.related ?? [])].flatMap(item => item.citations.map(citation => citation.sourceId)));
+  const relevant = new Set([...identities, ...editions, ...related].flatMap(item => item.citations.map(citation => citation.sourceId)));
   const sources = input.sources.filter(source => !referenced.has(source.id) || relevant.has(source.id));
   const grouped = new Map<string, EditionEvidence[]>();
   for (const item of editions) {
@@ -44,7 +47,7 @@ export function allocationEvidence(request: CheckRequest, input: EvidenceBundle,
   const conflicting = new Set(conflicts.flatMap(group => group.map(item => item.id)));
   const singletons = editions.filter(item => !conflicting.has(item.id))
     .sort(candidateRank(request));
-  return { sources, identities, editions, conflicts, singletons };
+  return { sources, identities, editions, related, conflicts, singletons };
 }
 
 export interface RoleReservation {

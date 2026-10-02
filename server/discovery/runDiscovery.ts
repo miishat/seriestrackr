@@ -7,6 +7,7 @@ import type { collectCatalogs } from './catalogs';
 import type { extractEvidence } from './deepseek';
 import { ProviderError } from './http';
 import { buildSearchQueries } from './search';
+import { interpretPrimarySources } from './primarySources';
 import { allocationEvidence, roleReservations } from './evidenceAllocation';
 import { diagnosticCounts, diagnosticRecordRef, emitDiagnostic, withDiagnosticTrace, type DiagnosticObserver } from './diagnostics';
 
@@ -19,7 +20,7 @@ export interface DiscoveryDependencies {
   canExtract: boolean;
   onDiagnostic?: DiagnosticObserver;
 }
-const empty = (): EvidenceBundle => ({ sources: [], identities: [], editions: [] });
+const empty = (): EvidenceBundle => ({ sources: [], identities: [], editions: [], related: [] });
 const id = (namespace: string, original: string) => `${namespace}:${createHash('sha256').update(original).digest('hex').slice(0, 32)}`;
 const workFormatKey = (title: string, author: string, format: Format) => JSON.stringify([normalizeIdentity(title), normalizeIdentity(author), format]);
 type PrunedDates = { preferred: string | null; fallback: string | null };
@@ -28,7 +29,7 @@ type PrunedDates = { preferred: string | null; fallback: string | null };
 // are rejected rather than allowing the last record to redirect citations.
 function validatedBundle(raw: EvidenceBundle, namespace: string, reason: (value: Reason) => void): EvidenceBundle {
   const result = empty();
-  if (!raw || !Array.isArray(raw.sources) || !Array.isArray(raw.identities) || !Array.isArray(raw.editions)) {
+  if (!raw || !Array.isArray(raw.sources) || !Array.isArray(raw.identities) || !Array.isArray(raw.editions) || (raw.related !== undefined && !Array.isArray(raw.related))) {
     reason('invalid-evidence'); return result;
   }
   const duplicates = new Set<string>();
@@ -43,15 +44,20 @@ function validatedBundle(raw: EvidenceBundle, namespace: string, reason: (value:
   const aliases = new Map([...originals.keys()].map(key => [key, id(namespace, key)]));
   result.sources = [...originals.values()].map(source => ({ ...source, id: aliases.get(source.id)! }));
   const remap = (items: Citation[]) => items.map(item => ({ ...item, sourceId: aliases.get(item.sourceId)! }));
-  for (const kind of ['identities', 'editions'] as const) {
+  for (const kind of ['identities', 'editions', 'related'] as const) {
     const seen = new Set<string>();
-    for (const item of raw[kind]) {
+    for (const item of raw[kind] ?? []) {
       const cited = Array.isArray(item?.citations) ? [...new Set(item.citations.map(citation => citation.sourceId))] : [];
       const supplied = cited.map(key => originals.get(key)).filter(source => source !== undefined);
-      const checked = parseExtraction({ identities: kind === 'identities' ? [item] : [], editions: kind === 'editions' ? [item] : [] }, supplied);
+      const checked = parseExtraction({ identities: kind === 'identities' ? [item] : [], editions: kind === 'editions' ? [item] : [],
+        ...(kind === 'related' ? { related: [item] } : {}) }, supplied);
       if (!checked.ok) { reason('invalid-evidence'); continue; }
       if (kind === 'identities') result.identities.push({ ...checked.value.identities[0], citations: remap(checked.value.identities[0].citations) });
-      else {
+      else if (kind === 'related') {
+        const claim = checked.value.related![0];
+        const key = JSON.stringify(claim);
+        if (!seen.has(key)) { seen.add(key); result.related!.push({ ...claim, citations: remap(claim.citations) }); }
+      } else {
         const edition = checked.value.editions[0];
         // Distinct same-ID records remain separate, including contradictory dates.
         const key = JSON.stringify(edition);
@@ -67,7 +73,7 @@ function validatedBundle(raw: EvidenceBundle, namespace: string, reason: (value:
 function bound(request: CheckRequest, input: EvidenceBundle, checkedAt: string, suppressed: Set<Format | 'identity'>,
   prunedWorkFormats: Map<string, PrunedDates>, reason: (value: Reason) => void, onDiagnostic?: DiagnosticObserver): EvidenceBundle {
   const allocation = allocationEvidence(request, input, onDiagnostic);
-  const { identities, editions, sources: eligibleSources, conflicts, singletons } = allocation;
+  const { identities, editions, related, sources: eligibleSources, conflicts, singletons } = allocation;
   const unresolvedIdentity = (!request.target.title.trim() || !Number.isInteger(request.target.position)) &&
     !selectProposals(request, allocation, checkedAt).identity;
   const retained = empty();
@@ -88,6 +94,16 @@ function bound(request: CheckRequest, input: EvidenceBundle, checkedAt: string, 
     if (identities.length > 30) emitDiagnostic(onDiagnostic, { stage: 'allocation', category: 'bounds', ...diagnosticCounts(retained), rule: 'evidence-bound', recordRef: diagnosticRecordRef(JSON.stringify(identities.flatMap(item => item.citations.map(c => c.sourceId)).sort())) });
     reason('budget');
     suppressed.add('identity'); suppressed.add('book'); suppressed.add('audio');
+  }
+  // Supported primary relation claims are a second protected closure, ahead of
+  // generic prose and editions. Too many claims are dropped whole, never capped.
+  if (related.length) {
+    if (related.length <= 12 && keep(related.flatMap(item => item.citations))) retained.related = related;
+    else {
+      emitDiagnostic(onDiagnostic, { stage: 'allocation', category: 'bounds', ...diagnosticCounts(retained), rule: 'evidence-bound',
+        recordRef: diagnosticRecordRef(JSON.stringify(related.flatMap(item => item.citations.map(c => c.sourceId)).sort())) });
+      reason('budget');
+    }
   }
   const keepGroup = (group: EditionEvidence[]) => {
     if (retained.editions.length + group.length > 100) {
@@ -178,6 +194,7 @@ async function runDiscoveryInTrace(input: CheckRequest, dependencies: DiscoveryD
     let allocationBudget = false;
     evidence = bound(request, {
     sources: [...evidence.sources, ...incoming.sources], identities: [...evidence.identities, ...incoming.identities], editions: [...evidence.editions, ...incoming.editions],
+    related: [...(evidence.related ?? []), ...(incoming.related ?? [])],
     }, checkedAt, suppressed, prunedWorkFormats, value => { reason(value); if (value === 'budget') allocationBudget = true; }, dependencies.onDiagnostic);
     if (allocationBudget) emitDiagnostic(dependencies.onDiagnostic, { stage: 'allocation', category: 'bounds', ...diagnosticCounts(evidence) });
   };
@@ -197,7 +214,7 @@ async function runDiscoveryInTrace(input: CheckRequest, dependencies: DiscoveryD
       usage.googlebooks = catalogs.usage.googlebooks;
       usage.hardcover = catalogs.usage.hardcover;
       catalogs.reasons.forEach(reason);
-      merge(validatedBundle(catalogs.evidence, 'catalog', reason));
+      merge(interpretPrimarySources(request, validatedBundle(catalogs.evidence, 'catalog', reason)));
     } catch (error) { failure(error); }
   }
   const attempted = new Set<string>();
@@ -212,7 +229,8 @@ async function runDiscoveryInTrace(input: CheckRequest, dependencies: DiscoveryD
     const query = buildSearchQueries(searchRequest, gaps).find(item => !attempted.has(item));
     if (!query) break;
     attempted.add(query); usage.tavily++;
-    try { merge(validatedBundle(await abortable(dependencies.search(query, signal), signal), `search${usage.tavily}`, reason)); }
+    // Primary-source blocks are parsed before bounding, while their source is still present.
+    try { merge(interpretPrimarySources(request, validatedBundle(await abortable(dependencies.search(query, signal), signal), `search${usage.tavily}`, reason))); }
     catch (error) { failure(error); }
   }
   const gaps = needs();

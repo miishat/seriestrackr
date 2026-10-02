@@ -1,7 +1,7 @@
 import type {
   Attribution, CheckRequest, CheckResponse, CheckSummary, Citation, Conflict,
   EditionEvidence, EvidenceBundle, Format, IdentityEvidence, Parsed, Provenance,
-  ReleaseProposal, Source, SourceLink, Target, Usage,
+  RelatedWorkEvidence, ReleaseProposal, Source, SourceLink, Target, Usage,
 } from './discovery';
 
 function fail(path: string, message: string): never { throw new Error(`${path}: ${message}`); }
@@ -105,6 +105,13 @@ function identity(input: unknown, path: string): IdentityEvidence {
   return { title: string(value.title, `${path}.title`, 300), author: string(value.author, `${path}.author`, 300),
     position: number(value.position, `${path}.position`), citations: citations(value.citations, `${path}.citations`) };
 }
+function related(input: unknown, path: string): RelatedWorkEvidence {
+  const value = object(input, path, ['title', 'author', 'relationship', 'position', 'citations']);
+  if (value.position !== null) fail(`${path}.position`, 'related works have no integer position');
+  return { title: string(value.title, `${path}.title`, 300), author: string(value.author, `${path}.author`, 300),
+    relationship: oneOf(value.relationship, `${path}.relationship`, ['prequel', 'continuation']), position: null,
+    citations: citations(value.citations, `${path}.citations`) };
+}
 function edition(input: unknown, path: string): EditionEvidence {
   const value = object(input, path, ['id', 'title', 'author', 'position', 'editionKey', 'format', 'language', 'market', 'date', 'precision', 'citations']);
   const precision = oneOf(value.precision, `${path}.precision`, ['day', 'month', 'year', 'none']);
@@ -138,7 +145,7 @@ function request(input: unknown): CheckRequest {
     formats, useAi: boolean(value.useAi, 'request.useAi') };
 }
 function extraction(input: unknown, suppliedSources: Source[]): EvidenceBundle {
-  const value = object(input, 'evidence', ['identities', 'editions'], ['sources']);
+  const value = object(input, 'evidence', ['identities', 'editions'], ['sources', 'related']);
   const sources = array(suppliedSources, 'sources', 30, source);
   unique(sources.map(item => item.id), 'sources');
   if (value.sources !== undefined) {
@@ -148,15 +155,16 @@ function extraction(input: unknown, suppliedSources: Source[]): EvidenceBundle {
   const identities = array(value.identities, 'evidence.identities', 30, identity);
   const editions = array(value.editions, 'evidence.editions', 100, edition);
   unique(editions.map(item => item.id), 'evidence.editions');
-  if ((identities.length || editions.length) && !sources.length) fail('sources', 'evidence needs sources');
+  const relatedWorks = value.related === undefined ? undefined : array(value.related, 'evidence.related', 6, related);
+  if ((identities.length || editions.length || relatedWorks?.length) && !sources.length) fail('sources', 'evidence needs sources');
   const sourceById = new Map(sources.map(item => [item.id, item]));
-  for (const item of [...identities, ...editions]) {
+  for (const item of [...identities, ...editions, ...(relatedWorks ?? [])]) {
     for (const cited of item.citations) {
       const referenced = sourceById.get(cited.sourceId);
       if (!referenced || !referenced.text.includes(cited.quote)) fail('evidence.citations', 'quote must appear in supplied source');
     }
   }
-  return { sources, identities, editions };
+  return relatedWorks === undefined ? { sources, identities, editions } : { sources, identities, editions, related: relatedWorks };
 }
 function attribution(input: unknown, path: string, provenance = false): Attribution | Provenance {
   const extra = provenance ? ['preferredMarket', 'sourceMarket', 'language', 'editionFormat', 'editionKey', 'datePrecision', 'interpreted'] : [];
@@ -216,7 +224,7 @@ function summary(input: unknown, path: string): CheckSummary {
 }
 function response(input: unknown): CheckResponse {
   const value = object(input, 'response', ['requestId', 'seriesId', 'summary', 'proposals', 'sources']);
-  const proposalsValue = object(value.proposals, 'response.proposals', ['identity', 'identityAttribution', 'releases', 'conflicts']);
+  const proposalsValue = object(value.proposals, 'response.proposals', ['identity', 'identityAttribution', 'releases', 'conflicts'], ['related']);
   const releasesValue = object(proposalsValue.releases, 'response.proposals.releases', ['book', 'audio']);
   const sources = array(value.sources, 'response.sources', 30, sourceLink);
   unique(sources.map(item => item.id), 'response.sources');
@@ -244,13 +252,17 @@ function response(input: unknown): CheckResponse {
     const proposal = releases[format];
     if (proposal) checkAttribution(proposal.citations, proposal.provenance, `response.proposals.releases.${format}.provenance`);
   }
+  const relatedValue = proposalsValue.related === undefined ? [] : array(proposalsValue.related, 'response.proposals.related', 6, related);
+  for (const item of relatedValue) {
+    for (const cited of item.citations) if (!responseSources.has(cited.sourceId)) fail('response.proposals.related', 'citation source absent from response');
+  }
   for (const format of ['book', 'audio'] as const) {
     if (parsedSummary.formats[format] === 'supported' && releases[format] === null) fail(`response.summary.formats.${format}`, 'supported format needs proposal');
   }
   return {
     requestId, seriesId: string(value.seriesId, 'response.seriesId', 100), summary: parsedSummary,
     proposals: { identity: identityValue, identityAttribution: attributionValue, releases,
-      conflicts: array(proposalsValue.conflicts, 'response.proposals.conflicts', 100, conflict) },
+      conflicts: array(proposalsValue.conflicts, 'response.proposals.conflicts', 100, conflict), related: relatedValue },
     sources,
   };
 }

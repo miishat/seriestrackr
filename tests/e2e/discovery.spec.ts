@@ -113,7 +113,7 @@ test('fallback country attribution agrees in every shelf view', async ({ page })
 for (const outcome of ['unknown', 'partial', 'failed'] as const) test(`${outcome} result preserves accepted date and has separate check history`, async ({ page }) => {
   const doc = documentFixture(); doc.series[0].releases.book = { ...emptyRelease(), state: 'scheduled', date: '2099-01-02' };
   await seed(page, doc); await mock(page, sent => {
-    const value = response(); value.proposals = { identity: null, identityAttribution: null, releases: { book: null, audio: null }, conflicts: [] };
+    const value = response(); value.proposals = { identity: null, identityAttribution: null, releases: { book: null, audio: null }, conflicts: [], related: [] };
     value.summary = { ...value.summary, status: outcome === 'unknown' ? 'complete' : outcome === 'partial' ? 'partial' : 'failed',
       reasons: outcome === 'unknown' ? [] : ['quota'], formats: { book: 'unknown', audio: 'unknown' } };
     return matching(sent, value);

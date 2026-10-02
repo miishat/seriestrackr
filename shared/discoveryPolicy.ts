@@ -1,4 +1,4 @@
-import type { Attribution, CheckRequest, Citation, Conflict, EditionEvidence, EvidenceBundle, IdentityEvidence, Proposals, ReleaseProposal, SourceLink } from './discovery';
+import type { Attribution, CheckRequest, Citation, Conflict, EditionEvidence, EvidenceBundle, IdentityEvidence, Proposals, RelatedWorkEvidence, ReleaseProposal, SourceLink } from './discovery';
 
 export const normalizeIdentity = (s: string) => s.normalize('NFKC')
   .toLocaleLowerCase('en').replace(/\s+/g, ' ').trim();
@@ -16,8 +16,34 @@ function editionGroup(edition: EditionEvidence): string {
   return JSON.stringify([edition.market, edition.format, key]);
 }
 
+// Validated relationship evidence only. A relation never enters identity
+// selection or release-title narrowing. Contradictory claims for one title
+// are suppressed so a later cap cannot hide the ambiguity.
+export function relatedCandidates(request: CheckRequest, evidence: EvidenceBundle): RelatedWorkEvidence[] {
+  const sourceIds = new Set(evidence.sources.map(source => source.id));
+  const valid = (evidence.related ?? []).filter(item =>
+    item.position === null && normalizeIdentity(item.author) === normalizeIdentity(request.target.author) &&
+    item.citations.length > 0 && item.citations.every(citation => sourceIds.has(citation.sourceId)));
+  const relationships = new Map<string, Set<string>>();
+  for (const item of valid) {
+    const key = normalizeIdentity(item.title);
+    relationships.set(key, (relationships.get(key) ?? new Set()).add(item.relationship));
+  }
+  const seen = new Set<string>();
+  return valid.filter(item => {
+    const key = `${normalizeIdentity(item.title)}:${item.relationship}`;
+    if (relationships.get(normalizeIdentity(item.title))!.size > 1 || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+export function selectRelatedWorks(request: CheckRequest, evidence: EvidenceBundle): RelatedWorkEvidence[] {
+  return relatedCandidates(request, evidence).slice(0, 6);
+}
+
 export function selectProposals(request: CheckRequest, evidence: EvidenceBundle, checkedAt: string, interpreted = false): Proposals {
-  const empty: Proposals = { identity: null, identityAttribution: null, releases: { book: null, audio: null }, conflicts: [] };
+  const empty: Proposals = { identity: null, identityAttribution: null, releases: { book: null, audio: null }, conflicts: [], related: [] };
+  if (!request.target.orderNote.trim()) empty.related = selectRelatedWorks(request, evidence);
   // Current evidence cannot attest arbitrary custom ordering instructions.
   // Keep retrieved links available without offering dependent facts to accept.
   if (request.target.orderNote.trim()) return empty;
@@ -38,7 +64,7 @@ export function selectProposals(request: CheckRequest, evidence: EvidenceBundle,
 
   const identityAttribution: Attribution | null = identity
     ? { checkedAt, sources: citedSources(identity.citations, evidence) } : null;
-  const result: Proposals = { identity, identityAttribution, releases: { book: null, audio: null }, conflicts: [] };
+  const result: Proposals = { identity, identityAttribution, releases: { book: null, audio: null }, conflicts: [], related: empty.related };
   const target = { title };
   const matching = evidence.editions.filter(e =>
     normalizeIdentity(e.title) === normalizeIdentity(target.title) &&

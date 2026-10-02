@@ -60,7 +60,7 @@ test('unknown title uses series without inventing the next title and normalizes 
 });
 
 test('disabled formats cannot trigger searches even if their gap flag is set', () => {
-  expect(buildSearchQueries(request({ formats: ['book'] }), allNeeds)).toHaveLength(2);
+  expect(buildSearchQueries(request({ formats: ['book'] }), allNeeds)).toHaveLength(3);
   expect(buildSearchQueries(request({ formats: ['audio'] }), { identity: false, book: true, audio: true })).toEqual([
     'Second Example Author audiobook release date English CA',
   ]);
@@ -162,4 +162,13 @@ test('invalid provider envelope returns a sanitized error instead of empty succe
   const fetcher = vi.fn<typeof fetch>(async () => Response.json({ results: null, answer: 'Do not trust generated answers' }));
   await expect(searchEvidence('Example', config, signal(), fetcher)).rejects.toMatchObject({ reason: 'invalid-evidence' });
   expect(fetcher).toHaveBeenCalledTimes(1);
+});
+
+test('unresolved identity uses a spare slot for a primary-host query derived from the request', () => {
+  const req = request({ formats: ['book'], target: { series: 'Example Saga', author: 'Example Author', position: 3, title: '', orderNote: '' } });
+  const queries = buildSearchQueries(req, allNeeds);
+  expect(queries).toHaveLength(3);
+  expect(queries[2]).toBe('Example Saga Example Author book 3 official publisher author announcement');
+  expect(buildSearchQueries(req, { identity: false, book: true, audio: false })).toHaveLength(1);
+  expect(buildSearchQueries(request(), allNeeds)).toHaveLength(3);
 });

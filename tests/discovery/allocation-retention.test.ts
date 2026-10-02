@@ -154,3 +154,18 @@ test.each(['CA', 'US'])('a nonfitting earlier whole citation closure still suppr
   expect(result.proposals.releases.book).toBeNull();
   expect(result.summary.reasons).toContain('budget');
 });
+
+test('related claims keep their sources and conflicting claims are retained together, then suppressed by selection', async () => {
+  const { allocationEvidence } = await import('../../server/discovery/evidenceAllocation');
+  const { selectRelatedWorks } = await import('../../shared/discoveryPolicy');
+  const base = bundle([]);
+  const sources = ['a', 'b', 'c'].map(id => ({ ...(base.sources[0] ?? { title: 't', url: `https://example.com/${id}`, provider: 'tavily' as const,
+    market: null, retrievedAt: '2026-09-29T12:00:00Z', text: 'Prequel. Sequel.' }), id, url: `https://example.com/${id}`, text: 'Prequel. Sequel.' }));
+  const claim = (relationship: 'prequel' | 'continuation', sourceId: string) => ({ title: 'Other Tale', author: 'Example Author',
+    relationship, position: null, citations: [{ sourceId, quote: 'Prequel.' }] });
+  const evidence = { sources, identities: [], editions: [], related: [claim('prequel', 'a'), claim('continuation', 'b')] };
+  const allocation = allocationEvidence(request(), evidence);
+  expect(allocation.related).toHaveLength(2);
+  expect(allocation.sources.map(source => source.id).sort()).toEqual(['a', 'b', 'c']);
+  expect(selectRelatedWorks(request(), allocation)).toEqual([]);
+});

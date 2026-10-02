@@ -17,7 +17,7 @@ type PromptSource = Pick<Source, 'id' | 'title' | 'text'>;
 export function buildExtractionMessages(request: CheckRequest, evidence: EvidenceBundle): Message[] {
   const allocation = allocationEvidence(request, evidence);
   const roles = roleReservations(request, allocation, '1970-01-01T00:00:00Z');
-  const protectedQuotes = [...allocation.identities, ...allocation.conflicts.flat()].flatMap(item => item.citations);
+  const protectedQuotes = [...allocation.identities, ...allocation.related, ...allocation.conflicts.flat()].flatMap(item => item.citations);
   protectedQuotes.push(...roles.flatMap(role => role.citations));
   const minimum = new Map<string, number>();
   const originals = new Map(allocation.sources.map(source => [source.id, source]));

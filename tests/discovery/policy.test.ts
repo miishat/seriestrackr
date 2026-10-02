@@ -8,7 +8,7 @@ test('a known integer-position title with a custom order note cannot accept cata
   const evidence = bundle([edition({ position: null }), edition({ id: 'audio', format: 'audio', editionKey: 'audio' })]);
   const before = structuredClone(evidence);
   expect(selectProposals(req, evidence, at)).toEqual({
-    identity: null, identityAttribution: null, releases: { book: null, audio: null }, conflicts: [],
+    identity: null, identityAttribution: null, releases: { book: null, audio: null }, conflicts: [], related: [],
   });
   expect(evidence).toEqual(before);
 });
@@ -18,7 +18,7 @@ test('generic same-position identity cannot attest a custom order note', () => {
   const evidence = bundle([edition()], [{ title: 'Second', author: 'Example Author', position: 2,
     citations: [{ sourceId: 's1', quote: 'Second by Example Author. Book 2.' }] }]);
   expect(selectProposals(req, evidence, at)).toEqual({
-    identity: null, identityAttribution: null, releases: { book: null, audio: null }, conflicts: [],
+    identity: null, identityAttribution: null, releases: { book: null, audio: null }, conflicts: [], related: [],
   });
 });
 
