@@ -3,7 +3,8 @@ import { emptyUsage } from '../../shared/discovery';
 import type { CheckRequest, CheckResponse, Citation, EditionEvidence, EvidenceBundle, Format, Reason } from '../../shared/discovery';
 import { normalizeIdentity, selectProposals } from '../../shared/discoveryPolicy';
 import { parseCheckRequest, parseCheckResponse, parseExtraction } from '../../shared/discoveryValidation';
-import type { collectCatalogs } from './catalogs';
+import type { CatalogResult } from './catalogs';
+import { createRetrievalContext, type RetrievalContext, type RetrievalPhase } from './retrievalContext';
 import type { extractEvidence } from './deepseek';
 import { ProviderError } from './http';
 import { buildSearchQueries } from './search';
@@ -12,7 +13,8 @@ import { allocationEvidence, roleReservations } from './evidenceAllocation';
 import { diagnosticCounts, diagnosticRecordRef, emitDiagnostic, withDiagnosticTrace, type DiagnosticObserver } from './diagnostics';
 
 export interface DiscoveryDependencies {
-  catalogs: typeof collectCatalogs;
+  catalogs: (request: CheckRequest, markets: string[], signal: AbortSignal, context?: RetrievalContext, phase?: RetrievalPhase,
+    seed?: EvidenceBundle) => Promise<CatalogResult>;
   search: (query: string, signal: AbortSignal) => Promise<EvidenceBundle>;
   extract: (request: CheckRequest, evidence: EvidenceBundle, signal: AbortSignal) => ReturnType<typeof extractEvidence>;
   now: () => string;
@@ -68,6 +70,26 @@ function validatedBundle(raw: EvidenceBundle, namespace: string, reason: (value:
     }
   }
   return result;
+}
+
+// Enrichment may re-retrieve records the check already holds under another
+// namespace. Fold exact duplicates onto the retained source so they cannot
+// consume the 30 source and 100 edition caps a second time.
+function withoutRetained(retained: EvidenceBundle, incoming: EvidenceBundle): EvidenceBundle {
+  const sourceKey = (source: EvidenceBundle['sources'][number]) => JSON.stringify([source.provider, source.url, source.market, source.text]);
+  const existing = new Map(retained.sources.map(source => [sourceKey(source), source.id]));
+  const aliases = new Map<string, string>();
+  const sources = incoming.sources.filter(source => {
+    const same = existing.get(sourceKey(source));
+    if (same === undefined) return true;
+    aliases.set(source.id, same); return false;
+  });
+  const remap = <T extends { citations: Citation[] }>(item: T): T => ({ ...item, citations: item.citations.map(c => ({ ...c, sourceId: aliases.get(c.sourceId) ?? c.sourceId })) });
+  const shape = (item: { id?: string }) => JSON.stringify({ ...item, id: undefined });
+  const known = new Set(retained.editions.map(shape));
+  const editions = incoming.editions.map(remap).filter(item => !known.has(shape(item)));
+  const identities = incoming.identities.map(remap).filter(item => !retained.identities.some(old => JSON.stringify(old) === JSON.stringify(item)));
+  return { sources, identities, editions, related: (incoming.related ?? []).map(remap) };
 }
 
 function bound(request: CheckRequest, input: EvidenceBundle, checkedAt: string, suppressed: Set<Format | 'identity'>,
@@ -186,6 +208,7 @@ async function runDiscoveryInTrace(input: CheckRequest, dependencies: DiscoveryD
   const usage = emptyUsage();
   const reasons: Reason[] = [];
   const reason = (value: Reason) => { if (!reasons.includes(value)) reasons.push(value); };
+  const context = createRetrievalContext();
   const suppressed = new Set<Format | 'identity'>();
   const prunedWorkFormats = new Map<string, PrunedDates>();
   let evidence = empty();
@@ -198,6 +221,11 @@ async function runDiscoveryInTrace(input: CheckRequest, dependencies: DiscoveryD
     }, checkedAt, suppressed, prunedWorkFormats, value => { reason(value); if (value === 'budget') allocationBudget = true; }, dependencies.onDiagnostic);
     if (allocationBudget) emitDiagnostic(dependencies.onDiagnostic, { stage: 'allocation', category: 'bounds', ...diagnosticCounts(evidence) });
   };
+  const markets = [...new Set([request.preferredMarket, 'US', 'GB', 'CA'])];
+  // Catalog usage is the shared aggregate snapshot; counters never move backwards.
+  const absorb = (value: CatalogResult['usage']) => {
+    for (const key of ['apple', 'openlibrary', 'googlebooks', 'hardcover'] as const) usage[key] = Math.max(usage[key], value[key]);
+  };
   const selection = () => selectProposals(request, evidence, checkedAt);
   const needs = () => {
     const proposals = selection();
@@ -209,18 +237,37 @@ async function runDiscoveryInTrace(input: CheckRequest, dependencies: DiscoveryD
     try {
       // Catalog transport owns its abort-aware queues and returns attempted
       // counters even on cancellation. Await that final accounting snapshot.
-      const catalogs = await dependencies.catalogs(request, [...new Set([request.preferredMarket, 'US', 'GB', 'CA'])], signal);
-      usage.apple = catalogs.usage.apple; usage.openlibrary = catalogs.usage.openlibrary;
-      usage.googlebooks = catalogs.usage.googlebooks;
-      usage.hardcover = catalogs.usage.hardcover;
+      const catalogs = await dependencies.catalogs(request, markets, signal, context, 'initial');
+      absorb(catalogs.usage);
       catalogs.reasons.forEach(reason);
       merge(interpretPrimarySources(request, validatedBundle(catalogs.evidence, 'catalog', reason)));
     } catch (error) { failure(error); }
   }
   const attempted = new Set<string>();
+  // A supported title is enriched through the catalogs at most once per canonical
+  // identity. Titles already used by the initial phase (for example from
+  // Hardcover) are never enriched again.
+  const enriched = new Set<string>();
+  const unknownTitle = !request.target.title.trim();
+  const noteEnriched = () => { const found = selection().identity; if (found) enriched.add(normalizeIdentity(found.title)); };
+  if (unknownTitle) noteEnriched();
+  const enrich = async () => {
+    const identity = selection().identity;
+    if (!unknownTitle || !identity || signal.aborted || enriched.has(normalizeIdentity(identity.title))) return;
+    enriched.add(normalizeIdentity(identity.title));
+    const cited = new Set(evidence.identities.flatMap(item => item.citations.map(citation => citation.sourceId)));
+    const seed: EvidenceBundle = { identities: evidence.identities, editions: [], sources: evidence.sources.filter(source => cited.has(source.id)) };
+    try {
+      // The original request keeps unknown-title intent so every identity alternative still competes.
+      const catalogs = await dependencies.catalogs(request, markets, signal, context, 'enrich', seed);
+      absorb(catalogs.usage);
+      catalogs.reasons.forEach(reason);
+      merge(interpretPrimarySources(request, withoutRetained(evidence, validatedBundle(catalogs.evidence, `enrich${enriched.size}`, reason))));
+    } catch (error) { failure(error); }
+  };
   // Rebuild after each query so an explicitly validated identity can narrow the
   // remaining format searches without providing a researched expected answer.
-  while (!signal.aborted && usage.tavily < 3) {
+  while (!signal.aborted && context.canClaim('tavily')) {
     const gaps = needs();
     if (!gaps.identity && !gaps.book && !gaps.audio) break;
     if (!dependencies.canSearch) { reason('missing-key'); break; }
@@ -228,16 +275,17 @@ async function runDiscoveryInTrace(input: CheckRequest, dependencies: DiscoveryD
     const searchRequest = identity ? { ...request, target: { ...request.target, title: identity.title } } : request;
     const query = buildSearchQueries(searchRequest, gaps).find(item => !attempted.has(item));
     if (!query) break;
-    attempted.add(query); usage.tavily++;
+    attempted.add(query); context.claim('tavily'); usage.tavily++;
     // Primary-source blocks are parsed before bounding, while their source is still present.
     try { merge(interpretPrimarySources(request, validatedBundle(await abortable(dependencies.search(query, signal), signal), `search${usage.tavily}`, reason))); }
     catch (error) { failure(error); }
+    await enrich();
   }
   const gaps = needs();
   if (!signal.aborted && request.useAi && (gaps.identity || gaps.book || gaps.audio)) {
     if (!dependencies.canExtract) reason('missing-key');
     else {
-      usage.deepseek++; usage.inputTokens = null; usage.outputTokens = null;
+      context.claim('deepseek'); usage.deepseek++; usage.inputTokens = null; usage.outputTokens = null;
       try {
         const extracted = await abortable(dependencies.extract(request, evidence, signal), signal);
         // Extractors may trim supplied sources, but cannot introduce a source,

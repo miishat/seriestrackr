@@ -7,6 +7,7 @@ import type { CatalogResult } from './catalogs';
 import { fetchProviderJson, ProviderError } from './http';
 import { createRateQueue } from './rateQueue';
 import { hardcoverAliases, isPlaceholderTitle } from './workIdentity';
+import type { RetrievalContext } from './retrievalContext';
 
 const queue = createRateQueue(1100);
 const empty = (): EvidenceBundle => ({ sources: [], identities: [], editions: [] });
@@ -132,11 +133,12 @@ export function normalizeHardcover(input: unknown, request: CheckRequest, checke
   const parsed = parseExtraction(evidence, evidence.sources);
   return parsed.ok ? parsed.value : fail();
 }
-export async function collectHardcover(request: CheckRequest, token: string | null | undefined, signal: AbortSignal, fetcher: typeof fetch = fetch, onDiagnostic?: DiagnosticObserver): Promise<CatalogResult> {
+export async function collectHardcover(request: CheckRequest, token: string | null | undefined, signal: AbortSignal, fetcher: typeof fetch = fetch, onDiagnostic?: DiagnosticObserver, context?: RetrievalContext): Promise<CatalogResult> {
   const usage = emptyUsage(); const key = token?.trim();
   if (!key) return { evidence: empty(), usage, reasons: [] };
   try {
     const raw = await queue.run(async () => {
+      if (context && !context.claim('hardcover')) throw new ProviderError('hardcover', 'budget');
       usage.hardcover++;
       return fetchProviderJson('hardcover', '/v1/graphql', { method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: /^Bearer\s/i.test(key) ? key : `Bearer ${key}` },

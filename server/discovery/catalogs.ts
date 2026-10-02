@@ -8,8 +8,11 @@ import { appleCanonicalTitle, appleProductUrl, normalizeAppleProductPage } from 
 import { createRateQueue } from './rateQueue';
 import { normalizeGoogleBooks } from './googleBooks';
 import { diagnosticCounts, emitDiagnostic, type DiagnosticObserver } from './diagnostics';
+import { createRetrievalContext, type RetrievalContext, type RetrievalPhase } from './retrievalContext';
 
 export type CatalogResult = { evidence: EvidenceBundle; usage: Usage; reasons: Reason[] };
+// Shared by every collection so cached metadata promises stay valid across phases.
+const unavailable = Symbol('unavailable');
 const appleQueue = createRateQueue(3100);
 const openLibraryQueue = createRateQueue(1100);
 const googleBooksQueue = createRateQueue(1100);
@@ -94,9 +97,27 @@ export function normalizeApple(input: unknown, market: string, format: 'ebook' |
   return normalizeAppleRecords(input, market, format, checkedAt);
 }
 
-function normalizeAppleRecords(input: unknown, market: string, format: 'ebook' | 'audio', checkedAt: string, languageStates?: Map<string, LanguageMetadata>): EvidenceBundle {
+const APPLE_RECORD_LIMIT = 20;
+// Over-limit responses are grouped deterministically by relevance: exact work
+// records (and records sharing their identifier) keep their response order and
+// come first, so a target or conflicting alternative past the 20th row survives.
+// The caller always marks any over-limit response with the budget reason.
+function boundedAppleRecords(rows: unknown[], format: 'ebook' | 'audio', relevance?: { title: string; author: string }): unknown[] {
+  if (rows.length <= APPLE_RECORD_LIMIT) return rows;
+  if (!relevance?.title.trim()) return rows.slice(0, APPLE_RECORD_LIMIT);
+  const idOf = (raw: Record<string, unknown>) => format === 'ebook' ? raw.trackId : raw.collectionId ?? raw.trackId;
+  const titleOf = (raw: Record<string, unknown>) => format === 'ebook' ? raw.trackName : raw.collectionName ?? raw.trackName;
+  const exactIds = new Set(rows.map(object).filter(raw => typeof titleOf(raw) === 'string' && normalizeIdentity(String(titleOf(raw))) === normalizeIdentity(relevance.title) &&
+    typeof raw.artistName === 'string' && normalizeIdentity(raw.artistName) === normalizeIdentity(relevance.author)).map(idOf));
+  const exact = rows.filter(row => exactIds.has(idOf(object(row))));
+  const rest = rows.filter(row => !exactIds.has(idOf(object(row))));
+  return [...exact, ...rest].slice(0, APPLE_RECORD_LIMIT);
+}
+
+function normalizeAppleRecords(input: unknown, market: string, format: 'ebook' | 'audio', checkedAt: string, languageStates?: Map<string, LanguageMetadata>,
+  relevance?: { title: string; author: string }): EvidenceBundle {
   const bundle = empty();
-  for (const item of list(object(input).results).slice(0, 20)) {
+  for (const item of boundedAppleRecords(list(object(input).results), format, relevance)) {
     const raw = object(item);
     const identifier = format === 'ebook' ? raw.trackId : raw.collectionId ?? raw.trackId;
     if (!(typeof identifier === 'number' && Number.isSafeInteger(identifier) && identifier > 0)) continue;
@@ -204,12 +225,13 @@ function joinAppleLanguages(evidence: EvidenceBundle, originalLanguages: Map<str
 }
 
 export async function collectCatalogs(request: CheckRequest, markets: string[], signal: AbortSignal, fetcher: typeof fetch = fetch,
-  options: { googleBooksKey?: string | null; onDiagnostic?: DiagnosticObserver; appleIsbnJoin?: boolean; appleProductPages?: boolean; seedEvidence?: EvidenceBundle } = {}): Promise<CatalogResult> {
+  options: { googleBooksKey?: string | null; onDiagnostic?: DiagnosticObserver; appleIsbnJoin?: boolean; appleProductPages?: boolean; seedEvidence?: EvidenceBundle;
+  context?: RetrievalContext; phase?: RetrievalPhase } = {}): Promise<CatalogResult> {
   const evidence = empty();
-  const usage = emptyUsage();
+  const context = options.context ?? createRetrievalContext();
+  const seeded = { sources: new Set<string>(), identities: new Set<string>() };
   const reasons: Reason[] = [];
   const originalLanguages = new Map<string, LanguageMetadata>();
-  const unavailable = Symbol('unavailable');
   const checkedAt = new Date().toISOString();
   const reason = (value: Reason) => {
     if (!reasons.includes(value)) reasons.push(value);
@@ -218,14 +240,20 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
   };
   if (options.seedEvidence) {
     const seed = parseExtraction(options.seedEvidence, options.seedEvidence.sources);
-    if (seed.ok) merge(evidence, seed.value); else reason('invalid-evidence');
+    if (seed.ok) {
+      merge(evidence, seed.value);
+      // Enrichment seeds are already retained by the caller; they are context, not new evidence.
+      if (options.phase === 'enrich') {
+        seed.value.sources.forEach(source => seeded.sources.add(source.id));
+        seed.value.identities.forEach(identity => seeded.identities.add(JSON.stringify(identity)));
+      }
+    } else reason('invalid-evidence');
   }
   const preferred = country(request.preferredMarket);
   const countries = [...new Set([preferred, ...markets.map(country)].filter((item): item is string => item !== null && (item === preferred || ['US', 'GB', 'CA'].includes(item))))].slice(0, 4);
   const formats = [...new Set(request.formats)];
-  const queries = new Map<string, Promise<unknown>>();
+  const queries = context.cache;
   const hydrated = new Set<string>();
-  let htmlStarted = 0;
   const googleBooksKey = options.googleBooksKey?.trim() ?? '';
   const seriesQuery = `${request.target.series} inauthor:${request.target.author}`;
   const titleQuery = (title: string) => `intitle:${title} inauthor:${request.target.author}`;
@@ -242,11 +270,10 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
     const cached = queries.get(key);
     if (cached) return cached;
     const queue = { apple: appleQueue, openlibrary: openLibraryQueue, googlebooks: googleBooksQueue }[provider];
-    const cap = { apple: 12, openlibrary: 3, googlebooks: 2 }[provider];
     if (signal.aborted) { reason('cancelled'); return Promise.resolve(unavailable); }
-    if (usage[provider] >= cap) { emitDiagnostic(options.onDiagnostic, { stage: 'catalog', category: 'bounds', ...diagnosticCounts(evidence), provider, rule: 'request-bound' }); reason('budget'); return Promise.resolve(unavailable); }
+    if (!context.canClaim(provider)) { emitDiagnostic(options.onDiagnostic, { stage: 'catalog', category: 'bounds', ...diagnosticCounts(evidence), provider, rule: 'request-bound' }); reason('budget'); return Promise.resolve(unavailable); }
     const operation = queue.run(async () => {
-      usage[provider]++;
+      if (!context.claim(provider)) throw new ProviderError(provider, 'budget');
       return fetchProviderJson(provider, path, {}, signal, fetcher, options.onDiagnostic);
     }, signal).catch(error => {
       reason(signal.aborted ? 'cancelled' : error instanceof ProviderError ? error.reason : 'provider-error');
@@ -278,7 +305,8 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
     if (!Array.isArray(results)) { reason('invalid-evidence'); return; }
     if (results.length > 20) reason('budget');
     const languageStates = new Map<string, LanguageMetadata>();
-    const normalized = normalizeAppleRecords(raw, market, format === 'book' ? 'ebook' : 'audio', checkedAt, languageStates);
+    const normalized = normalizeAppleRecords(raw, market, format === 'book' ? 'ebook' : 'audio', checkedAt, languageStates,
+      { title: target.title, author: request.target.author });
     if (results.length && !normalized.sources.length) reason('invalid-evidence');
     for (const [incomingId, actualId] of merge(evidence, normalized)) {
       if (!originalLanguages.has(actualId) && languageStates.has(incomingId)) originalLanguages.set(actualId, languageStates.get(incomingId)!);
@@ -307,12 +335,11 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
       if (hydrated.has(key)) continue;
       const proposal = selectProposals(request, evidence, checkedAt).releases[edition.format === 'audio' ? 'audio' : 'book'];
       if (proposal?.date && proposal.provenance.sourceMarket === preferred) continue;
-      if (usage.apple >= 12 || htmlStarted >= 6) { reason('budget'); break; }
+      if (!context.canClaim('apple', true)) { reason('budget'); break; }
       hydrated.add(key);
       try {
         const html = await appleQueue.run(async () => {
-          if (usage.apple >= 12 || htmlStarted >= 6) throw new ProviderError('apple', 'budget');
-          usage.apple++; htmlStarted++;
+          if (!context.claim('apple', true)) throw new ProviderError('apple', 'budget');
           return fetchAppleProductText(source.url, signal, fetcher, options.onDiagnostic);
         }, signal);
         const normalized = normalizeAppleProductPage(html, source, edition, targetRequest, checkedAt);
@@ -437,6 +464,13 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
   if (options.appleIsbnJoin && !signal.aborted) await appleIsbnJoin();
   if (countries[0] && !signal.aborted) await hydrateApple(countries[0]);
   if (signal.aborted) reason('cancelled');
+  if (seeded.sources.size) {
+    evidence.sources = evidence.sources.filter(source => !seeded.sources.has(source.id));
+    evidence.identities = evidence.identities.filter(identity => !seeded.identities.has(JSON.stringify(identity)));
+  }
+  // Usage is the shared aggregate for this check, never a freshly reset counter.
+  const counts = context.snapshot();
+  const usage = { ...emptyUsage(), apple: counts.apple, openlibrary: counts.openlibrary, googlebooks: counts.googlebooks, hardcover: counts.hardcover };
   return { evidence, usage, reasons };
 }
 

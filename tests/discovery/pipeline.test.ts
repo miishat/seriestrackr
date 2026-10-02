@@ -12,6 +12,7 @@ import { buildExtractionMessages } from '../../server/discovery/prompt';
 import { extractEvidence } from '../../server/discovery/deepseek';
 import { collectCatalogs, normalizeOpenLibrary } from '../../server/discovery/catalogs';
 import { normalizeGoogleBooks } from '../../server/discovery/googleBooks';
+import { createRetrievalContext } from '../../server/discovery/retrievalContext';
 
 afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
 
@@ -714,4 +715,79 @@ test('more than 12 related claims are dropped whole under the budget, never capp
   expect(result.proposals.related).toEqual([]);
   expect(result.summary.reasons).toContain('budget');
   expect(parseCheckResponse(result).ok).toBe(true);
+});
+
+// Late identity enrichment: real catalog transport, one shared ledger, scripted network.
+const publisherSource = (id: string, title: string) => ({ id, title, url: `https://us.macmillan.com/books/${id}/${id}/`, provider: 'tavily' as const,
+  market: null, retrievedAt: '2026-09-29T12:00:00Z',
+  text: `${title}\nA Novel of the Malazan Empire\nNovels of the Malazan Empire (Volume 5)\nAuthor: Ian C. Esslemont\nBook Details` });
+const appleRecord = (trackId: number, title: string, releaseDate: string) => ({ trackId, trackName: title, artistName: 'Ian C. Esslemont',
+  trackViewUrl: `https://books.apple.com/ca/book/${trackId}`, releaseDate, country: 'CA', language: 'English' });
+function lateIdentityHarness(appleResults: (title: string) => unknown[]) {
+  const fetched: URL[] = []; const phases: string[] = []; const contexts = new Set<unknown>();
+  const noise = { sources: Array.from({ length: 30 }, (_, i) => ({ id: `noise-${i}`, title: `Noise ${i}`, url: `https://example.com/noise-${i}`,
+    provider: 'tavily' as const, market: null, retrievedAt: '2026-09-29T12:00:00Z', text: `Unrelated catalogue entry number ${i}.` })), identities: [], editions: [] };
+  const fetcher = vi.fn<typeof fetch>(async input => {
+    const url = new URL(String(input)); fetched.push(url);
+    if (url.hostname === 'itunes.apple.com' && url.pathname === '/search') {
+      const title = (url.searchParams.get('term') ?? '').replace(' Ian C. Esslemont', '');
+      return Response.json({ results: appleResults(title) });
+    }
+    return Response.json({ results: [], docs: [] });
+  });
+  const deps = dependencies(); deps.canExtract = false;
+  deps.catalogs = (req, markets, signal, context, phase, seed) => {
+    phases.push(String(phase)); contexts.add(context);
+    return collectCatalogs(req, markets, signal, fetcher, phase === 'enrich' ? { context, phase, seedEvidence: seed }
+      : { context, phase, seedEvidence: noise });
+  };
+  return { deps, fetched, phases, contexts, fetcher };
+}
+const lateRequest = () => request({ formats: ['book'], target: { series: 'Novels of the Malazan Empire', author: 'Ian C. Esslemont', position: 5, title: '', orderNote: '' } });
+
+test('late numbered identity enriches once through one ledger, keeping identity and the dated Apple edition', async () => {
+  vi.useFakeTimers();
+  const { deps, fetched, phases, contexts } = lateIdentityHarness(title => title === 'Blood and Bone' ? [appleRecord(901, 'Blood and Bone', '2026-11-03T08:00:00Z')] : []);
+  deps.search = vi.fn(async () => ({ sources: [publisherSource('bloodandbone', 'Blood and Bone')], identities: [], editions: [] }));
+  const pending = runDiscovery(lateRequest(), deps, new AbortController().signal); await vi.runAllTimersAsync(); const result = await pending;
+  expect(phases).toEqual(['initial', 'enrich']); expect(contexts.size).toBe(1);
+  expect(result.proposals.identity).toMatchObject({ title: 'Blood and Bone', position: 5 });
+  expect(result.proposals.releases.book).toMatchObject({ date: '2026-11-03' });
+  expect(result.sources.length).toBeLessThanOrEqual(30);
+  const ids = new Set(result.sources.map(item => item.id));
+  expect(result.proposals.identity!.citations.every(item => ids.has(item.sourceId))).toBe(true);
+  expect(result.proposals.releases.book!.citations.every(item => ids.has(item.sourceId))).toBe(true);
+  const count = (host: string) => fetched.filter(url => url.hostname === host).length;
+  expect(count('itunes.apple.com')).toBe(result.summary.usage.apple); expect(result.summary.usage.apple).toBeLessThanOrEqual(12);
+  expect(count('openlibrary.org')).toBe(result.summary.usage.openlibrary); expect(result.summary.usage.openlibrary).toBeLessThanOrEqual(3);
+  expect(result.summary.usage.tavily).toBeLessThanOrEqual(3); expect(result.summary.usage.hardcover).toBeLessThanOrEqual(1);
+  expect(new Set(fetched.map(String)).size).toBe(fetched.length);
+  expect(JSON.stringify(result)).not.toContain('itunes.apple.com/search');
+});
+
+test('enrichment keeps a competing identity and a conflicting earlier date instead of narrowing them away', async () => {
+  vi.useFakeTimers();
+  const { deps, phases } = lateIdentityHarness(title => title === 'Blood and Bone'
+    ? [appleRecord(901, 'Blood and Bone', '2026-11-03T08:00:00Z'), appleRecord(901, 'Blood and Bone', '2026-10-01T08:00:00Z')] : []);
+  let calls = 0;
+  deps.search = vi.fn(async () => ({ sources: [publisherSource(calls++ === 0 ? 'bloodandbone' : 'otherwork', calls === 1 ? 'Blood and Bone' : 'Other Work')], identities: [], editions: [] }));
+  const pending = runDiscovery(lateRequest(), deps, new AbortController().signal); await vi.runAllTimersAsync(); const result = await pending;
+  expect(phases.filter(item => item === 'enrich')).toHaveLength(1);
+  expect(result.proposals.identity).toBeNull();
+  expect(result.sources.map(item => item.url)).toEqual(expect.arrayContaining([
+    'https://us.macmillan.com/books/bloodandbone/bloodandbone/', 'https://us.macmillan.com/books/otherwork/otherwork/']));
+  expect(result.proposals.releases.book).toBeNull();
+  expect(result.summary.usage.tavily).toBeLessThanOrEqual(3);
+});
+
+test('cancelled enrichment still reports the shared aggregate and stops without further starts', async () => {
+  vi.useFakeTimers(); const controller = new AbortController();
+  const { deps, fetched } = lateIdentityHarness(() => []);
+  const real = deps.catalogs;
+  deps.catalogs = (req, markets, signal, context, phase, seed) => { if (phase === 'enrich') controller.abort(); return real(req, markets, signal, context, phase, seed); };
+  deps.search = vi.fn(async () => ({ sources: [publisherSource('bloodandbone', 'Blood and Bone')], identities: [], editions: [] }));
+  const pending = runDiscovery(lateRequest(), deps, controller.signal); await vi.runAllTimersAsync(); const result = await pending;
+  expect(result.summary.status).toBe('cancelled');
+  expect(fetched.filter(url => url.hostname === 'itunes.apple.com').length).toBe(result.summary.usage.apple);
+  expect(result.proposals.identity).toMatchObject({ title: 'Blood and Bone' });
 });

@@ -169,3 +169,16 @@ test('related claims keep their sources and conflicting claims are retained toge
   expect(allocation.sources.map(source => source.id).sort()).toEqual(['a', 'b', 'c']);
   expect(selectRelatedWorks(request(), allocation)).toEqual([]);
 });
+
+test('unrequested formats are filtered before ranking while date conflicts stay whole closures', () => {
+  const book = edition({ id: 'b1' });
+  const audio = edition({ id: 'a1', format: 'audio', editionKey: 'audio-1' });
+  const early = edition({ id: 'c1', editionKey: 'conflict', date: '2027-01-01', citations: [{ sourceId: 's1', quote: 'English ebook in Canada: 2027-01-01.' }] });
+  const late = edition({ id: 'c2', editionKey: 'conflict', date: '2027-02-01', citations: [{ sourceId: 's1', quote: 'English ebook in Canada: 2027-02-01.' }] });
+  const input = bundle([book, audio, early, late]);
+  const allocated = allocationEvidence(request({ formats: ['book'] }), input);
+  expect(allocated.editions.map(item => item.id).sort()).toEqual(['b1', 'c1', 'c2']);
+  expect(allocated.singletons.map(item => item.id)).toEqual(['b1']);
+  expect(allocated.conflicts.map(group => group.map(item => item.id).sort())).toEqual([['c1', 'c2']]);
+  expect(allocationEvidence(request({ formats: ['book', 'audio'] }), input).editions).toHaveLength(4);
+});

@@ -15,12 +15,16 @@ export function allocationEvidence(request: CheckRequest, input: EvidenceBundle,
   const identities = input.identities.filter(item => matchingAuthor(item.author) && item.position === request.target.position);
   const titles = new Set(identities.map(item => normalizeIdentity(item.title)));
   if (request.target.title.trim()) titles.add(normalizeIdentity(request.target.title));
-  const editions = input.editions.filter(item => matchingAuthor(item.author) &&
+  const known = input.editions.filter(item => matchingAuthor(item.author) &&
     (!titles.size || titles.has(normalizeIdentity(item.title))) && (item.position === null || item.position === request.target.position));
+  // Unrequested formats never compete for slots: exact author, known work and
+  // requested format are all filtered before any ranking or closure building.
+  const requested = (item: EditionEvidence) => request.formats.includes(item.format === 'audio' ? 'audio' : 'book');
+  const editions = known.filter(requested);
   // Relation claims are retained as one closure, conflicting ones included, so
   // truncation can never leave a single surviving claim looking unambiguous.
   const related = (input.related ?? []).filter(item => matchingAuthor(item.author) && item.position === null);
-  const retainedItems = new Set<unknown>([...identities, ...editions]);
+  const retainedItems = new Set<unknown>([...identities, ...known]);
   for (const item of [...input.identities, ...input.editions]) {
     if (retainedItems.has(item)) continue;
     const firstSource = input.sources.find(source => item.citations.some(c => c.sourceId === source.id));

@@ -5,19 +5,22 @@ import { searchEvidence } from './search';
 import { extractEvidence } from './deepseek';
 import type { DiscoveryDependencies } from './runDiscovery';
 import type { DiagnosticObserver } from './diagnostics';
+import { createRetrievalContext } from './retrievalContext';
 
 // No per-check state lives in this factory. Catalog counters are local to its
-// single collection, orchestrator counters are local to runDiscovery, and the
+// single check's retrieval context, created by runDiscovery, and the
 // existing catalog provider queues remain global across runtimes/checks.
 export function createDiscoveryRuntime(config: DiscoveryConfig, fetcher: typeof fetch = fetch,
   options: { onDiagnostic?: DiagnosticObserver } = {}): DiscoveryDependencies {
   return {
-    catalogs: async (request, markets, signal) => {
-      const hardcover = await collectHardcover(request, config.hardcoverToken, signal, fetcher, options.onDiagnostic);
+    catalogs: async (request, markets, signal, context = createRetrievalContext(), phase = 'initial', seed) => {
+      // Enrichment reuses the identity already retained; it never spends a second Hardcover request.
+      const hardcover = phase === 'initial'
+        ? await collectHardcover(request, config.hardcoverToken, signal, fetcher, options.onDiagnostic, context) : null;
       const catalogs = await collectCatalogs(request, markets, signal, fetcher, { googleBooksKey: config.googleBooksKey,
-        onDiagnostic: options.onDiagnostic, seedEvidence: hardcover.evidence, appleIsbnJoin: true, appleProductPages: true });
-      catalogs.usage.hardcover = hardcover.usage.hardcover;
-      catalogs.reasons = [...new Set([...hardcover.reasons, ...catalogs.reasons])];
+        onDiagnostic: options.onDiagnostic, seedEvidence: hardcover ? hardcover.evidence : seed, appleIsbnJoin: true, appleProductPages: true,
+        context, phase });
+      catalogs.reasons = [...new Set([...(hardcover?.reasons ?? []), ...catalogs.reasons])];
       return catalogs;
     },
     search: (query, signal) => searchEvidence(query, config, signal, fetcher),
