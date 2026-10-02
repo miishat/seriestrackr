@@ -9,6 +9,13 @@ function citedSources(citations: Citation[], evidence: EvidenceBundle): SourceLi
     .map(({ id, title, url }) => ({ id, title, url }));
 }
 
+// Absent publication is catalogued: a null date alone never implies an announcement.
+// Only explicit publication evidence with a verified market can be released.
+const publicationRank = (edition: EditionEvidence) =>
+  edition.publication === 'published' && edition.market !== null ? 2 : edition.publication === 'announced' ? 1 : 0;
+export const undatedState = (edition: EditionEvidence): ReleaseProposal['state'] =>
+  publicationRank(edition) === 2 ? 'released' : publicationRank(edition) === 1 ? 'announced' : 'catalogued';
+
 function editionGroup(edition: EditionEvidence): string {
   const key = edition.editionKey === null
     ? `work:${normalizeIdentity(edition.title)}:${normalizeIdentity(edition.author)}`
@@ -99,11 +106,13 @@ export function selectProposals(request: CheckRequest, evidence: EvidenceBundle,
     const local = dated.filter(e => e.market === request.preferredMarket);
     const pool = local.length ? local : dated;
     const chosen = [...pool].sort((a, b) => a.date!.localeCompare(b.date!) || a.id.localeCompare(b.id))[0]
-      ?? [...valid].sort((a, b) => Number(b.market === request.preferredMarket) - Number(a.market === request.preferredMarket) || a.id.localeCompare(b.id))[0];
+      ?? [...valid].sort((a, b) => Number(b.market === request.preferredMarket) - Number(a.market === request.preferredMarket) ||
+        publicationRank(b) - publicationRank(a) || a.id.localeCompare(b.id))[0];
     if (!chosen) continue;
+    const exact = chosen.precision === 'day' && chosen.date !== null;
     result.releases[format] = {
       title, position: request.target.position,
-      state: chosen.precision === 'day' && chosen.date !== null ? 'scheduled' : 'announced',
+      state: exact ? 'scheduled' : undatedState(chosen),
       date: chosen.precision === 'day' ? chosen.date : null,
       provenance: {
         checkedAt, sources: citedSources(chosen.citations, evidence),

@@ -78,8 +78,8 @@ test('accepts a bounded request and rejects invalid position, country, and forma
   expect(parseCheckRequest(request({ preferredMarket: 'ca' })).ok).toBe(false);
   expect(parseCheckRequest(request({ formats: ['book', 'book'] })).ok).toBe(false);
 });
-test('month evidence becomes an announced proposal without an exact date', () => {
-  const evidence = bundle([edition({ date: '2027-05', precision: 'month' })]);
+test('month evidence with explicit announcement becomes announced without an exact date', () => {
+  const evidence = bundle([edition({ date: '2027-05', precision: 'month', publication: 'announced' })]);
   expect(parseExtraction(evidence, evidence.sources).ok).toBe(true);
   const proposal = selectProposals(request(), evidence, at).releases.book;
   expect(proposal?.state).toBe('announced');
@@ -153,4 +153,28 @@ test('responses without related parse with an empty default and related is attri
   expect(parseCheckResponse({ ...valid, proposals: { ...valid.proposals, related: [item] } }).ok).toBe(true);
   expect(parseCheckResponse({ ...valid, proposals: { ...valid.proposals, related: [{ ...item, citations: [{ sourceId: 'zzz', quote: 'q' }] }] } }).ok).toBe(false);
   expect(parseCheckResponse({ ...valid, proposals: { ...valid.proposals, related: [{ ...item, position: 2 }] } }).ok).toBe(false);
+});
+
+test('publication parses when present, defaults to catalogued when absent, and rejects unknown values', () => {
+  const absent = bundle([edition()]);
+  const parsed = parseExtraction(absent, absent.sources);
+  expect(parsed.ok && parsed.value.editions[0].publication).toBe('catalogued');
+  for (const publication of ['catalogued', 'announced', 'published'] as const) {
+    const evidence = bundle([edition({ publication })]);
+    const result = parseExtraction(evidence, evidence.sources);
+    expect(result.ok && result.value.editions[0].publication).toBe(publication);
+  }
+  const bad = bundle([edition({ publication: 'rumored' as never })]);
+  expect(parseExtraction(bad, bad.sources).ok).toBe(false);
+});
+test('response accepts catalogued and released only without a day and rejects day precision', () => {
+  const valid = response();
+  const book = valid.proposals.releases.book!;
+  const make = (state: string, date: string | null, datePrecision: string) => parseCheckResponse({ ...valid, proposals: { ...valid.proposals, releases: {
+    ...valid.proposals.releases, book: { ...book, state, date, provenance: { ...book.provenance, datePrecision } } } } }).ok;
+  expect(make('catalogued', null, 'none')).toBe(true);
+  expect(make('released', null, 'month')).toBe(true);
+  expect(make('catalogued', '2027-03-01', 'day')).toBe(false);
+  expect(make('released', null, 'day')).toBe(false);
+  expect(make('released', '2027-03-01', 'none')).toBe(false);
 });

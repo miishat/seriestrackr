@@ -128,7 +128,7 @@ const rejectedQualification: { label: string; change: (item: Fixture) => void; r
     label: `country ${String(value)}`, change: (item: Fixture) => { Object.assign(item.saleInfo, { country: value }); },
   })),
 ];
-test.each(rejectedQualification)('unqualified $label remains an undated announcement with sanitized text', ({ change, rejected }) => {
+test.each(rejectedQualification)('unqualified $label remains an undated catalogued edition with sanitized text', ({ label, change, rejected }) => {
   const item = volume();
   change(item);
   const evidence = normalize(item);
@@ -141,8 +141,18 @@ test.each(rejectedQualification)('unqualified $label remains an undated announce
   if (typeof rejected === 'string' && rejected) expect(facts).not.toContain(rejected);
   expect(parseExtraction(evidence, evidence.sources).ok).toBe(true);
   for (const req of [request(), unknownTitle()]) {
-    expect(selectProposals(req, evidence, at).releases.book).toMatchObject({ state: 'announced', date: null });
+    expect(selectProposals(req, evidence, at).releases.book).toMatchObject({ state: /^publication (2027|2027-03)$/.test(label) ? 'announced' : 'catalogued', date: null });
   }
+});
+test.each(['2027', '2027-03'])('a FOR_PREORDER ebook with partial published date %s is a format announcement without a day', publishedDate => {
+  const item = volume();
+  Object.assign(item.volumeInfo, { publishedDate }); Object.assign(item.saleInfo, { onSaleDate: undefined });
+  const evidence = normalize(item);
+  expect(evidence.editions[0]).toMatchObject({ date: null, precision: 'none', market: null, publication: 'announced' });
+  expect(selectProposals(request(), evidence, at).releases.book).toMatchObject({ state: 'announced', date: null });
+});
+test('a qualified exact Google day stays scheduled and ordinary metadata is catalogued', () => {
+  expect(normalize(volume()).editions[0]).toMatchObject({ publication: 'catalogued', precision: 'day' });
 });
 
 test.each([

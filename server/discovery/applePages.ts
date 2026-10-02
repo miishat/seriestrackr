@@ -83,6 +83,16 @@ function languageBadges(html: string): string[] | null {
   return result;
 }
 
+// Publication status comes only from a bound infobar badge: exactly one RELEASED
+// badge (published) or one PREORDER badge (announced). Anything else is catalogued.
+function publicationBadge(html: string): 'published' | 'announced' | null {
+  const eyebrows = [...html.matchAll(/<div\b[^>]*class\s*=\s*["']book-badge__eyebrow["'][^>]*>([^<]*)<\/div\s*>/gi)]
+    .map(item => decode(item[1]).toUpperCase());
+  const released = eyebrows.filter(value => value === 'RELEASED').length;
+  const preorder = eyebrows.filter(value => value === 'PREORDER' || value === 'PRE-ORDER').length;
+  return released === 1 && preorder === 0 ? 'published' : preorder === 1 && released === 0 ? 'announced' : null;
+}
+
 export function normalizeAppleProductPage(html: string, source: Source, edition: EditionEvidence, request: CheckRequest, checkedAt: string): EvidenceBundle {
   const result = empty();
   const url = appleProductUrl(source.url, edition);
@@ -122,17 +132,18 @@ export function normalizeAppleProductPage(html: string, source: Source, edition:
   if ((hasLanguage && !english(product.inLanguage)) || (!hasLanguage && (edition.format !== 'audio' || badges.length !== 1))) return result;
   if ((edition.language !== null && edition.language !== 'en') || source.text.includes('Language metadata: ambiguous.')) return result;
   const date = exactDate(product.datePublished);
+  const publication = badgeScope === null ? null : publicationBadge(badgeScope);
   const sourceId = `apple-page:${/^apple:(\d+):/.exec(edition.id)![1]}:${edition.market}:${edition.format}`;
   const languageQuote = hasLanguage ? `inLanguage: ${JSON.stringify(product.inLanguage)}.` : 'Product LANGUAGE badge: English.';
   const explicitOrder = orderedTitle(edition.title, request);
   const relationship = title === edition.title ? '' : explicitOrder && normalizeIdentity(explicitOrder.title) === normalizeIdentity(title)
     ? ` Canonical title: ${title}. Literal catalog label: ${edition.title}. Requested series: ${request.target.series}. Requested position: ${request.target.position}. Exact supported series-order title relationship.`
     : ` Canonical title: ${title}. Literal audio label: ${edition.title}. Requested series: ${request.target.series}. Requested position: ${request.target.position}. Exact supported unabridged title relationship.`;
-  const quote = `Title: ${edition.title}. Author: ${edition.author}. Format: ${edition.format}. Language: en. ${languageQuote} Market: ${edition.market}. Date: ${date ?? 'unknown'}. Precision: ${date ? 'day' : 'none'}. Edition: ${edition.editionKey}.${relationship}`;
+  const quote = `Title: ${edition.title}. Author: ${edition.author}. Format: ${edition.format}. Language: en. ${languageQuote} Market: ${edition.market}. Date: ${date ?? 'unknown'}. Precision: ${date ? 'day' : 'none'}. Edition: ${edition.editionKey}.${relationship}${publication ? ` Publication: ${publication}.` : ''}`;
   const normalizedSource: Source = { id: sourceId, title: edition.title, url: source.url, provider: 'apple', market: edition.market, retrievedAt: checkedAt, text: quote };
   result.sources.push(normalizedSource);
   const citations = (quote.match(/[\s\S]{1,600}/g) ?? []).map(part => ({ sourceId, quote: part }));
-  const qualified: EditionEvidence = { ...edition, id: sourceId, title, language: 'en', date, precision: date ? 'day' : 'none', citations };
+  const qualified: EditionEvidence = { ...edition, id: sourceId, title, language: 'en', date, precision: date ? 'day' : 'none', publication: publication ?? 'catalogued', citations };
   result.editions.push(qualified);
   if (date && edition.date && date !== edition.date) {
     result.sources.push(source);

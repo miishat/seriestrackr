@@ -253,7 +253,7 @@ test.each([
 
 test.each([
   { label: 'exact day', publishDate: 'March 1, 2027', date: '2027-03-01', precision: 'day', state: 'scheduled' },
-  { label: 'month only', publishDate: 'March 2027', date: null, precision: 'month', state: 'announced' },
+  { label: 'month only', publishDate: 'March 2027', date: null, precision: 'month', state: 'catalogued' },
 ])('country-unspecified English print with $label preserves date precision', async ({ publishDate, date, precision, state }) => {
   const catalog = normalizeOpenLibrary({ key: '/books/OL901M', title: 'Second', author_name: ['Example Author'],
     physical_format: 'paperback', languages: [{ key: '/languages/eng' }], publish_date: publishDate }, '2026-09-29T12:00:00Z');

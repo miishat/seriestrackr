@@ -1,6 +1,7 @@
 export type Format = 'book' | 'audio';
 export type EditionFormat = 'ebook' | 'print' | 'audio';
 export type Precision = 'day' | 'month' | 'year' | 'none';
+export type Publication = 'catalogued' | 'announced' | 'published';
 export type Provider = 'apple' | 'openlibrary' | 'googlebooks' | 'tavily' | 'deepseek' | 'hardcover';
 export type Parsed<T> = { ok: true; value: T } | { ok: false; error: string };
 export interface Target { series: string; author: string; position: number;
@@ -16,7 +17,7 @@ export interface IdentityEvidence { title: string; author: string; position: num
 export interface EditionEvidence { id: string; title: string; author: string;
   position: number | null; editionKey: string | null; format: EditionFormat;
   language: string | null; market: string | null; date: string | null;
-  precision: Precision; citations: Citation[] }
+  precision: Precision; publication?: Publication; citations: Citation[] }
 export interface RelatedWorkEvidence { title: string; author: string;
   relationship: 'prequel' | 'continuation'; position: null; citations: Citation[] }
 export interface EvidenceBundle { sources: Source[]; identities: IdentityEvidence[];
@@ -26,7 +27,7 @@ export interface Provenance extends Attribution { preferredMarket: string;
   sourceMarket: string | null; language: 'en'; editionFormat: EditionFormat;
   editionKey: string | null; datePrecision: Precision; interpreted: boolean }
 export interface ReleaseProposal { title: string; position: number;
-  state: 'announced' | 'scheduled'; date: string | null;
+  state: 'catalogued' | 'announced' | 'scheduled' | 'released'; date: string | null;
   provenance: Provenance; citations: Citation[] }
 export interface Conflict { format: Format; evidenceIds: string[]; reason: string }
 export interface Proposals { identity: IdentityEvidence | null;

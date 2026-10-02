@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { emptyUsage } from '../../shared/discovery';
 import type { CheckRequest, CheckResponse, Citation, EditionEvidence, EvidenceBundle, Format, Reason } from '../../shared/discovery';
-import { normalizeIdentity, selectProposals } from '../../shared/discoveryPolicy';
+import { normalizeIdentity, selectProposals, undatedState } from '../../shared/discoveryPolicy';
 import { parseCheckRequest, parseCheckResponse, parseExtraction } from '../../shared/discoveryValidation';
 import type { CatalogResult } from './catalogs';
 import { createRetrievalContext, type RetrievalContext, type RetrievalPhase } from './retrievalContext';
@@ -337,7 +337,7 @@ async function runDiscoveryInTrace(input: CheckRequest, dependencies: DiscoveryD
       const matching = evidence.editions.filter(item => normalizeIdentity(item.title) === normalizeIdentity(proposal.title) &&
         normalizeIdentity(item.author) === normalizeIdentity(request.target.author) && item.language === 'en' && item.market === proposal.provenance.sourceMarket &&
         item.editionKey === proposal.provenance.editionKey && item.format === proposal.provenance.editionFormat &&
-        item.precision === proposal.provenance.datePrecision && (proposal.date === null || item.date === proposal.date) &&
+        item.precision === proposal.provenance.datePrecision && (proposal.date === null ? undatedState(item) === proposal.state : item.date === proposal.date) &&
         JSON.stringify(item.citations) === JSON.stringify(proposal.citations)).sort((a, b) => a.id.localeCompare(b.id));
       proposal.provenance.interpreted = matching[0]?.id.startsWith('ai:') ?? false;
     }

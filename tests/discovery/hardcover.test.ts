@@ -17,7 +17,7 @@ afterEach(() => vi.useRealTimers());
 test('exact series, author role and position establish identity and explicit null-market English edition', () => {
   const result = normalizeHardcover(envelope(), req, checkedAt);
   expect(result.identities).toHaveLength(1); expect(parseExtraction(result, result.sources).ok).toBe(true);
-  expect(result.editions[0]).toMatchObject({ language: 'en', format: 'ebook', market: null, date: null, precision: 'none' });
+  expect(result.editions[0]).toMatchObject({ language: 'en', format: 'ebook', market: null, date: null, precision: 'none', publication: 'catalogued' });
   expect(result.sources[1].text).toContain('Raw format: Ebook');
 });
 test.each([{ position: 2.5 }, { compilation: true }, { details: 'Companion' },

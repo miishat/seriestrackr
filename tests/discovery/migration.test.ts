@@ -30,7 +30,7 @@ function acceptedDocument(): LibraryDocument {
   return { ...emptyDocument(), settings: { ...emptyDocument().settings, market: 'CA' }, series: [seriesFixture({
     next: { positionOverride: null, title: 'Second', orderNote: '', attribution: { checkedAt: checked.summary.checkedAt, sources: checked.sources } },
     lastCheck: checked.summary,
-    releases: { book: { state: proposal.state, date: proposal.date, source: { title: primary.title, url: primary.url },
+    releases: { book: { state: proposal.state as 'scheduled', date: proposal.date, source: { title: primary.title, url: primary.url },
       origin: 'discovery', lastCheckedAt: proposal.provenance.checkedAt, provenance: proposal.provenance }, audio: emptyRelease() },
   })] };
 }

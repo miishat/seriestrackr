@@ -143,7 +143,7 @@ function normalizeAppleRecords(input: unknown, market: string, format: 'ebook' |
       .flatMap(value => Array.isArray(value) ? value : [value]));
     const edition = { id, title, author, position: null, editionKey: isbn(raw.isbn13 ?? raw.isbn) ?? `apple:${identifier}`,
       format, language: metadata.value, market: contradictory ? null : actualMarket,
-      ...date(raw.releaseDate, true) } satisfies Omit<EditionEvidence, 'citations'>;
+      ...date(raw.releaseDate, true), publication: 'catalogued' as const } satisfies Omit<EditionEvidence, 'citations'>;
     const quote = bibliographicText(edition);
     const narrator = text(raw.narratorName);
     const source: Source = { id, title, url, provider: 'apple', market: edition.market, retrievedAt: checkedAt,
@@ -176,7 +176,7 @@ export function normalizeOpenLibrary(input: unknown, checkedAt: string): Evidenc
     const format = isEdition ? openLibraryFormat(raw.physical_format) : null;
     const id = `openlibrary:${key.split('/').pop()}`;
     const facts = { id, title, author, position: null, editionKey: isbn(raw.isbn_13 ?? raw.isbn_10) ?? key,
-      format, language: isEdition ? language(raw.languages) : null, market: null, ...(isEdition ? date(raw.publish_date) : { date: null, precision: 'none' as const }) };
+      format, language: isEdition ? language(raw.languages) : null, market: null, publication: 'catalogued' as const, ...(isEdition ? date(raw.publish_date) : { date: null, precision: 'none' as const }) };
     const quote = format ? bibliographicText({ ...facts, format })
       : `Title: ${title}. Author: ${author}. Format: unknown. Language: ${facts.language ?? 'unknown'}. Market: unknown. Date: ${facts.date ?? 'unknown'}. Precision: ${facts.precision}. Edition: ${isEdition ? facts.editionKey : 'unknown'}.`;
     const source: Source = { id, title, url: `https://openlibrary.org${key}`, provider: 'openlibrary', market: null, retrievedAt: checkedAt, text: quote };

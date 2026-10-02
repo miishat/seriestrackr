@@ -206,3 +206,22 @@ test.each([
   const { api, html, url } = build();
   expect(normalizeAppleProductPage(html, { ...api.sources[0], url }, api.editions[0], ascensionReq, checkedAt).editions).toHaveLength(0);
 });
+
+const eyebrow = (label: string) => `<figure class="book-badge"><div class="book-badge__eyebrow">${label}</div><div class="book-badge__caption">x</div></figure>`;
+test.each([
+  ['RELEASED', 'published'], ['PREORDER', 'announced'], ['PRE-ORDER', 'announced'],
+])('bound infobar %s badge sets publication %s; API and bare pages stay catalogued', (label, expected) => {
+  const api = ascensionApi();
+  expect(api.editions[0].publication).toBe('catalogued');
+  const html = ascensionPage().replace('</section></article>', `${eyebrow(label)}</section></article>`);
+  const result = normalizeAppleProductPage(html, api.sources[0], api.editions[0], ascensionReq, checkedAt);
+  expect(result.editions[0]).toMatchObject({ publication: expected, date: '2026-08-19', precision: 'day' });
+  expect(result.sources[0].text).toContain(`Publication: ${expected}.`);
+  const bare = normalizeAppleProductPage(ascensionPage(), api.sources[0], api.editions[0], ascensionReq, checkedAt);
+  expect(bare.editions[0]).toMatchObject({ publication: 'catalogued' });
+});
+test('ambiguous or duplicate publication badges stay catalogued', () => {
+  const api = ascensionApi();
+  const html = ascensionPage().replace('</section></article>', `${eyebrow('RELEASED')}${eyebrow('PREORDER')}</section></article>`);
+  expect(normalizeAppleProductPage(html, api.sources[0], api.editions[0], ascensionReq, checkedAt).editions[0].publication).toBe('catalogued');
+});

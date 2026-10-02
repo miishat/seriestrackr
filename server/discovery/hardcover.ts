@@ -118,7 +118,7 @@ export function normalizeHardcover(input: unknown, request: CheckRequest, checke
       if (!editionId || !editionTitle || normalizeIdentity(editionTitle) !== normalizeIdentity(title)) { reject('unsupported-title', editionId, 'edition'); continue; }
       if (!format) { reject('edition-format', editionId, 'edition'); continue; }
       const edition = { id: `hardcover:edition:${editionId}`, title, author: request.target.author, position: request.target.position,
-        editionKey: editionKey(raw, editionId), format, language: language(raw.language), market: null, date: null, precision: 'none' as const };
+        editionKey: editionKey(raw, editionId), format, language: language(raw.language), market: null, date: null, precision: 'none' as const, publication: 'catalogued' as const };
       const facts = `Title: ${title}. Author: ${edition.author}. Position: ${edition.position}. Raw format: ${text(raw.edition_format) ?? 'unknown'}. Reading format: ${text(object(raw.reading_format).format) ?? 'unknown'}. Format: ${format}. Language: ${edition.language ?? 'unknown'}. Market: unknown. Date: ${edition.date ?? 'unknown'}. Precision: ${edition.precision}. Edition: ${edition.editionKey}.`;
       if (seen.has(edition.id)) {
         if (evidence.sources.find(source => source.id === edition.id)?.text !== facts) return fail();

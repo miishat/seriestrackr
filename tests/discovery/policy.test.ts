@@ -96,3 +96,63 @@ test.each([
     provenance: { editionKey: 'isbn:exact' } });
   expect(proposals.conflicts).toEqual([]);
 });
+
+const undated = (publication?: 'catalogued' | 'announced' | 'published', overrides = {}) =>
+  edition({ date: null, precision: 'none', ...(publication ? { publication } : {}), ...overrides });
+test('an undated Hardcover edition is catalogued, not announced', () => {
+  const p = selectProposals(request(), bundle([undated('catalogued', { market: null })]), at);
+  expect(p.releases.book).toMatchObject({ state: 'catalogued', date: null });
+});
+test('an explicitly published English edition can be released without a day', () => {
+  expect(selectProposals(request(), bundle([undated('published')]), at).releases.book)
+    .toMatchObject({ state: 'released', date: null });
+});
+test('a format announcement remains announced when no day is supported', () => {
+  expect(selectProposals(request(), bundle([undated('announced')]), at).releases.book?.state).toBe('announced');
+});
+test('older evidence without publication is catalogued, never inferred announced', () => {
+  expect(selectProposals(request(), bundle([undated()]), at).releases.book).toMatchObject({ state: 'catalogued', date: null });
+  expect(selectProposals(request(), bundle([edition({ date: '2027-05', precision: 'month' })]), at).releases.book)
+    .toMatchObject({ state: 'catalogued', date: null });
+});
+test('exact scheduled day wins regardless of publication', () => {
+  for (const publication of ['catalogued', 'announced', 'published'] as const) {
+    expect(selectProposals(request(), bundle([edition({ publication })]), at).releases.book)
+      .toMatchObject({ state: 'scheduled', date: '2027-03-01' });
+  }
+});
+test('published outranks announced outranks catalogued within a market', () => {
+  const p = selectProposals(request(), bundle([
+    undated('catalogued', { id: 'a', editionKey: 'k1' }), undated('announced', { id: 'b', editionKey: 'k2' }),
+    undated('published', { id: 'c', editionKey: 'k3' })]), at);
+  expect(p.releases.book).toMatchObject({ state: 'released' });
+  const q = selectProposals(request(), bundle([
+    undated('catalogued', { id: 'a', editionKey: 'k1' }), undated('announced', { id: 'b', editionKey: 'k2' })]), at);
+  expect(q.releases.book).toMatchObject({ state: 'announced' });
+});
+test('preferred market still outranks a better publication state elsewhere', () => {
+  const p = selectProposals(request(), bundle([
+    undated('catalogued', { id: 'ca', market: 'CA', editionKey: 'k1' }),
+    undated('published', { id: 'us', market: 'US', editionKey: 'k2' })]), at);
+  expect(p.releases.book).toMatchObject({ state: 'catalogued', provenance: { sourceMarket: 'CA' } });
+});
+test.each([
+  ['missing language', { language: null }],
+  ['non-English language', { language: 'fr' }],
+  ['wrong title', { title: 'Other' }],
+])('publication cannot bypass the %s filter', (_n, change) => {
+  expect(selectProposals(request(), bundle([undated('published', change)]), at).releases.book).toBeNull();
+});
+test('ambiguous format and wrong requested format never release', () => {
+  expect(selectProposals(request({ formats: ['audio'] }), bundle([undated('published')]), at).releases.audio).toBeNull();
+});
+test('published evidence with an unknown market is not released', () => {
+  expect(selectProposals(request(), bundle([undated('published', { market: null })]), at).releases.book)
+    .toMatchObject({ state: 'catalogued' });
+});
+test('contradictory dates for one edition still conflict despite publication', () => {
+  const p = selectProposals(request(), bundle([
+    edition({ id: 'a', publication: 'published' }), edition({ id: 'b', date: '2027-04-01', publication: 'published' })]), at);
+  expect(p.releases.book).toBeNull();
+  expect(p.conflicts).toHaveLength(1);
+});

@@ -59,7 +59,7 @@ function extractionContent(raw: unknown): { identities: unknown[]; editions: unk
       const edition = object(item);
       if (!edition) return item;
       return { position: null, editionKey: null, language: null, market: null,
-        date: null, precision: 'none', ...edition };
+        date: null, precision: 'none', publication: 'catalogued', ...edition };
     }) };
 }
 

@@ -113,7 +113,7 @@ function related(input: unknown, path: string): RelatedWorkEvidence {
     citations: citations(value.citations, `${path}.citations`) };
 }
 function edition(input: unknown, path: string): EditionEvidence {
-  const value = object(input, path, ['id', 'title', 'author', 'position', 'editionKey', 'format', 'language', 'market', 'date', 'precision', 'citations']);
+  const value = object(input, path, ['id', 'title', 'author', 'position', 'editionKey', 'format', 'language', 'market', 'date', 'precision', 'citations'], ['publication']);
   const precision = oneOf(value.precision, `${path}.precision`, ['day', 'month', 'year', 'none']);
   const date = nullableString(value.date, `${path}.date`, 10);
   const validDate = precision === 'day' ? date !== null && calendarDate(date)
@@ -126,7 +126,9 @@ function edition(input: unknown, path: string): EditionEvidence {
     editionKey: nullableString(value.editionKey, `${path}.editionKey`, 100),
     format: oneOf(value.format, `${path}.format`, ['ebook', 'print', 'audio']),
     language: nullableString(value.language, `${path}.language`, 30), market: nullableCountry(value.market, `${path}.market`),
-    date, precision, citations: citations(value.citations, `${path}.citations`),
+    date, precision, publication: !Object.hasOwn(value, 'publication') ? 'catalogued'
+      : oneOf(value.publication, `${path}.publication`, ['catalogued', 'announced', 'published']),
+    citations: citations(value.citations, `${path}.citations`),
   };
 }
 function target(input: unknown, path: string): Target {
@@ -185,12 +187,12 @@ function attribution(input: unknown, path: string, provenance = false): Attribut
 }
 function release(input: unknown, path: string): ReleaseProposal {
   const value = object(input, path, ['title', 'position', 'state', 'date', 'provenance', 'citations']);
-  const state = oneOf(value.state, `${path}.state`, ['announced', 'scheduled']);
+  const state = oneOf(value.state, `${path}.state`, ['catalogued', 'announced', 'scheduled', 'released']);
   const date = nullableString(value.date, `${path}.date`, 10);
-  if ((state === 'scheduled' && (date === null || !calendarDate(date))) || (state === 'announced' && date !== null)) fail(`${path}.date`, 'invalid release date');
+  if ((state === 'scheduled' && (date === null || !calendarDate(date))) || (state !== 'scheduled' && date !== null)) fail(`${path}.date`, 'invalid release date');
   const provenance = attribution(value.provenance, `${path}.provenance`, true) as Provenance;
   if ((state === 'scheduled' && provenance.datePrecision !== 'day') ||
-    (state === 'announced' && provenance.datePrecision === 'day')) fail(`${path}.provenance.datePrecision`, 'state and date precision disagree');
+    (state !== 'scheduled' && provenance.datePrecision === 'day')) fail(`${path}.provenance.datePrecision`, 'state and date precision disagree');
   return { title: string(value.title, `${path}.title`, 300), position: number(value.position, `${path}.position`),
     state, date, provenance, citations: citations(value.citations, `${path}.citations`) };
 }
