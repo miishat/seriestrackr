@@ -97,14 +97,29 @@ export function App() {
     {library.mode === 'unsaved' && <div className="warning" role="alert"><strong>Changes are in memory and may be lost.</strong> {library.error} <button onClick={() => downloadJson(encodeBackup(library.doc), 'seriestrackr-unsaved.json')}>Export now</button>{library.recoveryRaw !== null && <button onClick={() => setBackupsOpen(true)}>Open backups</button>}</div>}
     <section className="intro"><div><div className="eyebrow">Your library</div><h1>What comes next?</h1><p>A bookshelf for the stories you are following. Your next read stays in focus.</p></div>
       {library.doc.series.length > 0 && <div className="summary"><div><b>{library.doc.series.length}</b><span>Tracked series</span></div><div><b>{availableCount}</b><span>Next book available</span></div><div><b>{availableAudioCount}</b><span>Next audiobook available</span></div></div>}</section>
-    {library.doc.settings.market && library.mode !== 'recovery' && <LibraryView doc={library.doc} today={today} onEdit={(s) => { setDialogError(null); setEditor(s); }} onFinish={finish} onCheck={discovery.batch.running ? undefined : (series) => discovery.open(series.id)} onCheckAll={discovery.runBatch} batchRunning={discovery.batch.running} checkingSeriesId={discovery.session?.phase === 'checking' ? discovery.session.seriesId : null} onAdd={() => { setDialogError(null); setEditor('new'); }} onView={(view) => library.updateSettings({ ...library.doc.settings, view }, false)} />}
-    {discovery.batch.total > 0 && <section aria-label="Release check results">
-      <p role="status">{discovery.batch.running ? 'Checking visible releases' : 'Release checks finished'}: {discovery.batch.done} of {discovery.batch.total}. Review each result before saving.</p>
-      {discovery.batch.running && <button onClick={discovery.cancelBatch}>Cancel checks</button>}
-      {!discovery.batch.running && discovery.batch.results.map(result => <div key={result.seriesId}>
-        <span>{library.doc.series.find(s => s.id === result.seriesId)?.name}: {result.error ?? result.response?.summary.status}</span>{' '}
-        {result.response && <button onClick={() => discovery.open(result.seriesId)}>Review results</button>}
-      </div>)}
+    {library.doc.settings.market && library.mode !== 'recovery' && <LibraryView doc={library.doc} today={today} onEdit={(s) => { setDialogError(null); setEditor(s); }} onFinish={finish} onCheck={(series) => discovery.open(series.id)} onCheckAll={discovery.runBatch} batchRunning={discovery.batch.running} checkingSeriesId={discovery.session?.phase === 'checking' ? discovery.session.seriesId : null} onAdd={() => { setDialogError(null); setEditor('new'); }} onView={(view) => library.updateSettings({ ...library.doc.settings, view }, false)} />}
+    {discovery.batch.total > 0 && <section className="batch-results" aria-label="Release check results">
+      <div className="batch-results-header"><div>
+        <h2>{discovery.batch.running ? 'Checking releases' : 'Release check results'}</h2>
+        <p role="status">{discovery.batch.done} of {discovery.batch.total} checked · Review results before saving.</p>
+      </div>{discovery.batch.running && <button onClick={discovery.cancelBatch}>Cancel checks</button>}</div>
+      {discovery.batch.running && <progress value={discovery.batch.done} max={discovery.batch.total} aria-label="Release check progress" />}
+      <ul className="batch-results-list">{discovery.batch.results.map(result => {
+        const proposals = result.response?.proposals;
+        const supported = proposals?.identity || proposals?.releases.book || proposals?.releases.audio;
+        const status = result.error ? 'Check failed' : result.response?.summary.status === 'failed' ? 'Check failed' : supported ? 'Ready to review' : 'No supported result';
+        const preview = result.error ?? [proposals?.identity?.title,
+          proposals?.releases.book ? `Book: ${proposals.releases.book.date ?? 'Date unknown'}` : null,
+          proposals?.releases.audio ? `Audio: ${proposals.releases.audio.date ?? 'Date unknown'}` : null].filter(Boolean).join(' · ');
+        return <li className="batch-result-row" key={result.seriesId}>
+          <div className="batch-result-description"><strong>{library.doc.series.find(s => s.id === result.seriesId)?.name ?? 'Removed series'}</strong>
+            {preview && <p>{preview}</p>}
+            {result.response?.summary.status === 'partial' && <span className="sub">Some sources need attention</span>}
+          </div>
+          <span className={`badge ${supported ? 'announced' : 'not-found'}`}>{status}</span>
+          {result.response && <button aria-label={`Review ${library.doc.series.find(s => s.id === result.seriesId)?.name ?? 'series'} results`} disabled={discovery.batch.running} onClick={() => discovery.open(result.seriesId)}>Review results</button>}
+        </li>;
+      })}</ul>
     </section>}
     <aside className="next-phase"><span>YOUR CHOICE</span><div><strong>Discovery, when you ask for it.</strong><p>Check releases, review sources and choose what to save. Manual tracking works independently.</p></div></aside>
     {library.canUndo && <div className="undo" role="status">Most recent finish can be undone until another change or reload. <button onClick={() => library.undo()}>Undo finish</button></div>}

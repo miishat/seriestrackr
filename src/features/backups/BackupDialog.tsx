@@ -63,7 +63,7 @@ export function BackupDialog({ doc, mode, recoveryRaw, onReplace, onReset, onClo
     <section className="backup-section" aria-labelledby="backup-export-heading">
       <h3 id="backup-export-heading">Export library</h3>
       <p>Download all {doc.series.length} tracked series and your preferences as a JSON file.</p>
-      <button className="primary" type="button" disabled={mode === 'recovery'} onClick={() => download(encodeBackup(doc), 'seriestrackr-backup.json')}>Export current library</button>
+      <button className="primary" type="button" disabled={mode === 'recovery'} onClick={() => download(encodeBackup(doc), 'seriestrackr-backup.json')}>Export</button>
     </section>
     {(mode === 'recovery' || recoveryRaw !== null) && <section className="backup-section backup-recovery" aria-label="Recover stored data">
       <p>The stored data could not be loaded. Download it before restoring a backup or resetting the library.</p>

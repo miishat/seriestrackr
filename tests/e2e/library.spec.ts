@@ -67,7 +67,7 @@ test('backup preview can be canceled, then confirmed', async ({ page }) => {
   await page.getByRole('button', { name: 'Save series' }).click();
   await page.getByRole('button', { name: 'Backups', exact: true }).click();
   const download = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Export current library' }).click();
+  await page.getByRole('button', { name: 'Export' }).click();
   const exported = await download;
   const backup = await (await import('node:fs/promises')).readFile(await exported.path());
   await page.getByRole('button', { name: 'Close Backups' }).click();
@@ -169,7 +169,7 @@ test('corrupted storage offers the original bytes and requires explicit reset', 
   await page.goto('/');
   await expect(page.getByRole('alert')).toContainText('Stored library needs recovery');
   await page.getByRole('button', { name: 'Open backups' }).click();
-  await expect(page.getByRole('button', { name: 'Export current library' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Export' })).toBeDisabled();
   const download = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Download stored data' }).click();
   const file = await download;

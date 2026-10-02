@@ -62,7 +62,7 @@ test('export downloads the complete current library without changing it', async 
   vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
   render(<App />);
   await user.click(screen.getByRole('button', { name: 'Backups' }));
-  await user.click(screen.getByRole('button', { name: 'Export current library' }));
+  await user.click(screen.getByRole('button', { name: 'Export' }));
   expect(await readBlob(vi.mocked(URL.createObjectURL).mock.calls[0][0] as Blob)).toBe(encodeBackup(doc));
   expect(localStorage.getItem(key)).toBe(JSON.stringify(doc));
   await waitFor(() => expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:backup-test'));
@@ -146,7 +146,7 @@ test('recovery downloads original malformed text and requires reset confirmation
   render(<App />);
   await user.click(screen.getByRole('button', { name: 'Backups' }));
   const dialog = screen.getByRole('dialog', { name: 'Backups' });
-  expect(within(dialog).getByRole('button', { name: 'Export current library' })).toBeDisabled();
+  expect(within(dialog).getByRole('button', { name: 'Export' })).toBeDisabled();
   await user.click(within(dialog).getByRole('button', { name: 'Download stored data' }));
   expect(click).toHaveBeenCalledTimes(1);
   expect(URL.createObjectURL).toHaveBeenCalledWith(expect.any(Blob));
@@ -171,7 +171,7 @@ test('failed recovery reset still exposes original raw data for download', async
   expect(screen.queryByRole('dialog', { name: /which releases should we track/i })).toBeNull();
   await user.click(screen.getByRole('button', { name: 'Backups' }));
   expect(screen.getByRole('button', { name: 'Download stored data' })).toBeEnabled();
-  expect(screen.getByRole('button', { name: 'Export current library' })).toBeEnabled();
+  expect(screen.getByRole('button', { name: 'Export' })).toBeEnabled();
   expect(localStorage.getItem(key)).toBe('{broken');
 });
 

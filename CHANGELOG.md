@@ -16,11 +16,16 @@ Entries use development dates because no versioned releases have been tagged.
 
 ### Changed
 
+- Moved global release checks beside the view controls and removed duplicate next-title text from compact card headers.
+- Replaced the plain batch results list with an aligned review panel, result previews, clear statuses, and progress.
+- Shortened missing-result text to "No supported result" and the backup download button to "Export".
 - Organized library controls, series cards, compact rows, release sections, and source labels.
 - Organized backup controls and removed outdated README content.
 
 ### Fixed
 
+- Kept individual release-check buttons visible while a batch runs, disabling them until it finishes.
+- Displayed "Not Found" for checked formats with no supported result, including matching availability filters, while preserving saved release facts and failed/cancelled attempt states.
 - Recognized explicit ordinal series subtitles when matching Witness releases.
 - Preserved existing covers when accepting discovery proposals for an unchanged next-book identity.
 - Made filters dismiss outside their menu and allowed only one filter menu open at a time.

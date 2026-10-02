@@ -141,7 +141,7 @@ test('offline check failure leaves edit finish undo and export usable', async ({
   await page.getByRole('button', { name: 'Confirm reset' }).click();
   await page.getByRole('button', { name: 'Mark finished' }).click(); await page.getByRole('button', { name: 'Undo finish' }).click();
   await page.getByRole('button', { name: 'Backups', exact: true }).click();
-  const download = page.waitForEvent('download'); await page.getByRole('button', { name: 'Export current library' }).click();
+  const download = page.waitForEvent('download'); await page.getByRole('button', { name: 'Export' }).click();
   expect(JSON.parse(await readFile((await (await download).path())!, 'utf8')).version).toBe(2); expect(calls).toBe(1);
 });
 
@@ -190,7 +190,7 @@ test('legacy storage loads without overwrite then exports v2 and reimports metad
   }) };
   await seed(page, legacy); await page.goto('/'); expect((await stored(page)).version).toBe(1);
   await page.getByRole('button', { name: 'Backups', exact: true }).click();
-  const download = page.waitForEvent('download'); await page.getByRole('button', { name: 'Export current library' }).click();
+  const download = page.waitForEvent('download'); await page.getByRole('button', { name: 'Export' }).click();
   const exported = await readFile((await (await download).path())!); const decoded = JSON.parse(exported.toString()); expect(decoded.version).toBe(2); expect(decoded.series[0].lastCheck).toBeNull();
   await page.getByLabel('Choose backup file').setInputFiles({ name: 'v2.json', mimeType: 'application/json', buffer: exported });
   await page.getByRole('button', { name: 'Confirm replacement' }).click(); await page.reload();

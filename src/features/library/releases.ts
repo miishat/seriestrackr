@@ -1,4 +1,4 @@
-import type { Release, ReleaseState } from './model';
+import type { Format, Release, ReleaseState, Series } from './model';
 
 export function isCalendarDate(value: string): boolean {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
@@ -24,4 +24,11 @@ export function displayRelease(r: Release, today: string): ReleaseState {
     return 'released';
   }
   return r.state;
+}
+
+export function displaySeriesRelease(series: Series, format: Format, today: string): ReleaseState {
+  const state = displayRelease(series.releases[format], today);
+  const check = series.lastCheck;
+  return state === 'not-checked' && check && (check.status === 'complete' || check.status === 'partial') && check.formats[format] === 'unknown'
+    ? 'not-found' : state;
 }
