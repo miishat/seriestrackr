@@ -13,6 +13,7 @@ function citedSources(citations: Citation[], evidence: EvidenceBundle): SourceLi
 // Only explicit publication evidence with a verified market can be released.
 const publicationRank = (edition: EditionEvidence) =>
   edition.publication === 'published' && edition.market !== null ? 2 : edition.publication === 'announced' ? 1 : 0;
+const originRank = (edition: EditionEvidence) => edition.id.startsWith('ai:') ? 1 : 0;
 export const undatedState = (edition: EditionEvidence): ReleaseProposal['state'] =>
   publicationRank(edition) === 2 ? 'released' : publicationRank(edition) === 1 ? 'announced' : 'catalogued';
 
@@ -107,7 +108,7 @@ export function selectProposals(request: CheckRequest, evidence: EvidenceBundle,
     const pool = local.length ? local : dated;
     const chosen = [...pool].sort((a, b) => a.date!.localeCompare(b.date!) || a.id.localeCompare(b.id))[0]
       ?? [...valid].sort((a, b) => Number(b.market === request.preferredMarket) - Number(a.market === request.preferredMarket) ||
-        publicationRank(b) - publicationRank(a) || a.id.localeCompare(b.id))[0];
+        publicationRank(b) - publicationRank(a) || originRank(a) - originRank(b) || a.id.localeCompare(b.id))[0];
     if (!chosen) continue;
     const exact = chosen.precision === 'day' && chosen.date !== null;
     result.releases[format] = {
@@ -126,10 +127,17 @@ export function selectProposals(request: CheckRequest, evidence: EvidenceBundle,
   return result;
 }
 
-// A model's publication claim counts only when a cited quote itself carries explicit
-// release or preorder language. Otherwise the edition stays catalogued.
-const PUBLICATION_LANGUAGE = /\b(?:released|available now|on sale|pre-?orders?|publication date)\b/i;
+// A model's publication claim counts only when a cited quote carries availability language
+// that is not a future or negated statement. Announcement language clamps to announced.
+const AVAILABILITY_LANGUAGE = /\b(?:released|available now|on sale|out now)\b/i;
+const NOT_AVAILABLE_YET = /\b(?:not yet|to be|will be|going to be|upcoming|coming|expected|scheduled)\b[^.]{0,30}\b(?:released?|available)\b|\bunreleased\b/i;
+const ANNOUNCEMENT_LANGUAGE = /\b(?:pre-?orders?|coming|upcoming|will be released|expected|publication date)\b/i;
 export function supportedPublication(edition: EditionEvidence): EditionEvidence {
-  if ((edition.publication ?? 'catalogued') === 'catalogued') return edition;
-  return edition.citations.some(citation => PUBLICATION_LANGUAGE.test(citation.quote)) ? edition : { ...edition, publication: 'catalogued' };
+  const claim = edition.publication ?? 'catalogued';
+  if (claim === 'catalogued') return edition;
+  const quotes = edition.citations.map(citation => citation.quote);
+  const announced = quotes.some(quote => ANNOUNCEMENT_LANGUAGE.test(quote));
+  if (claim === 'published' && quotes.some(quote => AVAILABILITY_LANGUAGE.test(quote) && !NOT_AVAILABLE_YET.test(quote))) return edition;
+  if (announced) return claim === 'announced' ? edition : { ...edition, publication: 'announced' };
+  return { ...edition, publication: 'catalogued' };
 }

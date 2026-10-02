@@ -31,6 +31,8 @@ test('the threshold is defined once and applies only to old Hardcover-only annou
   expect(hasOldAnnouncementEvidence(hardcoverAnnounced(daysAgo(OLD_EVIDENCE_DAYS + 1)), today)).toBe(true);
   expect(hasOldAnnouncementEvidence(hardcoverAnnounced(daysAgo(OLD_EVIDENCE_DAYS)), today)).toBe(false);
   expect(hasOldAnnouncementEvidence(hardcoverAnnounced(daysAgo(400), 'https://books.apple.com/ca/book/x/id1'), today)).toBe(false);
+  expect(hasOldAnnouncementEvidence(hardcoverAnnounced(daysAgo(400), 'https://evilhardcover.app/books/second'), today)).toBe(false);
+  expect(hasOldAnnouncementEvidence(hardcoverAnnounced(daysAgo(400), 'https://www.hardcover.app/books/second'), today)).toBe(true);
   expect(hasOldAnnouncementEvidence({ ...hardcoverAnnounced(daysAgo(400)), state: 'scheduled' }, today)).toBe(false);
   expect(hasOldAnnouncementEvidence({ ...hardcoverAnnounced(daysAgo(400)), origin: 'manual' }, today)).toBe(false);
 });

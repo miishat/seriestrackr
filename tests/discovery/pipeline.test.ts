@@ -2,7 +2,7 @@
 import { afterEach, expect, test, vi } from 'vitest';
 import { runDiscovery } from '../../server/discovery/runDiscovery';
 import { emptyUsage } from '../../shared/discovery';
-import type { EvidenceBundle } from '../../shared/discovery';
+import type { EditionEvidence, EvidenceBundle } from '../../shared/discovery';
 import type { DiscoveryDependencies } from '../../server/discovery/runDiscovery';
 import { bundle, edition, request } from './fixtures';
 import { ProviderError } from '../../server/discovery/http';
@@ -855,30 +855,50 @@ test('enrich output never leaves a dangling citation to a removed seed source', 
     for (const citation of (item as { citations?: Array<{ sourceId: string }> } | null)?.citations ?? []) expect(ids.has(citation.sourceId)).toBe(true);
 });
 
-// I1: a model-asserted publication status needs release language in the cited quote itself.
-test.each([
-  ['Title: Dawn.', 'catalogued'],
-  ['Pre-order now, publication date to be confirmed.', 'announced'],
-  ['Released August 19, 2026.', 'released'],
-] as const)('AI edition asserting published citing %j resolves to %s', async (quote, state) => {
-  const base = bundle([edition({ id: 'seed', citations: [{ sourceId: 's9', quote }] })]); base.editions = [];
-  base.sources[0].text = `${quote} Second by Example Author.`;
+// I1: a model-asserted publication status needs availability language in the cited quote itself.
+async function aiClaim(quote: string, claim: 'published' | 'announced', seed?: EditionEvidence) {
+  const base = bundle(seed ? [seed] : [edition({ id: 'seed', citations: [{ sourceId: 's9', quote }] })]);
+  if (!seed) base.editions = [];
+  base.sources[0].text = seed ? `${base.sources[0].text} ${seed.citations[0].quote} ${quote}` : `${quote} Second by Example Author.`;
   const deps = dependencies(base); deps.canSearch = false;
   deps.extract = vi.fn<DiscoveryDependencies['extract']>(async (_req, evidence) => ({ usage: emptyUsage(), evidence: { sources: evidence.sources, identities: [],
-    editions: [edition({ id: 'ai-1', editionKey: null, market: 'US', date: null, precision: 'none', publication: quote.startsWith('Pre') ? 'announced' : 'published',
+    editions: [edition({ id: 'ai-1', editionKey: null, market: 'US', date: null, precision: 'none', publication: claim,
       citations: [{ sourceId: evidence.sources[0].id, quote }] })] } }));
-  const result = await runDiscovery(request({ formats: ['book'], useAi: true }), deps, new AbortController().signal);
+  return runDiscovery(request({ formats: ['book'], useAi: true }), deps, new AbortController().signal);
+}
+test.each([
+  ['Title: Dawn.', 'published', 'catalogued'],
+  ['Pre-order now', 'published', 'announced'],
+  ['Publication date: TBA', 'published', 'announced'],
+  ['It will be released in 2027', 'published', 'announced'],
+  ['Pre-order now, publication date to be confirmed.', 'announced', 'announced'],
+  ['Title: Dawn.', 'announced', 'catalogued'],
+  ['Released August 19, 2026.', 'published', 'released'],
+] as const)('AI edition asserting %s citing %j resolves to %s', async (quote, claim, state) => {
+  const result = await aiClaim(quote, claim === 'published' ? 'published' : 'announced');
   expect(result.proposals.releases.book).toMatchObject({ state });
 });
 
+test('AI published citing "not yet released" is not released', async () => {
+  const result = await aiClaim('Not yet released.', 'published');
+  expect(result.proposals.releases.book?.state).not.toBe('released');
+});
+
 test('deterministic catalogued record is not outranked by unsupported AI published', async () => {
-  const base = bundle([edition({ id: 'cat-1', editionKey: 'isbn:cat', market: 'US', date: null, precision: 'none', publication: 'catalogued' })]);
-  base.sources[0].text += ' Title: Dawn.';
-  const deps = dependencies(base); deps.canSearch = false;
-  deps.extract = vi.fn<DiscoveryDependencies['extract']>(async (_req, evidence) => ({ usage: emptyUsage(), evidence: { sources: evidence.sources, identities: [],
-    editions: [edition({ id: 'ai-1', editionKey: null, market: 'US', date: null, precision: 'none', publication: 'published', citations: [{ sourceId: evidence.sources[0].id, quote: 'Title: Dawn.' }] })] } }));
-  const result = await runDiscovery(request({ formats: ['book'], useAi: true }), deps, new AbortController().signal);
+  const quote = 'Title: Dawn.';
+  const result = await aiClaim(quote, 'published', edition({ id: 'cat-1', editionKey: 'isbn:cat', market: 'US', date: null, precision: 'none', publication: 'catalogued',
+    citations: [{ sourceId: 's9', quote: 'Catalogue entry.' }] }));
   expect(result.proposals.releases.book).toMatchObject({ state: 'catalogued' });
+  expect(result.proposals.releases.book?.provenance.editionKey).toBe('isbn:cat');
+  expect(result.proposals.releases.book?.citations.map(c => c.quote)).toEqual(['Catalogue entry.']);
+});
+
+test('deterministic announced record wins a tie against an AI announced record', async () => {
+  const result = await aiClaim('Pre-order now', 'announced', edition({ id: 'cat-1', editionKey: 'isbn:cat', market: 'US', date: null, precision: 'none', publication: 'announced',
+    citations: [{ sourceId: 's9', quote: 'Announced by publisher.' }] }));
+  expect(result.proposals.releases.book).toMatchObject({ state: 'announced' });
+  expect(result.proposals.releases.book?.provenance.editionKey).toBe('isbn:cat');
+  expect(result.proposals.releases.book?.citations.map(c => c.quote)).toEqual(['Announced by publisher.']);
 });
 
 // I4: decorated audio titles past the 20th row still count as qualifying matches.

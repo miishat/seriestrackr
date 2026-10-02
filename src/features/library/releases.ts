@@ -12,7 +12,7 @@ export const OLD_EVIDENCE_DAYS = 90;
 
 const hardcoverOnly = (release: Release): boolean => {
   const urls = release.provenance ? release.provenance.sources.map(source => source.url) : release.source ? [release.source.url] : [];
-  return urls.length > 0 && urls.every(url => { try { return new URL(url).hostname.endsWith('hardcover.app'); } catch { return false; } });
+  return urls.length > 0 && urls.every(url => { try { return (host => host === 'hardcover.app' || host.endsWith('.hardcover.app'))(new URL(url).hostname); } catch { return false; } });
 };
 
 export function hasOldAnnouncementEvidence(release: Release, today: string): boolean {
