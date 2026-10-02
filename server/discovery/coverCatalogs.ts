@@ -1,7 +1,7 @@
 import type { CheckRequest, SourceLink } from '../../shared/discovery';
 import { normalizeIdentity } from '../../shared/discoveryPolicy';
 import type { AuthorSuggestion, CoverCandidate, CoverProvider, CoverRequest } from '../../shared/covers';
-import { validateCoverImageUrl } from '../../shared/coverValidation';
+import { candidate as parseCandidate, validateCoverImageUrl } from '../../shared/coverValidation';
 import { bindWorkTitle, hardcoverAliases } from './workIdentity';
 
 export interface CoverBatch { candidates: CoverCandidate[]; authorSuggestions: AuthorSuggestion[] }
@@ -34,6 +34,16 @@ export function bindWork(request: CoverRequest, actualTitle: string, actualAutho
 }
 const workKey = (title: string, author: string): string => `${normalizeIdentity(title)}|${normalizeIdentity(author)}`;
 
+const dimension = (value: unknown): number | null => typeof value === 'number' && Number.isFinite(value) && value > 0 && value <= 20000 ? value : null;
+
+// Single normaliser for every cover candidate: unsafe URLs, out-of-range dimensions and over-long
+// fields are clamped or rejected with the same limits the response parser enforces.
+export function sanitizeCover(input: CoverCandidate): CoverCandidate | null {
+  const imageUrl = validateCoverImageUrl(input.imageUrl);
+  if (!imageUrl) return null;
+  try { return parseCandidate({ ...input, imageUrl, width: dimension(input.width), height: dimension(input.height) }); } catch { return null; }
+}
+
 function push(batch: CoverBatch, request: CoverRequest, input: { provider: CoverProvider; id: string; actualTitle: string; authors: string[];
   source: SourceLink; imageUrl: unknown; format: CoverCandidate['format']; editionKey: string | null; width?: unknown; height?: unknown }): void {
   const bound = bindWork(request, input.actualTitle, input.authors, input.source);
@@ -41,12 +51,12 @@ function push(batch: CoverBatch, request: CoverRequest, input: { provider: Cover
   if ('mismatch' in bound) { if (bound.mismatch) batch.authorSuggestions.push(bound.mismatch); return; }
   const imageUrl = validateCoverImageUrl(input.imageUrl);
   if (!imageUrl) return;
-  const dimension = (value: unknown): number | null => typeof value === 'number' && Number.isFinite(value) && value > 0 && value <= 20000 ? value : null;
   const id = `${input.provider}:${input.id}`;
   if (batch.candidates.some(item => item.id === id)) return;
-  batch.candidates.push({ id, title: bound.title, author: request.author, role: bound.role, format: input.format, provider: input.provider,
+  const clean = sanitizeCover({ id, title: bound.title, author: request.author, role: bound.role, format: input.format, provider: input.provider,
     source: input.source, imageUrl, workKey: workKey(bound.title, request.author), editionKey: input.editionKey,
-    width: dimension(input.width), height: dimension(input.height) });
+    width: input.width as number | null, height: input.height as number | null });
+  if (clean) batch.candidates.push(clean);
 }
 
 function isbnKey(input: unknown): string | null {

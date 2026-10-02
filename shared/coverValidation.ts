@@ -70,6 +70,21 @@ export function parseCoverCandidates(input: unknown, path = 'coverCandidates'): 
   return items;
 }
 
+// Cover art is advisory metadata: a bad candidate is dropped, never allowed to invalidate the surrounding response.
+export function parseCoverCandidatesLenient(input: unknown): CoverCandidate[] {
+  if (!Array.isArray(input)) return [];
+  const seen = new Set<string>(); const items: CoverCandidate[] = [];
+  for (const raw of input as unknown[]) {
+    if (items.length >= MAX_COVER_CANDIDATES) break;
+    try {
+      const item = candidate(raw);
+      if (seen.has(item.id)) continue;
+      seen.add(item.id); items.push(item);
+    } catch { /* drop this candidate only */ }
+  }
+  return items;
+}
+
 export function parseCoverRequest(input: unknown): Parsed<CoverRequest> {
   try {
     const value = record(input, 'request');
@@ -100,6 +115,6 @@ export function parseCoverResult(input: unknown): Parsed<CoverResult> {
       return { provider: outcome.provider as CoverCandidate['provider'], state: outcome.state as CoverResult['outcomes'][number]['state'] };
     });
     return { ok: true, value: { requestId: str(value.requestId, 'requestId', 100), seriesId: str(value.seriesId, 'seriesId', 100),
-      candidates: parseCoverCandidates(value.candidates, 'result.candidates'), authorSuggestions, outcomes } };
+      candidates: parseCoverCandidatesLenient(value.candidates), authorSuggestions, outcomes } };
   } catch (error) { return { ok: false, error: error instanceof Error ? error.message : 'invalid input' }; }
 }

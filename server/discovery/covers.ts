@@ -92,8 +92,16 @@ export async function collectCoverCandidates(request: CoverRequest, config: Disc
     candidates.push(...tracker.batch.candidates); suggestions.push(...tracker.batch.authorSuggestions);
   }
   const seen = new Set<string>();
-  const ordered = [...candidates].sort((left, right) => Number(left.role === 'previous') - Number(right.role === 'previous'))
-    .filter(item => { if (seen.has(item.imageUrl)) return false; seen.add(item.imageUrl); return true; }).slice(0, MAX_COVER_CANDIDATES);
+  // Rank each provider by role, then format (audio art last), then resolution, and interleave providers so one prolific provider cannot crowd out the rest.
+  const area = (item: CoverCandidate) => (item.width ?? 0) * (item.height ?? 0);
+  const rank = (left: CoverCandidate, right: CoverCandidate) => Number(left.role === 'previous') - Number(right.role === 'previous') ||
+    Number(left.format === 'audio') - Number(right.format === 'audio') || area(right) - area(left);
+  const lanes = [...trackers.keys()].map(provider => candidates.filter(item => item.provider === provider).sort(rank)
+    .filter(item => { if (seen.has(item.imageUrl)) return false; seen.add(item.imageUrl); return true; }));
+  const ordered: CoverCandidate[] = [];
+  for (let depth = 0; ordered.length < MAX_COVER_CANDIDATES && lanes.some(lane => depth < lane.length); depth++) {
+    for (const lane of lanes) if (depth < lane.length && ordered.length < MAX_COVER_CANDIDATES) ordered.push(lane[depth]);
+  }
   const authorSuggestions = suggestions.filter((item, index) => suggestions.findIndex(other => other.source.id === item.source.id) === index).slice(0, 9);
   return { requestId: request.requestId, seriesId: request.seriesId, candidates: ordered, authorSuggestions, outcomes };
 }

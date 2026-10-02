@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { emptyUsage } from '../../shared/discovery';
-import type { CheckRequest, CheckResponse, Citation, EditionEvidence, EvidenceBundle, Format, Reason } from '../../shared/discovery';
+import type { CheckRequest, CheckResponse, Citation, EditionEvidence, EvidenceBundle, Format, IdentityEvidence, Reason } from '../../shared/discovery';
 import { normalizeIdentity, selectProposals, undatedState } from '../../shared/discoveryPolicy';
 import { parseCheckRequest, parseCheckResponse, parseExtraction } from '../../shared/discoveryValidation';
 import type { CatalogResult } from './catalogs';
@@ -346,8 +346,13 @@ async function runDiscoveryInTrace(input: CheckRequest, dependencies: DiscoveryD
   }
   const operational = reasons.some(item => item !== 'unknown-identity' && item !== 'cancelled');
   const hardFailure = reasons.some(item => ['quota', 'timeout', 'provider-error', 'invalid-evidence'].includes(item));
+  // Sidecar art must belong to the chosen identity; with no chosen identity it is kept only when the request names the work.
+  const sidecarFor = (identity: IdentityEvidence | null) => {
+    if (identity) { const key = `${normalizeIdentity(identity.title)}|${normalizeIdentity(request.target.author)}`; return coverSidecar.filter(item => item.workKey === key); }
+    return request.target.title.trim() ? coverSidecar : [];
+  };
   const result: CheckResponse = { requestId: request.requestId, seriesId: request.seriesId, proposals,
-    sources: evidence.sources.map(({ id, title, url }) => ({ id, title, url })), coverCandidates: coverSidecar,
+    sources: evidence.sources.map(({ id, title, url }) => ({ id, title, url })), coverCandidates: sidecarFor(proposals.identity),
     summary: { requestId: request.requestId, checkedAt,
       status: caller.aborted ? 'cancelled' : hardFailure && !evidence.sources.length && !proposals.identity && !proposals.releases.book && !proposals.releases.audio ? 'failed' : operational ? 'partial' : 'complete',
       reasons, usage, formats: {

@@ -87,3 +87,9 @@ test('fetches covers only from the local service when called, never from provide
   vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify({ ...body, requestId: 'other' }), { headers: { 'content-type': 'application/json' } })));
   await expect(fetchCoverCandidates(request, new AbortController().signal)).rejects.toThrow();
 });
+
+test('a malformed JSON cover body maps to the friendly error, not a raw SyntaxError', async () => {
+  vi.stubGlobal('fetch', vi.fn(async () => new Response('{not json', { headers: { 'content-type': 'application/json' } })));
+  const request = { requestId: 'r', seriesId: 's', series: 'Ex', author: 'Writer', nextTitle: 'Next', position: 2, previousTitle: null, preferredMarket: 'CA' };
+  await expect(fetchCoverCandidates(request, new AbortController().signal)).rejects.toThrow('Cover service returned an invalid response.');
+});

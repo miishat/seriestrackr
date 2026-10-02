@@ -5,7 +5,10 @@ import { normalizeAppleCovers, normalizeGoogleCovers, normalizeHardcoverCovers, 
 import { normalizeHardcover } from '../../server/discovery/hardcover';
 import { validateCoverImageUrl, parseCoverCandidates, parseCoverRequest } from '../../shared/coverValidation';
 import type { CoverRequest } from '../../shared/covers';
-import { request as checkRequest } from './fixtures';
+import { bundle, edition, request as checkRequest } from './fixtures';
+import { runDiscovery, type DiscoveryDependencies } from '../../server/discovery/runDiscovery';
+import { emptyUsage } from '../../shared/discovery';
+import { parseCheckResponse } from '../../shared/discoveryValidation';
 
 const cover = (overrides: Partial<CoverRequest> = {}): CoverRequest => ({ requestId: 'r1', seriesId: 'series-1', series: 'Example', author: 'Example Author',
   nextTitle: 'NextBook', position: 2, previousTitle: 'PreviousBook', preferredMarket: 'CA', ...overrides });
@@ -129,4 +132,62 @@ test('a failing provider does not erase others and quota with no results is repo
   const state = (provider: string) => result.outcomes.find(item => item.provider === provider)?.state;
   expect(state('hardcover')).toBe('ok'); expect(state('apple')).toBe('quota'); expect(state('googlebooks')).toBe('failed'); expect(state('openlibrary')).toBe('no-match');
   expect(result.candidates.length).toBe(2);
+}, 20000);
+
+const sidecarDeps = (covers: unknown[], evidence = bundle([edition()], [{ title: 'Second', author: 'Example Author', position: 2,
+  citations: [{ sourceId: 's1', quote: 'Second by Example Author. Book 2.' }] }])) => ({
+  catalogs: vi.fn(async () => ({ evidence, usage: emptyUsage(), reasons: [], covers: covers as never })),
+  search: vi.fn(), extract: vi.fn(), now: () => '2026-09-29T12:00:00Z', canSearch: false, canExtract: false }) as unknown as DiscoveryDependencies;
+const goodCover = () => ({ ...normalizeHardcoverCovers(hardcoverRows(), cover()).candidates[0], title: 'Second', workKey: 'second|example author' });
+const secondTarget = (title = 'Second') => checkRequest({ target: { series: 'Example', author: 'Example Author', position: 2, title, orderNote: '' } });
+
+test.each([
+  ['oversized dimension', { width: 50000, height: 80000 }],
+  ['over-long title', { title: 'T'.repeat(301) }],
+  ['over-long author', { author: 'A'.repeat(301) }],
+  ['over-long workKey', { workKey: 'w'.repeat(401) }],
+])('a bad sidecar candidate (%s) is dropped without invalidating the release response', async (_name, patch) => {
+  const bad = { ...goodCover(), id: 'hardcover:book:bad', imageUrl: 'https://assets.hardcover.app/books/bad.jpg', ...patch };
+  const result = await runDiscovery(secondTarget(), sidecarDeps([goodCover(), bad]), new AbortController().signal);
+  expect(result.proposals.identity).not.toBeNull(); expect(result.proposals.releases.book).not.toBeNull();
+  const parsed = parseCheckResponse(JSON.parse(JSON.stringify(result)));
+  expect(parsed.ok).toBe(true);
+  expect(parsed.ok && parsed.value.proposals.identity).not.toBeNull();
+  expect(parsed.ok && parsed.value.coverCandidates.map(item => item.id)).toEqual([goodCover().id]);
+});
+
+test('Hardcover sidecar construction clamps oversized dimensions to null', () => {
+  const req = secondTarget('NextBook');
+  const raw = { data: { series: [{ name: 'Example', author: { name: 'Example Author' }, book_series: [{ id: 1, position: 2, featured: true, compilation: false, details: null,
+    book: { id: 777, slug: 'nextbook', title: 'NextBook', compilation: false, cached_image: { url: ascension.url, width: 99999, height: 2560 },
+      contributions: [{ author: { name: 'Example Author' }, contributor_role: { name: 'Author' } }],
+      editions: [{ id: 5, title: 'NextBook', edition_format: 'Ebook', reading_format: null, isbn_10: null, isbn_13: null, language: { code2: 'en', code3: 'eng' } }] } }] }] } };
+  const huge: unknown[] = [];
+  expect(normalizeHardcover(raw, req, '2026-10-01T00:00:00Z', undefined, huge as never).identities).toHaveLength(1);
+  expect(huge).toEqual([expect.objectContaining({ width: null, height: 2560 })]);
+});
+
+test('a sidecar for a different work than the selected identity is dropped', async () => {
+  const other = { ...goodCover(), id: 'hardcover:book:other', title: 'Other', workKey: 'other|example author', imageUrl: 'https://assets.hardcover.app/books/o.jpg' };
+  const result = await runDiscovery(secondTarget(''), sidecarDeps([other, goodCover()]), new AbortController().signal);
+  expect(result.proposals.identity?.title).toBe('Second');
+  expect(result.coverCandidates?.map(item => item.id)).toEqual([goodCover().id]);
+});
+
+test('twenty Google rows do not crowd out Apple and Open Library candidates', async () => {
+  const items = Array.from({ length: 20 }, (_, index) => ({ id: `g${index}`, volumeInfo: { title: 'NextBook', authors: ['Example Author'],
+    imageLinks: { thumbnail: `https://books.google.com/books/content?id=g${index}&zoom=1` } } }));
+  const fetcher = vi.fn(async (url: URL | string) => {
+    const host = new URL(String(url)).hostname;
+    if (host === 'www.googleapis.com') return reply({ items });
+    if (host === 'itunes.apple.com') return reply({ results: [{ trackId: 5, trackName: 'NextBook', artistName: 'Example Author',
+      trackViewUrl: 'https://books.apple.com/ca/book/nextbook/id5', artworkUrl100: 'https://is3-ssl.mzstatic.com/image/thumb/Publication/a/100x100bb.jpg' }] });
+    if (host === 'openlibrary.org') return reply({ docs: [{ key: '/works/OL1W', title: 'NextBook', author_name: ['Example Author'], cover_i: 42 }] });
+    return reply({});
+  });
+  const result = await collectCoverCandidates(cover(), { tavilyKey: null, deepseekKey: null, hardcoverToken: null, googleBooksKey: 'gk', model: 'deepseek-flash' },
+    new AbortController().signal, fetcher as never);
+  const providers = result.candidates.map(item => item.provider);
+  expect(result.candidates).toHaveLength(9);
+  expect(providers).toContain('apple'); expect(providers).toContain('openlibrary');
 }, 20000);

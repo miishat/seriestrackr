@@ -172,7 +172,19 @@ test('cover results for another request or invalid candidates are service errors
   const mismatch = await start(coverDeps(async () => ({ requestId: 'other', seriesId: 'series-1', candidates: [], authorSuggestions: [], outcomes: [] })));
   expect((await send(mismatch.port, { path: '/api/discovery/covers', body: JSON.stringify(coverBody) })).status).toBe(503);
   const bad = await start(coverDeps(async () => ({ requestId: 'r1', seriesId: 'series-1', authorSuggestions: [], outcomes: [], candidates: [{ id: 'x' }] })));
-  expect((await send(bad.port, { path: '/api/discovery/covers', body: JSON.stringify(coverBody) })).status).toBe(503);
+  const dropped = await send(bad.port, { path: '/api/discovery/covers', body: JSON.stringify(coverBody) });
+  expect(dropped.status).toBe(200);
+  expect(dropped.body).toMatchObject({ requestId: 'r1', candidates: [] });
+});
+
+test('oversized or over-long cover candidates are dropped from the cover route rather than failing it', async () => {
+  const good = { id: 'hardcover:1', title: 'T', author: 'A', role: 'next', format: 'print', provider: 'hardcover', imageUrl: 'https://assets.hardcover.app/a.jpg',
+    source: { id: 's', title: 't', url: 'https://hardcover.app/books/a' }, workKey: 'w', editionKey: null, width: 100, height: 160 };
+  const rows = [good, { ...good, id: 'hardcover:2', width: 50000 }, { ...good, id: 'hardcover:3', workKey: 'w'.repeat(401) }, { ...good, id: 'hardcover:4', title: 'T'.repeat(301) }];
+  const { port } = await start(coverDeps(async () => ({ requestId: 'r1', seriesId: 'series-1', authorSuggestions: [], outcomes: [], candidates: rows })));
+  const answer = await send(port, { path: '/api/discovery/covers', body: JSON.stringify(coverBody) });
+  expect(answer.status).toBe(200);
+  expect((answer.body as { candidates: { id: string }[] }).candidates.map(item => item.id)).toEqual(['hardcover:1']);
 });
 
 test('cover retrieval shares the busy lock', async () => {

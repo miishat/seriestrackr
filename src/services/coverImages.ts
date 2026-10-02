@@ -55,7 +55,9 @@ export async function fetchCoverCandidates(request: CoverRequest, signal: AbortS
   }
   if (!reply.ok) throw new Error(reply.status === 409 ? 'Discovery is busy. Try again when the current check finishes.' : 'Cover search failed.');
   if (!/^application\/json(?:\s*;\s*charset=utf-8)?$/i.test(reply.headers.get('Content-Type') ?? '')) throw new Error('Cover service returned an invalid response.');
-  const parsed = parseCoverResult(await reply.json());
+  let body: unknown;
+  try { body = await reply.json(); } catch { throw new Error('Cover service returned an invalid response.'); }
+  const parsed = parseCoverResult(body);
   if (!parsed.ok || parsed.value.requestId !== request.requestId || parsed.value.seriesId !== request.seriesId) throw new Error('Cover service returned an invalid response.');
   return parsed.value;
 }

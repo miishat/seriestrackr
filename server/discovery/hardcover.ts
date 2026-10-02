@@ -7,7 +7,7 @@ import type { CatalogResult } from './catalogs';
 import { fetchProviderJson, ProviderError } from './http';
 import { createRateQueue } from './rateQueue';
 import { bindWorkTitle, hardcoverAliases, isPlaceholderTitle } from './workIdentity';
-import { hardcoverImage } from './coverCatalogs';
+import { hardcoverImage, sanitizeCover } from './coverCatalogs';
 import type { CoverCandidate } from '../../shared/covers';
 import type { RetrievalContext } from './retrievalContext';
 
@@ -116,10 +116,10 @@ export function normalizeHardcover(input: unknown, request: CheckRequest, checke
       // Image metadata is a sidecar: a missing or unusable image never discards the verified identity.
       const image = covers ? hardcoverImage(book.cached_image) : null;
       if (covers && image && (!request.target.title.trim() || bindWorkTitle(title, request) !== null) && covers.length < 9) {
-        covers.push({ id: `hardcover:book:${bookId}`, title, author: request.target.author, role: 'next', format: 'print', provider: 'hardcover',
+        const clean = sanitizeCover({ id: `hardcover:book:${bookId}`, title, author: request.target.author, role: 'next', format: 'print', provider: 'hardcover',
           source: { id: sourceId, title, url }, imageUrl: image.url, workKey: `${normalizeIdentity(title)}|${normalizeIdentity(request.target.author)}`,
-          editionKey: null, width: typeof image.width === 'number' && image.width > 0 ? image.width : null,
-          height: typeof image.height === 'number' && image.height > 0 ? image.height : null });
+          editionKey: null, width: image.width as number | null, height: image.height as number | null });
+        if (clean) covers.push(clean);
       }
     } else if (evidence.sources.find(source => source.id === sourceId)?.text !== quote) return fail();
     for (const inputEdition of editions) {
