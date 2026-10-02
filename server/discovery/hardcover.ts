@@ -6,7 +6,7 @@ import { parseExtraction } from '../../shared/discoveryValidation';
 import type { CatalogResult } from './catalogs';
 import { fetchProviderJson, ProviderError } from './http';
 import { createRateQueue } from './rateQueue';
-import { seriesBase } from './seriesOrder';
+import { hardcoverAliases, isPlaceholderTitle } from './workIdentity';
 
 const queue = createRateQueue(1100);
 const empty = (): EvidenceBundle => ({ sources: [], identities: [], editions: [] });
@@ -19,13 +19,7 @@ const list = (value: unknown, max: number, onOverflow?: () => void): unknown[] =
   if (value.length > max) { onOverflow?.(); return fail('budget'); }
   return value;
 };
-const isPlaceholderTitle = (title: string): boolean => /^(?:untitled|tba|tbd|to be announced)(?:\s*\([^)]*\))?$/i.test(title.trim());
-
-export function hardcoverAliases(series: string): string[] {
-  const original = series.trim();
-  const base = seriesBase(original);
-  return [...new Set([original, original.replace(/^the\s+/i, ''), base, `The ${base}`, `${base} Series`, `${base} Mysteries`, `${base} Trilogy`, `Tales of ${base}`].filter(Boolean))].slice(0, 8);
-}
+export { hardcoverAliases };
 
 const query = `query DiscoveryHardcover($names: [String!]!, $author: String!, $position: float8!) {
   series(where: {name: {_in: $names}, author: {name: {_eq: $author}}}, order_by: {id: asc}, limit: 6) {

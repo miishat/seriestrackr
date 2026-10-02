@@ -1,7 +1,7 @@
 import type { CheckRequest, EditionEvidence, EvidenceBundle, Source } from '../../shared/discovery';
 import { normalizeIdentity } from '../../shared/discoveryPolicy';
-import { hardcoverAliases } from './hardcover';
 import { orderedTitle } from './seriesOrder';
+import { bindWorkTitle } from './workIdentity';
 
 const empty = (): EvidenceBundle => ({ sources: [], identities: [], editions: [] });
 const object = (value: unknown): Record<string, unknown> => value !== null && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {};
@@ -22,16 +22,11 @@ export function appleProductUrl(value: string, edition: EditionEvidence): URL | 
 export function appleCanonicalTitle(edition: EditionEvidence, request: CheckRequest): string | null {
   const canonical = request.target.title;
   if (!canonical || normalizeIdentity(edition.author) !== normalizeIdentity(request.target.author)) return null;
-  const actual = normalizeIdentity(edition.title);
-  if (actual === normalizeIdentity(canonical)) return canonical;
+  if (edition.format === 'audio') return bindWorkTitle(edition.title, request);
+  if (edition.format !== 'ebook') return null;
+  if (normalizeIdentity(edition.title) === normalizeIdentity(canonical)) return canonical;
   const explicit = orderedTitle(edition.title, request);
-  if (explicit && normalizeIdentity(explicit.title) === normalizeIdentity(canonical)) return canonical;
-  if (edition.format !== 'audio') return null;
-  const labels = [`${canonical} (Unabridged)`];
-  if (Number.isInteger(request.target.position)) for (const series of hardcoverAliases(request.target.series)) {
-    labels.push(`${canonical}: ${series}, Book ${request.target.position} (Unabridged)`);
-  }
-  return labels.some(label => normalizeIdentity(label) === actual) ? canonical : null;
+  return explicit && normalizeIdentity(explicit.title) === normalizeIdentity(canonical) ? canonical : null;
 }
 
 function exactDate(value: unknown): string | null {
