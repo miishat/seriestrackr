@@ -69,7 +69,7 @@ test('book only preserves manual audio and provenance through reload and all vie
     await page.getByRole('button', { name: view, exact: true }).click();
     if (view === 'Compact') await page.getByText('Release details').first().click();
     await expect(page.getByText('Source country: CA', { exact: false })).toBeVisible();
-    await expect(page.getByText('2099-04-05', { exact: true }).first()).toBeVisible();
+    await expect((view === 'Compact' ? page.locator('.compact-details') : page.locator('main')).locator('.release-summary').filter({ hasText: 'Audiobook' }).getByText('2099-04-05', { exact: true })).toBeVisible();
     await page.getByRole('button', { name: 'Check releases', exact: true }).click();
     await expect(page.getByRole('dialog', { name: 'Check next release' })).toBeVisible();
     await page.keyboard.press('Escape'); await expect(page.getByRole('button', { name: 'Check releases', exact: true })).toBeFocused();

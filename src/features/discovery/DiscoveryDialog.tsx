@@ -52,7 +52,7 @@ const lifecycleMeaning = {
 const relationLabels: Record<RelatedWorkEvidence['relationship'], string> = { prequel: 'Prequel', continuation: 'Unnumbered continuation' };
 
 function Pane({ id, active, title, note, children }: { id: PaneId; active: boolean; title: string; note?: string; children: ReactNode }) {
-  return <section role="tabpanel" id={`review-pane-${id}`} aria-labelledby={`review-tab-${id}`} className="review-pane" hidden={!active}>
+  return <section role="tabpanel" id={`review-pane-${id}`} aria-labelledby={`review-tab-${id}`} className="review-pane" tabIndex={0} hidden={!active}>
     <h3>{title}</h3>{note && <p className="small">{note}</p>}{children}
   </section>;
 }
@@ -166,12 +166,14 @@ export function DiscoveryDialog({ session, series, preferredMarket, stale, onRun
         {stale && <div className="note warn" role="status">The series changed. Check again before saving.</div>}
         {changedTitle && <div className="note warn">Accepting a changed title clears both old release records, then saves the selected new release details. Your selected cover is kept.</div>}
         <div className="review-layout">
-          <div className="review-rail" role="tablist" aria-label="Review outline" aria-orientation="vertical" ref={rail}>
+          <div className="review-rail-group">
             <span className="eyebrow">{series.name}</span>
+            <div className="review-rail" role="tablist" aria-label="Review outline" aria-orientation="vertical" ref={rail}>
             {tabs.map((tab, index) => <button key={tab.id} type="button" role="tab" id={`review-tab-${tab.id}`} className={`review-tab level-${tab.level}`}
               aria-selected={pane === tab.id} aria-controls={`review-pane-${tab.id}`} tabIndex={pane === tab.id ? 0 : -1}
               onClick={() => setPane(tab.id)} onKeyDown={event => onTabKey(event, index)}>
               <span>{tab.label}</span><span className="chip">{tab.chip}</span></button>)}
+            </div>
           </div>
           <div className="review-panes">
             <Pane id="title" active={pane === 'title'} title="Next title" note="Work level · Identity evidence">

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { act, cleanup, render, renderHook, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
@@ -104,4 +105,41 @@ test('a provider outcome without a match is reported even when another supplies 
   await act(async () => { await hook.current.search(); });
   expect(hook.current.state.outcomes).toContainEqual({ provider: 'apple', state: 'failed' });
   expect(hook.current.state.candidates).toHaveLength(1);
+});
+
+function Harness({ initial = seriesFixture(), onUndo }: { initial?: ReturnType<typeof seriesFixture>; onUndo?: () => void }) {
+  const [series, setSeries] = useState(initial);
+  return <>
+    <button type="button" onClick={() => setSeries(current => ({ ...current, author: 'Else' }))}>edit author</button>
+    <button type="button" onClick={() => setSeries(current => ({ ...current, coverUrl: 'https://example.com/typed.jpg', coverAttribution: null }))}>edit url</button>
+    <output aria-label="cover">{series.coverUrl ?? 'none'}</output>
+    <CoverPicker series={series} market="CA"
+      onSelect={(url, attribution) => setSeries(current => ({ ...current, coverUrl: url, coverAttribution: attribution }))}
+      onUndo={(url, attribution) => { onUndo?.(); setSeries(current => ({ ...current, coverUrl: url, coverAttribution: attribution })); }} />
+  </>;
+}
+const twoCovers = () => services.fetchCoverCandidates.mockResolvedValue(result([candidate(), candidate({ id: 'c2', imageUrl: 'https://covers.openlibrary.org/b/id/2-L.jpg' })]));
+
+test('undo after repeated picks returns to the cover from before the first pick', async () => {
+  twoCovers();
+  const user = userEvent.setup();
+  render(<Harness initial={seriesFixture({ coverUrl: 'https://example.com/start.jpg' })} />);
+  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  const choices = await screen.findAllByRole('button', { name: /Second by Example Author/ });
+  await user.click(choices[0]); await user.click(choices[1]);
+  expect(screen.getByLabelText('cover')).toHaveTextContent('2-L.jpg');
+  await user.click(screen.getByRole('button', { name: 'Undo cover choice' }));
+  expect(screen.getByLabelText('cover')).toHaveTextContent('https://example.com/start.jpg');
+  expect(screen.queryByRole('button', { name: 'Undo cover choice' })).toBeNull();
+});
+
+test.each(['edit author', 'edit url'])('undo is withdrawn after %s so it cannot overwrite that edit', async name => {
+  twoCovers();
+  const user = userEvent.setup();
+  render(<Harness />);
+  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  await user.click((await screen.findAllByRole('button', { name: /Second by Example Author/ }))[0]);
+  expect(screen.getByRole('button', { name: 'Undo cover choice' })).toBeVisible();
+  await user.click(screen.getByRole('button', { name }));
+  expect(screen.queryByRole('button', { name: 'Undo cover choice' })).toBeNull();
 });

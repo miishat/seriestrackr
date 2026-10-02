@@ -168,3 +168,24 @@ test('market mismatch and hidden formats cannot be accepted without mutation', (
   if (hidden.ok === false) throw new Error(hidden.error);
   act(() => { expect(result.current.acceptDiscovery(hidden.value, response({ seriesId: 's1' }), { title: false, book: true, audio: false }).ok).toBe(false); });
 });
+
+test('accepting a dialog cover with a book date can be undone without reverting the other accepted fields', () => {
+  const { result } = mount();
+  const priorAttribution = { title: 'Old', author: 'Example Author', role: 'next' as const, source: { id: 'o', title: 'Old', url: 'https://example.com/old' }, editionKey: null };
+  act(() => { result.current.replaceLibrary({ ...result.current.doc, series: [seriesFixture({ coverUrl: 'https://example.com/old.jpg', coverAttribution: priorAttribution })] }); });
+  const started = result.current.beginDiscovery('s1', 'r1');
+  if (started.ok === false) throw new Error(started.error);
+  const checked = response({ seriesId: 's1', coverCandidates: [{ id: 'c1', title: 'Second', author: 'Example Author', role: 'next', format: 'ebook', provider: 'openlibrary',
+    source: { id: 's', title: 'Second', url: 'https://openlibrary.org/works/OL1W' }, imageUrl: 'https://covers.openlibrary.org/b/id/1-L.jpg',
+    workKey: 'second|example author', editionKey: null, width: 600, height: 900 }] });
+  act(() => { expect(result.current.acceptDiscovery(started.value, checked, { title: false, book: true, audio: false, coverId: 'c1' }).ok).toBe(true); });
+  expect(result.current.doc.series[0].coverUrl).toBe('https://covers.openlibrary.org/b/id/1-L.jpg');
+  expect(result.current.canUndo).toBe(true);
+  expect(result.current.undoKind).toBe('cover');
+  act(() => { expect(result.current.undo().ok).toBe(true); });
+  const restored = result.current.doc.series[0];
+  expect(restored.coverUrl).toBe('https://example.com/old.jpg');
+  expect(restored.coverAttribution).toEqual(priorAttribution);
+  expect(restored.releases.book.origin).toBe('discovery');
+  expect(result.current.canUndo).toBe(false);
+});

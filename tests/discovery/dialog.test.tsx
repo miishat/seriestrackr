@@ -234,3 +234,10 @@ test('incomplete facts are a separate message from the coverage status', () => {
   expect(screen.getByRole('status')).toHaveTextContent('Check complete');
   expect(screen.queryByText(/partial/i)).toBeNull();
 });
+
+test('the outline tablist holds only tabs and every tabpanel is focusable', () => {
+  show();
+  const list = screen.getByRole('tablist', { name: 'Review outline' });
+  expect(Array.from(list.children).every(child => child.getAttribute('role') === 'tab')).toBe(true);
+  for (const panel of document.querySelectorAll('[role=tabpanel]')) expect(panel).toHaveAttribute('tabindex', '0');
+});

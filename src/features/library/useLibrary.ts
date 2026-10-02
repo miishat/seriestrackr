@@ -48,6 +48,9 @@ function invalid(error: string): Result<void> {
   return { ok: false, error };
 }
 
+type UndoEntry = { kind: 'finish'; doc: LibraryDocument }
+  | { kind: 'cover'; seriesId: string; coverUrl: Series['coverUrl']; coverAttribution: Series['coverAttribution'] };
+
 export function useLibrary() {
   const [initial] = useState(loadBrowserLibrary);
   const [doc, setDoc] = useState<LibraryDocument>(initial.kind === 'ready' ? initial.doc : emptyDocument());
@@ -56,7 +59,7 @@ export function useLibrary() {
   const [recoveryRaw, setRecoveryRaw] = useState<string | null>(initial.kind === 'recovery' ? initial.raw : null);
   const current = useRef(doc);
   const currentMode = useRef(mode);
-  const undoSnapshot = useRef<LibraryDocument | null>(null);
+  const undoSnapshot = useRef<UndoEntry | null>(null);
   const discoveryGuard = useRef(createDiscoveryGuard());
 
   const commit = (next: LibraryDocument): void => {
@@ -152,7 +155,7 @@ export function useLibrary() {
     if (finished.ok === false) return invalid(finished.error);
     const candidate = validated({ ...current.current, series: current.current.series.map((item) => item.id === id ? finished.value : item) });
     if (candidate.ok === false) return invalid(candidate.error);
-    undoSnapshot.current = current.current;
+    undoSnapshot.current = { kind: 'finish', doc: current.current };
     discoveryGuard.current.touch(id);
     commit(candidate.value);
     return { ok: true, value: undefined };
@@ -161,11 +164,20 @@ export function useLibrary() {
   const undo = (): Result<void> => {
     const allowed = requireReady();
     if (allowed.ok === false) return allowed;
-    if (!undoSnapshot.current) return invalid('There is no finish action to undo.');
-    const previous = undoSnapshot.current;
+    const entry = undoSnapshot.current;
+    if (!entry) return invalid('There is nothing to undo.');
     undoSnapshot.current = null;
-    discoveryGuard.current.replace();
-    commit(previous);
+    if (entry.kind === 'finish') {
+      discoveryGuard.current.replace();
+      commit(entry.doc);
+      return { ok: true, value: undefined };
+    }
+    if (!current.current.series.some(item => item.id === entry.seriesId)) return invalid('Series not found.');
+    const restored = validated({ ...current.current, series: current.current.series.map(item => item.id === entry.seriesId
+      ? { ...item, coverUrl: entry.coverUrl, coverAttribution: entry.coverAttribution } : item) });
+    if (restored.ok === false) return invalid(restored.error);
+    discoveryGuard.current.touch(entry.seriesId);
+    commit(restored.value);
     return { ok: true, value: undefined };
   };
 
@@ -254,13 +266,14 @@ export function useLibrary() {
     if (accepted.value === before) return { ok: true, value: undefined };
     const checked = validated({ ...current.current, series: current.current.series.map(item => item.id === before.id ? accepted.value : item) });
     if (checked.ok === false) return invalid(checked.error);
-    undoSnapshot.current = null;
+    const coverChanged = !!selection.coverId && (accepted.value.coverUrl !== before.coverUrl || accepted.value.coverAttribution !== before.coverAttribution);
+    undoSnapshot.current = coverChanged ? { kind: 'cover', seriesId: before.id, coverUrl: before.coverUrl, coverAttribution: before.coverAttribution } : null;
     discoveryGuard.current.touch(before.id);
     commit(checked.value);
     return { ok: true, value: undefined };
   };
 
-  return { doc, mode, error, recoveryRaw, canUndo: undoSnapshot.current !== null,
+  return { doc, mode, error, recoveryRaw, canUndo: undoSnapshot.current !== null, undoKind: undoSnapshot.current?.kind ?? null,
     beginDiscovery, isDiscoveryCurrent, cancelDiscovery, recordDiscoveryCheck, acceptDiscovery,
     addSeries, updateSeries, deleteSeries, markFinished, undo, updateSettings, replaceLibrary, resetLibrary };
 }

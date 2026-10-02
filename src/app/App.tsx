@@ -91,6 +91,7 @@ export function App() {
     const result = library.updateSettings({ ...library.doc.settings, market }, false);
     if (result.ok === false) setSetupError(result.error);
   };
+  useEffect(() => { if (library.mode !== 'unsaved') setExportError(null); }, [library.mode]);
   useEffect(() => { document.documentElement.dataset.theme = library.doc.settings.theme; }, [library.doc.settings.theme]);
   const availableCount = library.doc.series.filter((s) => s.readingStatus !== 'completed' && s.formats.book && displayRelease(s.releases.book, today) === 'released').length;
   const availableAudioCount = library.doc.series.filter((s) => s.readingStatus !== 'completed' && s.formats.audio && displayRelease(s.releases.audio, today) === 'released').length;
@@ -106,7 +107,7 @@ export function App() {
     {discovery.batch.total > 0 && <section className="batch-results" aria-label="Release check results">
       <div className="batch-results-header"><div>
         <h2>{discovery.batch.running ? 'Checking releases' : 'Release check results'}</h2>
-        <p role="status">{discovery.batch.done} of {discovery.batch.total} checked � Review results before saving.</p>
+        <p role="status">{discovery.batch.done} of {discovery.batch.total} checked · Review results before saving.</p>
       </div>{discovery.batch.running && <button onClick={discovery.cancelBatch}>Cancel checks</button>}</div>
       {discovery.batch.running && <progress value={discovery.batch.done} max={discovery.batch.total} aria-label="Release check progress" />}
       <ul className="batch-results-list">{discovery.batch.results.map(result => {
@@ -115,7 +116,7 @@ export function App() {
         const status = result.error ? 'Check failed' : result.response?.summary.status === 'failed' ? 'Check failed' : supported ? 'Ready to review' : 'No supported result';
         const preview = result.error ?? [proposals?.identity?.title,
           proposals?.releases.book ? `Book: ${proposals.releases.book.date ?? 'Date unknown'}` : null,
-          proposals?.releases.audio ? `Audio: ${proposals.releases.audio.date ?? 'Date unknown'}` : null].filter(Boolean).join(' � ');
+          proposals?.releases.audio ? `Audio: ${proposals.releases.audio.date ?? 'Date unknown'}` : null].filter(Boolean).join(' · ');
         return <li className="batch-result-row" key={result.seriesId}>
           <div className="batch-result-description"><strong>{library.doc.series.find(s => s.id === result.seriesId)?.name ?? 'Removed series'}</strong>
             {preview && <p>{preview}</p>}
@@ -127,7 +128,9 @@ export function App() {
       })}</ul>
     </section>}
     <aside className="next-phase"><span>YOUR CHOICE</span><div><strong>Discovery, when you ask for it.</strong><p>Check releases, review sources and choose what to save. Manual tracking works independently.</p></div></aside>
-    {library.canUndo && <div className="undo" role="status">Most recent finish can be undone until another change or reload. <button onClick={() => library.undo()}>Undo finish</button></div>}
+    {library.canUndo && (library.undoKind === 'cover'
+      ? <div className="undo" role="status">Most recent cover choice can be undone until another change or reload. <button onClick={() => library.undo()}>Undo cover</button></div>
+      : <div className="undo" role="status">Most recent finish can be undone until another change or reload. <button onClick={() => library.undo()}>Undo finish</button></div>)}
     {toast && <div className="toast" role="status">{toast}</div>}
     <Dialog open={library.doc.settings.market === null && library.mode !== 'recovery' && library.recoveryRaw === null} title="Which releases should we track?" onClose={() => {}} closable={false}><p>Choose your preferred country for English releases. Each format can use another country when no supported preferred-country date is found. You can override the preference for each series.</p><MarketSelect value={setupMarket} onChange={setSetupMarket} />{setupError && <p role="alert" className="form-error">{setupError}</p>}<div className="actions"><button className="primary" onClick={setup}>Start tracking</button></div></Dialog>
     <Dialog open={editor !== null} title={editor === 'new' ? 'Add series' : 'Edit series'} onClose={closeEditor}>{editor && <SeriesForm key={editor === 'new' ? 'new' : editor.id} series={editor === 'new' ? undefined : editor} market={library.doc.settings.market ?? ''} onCreate={(input) => { const result = library.addSeries(input); if (result.ok === true) closeEditor(); else setDialogError(result.error); }} onUpdate={handleUpdate} onCancel={closeEditor} onDelete={() => { if (editor !== 'new') setDeleteTarget(editor); }} error={dialogError} />}</Dialog>

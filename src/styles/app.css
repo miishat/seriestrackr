@@ -1111,8 +1111,9 @@ legend {
 /* Discovery review: outline rail and detail pane (approved direction D). */
 dialog:has(.review-layout) { max-width: 1040px; }
 .review-layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 22px; margin: 18px 0; align-items: start; }
-.review-rail { display: flex; flex-direction: column; gap: 2px; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; padding: 12px 8px; position: sticky; top: 0; }
-.review-rail .eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 2px 8px 8px; overflow-wrap: anywhere; }
+.review-rail { display: flex; flex-direction: column; gap: 2px; }
+.review-rail-group { background: var(--panel); border: 1px solid var(--line); border-radius: 9px; padding: 12px 8px; position: sticky; top: 0; }
+.review-rail-group .eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 2px 8px 8px; overflow-wrap: anywhere; }
 .review-tab { display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%; text-align: left; border: 0; border-left: 3px solid transparent; border-radius: 6px; background: transparent; padding: 8px 10px; }
 .review-tab.level-3 { margin-left: 14px; width: calc(100% - 14px); }
 .review-tab[aria-selected=true] { background: var(--soft); border-left-color: var(--accent); font-weight: 700; }
@@ -1141,8 +1142,9 @@ dialog:has(.review-layout) { max-width: 1040px; }
 .author-suggestions li { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0; }
 @media (max-width: 760px) {
   .review-layout { grid-template-columns: minmax(0, 1fr); gap: 14px; }
-  .review-rail { position: static; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 8px; }
-  .review-rail .eyebrow { display: none; }
+  .review-rail-group { position: static; padding: 8px; }
+  .review-rail { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .review-rail-group .eyebrow { display: none; }
   .review-tab, .review-tab.level-3 { margin-left: 0; width: 100%; border: 1px solid var(--line); border-bottom: 3px solid transparent; flex-wrap: wrap; }
   .review-tab[aria-selected=true] { border-bottom-color: var(--accent); }
   .review-pane { padding: 16px; }
