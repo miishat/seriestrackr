@@ -22,13 +22,16 @@ export function buildSearchQueries(request: CheckRequest, needs: { identity: boo
   if (needs.book && request.formats.includes('book')) {
     queries.push(`${subject} ${author} ebook hardcover publication release date English ${request.preferredMarket}`);
   }
+  // While the identity is unresolved, a primary-host query built only from the
+  // request outranks the audio query so it still fits within three Tavily slots.
+  const unresolved = needs.identity && (!title.trim() || !Number.isInteger(position));
+  const primary = `${series} ${author} book ${position} official publisher author announcement`;
+  if (unresolved) queries.push(primary);
   if (needs.audio && request.formats.includes('audio')) {
     queries.push(`${subject} ${author} audiobook release date English ${request.preferredMarket}`);
   }
-  // Remaining slots go to a primary-host query built only from the request.
-  if (needs.identity && queries.length < 3) {
-    queries.push(`${series} ${author} book ${position} official publisher author announcement`);
-  }
+  // Any remaining slot goes to the primary-host query for other identity gaps.
+  if (needs.identity && !unresolved && queries.length < 3) queries.push(primary);
   return [...new Set(queries.map(whitespace))].slice(0, 3);
 }
 
