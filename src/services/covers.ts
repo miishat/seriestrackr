@@ -1,3 +1,6 @@
+// Structured, work-bound retrieval lives in coverImages.ts. fetchCoverImageUrls below is the legacy unlabelled
+// service, kept only until the Task 9 picker migrates; it must not gain new callers.
+export { decodeCover, fetchCoverCandidates, isPortrait, rankCovers, selectableCover } from './coverImages';
 type OpenLibraryReply = { docs?: { cover_i?: number }[] };
 type GoogleBooksReply = { items?: { volumeInfo?: { imageLinks?: { thumbnail?: string } } }[] };
 

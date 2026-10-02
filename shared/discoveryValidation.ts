@@ -3,6 +3,7 @@ import type {
   EditionEvidence, EvidenceBundle, Format, IdentityEvidence, Parsed, Provenance,
   RelatedWorkEvidence, ReleaseProposal, Source, SourceLink, Target, Usage,
 } from './discovery';
+import { parseCoverCandidates } from './coverValidation';
 
 function fail(path: string, message: string): never { throw new Error(`${path}: ${message}`); }
 function object(input: unknown, path: string, required: string[], optional: string[] = []): Record<string, unknown> {
@@ -225,7 +226,7 @@ function summary(input: unknown, path: string): CheckSummary {
   };
 }
 function response(input: unknown): CheckResponse {
-  const value = object(input, 'response', ['requestId', 'seriesId', 'summary', 'proposals', 'sources']);
+  const value = object(input, 'response', ['requestId', 'seriesId', 'summary', 'proposals', 'sources'], ['coverCandidates']);
   const proposalsValue = object(value.proposals, 'response.proposals', ['identity', 'identityAttribution', 'releases', 'conflicts'], ['related']);
   const releasesValue = object(proposalsValue.releases, 'response.proposals.releases', ['book', 'audio']);
   const sources = array(value.sources, 'response.sources', 30, sourceLink);
@@ -266,6 +267,7 @@ function response(input: unknown): CheckResponse {
     proposals: { identity: identityValue, identityAttribution: attributionValue, releases,
       conflicts: array(proposalsValue.conflicts, 'response.proposals.conflicts', 100, conflict), related: relatedValue },
     sources,
+    coverCandidates: value.coverCandidates === undefined ? [] : parseCoverCandidates(value.coverCandidates, 'response.coverCandidates'),
   };
 }
 function parse<T>(operation: () => T): Parsed<T> {

@@ -1,3 +1,5 @@
+import type { CoverCandidate } from './covers';
+
 export type Format = 'book' | 'audio';
 export type EditionFormat = 'ebook' | 'print' | 'audio';
 export type Precision = 'day' | 'month' | 'year' | 'none';
@@ -42,7 +44,9 @@ export interface CheckSummary { requestId: string; checkedAt: string;
   status: 'complete' | 'partial' | 'failed' | 'cancelled'; reasons: Reason[];
   formats: Record<Format, 'supported' | 'unknown' | 'not-requested'>; usage: Usage }
 export interface CheckResponse { requestId: string; seriesId: string;
-  summary: CheckSummary; proposals: Proposals; sources: SourceLink[] }
+  summary: CheckSummary; proposals: Proposals; sources: SourceLink[];
+  // Session-only exact-work artwork from the same check; never persisted with CheckSummary.
+  coverCandidates?: CoverCandidate[] }
 export interface Capabilities { search: boolean; ai: boolean; googleBooks: boolean; hardcover: boolean; model: string;
   limits: { search: 3; ai: 1; googleBooks: 2; hardcover: 1; outputTokens: 2048; inputBytes: 20000 };
   pricingAsOf: string; estimatedMaxAiUsd: number }

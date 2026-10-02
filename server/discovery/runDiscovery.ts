@@ -212,6 +212,7 @@ async function runDiscoveryInTrace(input: CheckRequest, dependencies: DiscoveryD
   const suppressed = new Set<Format | 'identity'>();
   const prunedWorkFormats = new Map<string, PrunedDates>();
   let evidence = empty();
+  const coverSidecar: NonNullable<CheckResponse['coverCandidates']> = [];
   const failure = (error: unknown) => reason(caller.aborted ? 'cancelled' : deadline.aborted ? 'timeout' : error instanceof ProviderError ? error.reason : 'provider-error');
   const merge = (incoming: EvidenceBundle) => {
     let allocationBudget = false;
@@ -241,6 +242,7 @@ async function runDiscoveryInTrace(input: CheckRequest, dependencies: DiscoveryD
       absorb(catalogs.usage);
       catalogs.reasons.forEach(reason);
       catalogs.overflow?.forEach(format => suppressed.add(format));
+      for (const cover of catalogs.covers ?? []) if (coverSidecar.length < 9 && !coverSidecar.some(item => item.id === cover.id)) coverSidecar.push(cover);
       merge(interpretPrimarySources(request, validatedBundle(catalogs.evidence, 'catalog', reason)));
     } catch (error) { failure(error); }
   }
@@ -345,7 +347,7 @@ async function runDiscoveryInTrace(input: CheckRequest, dependencies: DiscoveryD
   const operational = reasons.some(item => item !== 'unknown-identity' && item !== 'cancelled');
   const hardFailure = reasons.some(item => ['quota', 'timeout', 'provider-error', 'invalid-evidence'].includes(item));
   const result: CheckResponse = { requestId: request.requestId, seriesId: request.seriesId, proposals,
-    sources: evidence.sources.map(({ id, title, url }) => ({ id, title, url })),
+    sources: evidence.sources.map(({ id, title, url }) => ({ id, title, url })), coverCandidates: coverSidecar,
     summary: { requestId: request.requestId, checkedAt,
       status: caller.aborted ? 'cancelled' : hardFailure && !evidence.sources.length && !proposals.identity && !proposals.releases.book && !proposals.releases.audio ? 'failed' : operational ? 'partial' : 'complete',
       reasons, usage, formats: {

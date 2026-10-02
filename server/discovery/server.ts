@@ -1,6 +1,8 @@
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
 import type { Capabilities } from '../../shared/discovery';
 import { parseCheckRequest, parseCheckResponse } from '../../shared/discoveryValidation';
+import { parseCoverRequest, parseCoverResult } from '../../shared/coverValidation';
+import type { CoverRequest, CoverResult } from '../../shared/covers';
 import type { DiscoveryConfig } from './config';
 import { estimatedMaxAiUsd } from './deepseek';
 import { runDiscovery, type DiscoveryDependencies } from './runDiscovery';
@@ -49,7 +51,9 @@ function body(req: IncomingMessage, res: ServerResponse): Promise<unknown> {
   });
 }
 
-export function createDiscoveryServer(config: DiscoveryConfig, dependencies: DiscoveryDependencies = createDiscoveryRuntime(config)): Server {
+type ServerDependencies = DiscoveryDependencies & { covers?: (request: CoverRequest, signal: AbortSignal) => Promise<CoverResult> };
+
+export function createDiscoveryServer(config: DiscoveryConfig, dependencies: ServerDependencies = createDiscoveryRuntime(config)): Server {
   const controllers = new Set<AbortController>();
   const estimate = estimatedMaxAiUsd();
   const capabilities: Capabilities = { search: Boolean(config.tavilyKey?.trim()), ai: Boolean(config.deepseekKey?.trim()),
@@ -73,16 +77,19 @@ export function createDiscoveryServer(config: DiscoveryConfig, dependencies: Dis
       if (req.method !== 'GET') { reject(res, 'method'); return; }
       json(res, 200, capabilities); return;
     }
-    if (req.url !== '/api/discovery/check') { reject(res, 'not-found'); return; }
+    const covers = req.url === '/api/discovery/covers';
+    if (req.url !== '/api/discovery/check' && !covers) { reject(res, 'not-found'); return; }
     if (req.method !== 'POST') { reject(res, 'method'); return; }
     if (req.headers.origin !== appOrigin) { reject(res, 'forbidden'); return; }
     if (!singleHeader(req, 'content-type') || !/^application\/json(?:\s*;\s*charset=utf-8)?$/i.test(req.headers['content-type'] ?? '')) {
       reject(res, 'bad-request'); return;
     }
     let parsed: ReturnType<typeof parseCheckRequest>;
-    try { parsed = parseCheckRequest(await body(req, res)); }
+    let coverParsed: ReturnType<typeof parseCoverRequest> | undefined;
+    try { const payload = await body(req, res); if (covers) coverParsed = parseCoverRequest(payload); else parsed = parseCheckRequest(payload); }
     catch { reject(res, 'bad-request'); return; }
-    if (!parsed.ok) { reject(res, 'bad-request'); return; }
+    if (covers ? !coverParsed?.ok : !parsed!.ok) { reject(res, 'bad-request'); return; }
+    if (covers && !dependencies.covers) { reject(res, 'service-error'); return; }
     if (activeCheck) { reject(res, 'busy'); return; }
     activeCheck = true;
     const controller = new AbortController(); controllers.add(controller);
@@ -91,8 +98,15 @@ export function createDiscoveryServer(config: DiscoveryConfig, dependencies: Dis
     req.once('aborted', abortRequest); res.once('close', closeResponse);
     if (req.aborted || res.destroyed) controller.abort();
     try {
-      const output = parseCheckResponse(await runDiscovery(parsed.value, dependencies, controller.signal));
-      if (!output.ok || output.value.requestId !== parsed.value.requestId || output.value.seriesId !== parsed.value.seriesId) {
+      if (covers) {
+        const wanted = (coverParsed as { ok: true; value: CoverRequest }).value;
+        const result = parseCoverResult(await dependencies.covers!(wanted, controller.signal));
+        if (!result.ok || result.value.requestId !== wanted.requestId || result.value.seriesId !== wanted.seriesId) { reject(res, 'service-error'); return; }
+        json(res, 200, result.value); return;
+      }
+      const checked = (parsed as { ok: true; value: Parameters<typeof runDiscovery>[0] }).value;
+      const output = parseCheckResponse(await runDiscovery(checked, dependencies, controller.signal));
+      if (!output.ok || output.value.requestId !== checked.requestId || output.value.seriesId !== checked.seriesId) {
         reject(res, 'service-error'); return;
       }
       json(res, 200, output.value);

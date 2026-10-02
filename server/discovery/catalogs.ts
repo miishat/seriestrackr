@@ -8,15 +8,16 @@ import { appleCanonicalTitle, appleProductUrl, normalizeAppleProductPage } from 
 import { createRateQueue } from './rateQueue';
 import { normalizeGoogleBooks } from './googleBooks';
 import { diagnosticCounts, emitDiagnostic, type DiagnosticObserver } from './diagnostics';
+import type { CoverCandidate } from '../../shared/covers';
 import { createRetrievalContext, type RetrievalContext, type RetrievalPhase } from './retrievalContext';
 
 // overflow names the formats whose exact Apple record set could not be proven complete within the record limit.
-export type CatalogResult = { evidence: EvidenceBundle; usage: Usage; reasons: Reason[]; overflow?: Array<'book' | 'audio'> };
+export type CatalogResult = { evidence: EvidenceBundle; usage: Usage; reasons: Reason[]; overflow?: Array<'book' | 'audio'>; covers?: CoverCandidate[] };
 // Shared by every collection so cached metadata promises stay valid across phases.
 const unavailable = Symbol('unavailable');
-const appleQueue = createRateQueue(3100);
-const openLibraryQueue = createRateQueue(1100);
-const googleBooksQueue = createRateQueue(1100);
+export const appleQueue = createRateQueue(3100);
+export const openLibraryQueue = createRateQueue(1100);
+export const googleBooksQueue = createRateQueue(1100);
 const empty = (): EvidenceBundle => ({ sources: [], identities: [], editions: [] });
 const object = (input: unknown): Record<string, unknown> => input !== null && typeof input === 'object' && !Array.isArray(input)
   ? input as Record<string, unknown> : {};

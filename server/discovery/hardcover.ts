@@ -6,10 +6,13 @@ import { parseExtraction } from '../../shared/discoveryValidation';
 import type { CatalogResult } from './catalogs';
 import { fetchProviderJson, ProviderError } from './http';
 import { createRateQueue } from './rateQueue';
-import { hardcoverAliases, isPlaceholderTitle } from './workIdentity';
+import { bindWorkTitle, hardcoverAliases, isPlaceholderTitle } from './workIdentity';
+import { hardcoverImage } from './coverCatalogs';
+import type { CoverCandidate } from '../../shared/covers';
 import type { RetrievalContext } from './retrievalContext';
 
-const queue = createRateQueue(1100);
+export const hardcoverQueue = createRateQueue(1100);
+const queue = hardcoverQueue;
 const empty = (): EvidenceBundle => ({ sources: [], identities: [], editions: [] });
 const object = (value: unknown): Record<string, unknown> => value !== null && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {};
 const text = (value: unknown, max = 300): string | null => typeof value === 'string' && value.trim() && value.length <= max ? value.trim() : null;
@@ -26,7 +29,7 @@ const query = `query DiscoveryHardcover($names: [String!]!, $author: String!, $p
   series(where: {name: {_in: $names}, author: {name: {_eq: $author}}}, order_by: {id: asc}, limit: 6) {
     id name author { name } book_series(where: {position: {_eq: $position}}, limit: 21) {
       id position featured compilation details
-      book { id slug title compilation contributions(limit: 31) { author { name } contributor_role { name } }
+      book { id slug title compilation cached_image contributions(limit: 31) { author { name } contributor_role { name } }
         editions(where: {language: {_or: [{code2: {_eq: "en"}}, {code3: {_eq: "eng"}}]}}, limit: 21) { id title edition_format reading_format { format } isbn_10 isbn_13 language { code2 code3 } }
       }
     }
@@ -63,7 +66,7 @@ function editionKey(raw: Record<string, unknown>, identifier: string): string {
   }
   return `hardcover:edition:${identifier}`;
 }
-export function normalizeHardcover(input: unknown, request: CheckRequest, checkedAt: string, onDiagnostic?: DiagnosticObserver): EvidenceBundle {
+export function normalizeHardcover(input: unknown, request: CheckRequest, checkedAt: string, onDiagnostic?: DiagnosticObserver, covers?: CoverCandidate[]): EvidenceBundle {
   const envelope = object(input);
   if (Object.hasOwn(envelope, 'errors')) return fail();
   const evidence = empty();
@@ -110,6 +113,14 @@ export function normalizeHardcover(input: unknown, request: CheckRequest, checke
       seen.add(sourceId);
       evidence.sources.push({ id: sourceId, title, url, provider: 'hardcover', market: null, retrievedAt: checkedAt, text: quote });
       evidence.identities.push({ title, author: request.target.author, position: request.target.position, citations: identityCitations });
+      // Image metadata is a sidecar: a missing or unusable image never discards the verified identity.
+      const image = covers ? hardcoverImage(book.cached_image) : null;
+      if (covers && image && (!request.target.title.trim() || bindWorkTitle(title, request) !== null) && covers.length < 9) {
+        covers.push({ id: `hardcover:book:${bookId}`, title, author: request.target.author, role: 'next', format: 'print', provider: 'hardcover',
+          source: { id: sourceId, title, url }, imageUrl: image.url, workKey: `${normalizeIdentity(title)}|${normalizeIdentity(request.target.author)}`,
+          editionKey: null, width: typeof image.width === 'number' && image.width > 0 ? image.width : null,
+          height: typeof image.height === 'number' && image.height > 0 ? image.height : null });
+      }
     } else if (evidence.sources.find(source => source.id === sourceId)?.text !== quote) return fail();
     for (const inputEdition of editions) {
       const raw = object(inputEdition); const editionId = id(raw.id);
@@ -144,7 +155,8 @@ export async function collectHardcover(request: CheckRequest, token: string | nu
         headers: { 'Content-Type': 'application/json', Authorization: /^Bearer\s/i.test(key) ? key : `Bearer ${key}` },
         body: JSON.stringify({ query, variables: { names: hardcoverAliases(request.target.series), position: request.target.position, author: request.target.author } }) }, signal, fetcher, onDiagnostic);
     }, signal);
-    return { evidence: normalizeHardcover(raw, request, new Date().toISOString(), onDiagnostic), usage, reasons: [] };
+    const covers: CoverCandidate[] = [];
+    return { evidence: normalizeHardcover(raw, request, new Date().toISOString(), onDiagnostic, covers), usage, reasons: [], ...(covers.length ? { covers } : {}) };
   } catch (error) {
     return { evidence: empty(), usage, reasons: [signal.aborted ? 'cancelled' : error instanceof ProviderError ? error.reason : 'provider-error'] };
   }

@@ -4,6 +4,8 @@ import { collectCatalogs } from './catalogs';
 import { searchEvidence } from './search';
 import { extractEvidence } from './deepseek';
 import type { DiscoveryDependencies } from './runDiscovery';
+import type { CoverRequest, CoverResult } from '../../shared/covers';
+import { collectCoverCandidates } from './covers';
 import type { DiagnosticObserver } from './diagnostics';
 import { createRetrievalContext } from './retrievalContext';
 
@@ -11,8 +13,9 @@ import { createRetrievalContext } from './retrievalContext';
 // single check's retrieval context, created by runDiscovery, and the
 // existing catalog provider queues remain global across runtimes/checks.
 export function createDiscoveryRuntime(config: DiscoveryConfig, fetcher: typeof fetch = fetch,
-  options: { onDiagnostic?: DiagnosticObserver } = {}): DiscoveryDependencies {
+  options: { onDiagnostic?: DiagnosticObserver } = {}): DiscoveryDependencies & { covers: (request: CoverRequest, signal: AbortSignal) => Promise<CoverResult> } {
   return {
+    covers: (request, signal) => collectCoverCandidates(request, config, signal, fetcher, options.onDiagnostic),
     catalogs: async (request, markets, signal, context = createRetrievalContext(), phase = 'initial', seed) => {
       // Enrichment reuses the identity already retained; it never spends a second Hardcover request.
       const hardcover = phase === 'initial'
@@ -21,6 +24,7 @@ export function createDiscoveryRuntime(config: DiscoveryConfig, fetcher: typeof 
         onDiagnostic: options.onDiagnostic, seedEvidence: hardcover ? hardcover.evidence : seed, appleIsbnJoin: true, appleProductPages: true,
         context, phase });
       catalogs.reasons = [...new Set([...(hardcover?.reasons ?? []), ...catalogs.reasons])];
+      if (hardcover?.covers) catalogs.covers = hardcover.covers;
       return catalogs;
     },
     search: (query, signal) => searchEvidence(query, config, signal, fetcher),
