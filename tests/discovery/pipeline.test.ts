@@ -854,3 +854,41 @@ test('enrich output never leaves a dangling citation to a removed seed source', 
   for (const item of [result.proposals.identity, result.proposals.releases.book, ...result.proposals.conflicts.flatMap(c => []), ...result.proposals.related])
     for (const citation of (item as { citations?: Array<{ sourceId: string }> } | null)?.citations ?? []) expect(ids.has(citation.sourceId)).toBe(true);
 });
+
+// I1: a model-asserted publication status needs release language in the cited quote itself.
+test.each([
+  ['Title: Dawn.', 'catalogued'],
+  ['Pre-order now, publication date to be confirmed.', 'announced'],
+  ['Released August 19, 2026.', 'released'],
+] as const)('AI edition asserting published citing %j resolves to %s', async (quote, state) => {
+  const base = bundle([edition({ id: 'seed', citations: [{ sourceId: 's9', quote }] })]); base.editions = [];
+  base.sources[0].text = `${quote} Second by Example Author.`;
+  const deps = dependencies(base); deps.canSearch = false;
+  deps.extract = vi.fn<DiscoveryDependencies['extract']>(async (_req, evidence) => ({ usage: emptyUsage(), evidence: { sources: evidence.sources, identities: [],
+    editions: [edition({ id: 'ai-1', editionKey: null, market: 'US', date: null, precision: 'none', publication: quote.startsWith('Pre') ? 'announced' : 'published',
+      citations: [{ sourceId: evidence.sources[0].id, quote }] })] } }));
+  const result = await runDiscovery(request({ formats: ['book'], useAi: true }), deps, new AbortController().signal);
+  expect(result.proposals.releases.book).toMatchObject({ state });
+});
+
+test('deterministic catalogued record is not outranked by unsupported AI published', async () => {
+  const base = bundle([edition({ id: 'cat-1', editionKey: 'isbn:cat', market: 'US', date: null, precision: 'none', publication: 'catalogued' })]);
+  base.sources[0].text += ' Title: Dawn.';
+  const deps = dependencies(base); deps.canSearch = false;
+  deps.extract = vi.fn<DiscoveryDependencies['extract']>(async (_req, evidence) => ({ usage: emptyUsage(), evidence: { sources: evidence.sources, identities: [],
+    editions: [edition({ id: 'ai-1', editionKey: null, market: 'US', date: null, precision: 'none', publication: 'published', citations: [{ sourceId: evidence.sources[0].id, quote: 'Title: Dawn.' }] })] } }));
+  const result = await runDiscovery(request({ formats: ['book'], useAi: true }), deps, new AbortController().signal);
+  expect(result.proposals.releases.book).toMatchObject({ state: 'catalogued' });
+});
+
+// I4: decorated audio titles past the 20th row still count as qualifying matches.
+test('over-20 Apple audio rows with decorated qualifying titles flag overflow and suppress the format', async () => {
+  const audioRow = (id: number, name: string, date: string) => ({ collectionId: id, trackId: id, collectionName: name, artistName: 'Example Author',
+    collectionViewUrl: `https://books.apple.com/ca/audiobook/x/id${id}`, releaseDate: date, country: 'CA', language: 'English' });
+  const rows = [...Array.from({ length: 21 }, (_, i) => audioRow(300 + i, `Other ${i}`, '2027-05-01T00:00:00Z')),
+    ...Array.from({ length: 21 }, (_, i) => audioRow(400 + i, 'Second: Example, Book 2 (Unabridged)', i === 20 ? '2027-02-01T00:00:00Z' : '2027-04-01T00:00:00Z'))];
+  const h = appleOverLimit(rows, request({ formats: ['audio'] })); const result = await runOver(h);
+  expect(h.seen.some(item => item.overflow?.includes('audio'))).toBe(true);
+  expect(result.proposals.releases.audio).toBeNull();
+  expect(result.summary.formats.audio).toBe('unknown');
+});

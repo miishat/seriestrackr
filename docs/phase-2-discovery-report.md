@@ -258,7 +258,7 @@ All 13 cases replay and every assertion holds. No case was skipped. Asserted rel
 - Primary-source search outranks audio while identity is unresolved, inside the three-search ceiling.
 - A numbered identity never comes from a prequel, continuation or search mention. Related works are review-only.
 - Hardcover `featured` no longer rejects a primary entry; compilation, author role, exact series, position and English edition guards remain.
-- Over-20 Apple results suppress the affected format's fact because completeness cannot be proven.
+- An Apple response over 20 rows keeps qualifying rows first, using the same canonical-title and author rule as release binding (decorated audio and ordinal ebook forms included). The affected format's fact is suppressed only when the qualifying rows alone exceed 20 or the target title is unknown, since completeness cannot be proven then. Otherwise the over-limit response only adds the budget reason.
 - Catalogued, announced and published are separate lifecycle states; a date belongs to its own format.
 - The cover service is user-triggered and local, with budgets of Hardcover 1, Google Books 2, Apple 2 and Open Library 2 starts, nine candidates and a 90 second deadline.
 

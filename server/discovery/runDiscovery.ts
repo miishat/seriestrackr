@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { emptyUsage } from '../../shared/discovery';
 import type { CheckRequest, CheckResponse, Citation, EditionEvidence, EvidenceBundle, Format, IdentityEvidence, Reason } from '../../shared/discovery';
-import { normalizeIdentity, selectProposals, undatedState } from '../../shared/discoveryPolicy';
+import { normalizeIdentity, selectProposals, supportedPublication, undatedState } from '../../shared/discoveryPolicy';
 import { parseCheckRequest, parseCheckResponse, parseExtraction } from '../../shared/discoveryValidation';
 import type { CatalogResult } from './catalogs';
 import { createRetrievalContext, type RetrievalContext, type RetrievalPhase } from './retrievalContext';
@@ -311,7 +311,7 @@ async function runDiscoveryInTrace(input: CheckRequest, dependencies: DiscoveryD
         // Preserve deterministic source text and references independently of
         // the extractor's trimmed input while keeping AI edition IDs distinct.
         merge({ sources: [], identities: incoming.identities.map(item => ({ ...item, citations: remap(item.citations) })),
-          editions: incoming.editions.map(item => ({ ...item, citations: remap(item.citations) })) });
+          editions: incoming.editions.map(item => ({ ...supportedPublication(item), citations: remap(item.citations) })) });
       } catch (error) { failure(error); }
     }
   }

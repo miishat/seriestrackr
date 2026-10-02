@@ -125,3 +125,11 @@ export function selectProposals(request: CheckRequest, evidence: EvidenceBundle,
   }
   return result;
 }
+
+// A model's publication claim counts only when a cited quote itself carries explicit
+// release or preorder language. Otherwise the edition stays catalogued.
+const PUBLICATION_LANGUAGE = /\b(?:released|available now|on sale|pre-?orders?|publication date)\b/i;
+export function supportedPublication(edition: EditionEvidence): EditionEvidence {
+  if ((edition.publication ?? 'catalogued') === 'catalogued') return edition;
+  return edition.citations.some(citation => PUBLICATION_LANGUAGE.test(citation.quote)) ? edition : { ...edition, publication: 'catalogued' };
+}

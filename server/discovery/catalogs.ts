@@ -106,13 +106,20 @@ const APPLE_RECORD_LIMIT = 20;
 // The caller always marks any over-limit response with the budget reason.
 // `incomplete.value` is raised when the exact set cannot be proven complete: unknown
 // relevance, or more exact rows than the limit retains.
-function boundedAppleRecords(rows: unknown[], format: 'ebook' | 'audio', relevance?: { title: string; author: string }, incomplete?: { value: boolean }): unknown[] {
+function boundedAppleRecords(rows: unknown[], format: 'ebook' | 'audio', relevance?: { title: string; author: string; request?: CheckRequest }, incomplete?: { value: boolean }): unknown[] {
   if (rows.length <= APPLE_RECORD_LIMIT) return rows;
   if (!relevance?.title.trim()) { if (incomplete) incomplete.value = true; return rows.slice(0, APPLE_RECORD_LIMIT); }
   const idOf = (raw: Record<string, unknown>) => format === 'ebook' ? raw.trackId : raw.collectionId ?? raw.trackId;
   const titleOf = (raw: Record<string, unknown>) => format === 'ebook' ? raw.trackName : raw.collectionName ?? raw.trackName;
-  const exactIds = new Set(rows.map(object).filter(raw => typeof titleOf(raw) === 'string' && normalizeIdentity(String(titleOf(raw))) === normalizeIdentity(relevance.title) &&
-    typeof raw.artistName === 'string' && normalizeIdentity(raw.artistName) === normalizeIdentity(relevance.author)).map(idOf));
+  // Relevance mirrors release binding: the same canonical-title rule (decorated audio forms,
+  // ordinal ebook forms) and author check decide which rows qualify.
+  const qualifies = (raw: Record<string, unknown>) => {
+    const name = titleOf(raw);
+    if (typeof name !== 'string' || typeof raw.artistName !== 'string') return false;
+    if (normalizeIdentity(name) === normalizeIdentity(relevance.title) && normalizeIdentity(raw.artistName) === normalizeIdentity(relevance.author)) return true;
+    return relevance.request !== undefined && appleCanonicalTitle({ title: name, author: raw.artistName, format: format === 'audio' ? 'audio' : 'ebook' } as EditionEvidence, relevance.request) !== null;
+  };
+  const exactIds = new Set(rows.map(object).filter(qualifies).map(idOf));
   const exact = rows.filter(row => exactIds.has(idOf(object(row))));
   const rest = rows.filter(row => !exactIds.has(idOf(object(row))));
   if (exact.length > APPLE_RECORD_LIMIT && incomplete) incomplete.value = true;
@@ -120,7 +127,7 @@ function boundedAppleRecords(rows: unknown[], format: 'ebook' | 'audio', relevan
 }
 
 function normalizeAppleRecords(input: unknown, market: string, format: 'ebook' | 'audio', checkedAt: string, languageStates?: Map<string, LanguageMetadata>,
-  relevance?: { title: string; author: string }, incomplete?: { value: boolean }): EvidenceBundle {
+  relevance?: { title: string; author: string; request?: CheckRequest }, incomplete?: { value: boolean }): EvidenceBundle {
   const bundle = empty();
   for (const item of boundedAppleRecords(list(object(input).results), format, relevance, incomplete)) {
     const raw = object(item);
@@ -313,7 +320,7 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
     const languageStates = new Map<string, LanguageMetadata>();
     const incomplete = { value: false };
     const normalized = normalizeAppleRecords(raw, market, format === 'book' ? 'ebook' : 'audio', checkedAt, languageStates,
-      { title: target.title, author: request.target.author }, incomplete);
+      { title: target.title, author: request.target.author, request: { ...request, target } }, incomplete);
     if (incomplete.value) overflow.add(format);
     if (results.length && !normalized.sources.length) reason('invalid-evidence');
     for (const [incomingId, actualId] of merge(evidence, normalized)) {
