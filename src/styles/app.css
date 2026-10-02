@@ -712,6 +712,31 @@ dialog h2 {
   margin-bottom: 8px;
 }
 
+.backup-intro { margin: 0 0 20px; }
+.backup-sections { display: grid; gap: 14px; }
+.backup-section {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+}
+.backup-section h3 { font-size: 16px; margin: 0 0 8px; }
+.backup-section p { margin: 0 0 14px; }
+.backup-section p.small { margin: 8px 0 0; }
+.backup-section .actions { flex-wrap: wrap; }
+.backup-file { padding: 8px; background: var(--panel); color: var(--muted); }
+.backup-file::file-selector-button {
+  font: inherit;
+  color: var(--ink);
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-right: 12px;
+  cursor: pointer;
+}
+.backup-file::file-selector-button:hover { background: var(--panel); border-color: var(--accent); }
+
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

@@ -58,15 +58,24 @@ export function BackupDialog({ doc, mode, recoveryRaw, onReplace, onReset, onClo
   };
 
   return <Dialog open title="Backups" onClose={onClose}>
-    <p>Download a copy of your current library and settings, or restore both from a backup.</p>
-    <div className="actions"><button type="button" disabled={mode === 'recovery'} onClick={() => download(encodeBackup(doc), 'seriestrackr-backup.json')}>Export current library</button></div>
-    {(mode === 'recovery' || recoveryRaw !== null) && <section>
+    <p className="backup-intro">Save your library and settings, or restore them from a backup.</p>
+    <div className="backup-sections">
+    <section className="backup-section" aria-labelledby="backup-export-heading">
+      <h3 id="backup-export-heading">Export library</h3>
+      <p>Download all {doc.series.length} tracked series and your preferences as a JSON file.</p>
+      <button className="primary" type="button" disabled={mode === 'recovery'} onClick={() => download(encodeBackup(doc), 'seriestrackr-backup.json')}>Export current library</button>
+    </section>
+    {(mode === 'recovery' || recoveryRaw !== null) && <section className="backup-section backup-recovery" aria-label="Recover stored data">
       <p>The stored data could not be loaded. Download it before restoring a backup or resetting the library.</p>
       <div className="actions"><button type="button" disabled={recoveryRaw === null} onClick={() => { if (recoveryRaw !== null) download(recoveryRaw, 'seriestrackr-recovery.txt'); }}>Download stored data</button>
         {mode === 'recovery' && !confirmingReset && <button type="button" onClick={() => setConfirmingReset(true)}>Reset library</button>}</div>
       {confirmingReset && <div><p>Reset replaces the stored data with a new empty library and removes your current settings.</p><div className="actions"><button type="button" onClick={() => setConfirmingReset(false)}>Cancel reset</button><button className="danger" type="button" onClick={reset}>Confirm reset</button></div></div>}
     </section>}
-    <label>Choose backup file<input type="file" accept=".json,application/json" onChange={chooseFile} /></label>
+    <section className="backup-section" aria-labelledby="backup-restore-heading">
+      <h3 id="backup-restore-heading">Restore backup</h3>
+      <p>Choose a backup to review before replacing your library and settings.</p>
+      <label>Choose backup file<input className="backup-file" type="file" accept=".json,application/json" onChange={chooseFile} /></label>
+      <p className="small">JSON files only · Maximum size: 5 MiB</p>
     {error && <p role="alert" className="form-error">{error}</p>}
     {preview && <section aria-label="Import preview">
       <p>{preview.series.length} series in backup. Default market: {preview.settings.market ?? 'not chosen'}.</p>
@@ -74,5 +83,7 @@ export function BackupDialog({ doc, mode, recoveryRaw, onReplace, onReset, onClo
       {mode !== 'recovery' && <button type="button" onClick={() => download(encodeBackup(doc), 'seriestrackr-before-import.json')}>Download current backup</button>}
       <div className="actions"><button type="button" onClick={() => { selectionId.current++; setPreview(null); }}>Cancel replacement</button><button className="danger" type="button" onClick={replace}>Confirm replacement</button></div>
     </section>}
+    </section>
+    </div>
   </Dialog>;
 }

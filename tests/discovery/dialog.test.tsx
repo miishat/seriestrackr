@@ -71,7 +71,7 @@ test('changed title controls dependent selections and warns about clearing old v
   const book = screen.getByRole('checkbox', { name: 'Save Book' });
   const title = screen.getByRole('checkbox', { name: 'Save Next title' });
   expect(book).toBeDisabled();
-  expect(screen.getByText(/clears the old cover and both old release records/)).toBeVisible();
+  expect(screen.getByText(/clears both old release records.*Your selected cover is kept/)).toBeVisible();
   await userEvent.click(title); await userEvent.click(book); await userEvent.click(title);
   expect(book).toBeDisabled(); expect(book).not.toBeChecked();
 });

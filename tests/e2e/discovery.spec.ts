@@ -74,7 +74,9 @@ test('book only preserves manual audio and provenance through reload and all vie
     await page.keyboard.press('Escape'); await expect(page.getByRole('button', { name: 'Check releases', exact: true })).toBeFocused();
   }
 });
-test('changed title requires title selection and clears cover plus unselected audio', async ({ page }) => {
+test('changed title requires title selection and preserves cover while clearing unselected audio', async ({ page }) => {
+  await page.route('https://example.com/cover.jpg', route => route.fulfill({ contentType: 'image/svg+xml',
+    body: '<svg xmlns="http://www.w3.org/2000/svg" width="88" height="132"><rect width="88" height="132" fill="purple"/></svg>' }));
   await seed(page); await mock(page, sent => {
     const value = response(); const title = 'New Second';
     value.proposals.identity = { title, author: 'Example Author', position: 2, citations: [{ sourceId: 's1', quote: 'New Second by Example Author. Book 2.' }] };
@@ -91,7 +93,8 @@ test('changed title requires title selection and clears cover plus unselected au
   await page.getByRole('checkbox', { name: 'Save Next title' }).check();
   await page.getByRole('checkbox', { name: 'Save Book', exact: true }).check();
   await page.getByRole('button', { name: 'Save selected changes' }).click(); await page.reload();
-  const doc = await stored(page); expect(doc.series[0].next.title).toBe('New Second'); expect(doc.series[0].coverUrl).toBeNull();
+  const doc = await stored(page); expect(doc.series[0].next.title).toBe('New Second'); expect(doc.series[0].coverUrl).toBe('https://example.com/cover.jpg');
+  await expect(page.getByRole('img', { name: 'Cover for New Second' })).toBeVisible();
   expect(doc.series[0].releases.audio).toEqual(emptyRelease());
 });
 test('fallback country attribution agrees in every shelf view', async ({ page }) => {

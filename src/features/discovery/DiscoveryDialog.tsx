@@ -100,7 +100,7 @@ export function DiscoveryDialog({ session, series, preferredMarket, stale, onRun
         <p>Choose the changes you want to save.</p>
         <DiscoverySummary summary={result.summary} />
         {stale && <div className="note warn" role="status">The series changed. Check again before saving.</div>}
-        {changedTitle && <div className="note warn">Accepting a changed title clears the old cover and both old release records, then saves the selected new release details.</div>}
+        {changedTitle && <div className="note warn">Accepting a changed title clears both old release records, then saves the selected new release details. Your selected cover is kept.</div>}
         <Comparison label="Next title" current={series.next.title || 'Unknown'} suggested={identity?.title ?? 'Unknown · no supported change offered'}
           checked={selection.title} disabled={!titleAvailable} onChange={checked => setSelection(previous => ({ ...previous, title: checked,
             book: changedTitle && !checked ? false : previous.book, audio: changedTitle && !checked ? false : previous.audio }))}>

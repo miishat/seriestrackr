@@ -28,7 +28,7 @@ export function applyDiscovery(series: Series, response: CheckResponse, selectio
   }
   const changedTitle = selection.title && identity !== null && normalizeIdentity(identity.title) !== normalizeIdentity(series.next.title);
   let accepted = changedTitle ? {
-    ...series, coverUrl: null,
+    ...series,
     next: { ...series.next, title: identity!.title, attribution: response.proposals.identityAttribution },
     releases: { book: emptyRelease(), audio: emptyRelease() },
   } : series;

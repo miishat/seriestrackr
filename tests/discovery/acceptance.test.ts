@@ -37,14 +37,15 @@ function newTitleResponse() {
   return checked;
 }
 
-test('new-title book-only acceptance clears old audio and cover without altering completion', () => {
+test.each(['Second', ''])('new-title acceptance preserves the cover and resets old audio with current title "%s"', currentTitle => {
   const original = seriesFixture({ coverUrl: 'https://example.com/old.jpg' });
+  original.next.title = currentTitle;
   const result = applyDiscovery(original, newTitleResponse(), { title: true, book: true, audio: false });
   expect(result.ok).toBe(true);
   if (result.ok) {
     expect(result.value.next.title).toBe('New Second');
     expect(result.value.next.attribution).not.toBeNull();
-    expect(result.value.coverUrl).toBeNull();
+    expect(result.value.coverUrl).toBe(original.coverUrl);
     expect(result.value.releases.audio.provenance).toBeNull();
     expect(result.value.releases.audio.state).toBe('not-checked');
     expect(result.value.readingStatus).toBe(original.readingStatus);
