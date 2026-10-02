@@ -791,3 +791,66 @@ test('cancelled enrichment still reports the shared aggregate and stops without 
   expect(fetched.filter(url => url.hostname === 'itunes.apple.com').length).toBe(result.summary.usage.apple);
   expect(result.proposals.identity).toMatchObject({ title: 'Blood and Bone' });
 });
+
+// Apple over-limit completeness: rows past the 20th may hide a conflicting or earlier date.
+const appleSecond = (trackId: number, title: string, releaseDate: string) => ({ trackId, trackName: title, artistName: 'Example Author',
+  trackViewUrl: `https://books.apple.com/ca/book/x/id${trackId}`, releaseDate, country: 'CA', language: 'English' });
+function appleOverLimit(rows: unknown[], req = request({ formats: ['book'] })) {
+  const deps = dependencies(); deps.canSearch = false; deps.canExtract = false;
+  const seen: Array<{ overflow?: string[] }> = [];
+  deps.catalogs = async (input, markets, signal, context, phase, seed) => {
+    const result = await collectCatalogs(input, markets, signal, async fetched => {
+      const url = new URL(String(fetched));
+      return Response.json(url.hostname === 'itunes.apple.com' && url.pathname === '/search' ? { results: rows } : { results: [], docs: [] });
+    }, { context, phase, seedEvidence: seed });
+    seen.push(result as { overflow?: string[] }); return result;
+  };
+  return { deps, seen, req };
+}
+const runOver = async (h: ReturnType<typeof appleOverLimit>) => {
+  vi.useFakeTimers(); const pending = runDiscovery(h.req, h.deps, new AbortController().signal); await vi.runAllTimersAsync(); return pending;
+};
+
+test('over-20 exact Apple rows suppress the affected book fact instead of keeping an arbitrary survivor', async () => {
+  const rows = Array.from({ length: 22 }, (_, i) => appleSecond(500 + i, 'Second', i === 21 ? '2027-02-01T00:00:00Z' : '2027-03-01T00:00:00Z'));
+  const h = appleOverLimit(rows); const result = await runOver(h);
+  expect(h.seen.some(item => item.overflow?.includes('book'))).toBe(true);
+  expect(result.summary.reasons).toContain('budget');
+  expect(result.proposals.releases.book).toBeNull();
+  expect(result.summary.formats.book).toBe('unknown');
+});
+
+test('unknown-title Apple response over 20 rows reports an overflow for the requested format', async () => {
+  const rows = Array.from({ length: 22 }, (_, i) => appleSecond(600 + i, `Other ${i}`, '2027-05-01T00:00:00Z'));
+  const req = request({ formats: ['book'] }); req.target.title = '';
+  const h = appleOverLimit(rows, req); const result = await runOver(h);
+  expect(h.seen[0].overflow).toEqual(['book']);
+  expect(result.proposals.releases.book).toBeNull();
+});
+
+test('over-20 Apple rows with all exact rows inside the limit keep the dated fact without suppression', async () => {
+  const rows = [...Array.from({ length: 21 }, (_, i) => appleSecond(700 + i, `Other ${i}`, '2027-05-01T00:00:00Z')), appleSecond(800, 'Second', '2027-03-01T00:00:00Z')];
+  const h = appleOverLimit(rows); const result = await runOver(h);
+  expect(h.seen.every(item => !item.overflow?.length)).toBe(true);
+  expect(result.summary.reasons).toContain('budget');
+  expect(result.proposals.releases.book).toMatchObject({ date: '2027-03-01' });
+});
+
+test('a preferred-market conflict past the 20th Apple row survives and never overwrites the accepted date', async () => {
+  const rows = [...Array.from({ length: 20 }, (_, i) => appleSecond(900 + i, `Other ${i}`, '2027-05-01T00:00:00Z')),
+    appleSecond(950, 'Second', '2027-03-01T00:00:00Z'), appleSecond(950, 'Second', '2027-02-01T00:00:00Z')];
+  const h = appleOverLimit(rows); const result = await runOver(h);
+  expect(h.seen.every(item => !item.overflow?.length)).toBe(true);
+  expect(result.proposals.conflicts.length).toBeGreaterThan(0);
+  expect(result.proposals.releases.book).toBeNull();
+});
+
+test('enrich output never leaves a dangling citation to a removed seed source', async () => {
+  vi.useFakeTimers();
+  const { deps } = lateIdentityHarness(title => title === 'Blood and Bone' ? [appleRecord(901, 'Blood and Bone', '2026-11-03T08:00:00Z')] : []);
+  deps.search = vi.fn(async () => ({ sources: [publisherSource('bloodandbone', 'Blood and Bone')], identities: [], editions: [] }));
+  const pending = runDiscovery(lateRequest(), deps, new AbortController().signal); await vi.runAllTimersAsync(); const result = await pending;
+  const ids = new Set(result.sources.map(item => item.id));
+  for (const item of [result.proposals.identity, result.proposals.releases.book, ...result.proposals.conflicts.flatMap(c => []), ...result.proposals.related])
+    for (const citation of (item as { citations?: Array<{ sourceId: string }> } | null)?.citations ?? []) expect(ids.has(citation.sourceId)).toBe(true);
+});

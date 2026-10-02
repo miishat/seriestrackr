@@ -10,7 +10,8 @@ import { normalizeGoogleBooks } from './googleBooks';
 import { diagnosticCounts, emitDiagnostic, type DiagnosticObserver } from './diagnostics';
 import { createRetrievalContext, type RetrievalContext, type RetrievalPhase } from './retrievalContext';
 
-export type CatalogResult = { evidence: EvidenceBundle; usage: Usage; reasons: Reason[] };
+// overflow names the formats whose exact Apple record set could not be proven complete within the record limit.
+export type CatalogResult = { evidence: EvidenceBundle; usage: Usage; reasons: Reason[]; overflow?: Array<'book' | 'audio'> };
 // Shared by every collection so cached metadata promises stay valid across phases.
 const unavailable = Symbol('unavailable');
 const appleQueue = createRateQueue(3100);
@@ -102,22 +103,25 @@ const APPLE_RECORD_LIMIT = 20;
 // records (and records sharing their identifier) keep their response order and
 // come first, so a target or conflicting alternative past the 20th row survives.
 // The caller always marks any over-limit response with the budget reason.
-function boundedAppleRecords(rows: unknown[], format: 'ebook' | 'audio', relevance?: { title: string; author: string }): unknown[] {
+// `incomplete.value` is raised when the exact set cannot be proven complete: unknown
+// relevance, or more exact rows than the limit retains.
+function boundedAppleRecords(rows: unknown[], format: 'ebook' | 'audio', relevance?: { title: string; author: string }, incomplete?: { value: boolean }): unknown[] {
   if (rows.length <= APPLE_RECORD_LIMIT) return rows;
-  if (!relevance?.title.trim()) return rows.slice(0, APPLE_RECORD_LIMIT);
+  if (!relevance?.title.trim()) { if (incomplete) incomplete.value = true; return rows.slice(0, APPLE_RECORD_LIMIT); }
   const idOf = (raw: Record<string, unknown>) => format === 'ebook' ? raw.trackId : raw.collectionId ?? raw.trackId;
   const titleOf = (raw: Record<string, unknown>) => format === 'ebook' ? raw.trackName : raw.collectionName ?? raw.trackName;
   const exactIds = new Set(rows.map(object).filter(raw => typeof titleOf(raw) === 'string' && normalizeIdentity(String(titleOf(raw))) === normalizeIdentity(relevance.title) &&
     typeof raw.artistName === 'string' && normalizeIdentity(raw.artistName) === normalizeIdentity(relevance.author)).map(idOf));
   const exact = rows.filter(row => exactIds.has(idOf(object(row))));
   const rest = rows.filter(row => !exactIds.has(idOf(object(row))));
+  if (exact.length > APPLE_RECORD_LIMIT && incomplete) incomplete.value = true;
   return [...exact, ...rest].slice(0, APPLE_RECORD_LIMIT);
 }
 
 function normalizeAppleRecords(input: unknown, market: string, format: 'ebook' | 'audio', checkedAt: string, languageStates?: Map<string, LanguageMetadata>,
-  relevance?: { title: string; author: string }): EvidenceBundle {
+  relevance?: { title: string; author: string }, incomplete?: { value: boolean }): EvidenceBundle {
   const bundle = empty();
-  for (const item of boundedAppleRecords(list(object(input).results), format, relevance)) {
+  for (const item of boundedAppleRecords(list(object(input).results), format, relevance, incomplete)) {
     const raw = object(item);
     const identifier = format === 'ebook' ? raw.trackId : raw.collectionId ?? raw.trackId;
     if (!(typeof identifier === 'number' && Number.isSafeInteger(identifier) && identifier > 0)) continue;
@@ -231,6 +235,7 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
   const context = options.context ?? createRetrievalContext();
   const seeded = { sources: new Set<string>(), identities: new Set<string>() };
   const reasons: Reason[] = [];
+  const overflow = new Set<'book' | 'audio'>();
   const originalLanguages = new Map<string, LanguageMetadata>();
   const checkedAt = new Date().toISOString();
   const reason = (value: Reason) => {
@@ -305,8 +310,10 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
     if (!Array.isArray(results)) { reason('invalid-evidence'); return; }
     if (results.length > 20) reason('budget');
     const languageStates = new Map<string, LanguageMetadata>();
+    const incomplete = { value: false };
     const normalized = normalizeAppleRecords(raw, market, format === 'book' ? 'ebook' : 'audio', checkedAt, languageStates,
-      { title: target.title, author: request.target.author });
+      { title: target.title, author: request.target.author }, incomplete);
+    if (incomplete.value) overflow.add(format);
     if (results.length && !normalized.sources.length) reason('invalid-evidence');
     for (const [incomingId, actualId] of merge(evidence, normalized)) {
       if (!originalLanguages.has(actualId) && languageStates.has(incomingId)) originalLanguages.set(actualId, languageStates.get(incomingId)!);
@@ -471,6 +478,6 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
   // Usage is the shared aggregate for this check, never a freshly reset counter.
   const counts = context.snapshot();
   const usage = { ...emptyUsage(), apple: counts.apple, openlibrary: counts.openlibrary, googlebooks: counts.googlebooks, hardcover: counts.hardcover };
-  return { evidence, usage, reasons };
+  return { evidence, usage, reasons, ...(overflow.size ? { overflow: [...overflow] } : {}) };
 }
 

@@ -240,6 +240,7 @@ async function runDiscoveryInTrace(input: CheckRequest, dependencies: DiscoveryD
       const catalogs = await dependencies.catalogs(request, markets, signal, context, 'initial');
       absorb(catalogs.usage);
       catalogs.reasons.forEach(reason);
+      catalogs.overflow?.forEach(format => suppressed.add(format));
       merge(interpretPrimarySources(request, validatedBundle(catalogs.evidence, 'catalog', reason)));
     } catch (error) { failure(error); }
   }
@@ -262,6 +263,7 @@ async function runDiscoveryInTrace(input: CheckRequest, dependencies: DiscoveryD
       const catalogs = await dependencies.catalogs(request, markets, signal, context, 'enrich', seed);
       absorb(catalogs.usage);
       catalogs.reasons.forEach(reason);
+      catalogs.overflow?.forEach(format => suppressed.add(format));
       merge(interpretPrimarySources(request, withoutRetained(evidence, validatedBundle(catalogs.evidence, `enrich${enriched.size}`, reason))));
     } catch (error) { failure(error); }
   };
