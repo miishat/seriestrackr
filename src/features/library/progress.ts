@@ -22,6 +22,7 @@ export function finishNext(s: Series): Result<Series> {
       next: { positionOverride: null, title: '', orderNote: '', attribution: null },
       lastCheck: null,
       coverUrl: null,
+      coverAttribution: null,
       releases: { book: emptyRelease(), audio: emptyRelease() },
     },
   };

@@ -10,7 +10,7 @@ const blank: Input = {
   name: '', author: '', readingStatus: 'active', lastFinished: null, currentBook: null,
   next: { positionOverride: null, title: '', orderNote: '', attribution: null }, publicationRunComplete: false,
   latestPublishedPosition: null, formats: { book: true, audio: true }, marketOverride: null,
-  lastCheck: null, coverUrl: null, releases: { book: emptyRelease(), audio: emptyRelease() },
+  lastCheck: null, coverUrl: null, coverAttribution: null, releases: { book: emptyRelease(), audio: emptyRelease() },
 };
 function numberOrNull(value: string): number | null { return value.trim() ? Number(value) : null; }
 
@@ -27,6 +27,8 @@ export function SeriesForm({ series, market, onCreate, onUpdate, onCancel, onDel
   const customMarket = value.marketOverride && !['CA', 'US', 'GB', 'XX'].includes(value.marketOverride) ? value.marketOverride : null;
   const displayMarket = value.marketOverride === 'XX' ? otherMarket.trim().toUpperCase() || 'your chosen market' : value.marketOverride ?? market;
   const update = (patch: Partial<Input>) => setValue((old) => ({ ...old, ...patch }));
+  // A chosen automatic cover belongs to the title and author it was found for; a manual URL is kept.
+  const dropAutomaticCover = (): Partial<Input> => value.coverAttribution ? { coverUrl: null, coverAttribution: null } : {};
   const submit = (event: FormEvent) => {
     event.preventDefault();
     const name = value.name.trim(), author = value.author.trim();
@@ -56,7 +58,7 @@ export function SeriesForm({ series, market, onCreate, onUpdate, onCancel, onDel
     <p>Keep your place. Release dates refer to your preferred country, {displayMarket}, when supported. Each English format can use another country when no supported preferred-country date is found. Manual details stay yours to edit.</p>
     <div className="form-grid">
       <label>Series name<input required value={value.name} onChange={(event) => update({ name: event.target.value })} /></label>
-      <label>Author<input required value={value.author} onChange={(event) => update({ author: event.target.value })} /></label>
+      <label>Author<input required value={value.author} onChange={(event) => update({ author: event.target.value, ...dropAutomaticCover() })} /></label>
       <label>Reading status<select value={value.readingStatus} onChange={(event) => update({ readingStatus: event.target.value as ReadingStatus })}>
         <option value="active">Active</option><option value="paused">Paused</option><option value="dropped">Dropped</option><option value="completed">Completed</option>
       </select></label>
@@ -70,10 +72,10 @@ export function SeriesForm({ series, market, onCreate, onUpdate, onCancel, onDel
       <label>Last finished title<input value={lastTitle} onChange={(event) => setLastTitle(event.target.value)} /></label>
     </div><p className="small">Leave both blank if you have not finished a book. Finishing either format counts.</p></fieldset>
     <fieldset><legend>Next unread · Book {position}</legend>
-      <div className="form-grid"><label>Next book title<input value={value.next.title} onChange={(event) => update({ next: { ...value.next, title: event.target.value, attribution: event.target.value === value.next.title ? value.next.attribution : null } })} placeholder="Title not entered" /></label>
-        <label>Cover URL<input type="url" value={value.coverUrl ?? ''} onChange={(event) => update({ coverUrl: event.target.value || null })} placeholder="https://example.com/cover.jpg" /></label>
+      <div className="form-grid"><label>Next book title<input value={value.next.title} onChange={(event) => update({ next: { ...value.next, title: event.target.value, attribution: event.target.value === value.next.title ? value.next.attribution : null }, ...(event.target.value === value.next.title ? {} : dropAutomaticCover()) })} placeholder="Title not entered" /></label>
+        <label>Cover URL<input type="url" value={value.coverUrl ?? ''} onChange={(event) => update({ coverUrl: event.target.value || null, coverAttribution: null })} placeholder="https://example.com/cover.jpg" /></label>
       </div>
-      <CoverPicker series={effective} onSelect={(url) => update({ coverUrl: url })} />
+      <CoverPicker series={effective} market={value.marketOverride === 'XX' ? market : value.marketOverride ?? market} onSelect={(url, attribution) => update({ coverUrl: url, coverAttribution: attribution })} />
       <div className="checkbox-row"><label><input type="checkbox" checked={value.formats.book} onChange={(event) => update({ formats: { ...value.formats, book: event.target.checked } })} /> Track book</label>
         <label><input type="checkbox" checked={value.formats.audio} onChange={(event) => update({ formats: { ...value.formats, audio: event.target.checked } })} /> Track audiobook</label></div>
       <ReleaseFields format="book" value={value.releases.book} onChange={(book) => update({ releases: { ...value.releases, book: { ...book, provenance: null } } })} />

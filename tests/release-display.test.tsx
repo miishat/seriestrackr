@@ -1,7 +1,8 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, expect, test, vi } from 'vitest';
 import { SeriesCard } from '../src/features/library/SeriesCard';
-import { displaySeriesRelease } from '../src/features/library/releases';
+import { displaySeriesRelease, displayRelease, releaseLabels } from '../src/features/library/releases';
+import { emptyRelease } from '../src/features/library/model';
 import { seriesFixture } from './fixtures';
 import { response } from './discovery/fixtures';
 afterEach(cleanup);
@@ -22,4 +23,20 @@ test('compact card removes duplicate title and keeps individual action visible w
   expect(screen.queryByText(/Next book:/)).toBeNull();
   expect(screen.getByRole('button',{name:'Check releases'})).toBeDisabled();
   expect(screen.getAllByText('Second').length).toBeGreaterThan(0);
+});
+
+test('lifecycle labels are exact', () => {
+  expect(releaseLabels).toMatchObject({ catalogued: 'Edition found; release unverified', announced: 'Announced; date unknown',
+    scheduled: 'Scheduled', released: 'Available' });
+});
+test('catalogued stays catalogued and scheduled becomes available by local today', () => {
+  expect(displayRelease({ ...emptyRelease(), state: 'catalogued' }, '2026-10-01')).toBe('catalogued');
+  const scheduled = { ...emptyRelease(), state: 'scheduled' as const, date: '2026-10-01' };
+  expect(displayRelease(scheduled, '2026-09-30')).toBe('scheduled');
+  expect(displayRelease(scheduled, '2026-10-01')).toBe('released');
+});
+test('card shows the catalogued label', () => {
+  const series = seriesFixture(); series.releases.book.state = 'catalogued';
+  render(<SeriesCard series={series} today="2026-10-01" market="US" showCovers={false} onEdit={vi.fn()} onFinish={vi.fn()} onCheck={vi.fn()} />);
+  expect(screen.getByText('Edition found; release unverified')).toBeVisible();
 });

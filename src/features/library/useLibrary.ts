@@ -31,6 +31,10 @@ function identityChanged(before: Series, after: Series): boolean {
     before.next.title !== after.next.title || before.next.orderNote !== after.next.orderNote;
 }
 
+function sameAttribution(a: Series['coverAttribution'], b: Series['coverAttribution']): boolean {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
 function invalid(error: string): Result<void> {
   return { ok: false, error };
 }
@@ -107,7 +111,8 @@ export function useLibrary() {
     const updated: Series = {
       ...after,
       currentBook: after.readingStatus === 'completed' ? null : after.currentBook,
-      coverUrl: changedIdentity ? null : after.coverUrl,
+      ...(changedIdentity && after.coverAttribution !== null && sameAttribution(before.coverAttribution, after.coverAttribution)
+        ? { coverUrl: null, coverAttribution: null } : {}),
       releases: changedIdentity || changedMarket ? { book: emptyRelease(), audio: emptyRelease() } : after.releases,
     };
     const checked = validated({ ...current.current, series: current.current.series.map((item) => item.id === changed.id ? updated : item) });

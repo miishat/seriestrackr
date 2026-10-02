@@ -1,32 +1,10 @@
 import { afterEach, expect, test, vi } from 'vitest';
-import { fetchCoverImageUrls } from '../src/services/covers';
 import { decodeCover, fetchCoverCandidates, isPortrait, rankCovers, selectableCover } from '../src/services/coverImages';
 import type { CoverCandidate } from '../shared/covers';
 
 afterEach(() => vi.unstubAllGlobals());
 
-test('returns a usable provider result when another provider fails', async () => {
-  vi.stubGlobal('fetch', vi.fn((url: string) => url.includes('openlibrary')
-    ? Promise.reject(new Error('offline'))
-    : Promise.resolve({ ok: true, json: async () => ({ items: [{ volumeInfo: { imageLinks: { thumbnail: 'https://books.google.com/cover.jpg' } } }] }) })));
-  await expect(fetchCoverImageUrls('Example', 'Writer', '', 'Next Title')).resolves.toContain('https://books.google.com/cover.jpg');
-});
-
-test('distinguishes no matching cover from all providers failing', async () => {
-  vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: true, json: async () => ({ docs: [], items: [] }) })));
-  await expect(fetchCoverImageUrls('Example', 'Writer', '', 'Next Title')).resolves.toEqual([]);
-  vi.stubGlobal('fetch', vi.fn(() => Promise.reject(new Error('offline'))));
-  await expect(fetchCoverImageUrls('Example', 'Writer', '', 'Next Title')).rejects.toThrow(/failed/i);
-});
-
-test('partial provider failure with no surviving covers reports an incomplete search', async () => {
-  vi.stubGlobal('fetch', vi.fn((url: string) => url.includes('openlibrary')
-    ? Promise.reject(new Error('offline'))
-    : Promise.resolve({ ok: true, json: async () => ({ items: [] }) })));
-  await expect(fetchCoverImageUrls('Example', 'Writer', '', 'Next Title')).rejects.toThrow(/incomplete/i);
-});
-
-// Structured cover retrieval (the legacy export above stays only until the Task 9 picker migrates).
+// Structured cover retrieval.
 const candidate = (overrides: Partial<CoverCandidate> = {}): CoverCandidate => ({ id: 'c1', title: 'Next', author: 'Writer', role: 'next', format: 'ebook',
   provider: 'openlibrary', source: { id: 's', title: 'Next', url: 'https://openlibrary.org/works/OL1W' }, imageUrl: 'https://covers.openlibrary.org/b/id/1-L.jpg',
   workKey: 'next|writer', editionKey: null, width: null, height: null, ...overrides });

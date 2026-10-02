@@ -91,7 +91,7 @@ test('announced proposals retain unknown dates and unspecified source country', 
   const result = response(); const proposal = result.proposals.releases.book!;
   proposal.state = 'announced'; proposal.date = null; proposal.provenance.sourceMarket = null; proposal.provenance.datePrecision = 'none';
   show(session('review', result));
-  expect(screen.getByText('Announced · Date Unknown')).toBeVisible();
+  expect(screen.getByText('Announced; date unknown')).toBeVisible();
   expect(screen.getByText(/source country unspecified/)).toBeVisible();
   await userEvent.click(screen.getByRole('checkbox', { name: 'Save Book' }));
   expect(screen.getByRole('button', { name: 'Save selected changes' })).toBeEnabled();

@@ -205,3 +205,17 @@ test('version 1 recovery download retains the exact original bytes', async () =>
   expect(await readBlob(blob)).toBe(raw);
   expect(localStorage.getItem(key)).toBe(raw);
 });
+
+test('v1 and v2 backups import as version 3 and exports omit unaccepted discovery data', () => {
+  for (const version of [1, 2]) {
+    const old = { ...documentWithSeries(), version, series: [{ ...seriesFixture({ coverUrl: 'https://example.com/m.jpg' }) }] };
+    delete (old.series[0] as Partial<typeof old.series[0]>).coverAttribution;
+    const decoded = decodeBackup(JSON.stringify(old));
+    expect(decoded.ok && decoded.value.version).toBe(3);
+    expect(decoded.ok && decoded.value.series[0]).toMatchObject({ coverUrl: 'https://example.com/m.jpg', coverAttribution: null });
+  }
+  const polluted = documentWithSeries();
+  Object.assign(polluted.series[0], { coverCandidates: [{ id: 'c1' }], related: [{ title: 'Daughters' }], diagnostics: { trace: 1 } });
+  const text = encodeBackup(polluted);
+  expect(text).not.toMatch(/coverCandidates|related|diagnostics|Daughters/);
+});

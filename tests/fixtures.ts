@@ -15,6 +15,7 @@ export function seriesFixture(overrides: Partial<Series> = {}): Series {
     formats: { book: true, audio: true },
     marketOverride: null,
     coverUrl: null,
+    coverAttribution: null,
     releases: { book: emptyRelease(), audio: emptyRelease() },
     lastCheck: null,
     ...overrides,

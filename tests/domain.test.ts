@@ -141,3 +141,36 @@ test('completed status requires finished progress through the known final publis
   expect(parsed({ ...valid(), series: [seriesFixture({ ...completed, latestPublishedPosition: 1 })] })).toBe(true);
   expect(parsed({ ...valid(), series: [seriesFixture({ ...completed, lastFinished: { position: 2, title: 'Second' }, latestPublishedPosition: 2 })] })).toBe(true);
 });
+
+const attribution = { title: 'Second', author: 'Example Author', role: 'next' as const,
+  source: { id: 's', title: 'Second', url: 'https://openlibrary.org/works/OL1W' }, editionKey: null };
+
+test('version 3 requires attribution to be paired with a cover URL', () => {
+  const ok = parseDocument({ ...emptyDocument(), series: [seriesFixture({ coverUrl: 'https://example.com/a.jpg', coverAttribution: attribution })] });
+  expect(ok.ok).toBe(true);
+  expect(parseDocument({ ...emptyDocument(), series: [seriesFixture({ coverAttribution: attribution })] }).ok).toBe(false);
+  const missing = seriesFixture(); delete (missing as Partial<typeof missing>).coverAttribution;
+  expect(parseDocument({ ...emptyDocument(), series: [missing] }).ok).toBe(false);
+  expect(parseDocument({ ...emptyDocument(), series: [seriesFixture({ coverUrl: 'https://example.com/a.jpg', coverAttribution: { ...attribution, role: 'x' as 'next' } })] }).ok).toBe(false);
+});
+
+test.each([1, 2])('version %i input is accepted, emitted as 3, and keeps invalid-input checks', version => {
+  const old = { ...emptyDocument(), version, series: [seriesFixture()] };
+  delete (old.series[0] as Partial<typeof old.series[0]>).coverAttribution;
+  const parsed = parseDocument(old);
+  expect(parsed.ok && parsed.value.version).toBe(3);
+  expect(parseDocument({ ...old, series: [{ ...old.series[0], author: '' }] }).ok).toBe(false);
+  expect(parseDocument({ ...emptyDocument(), version: 4 }).ok).toBe(false);
+});
+
+test('catalogued releases must be undated', () => {
+  const dated = { ...emptyRelease(), state: 'catalogued' as const, date: '2026-10-01' };
+  expect(parseDocument({ ...emptyDocument(), series: [seriesFixture({ releases: { book: dated, audio: emptyRelease() } })] }).ok).toBe(false);
+  const undated = { ...emptyRelease(), state: 'catalogued' as const };
+  expect(parseDocument({ ...emptyDocument(), series: [seriesFixture({ releases: { book: undated, audio: emptyRelease() } })] }).ok).toBe(true);
+});
+
+test('finishNext clears cover URL and attribution together', () => {
+  const result = finishNext(seriesFixture({ coverUrl: 'https://example.com/a.jpg', coverAttribution: attribution }));
+  expect(result.ok && result.value).toMatchObject({ coverUrl: null, coverAttribution: null });
+});

@@ -85,7 +85,7 @@ test('D colors are applied and switching themes preserves series records', async
   const accepted = response();
   const proposal = accepted.proposals.releases.book!;
   series[0].next.attribution = { checkedAt: accepted.summary.checkedAt, sources: accepted.sources };
-  series[0].releases.book = { ...series[0].releases.book, state: proposal.state as 'scheduled', date: proposal.date,
+  series[0].releases.book = { ...series[0].releases.book, state: proposal.state, date: proposal.date,
     origin: 'discovery', lastCheckedAt: accepted.summary.checkedAt, provenance: proposal.provenance,
     source: { title: proposal.provenance.sources[0].title, url: proposal.provenance.sources[0].url } };
   series[0].lastCheck = accepted.summary;

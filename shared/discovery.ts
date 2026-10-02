@@ -50,7 +50,7 @@ export interface CheckResponse { requestId: string; seriesId: string;
 export interface Capabilities { search: boolean; ai: boolean; googleBooks: boolean; hardcover: boolean; model: string;
   limits: { search: 3; ai: 1; googleBooks: 2; hardcover: 1; outputTokens: 2048; inputBytes: 20000 };
   pricingAsOf: string; estimatedMaxAiUsd: number }
-export interface Selection { title: boolean; book: boolean; audio: boolean }
+export interface Selection { title: boolean; book: boolean; audio: boolean; coverId?: string | null }
 export interface DiscoverySnapshot { seriesId: string; requestId: string;
   epoch: number; revision: number }
 export const emptyUsage = (): Usage => ({ apple: 0, openlibrary: 0, googlebooks: 0, tavily: 0,

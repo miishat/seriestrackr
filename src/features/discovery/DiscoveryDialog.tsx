@@ -4,6 +4,7 @@ import { normalizeIdentity } from '../../../shared/discoveryPolicy';
 import { Dialog } from '../../components/Dialog';
 import type { Release, Result, Series } from '../library/model';
 import { nextPosition } from '../library/progress';
+import { releaseLabels } from '../library/releases';
 import { DiscoverySummary } from './DiscoverySummary';
 import type { DiscoverySession } from './discoverySession';
 
@@ -21,7 +22,7 @@ function Sources({ sources, citations = [] }: { sources: SourceLink[]; citations
 }
 function currentRelease(release: Release): string {
   if (release.date) return release.date;
-  return { 'not-checked': 'Not checked', 'not-found': 'Date Unknown', announced: 'Announced · Date Unknown',
+  return { 'not-checked': 'Not checked', 'not-found': 'Date Unknown', catalogued: 'Edition found; release unverified', announced: 'Announced; date unknown',
     scheduled: 'Date Unknown', released: 'Available' }[release.state];
 }
 function ProposalDetails({ proposal, preferredMarket }: { proposal: ReleaseProposal; preferredMarket: string }) {
@@ -111,7 +112,7 @@ export function DiscoveryDialog({ session, series, preferredMarket, stale, onRun
           const proposal = result.proposals.releases[format];
           const conflicts = result.proposals.conflicts.filter(conflict => conflict.format === format);
           return <Comparison key={format} label={formatLabels[format]} current={currentRelease(series.releases[format])}
-            suggested={conflicts.length ? 'Conflicting details · no supported change offered' : proposal?.date ?? (proposal ? 'Announced · Date Unknown' : 'Date Unknown · no supported change offered')}
+            suggested={conflicts.length ? 'Conflicting details · no supported change offered' : proposal?.date ?? (proposal ? releaseLabels[proposal.state] : 'Date Unknown · no supported change offered')}
             checked={selection[format] && canSelectFormat(format)} disabled={!canSelectFormat(format)} onChange={checked => setSelection(previous => ({ ...previous, [format]: checked }))}>
             {conflicts.map((conflict, index) => <p className="note warn" key={index}>{conflict.reason}</p>)}
             {proposal && !conflicts.length && <ProposalDetails proposal={proposal} preferredMarket={preferredMarket} />}

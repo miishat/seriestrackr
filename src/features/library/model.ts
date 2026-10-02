@@ -1,7 +1,7 @@
-import type { Attribution, CheckSummary, Provenance } from '../../../shared/discovery';
+import type { Attribution, CheckSummary, Provenance, SourceLink } from '../../../shared/discovery';
 
 export type ReadingStatus = 'active' | 'paused' | 'dropped' | 'completed';
-export type ReleaseState = 'not-checked' | 'not-found' | 'announced' | 'scheduled' | 'released';
+export type ReleaseState = 'not-checked' | 'not-found' | 'catalogued' | 'announced' | 'scheduled' | 'released';
 export type Format = 'book' | 'audio';
 export interface BookRef { position: number; title: string }
 export interface Release {
@@ -11,6 +11,9 @@ export interface Release {
   origin: 'manual' | 'discovery';
   lastCheckedAt: string | null;
   provenance: Provenance | null;
+}
+export interface CoverAttribution {
+  title: string; author: string; role: 'next' | 'previous'; source: SourceLink; editionKey: string | null;
 }
 export interface Series {
   id: string;
@@ -25,11 +28,12 @@ export interface Series {
   formats: Record<Format, boolean>;
   marketOverride: string | null;
   coverUrl: string | null;
+  coverAttribution: CoverAttribution | null;
   releases: Record<Format, Release>;
   lastCheck: CheckSummary | null;
 }
 export interface LibraryDocument {
-  version: 2;
+  version: 3;
   settings: {
     market: string | null;
     language: 'en';
@@ -46,5 +50,5 @@ export function emptyRelease(): Release {
 }
 
 export function emptyDocument(): LibraryDocument {
-  return { version: 2, settings: { market: null, language: 'en', theme: 'light', view: 'grid', showCovers: true }, series: [] };
+  return { version: 3, settings: { market: null, language: 'en', theme: 'light', view: 'grid', showCovers: true }, series: [] };
 }

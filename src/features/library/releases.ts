@@ -1,5 +1,11 @@
 import type { Format, Release, ReleaseState, Series } from './model';
 
+export const releaseLabels: Record<ReleaseState, string> = {
+  'not-checked': 'Not checked', 'not-found': 'Not Found',
+  catalogued: 'Edition found; release unverified', announced: 'Announced; date unknown',
+  scheduled: 'Scheduled', released: 'Available',
+};
+
 export function isCalendarDate(value: string): boolean {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
   if (!match) return false;

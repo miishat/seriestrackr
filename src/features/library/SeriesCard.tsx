@@ -1,13 +1,10 @@
 import { useState } from 'react';
-import type { Format, Release, ReleaseState, Series } from './model';
+import type { Format, Release, Series } from './model';
 import { isCaughtUp, nextPosition } from './progress';
-import { displayRelease, displaySeriesRelease } from './releases';
+import { displayRelease, displaySeriesRelease, releaseLabels } from './releases';
 import { DiscoverySummary } from '../discovery/DiscoverySummary';
 
-export const releaseLabels: Record<ReleaseState, string> = {
-  'not-checked': 'Not checked', 'not-found': 'Not Found', announced: 'Announced',
-  scheduled: 'Scheduled', released: 'Available',
-};
+export { releaseLabels };
 function Cover({ url, title }: { url: string | null; title: string }) {
   const [broken, setBroken] = useState(false);
   if (!url || broken) return <div className="cover-placeholder">No cover available</div>;
@@ -17,7 +14,7 @@ export function ReleaseSummary({ format, release, today, compact = false, bookTi
   const state = series ? displaySeriesRelease(series, format, today) : displayRelease(release, today);
   return <div className="release-summary"><span className="small label-upper">{format === 'book' ? 'Book' : 'Audiobook'}</span>
     <span className={`badge ${state}`}>{releaseLabels[state]}</span>
-    <span className="sub">{release.date ? release.date : state === 'not-checked' ? 'No check recorded' : state === 'announced' ? 'Date Unknown' : state === 'not-found' ? 'No supported result' : 'Manual entry'}</span>
+    {(release.date || (state !== 'announced' && state !== 'catalogued')) && <span className="sub">{release.date ? release.date : state === 'not-checked' ? 'No check recorded' : state === 'not-found' ? 'No supported result' : 'Manual entry'}</span>}
     {compact && bookTitle?.trim() && !release.source && <span className="sub">{bookTitle}</span>}
     {release.source && /^https?:\/\//i.test(release.source.url) && <a href={release.source.url} title={release.source.title} target="_blank" rel="noreferrer">{compact && bookTitle?.trim() ? bookTitle : release.source.title}</a>}
     {!compact && release.provenance && <div className="small">English {release.provenance.editionFormat === 'audio' ? 'audiobook' : release.provenance.editionFormat} · {release.provenance.sourceMarket ? `Source country: ${release.provenance.sourceMarket}` : 'Source country unspecified'}
