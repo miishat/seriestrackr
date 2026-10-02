@@ -14,11 +14,12 @@ const object = (value: unknown): Record<string, unknown> => value !== null && ty
 const text = (value: unknown, max = 300): string | null => typeof value === 'string' && value.trim() && value.length <= max ? value.trim() : null;
 const id = (value: unknown): string | null => typeof value === 'number' && Number.isSafeInteger(value) && value > 0 ? String(value) : null;
 const fail = (reason: Reason = 'invalid-evidence'): never => { throw new ProviderError('hardcover', reason); };
-const list = (value: unknown, max: number): unknown[] => {
+const list = (value: unknown, max: number, onOverflow?: () => void): unknown[] => {
   if (!Array.isArray(value)) return fail();
-  if (value.length > max) return fail('budget');
+  if (value.length > max) { onOverflow?.(); return fail('budget'); }
   return value;
 };
+const isPlaceholderTitle = (title: string): boolean => /^(?:untitled|tba|tbd|to be announced)(?:\s*\([^)]*\))?$/i.test(title.trim());
 
 export function hardcoverAliases(series: string): string[] {
   const original = series.trim();
@@ -26,9 +27,9 @@ export function hardcoverAliases(series: string): string[] {
   return [...new Set([original, original.replace(/^the\s+/i, ''), base, `The ${base}`, `${base} Series`, `${base} Mysteries`, `${base} Trilogy`, `Tales of ${base}`].filter(Boolean))].slice(0, 8);
 }
 
-const query = `query DiscoveryHardcover($names: [String!]!, $position: float8!) {
-  series(where: {name: {_in: $names}}, limit: 6) {
-    name book_series(where: {position: {_eq: $position}}, limit: 21) {
+const query = `query DiscoveryHardcover($names: [String!]!, $author: String!, $position: float8!) {
+  series(where: {name: {_in: $names}, author: {name: {_eq: $author}}}, order_by: {id: asc}, limit: 6) {
+    id name author { name } book_series(where: {position: {_eq: $position}}, limit: 21) {
       id position featured compilation details
       book { id slug title compilation contributions(limit: 31) { author { name } contributor_role { name } }
         editions(where: {language: {_or: [{code2: {_eq: "en"}}, {code3: {_eq: "eng"}}]}}, limit: 21) { id title edition_format reading_format { format } isbn_10 isbn_13 language { code2 code3 } }
@@ -46,8 +47,11 @@ function editionFormat(raw: unknown): EditionFormat | null {
 function resolvedEditionFormat(raw: Record<string, unknown>): EditionFormat | null {
   const literalFormat = editionFormat(raw.edition_format); const readingValue = text(object(raw.reading_format).format)?.toLowerCase();
   const readingFormat = readingValue === 'read' ? 'print' : editionFormat(readingValue);
-  return readingValue === 'read' && literalFormat !== 'print' ? null
-    : literalFormat && readingFormat && literalFormat !== readingFormat ? null : literalFormat ?? readingFormat;
+  if (readingValue === 'read') {
+    if (literalFormat === 'print') return 'print';
+    return raw.edition_format === null || raw.edition_format === undefined || raw.edition_format === '' ? 'print' : null;
+  }
+  return literalFormat && readingFormat && literalFormat !== readingFormat ? null : literalFormat ?? readingFormat;
 }
 function language(raw: unknown): string | null {
   const value = object(raw);
@@ -67,13 +71,16 @@ function editionKey(raw: Record<string, unknown>, identifier: string): string {
 export function normalizeHardcover(input: unknown, request: CheckRequest, checkedAt: string, onDiagnostic?: DiagnosticObserver): EvidenceBundle {
   const envelope = object(input);
   if (Object.hasOwn(envelope, 'errors')) return fail();
-  const seriesRows = list(object(envelope.data).series, 5); const evidence = empty();
-  const rows = seriesRows.flatMap(item => { const series = object(item); return list(series.book_series, 20).map(row => ({ ...object(row), series: { name: series.name } })); });
-  const aliases = new Set(hardcoverAliases(request.target.series).map(normalizeIdentity));
-  const reject = (rule: DiagnosticRule, recordId: string | null) => emitDiagnostic(onDiagnostic, {
-    stage: 'catalog', category: 'target-mismatch', ...diagnosticCounts(evidence), provider: 'hardcover', rule,
-    ...(recordId === null ? {} : { recordRef: diagnosticRecordRef(`hardcover:${recordId}`) }),
+  const evidence = empty();
+  const reject = (rule: DiagnosticRule, recordId: string | null, kind: 'book' | 'edition' = 'book') => emitDiagnostic(onDiagnostic, {
+    stage: 'catalog', category: rule === 'request-bound' ? 'bounds' : 'target-mismatch', ...diagnosticCounts(evidence), provider: 'hardcover', rule,
+    ...(recordId === null ? {} : { recordRef: diagnosticRecordRef(`hardcover:${kind}:${recordId}`) }),
   });
+  const overflow = () => reject('request-bound', null);
+  // Six series rows is the sentinel: a seventh plausible match is unknown, so identity stays unresolved.
+  const seriesRows = list(object(envelope.data).series, 5, overflow);
+  const rows = seriesRows.flatMap(item => { const series = object(item); return list(series.book_series, 20, overflow).map(row => ({ ...object(row), series: { name: series.name, author: object(series.author).name } })); });
+  const aliases = new Set(hardcoverAliases(request.target.series).map(normalizeIdentity));
   if (!rows.length) reject('no-match', null);
   const seen = new Set<string>();
   for (const inputRow of rows) {
@@ -81,15 +88,18 @@ export function normalizeHardcover(input: unknown, request: CheckRequest, checke
     const series = text(object(row.series).name); const title = text(book.title); const slug = text(book.slug);
     if (!bookId || !series || !title || !slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) { reject('unsupported-title', bookId); continue; }
     if (!aliases.has(normalizeIdentity(series))) { reject('series-mismatch', bookId); continue; }
+    const seriesAuthor = text(object(row.series).author);
+    if (seriesAuthor !== null && normalizeIdentity(seriesAuthor) !== normalizeIdentity(request.target.author)) { reject('author-mismatch', bookId); continue; }
+    if (isPlaceholderTitle(title)) { reject('placeholder-title', bookId); continue; }
     if (book.compilation !== false || row.compilation !== false) { reject('compilation', bookId); continue; }
     if (row.position !== request.target.position ||
       (row.details !== null && row.details !== undefined && row.details !== '' && text(row.details) !== String(request.target.position))) { reject('position-mismatch', bookId); continue; }
-    if (row.featured !== true) { reject('ambiguous-work', bookId); continue; }
+    // `featured` is diagnostic metadata only: a series need not be the book's featured series.
     const contributions = list(book.contributions, 30);
     const authors = contributions.filter(item => text(object(object(item).contributor_role).name)?.toLowerCase() === 'author')
       .map(item => text(object(object(item).author).name));
     if (!authors.includes(request.target.author) && !authors.some(author => author && normalizeIdentity(author) === normalizeIdentity(request.target.author))) { reject('author-mismatch', bookId); continue; }
-    const editions = list(book.editions, 20);
+    const editions = list(book.editions, 20, overflow);
     const qualifyingEdition = editions.map(object).find(raw => id(raw.id) && text(raw.title) &&
       normalizeIdentity(String(raw.title)) === normalizeIdentity(title) && language(raw.language) === 'en' && resolvedEditionFormat(raw));
     if (!qualifyingEdition) {
@@ -110,8 +120,8 @@ export function normalizeHardcover(input: unknown, request: CheckRequest, checke
       const raw = object(inputEdition); const editionId = id(raw.id);
       const format = resolvedEditionFormat(raw);
       const editionTitle = text(raw.title);
-      if (!editionId || !editionTitle || normalizeIdentity(editionTitle) !== normalizeIdentity(title)) { reject('unsupported-title', editionId); continue; }
-      if (!format) { reject('edition-format', editionId); continue; }
+      if (!editionId || !editionTitle || normalizeIdentity(editionTitle) !== normalizeIdentity(title)) { reject('unsupported-title', editionId, 'edition'); continue; }
+      if (!format) { reject('edition-format', editionId, 'edition'); continue; }
       const edition = { id: `hardcover:edition:${editionId}`, title, author: request.target.author, position: request.target.position,
         editionKey: editionKey(raw, editionId), format, language: language(raw.language), market: null, date: null, precision: 'none' as const };
       const facts = `Title: ${title}. Author: ${edition.author}. Position: ${edition.position}. Raw format: ${text(raw.edition_format) ?? 'unknown'}. Reading format: ${text(object(raw.reading_format).format) ?? 'unknown'}. Format: ${format}. Language: ${edition.language ?? 'unknown'}. Market: unknown. Date: ${edition.date ?? 'unknown'}. Precision: ${edition.precision}. Edition: ${edition.editionKey}.`;
@@ -136,7 +146,7 @@ export async function collectHardcover(request: CheckRequest, token: string | nu
       usage.hardcover++;
       return fetchProviderJson('hardcover', '/v1/graphql', { method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: /^Bearer\s/i.test(key) ? key : `Bearer ${key}` },
-        body: JSON.stringify({ query, variables: { names: hardcoverAliases(request.target.series), position: request.target.position } }) }, signal, fetcher, onDiagnostic);
+        body: JSON.stringify({ query, variables: { names: hardcoverAliases(request.target.series), position: request.target.position, author: request.target.author } }) }, signal, fetcher, onDiagnostic);
     }, signal);
     return { evidence: normalizeHardcover(raw, request, new Date().toISOString(), onDiagnostic), usage, reasons: [] };
   } catch (error) {

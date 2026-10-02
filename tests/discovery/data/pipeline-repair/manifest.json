@@ -26,6 +26,23 @@
       "fields": "synthetic",
       "expectedRejectedRule": null,
       "purpose": "Parser shape sample only; Macmillan HTTP403 bodies are not successful publisher content"
+    },
+    {
+      "fixture": "malazan-hardcover.json",
+      "sourceArtifact": "novels-of-the-malazan-empire/release-1.json",
+      "retrievalTimestamp": null,
+      "timestampMeaning": "Capture timestamp not recorded in the artifact",
+      "fields": "captured",
+      "omitted": "None; the captured response is already compact and holds no descriptions, prices, preview URLs or credentials",
+      "expectedRejectedRule": "unsupported-title"
+    },
+    {
+      "fixture": "placeholder-hardcover.json",
+      "sourceArtifact": null,
+      "retrievalTimestamp": null,
+      "fields": "synthetic",
+      "purpose": "Placeholder Untitled title shape",
+      "expectedRejectedRule": "placeholder-title"
     }
   ]
 }

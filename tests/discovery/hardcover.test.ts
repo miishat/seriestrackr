@@ -1,4 +1,5 @@
 // @vitest-environment node
+import { readFileSync } from 'node:fs';
 import { afterEach, expect, test, vi } from 'vitest';
 import { collectHardcover, normalizeHardcover, hardcoverAliases } from '../../server/discovery/hardcover';
 import { parseExtraction } from '../../shared/discoveryValidation';
@@ -19,7 +20,7 @@ test('exact series, author role and position establish identity and explicit nul
   expect(result.editions[0]).toMatchObject({ language: 'en', format: 'ebook', market: null, date: null, precision: 'none' });
   expect(result.sources[1].text).toContain('Raw format: Ebook');
 });
-test.each([{ position: 2.5 }, { featured: false }, { compilation: true }, { details: 'Companion' },
+test.each([{ position: 2.5 }, { compilation: true }, { details: 'Companion' },
   { series: { name: 'Unrelated Example' } }, { book: { ...row().book, contributions: [{ author: { name: 'Example Author' }, contributor_role: { name: 'Narrator' } }] } },
   { book: { ...row().book, contributions: [{ author: { name: 'Other Author' }, contributor_role: { name: 'Author' } }] } }])('rejects unrelated and non-main rows %j', changes => {
   expect(normalizeHardcover(envelope([row(changes)]), req, checkedAt).identities).toEqual([]);
@@ -83,8 +84,8 @@ test('one fixed GraphQL call has explicit guard fields and counts malformed atte
   expect(fetcher).toHaveBeenCalledOnce(); const [url, init] = fetcher.mock.calls[0];
   expect(String(url)).toBe('https://api.hardcover.app/v1/graphql');
   expect(init).toMatchObject({ method: 'POST', redirect: 'error', headers: { Authorization: 'Bearer fake-secret' } });
-  const body = JSON.parse(String(init?.body)); expect(body.variables).toEqual({ names: hardcoverAliases('Example'), position: 2 });
-  expect(body.query).toContain('contributor_role { name }'); expect(body.query).toContain('language { code2 code3 }');
+  const body = JSON.parse(String(init?.body)); expect(body.variables).toEqual({ names: hardcoverAliases('Example'), position: 2, author: 'Example Author' });
+  expect(body.query).toContain('contributor_role { name }'); expect(body.query).toContain('author: {name: {_eq: $author}}'); expect(body.query).toContain('language { code2 code3 }');
 });
 
 
@@ -130,7 +131,7 @@ test('duplicate edition IDs with contradictory metadata fail closed', () => {
   expect(() => normalizeHardcover(envelope([row({ book: { ...book, editions: [book.editions[0], { ...book.editions[0], language: { code2: 'fr', code3: 'fra' } }] } })]), req, checkedAt)).toThrow('invalid-evidence');
 });
 
-test.each([null, 'Unknown', 'Read', 'ebook', 'Audiobook'])('reading format Read cannot establish print from raw format %s', edition_format => {
+test.each(['Unknown', 'Read', 'ebook', 'Audiobook'])('reading format Read cannot establish print from raw format %s', edition_format => {
   const book = row().book;
   const edition = { ...book.editions[0], edition_format, reading_format: { format: 'Read' } };
   expect(normalizeHardcover(envelope([row({ book: { ...book, editions: [edition] } })]), req, checkedAt).editions).toEqual([]);
@@ -168,3 +169,75 @@ test('two qualifying English works at the same position remain ambiguous', () =>
 });
 
 
+
+const fixture = (name: string) => JSON.parse(readFileSync(new URL(`./data/pipeline-repair/${name}`, import.meta.url), 'utf8'));
+const rules = (value: unknown, target = req) => { const seen: string[] = []; try { normalizeHardcover(value, target, checkedAt, event => { if (event.rule) seen.push(event.rule); }); } catch { /* bounded */ } return seen; };
+test('Blood and Bone is position 5 when series is not featured on the book', () => {
+  const raw = fixture('malazan-hardcover.json');
+  const target = request({ target: { series: 'Novels of the Malazan Empire', author: 'Ian C. Esslemont', position: 5, title: '', orderNote: '' } });
+  const evidence = normalizeHardcover(raw, target, checkedAt);
+  expect(evidence.identities.map(i => i.title)).toEqual(['Blood and Bone']);
+  expect(evidence.editions.every(e => e.date === null)).toBe(true);
+  expect(evidence.editions.map(e => e.format)).toContain('print');
+});
+test('featured flag is diagnostic only', () => {
+  expect(normalizeHardcover(envelope([row({ featured: false })]), req, checkedAt).identities).toHaveLength(1);
+  expect(normalizeHardcover(envelope([row({ featured: null })]), req, checkedAt).identities).toHaveLength(1);
+});
+test.each([
+  ['wrong author role', { book: { ...row().book, contributions: [{ author: { name: 'Example Author' }, contributor_role: { name: 'Illustrator' } }] } }, 'author-mismatch'],
+  ['wrong position', { position: 3 }, 'position-mismatch'],
+  ['compilation', { compilation: true }, 'compilation'],
+  ['fractional companion', { position: 2.5, details: '2.5' }, 'position-mismatch'],
+  ['placeholder', { book: { ...row().book, title: 'Untitled', editions: [{ ...row().book.editions[0], title: 'Untitled' }] } }, 'placeholder-title'],
+] as const)('mutation %s blocks identity independently', (_name, changes, rule) => {
+  const mutated = envelope([row(changes)]);
+  expect(normalizeHardcover(mutated, req, checkedAt).identities).toEqual([]);
+  expect(rules(mutated)).toContain(rule);
+});
+test('placeholder fixture is rejected before emission', () => {
+  const raw = fixture('placeholder-hardcover.json');
+  expect(normalizeHardcover(raw, req, checkedAt).identities).toEqual([]);
+  expect(rules(raw)).toContain('placeholder-title');
+});
+test('duplicate different title at same position stays ambiguous', () => {
+  const other = row({ book: { ...row().book, id: 21, slug: 'other', title: 'Other', editions: [{ ...row().book.editions[0], id: 41, title: 'Other' }] } });
+  expect(selectProposals(req, normalizeHardcover(envelope([row(), other]), req, checkedAt), checkedAt).identity).toBeNull();
+});
+test.each([['Read', null], ['Read', undefined], ['Read', '']])('Read with absent raw format (%s, %s) is print', (read, raw) => {
+  const edition = { ...row().book.editions[0], edition_format: raw, reading_format: { format: read } };
+  expect(normalizeHardcover(envelope([row({ book: { ...row().book, editions: [edition] } })]), req, checkedAt).editions[0]?.format).toBe('print');
+});
+test('conflicting Ebook raw format with Read stays rejected', () => {
+  const edition = { ...row().book.editions[0], edition_format: 'Ebook', reading_format: { format: 'Read' } };
+  expect(normalizeHardcover(envelope([row({ book: { ...row().book, editions: [edition] } })]), req, checkedAt).editions).toEqual([]);
+});
+test('series author is checked again after the provider constraint', () => {
+  const wrong = envelope(); wrong.data.series[0] = { ...wrong.data.series[0], author: { name: 'Other Author' } } as never;
+  expect(normalizeHardcover(wrong, req, checkedAt).identities).toEqual([]);
+  expect(rules(wrong)).toContain('author-mismatch');
+  const right = envelope(); right.data.series[0] = { ...right.data.series[0], author: { name: 'Example Author' } } as never;
+  expect(normalizeHardcover(right, req, checkedAt).identities).toHaveLength(1);
+});
+test('six series rows stay unresolved even when only one survives local filtering', () => {
+  const series = Array.from({ length: 6 }, (_, index) => ({ name: index ? `Unrelated ${index}` : 'Example', author: { name: index ? `Other ${index}` : 'Example Author' }, book_series: index ? [] : [row()] }));
+  const raw = { data: { series } };
+  expect(() => normalizeHardcover(raw, req, checkedAt)).toThrow('budget');
+  expect(rules(raw)).toContain('request-bound');
+  const five = { data: { series: series.slice(0, 5) } };
+  expect(normalizeHardcover(five, req, checkedAt).identities).toHaveLength(1);
+});
+test('six plausible requested-author rows are unresolved', () => {
+  const series = Array.from({ length: 6 }, () => ({ name: 'Example', author: { name: 'Example Author' }, book_series: [row()] }));
+  expect(() => normalizeHardcover({ data: { series } }, req, checkedAt)).toThrow('budget');
+});
+test('nested edition overflow is visible rather than silently truncated', () => {
+  const book = { ...row().book, editions: Array.from({ length: 21 }, () => row().book.editions[0]) };
+  expect(rules(envelope([row({ book })]))).toContain('request-bound');
+});
+test('hashed diagnostic ids carry book and edition prefixes', () => {
+  const seen: (string | undefined)[] = [];
+  normalizeHardcover(envelope([row({ position: 9 })]), req, checkedAt, event => seen.push(event.recordRef));
+  const { createHash } = require('node:crypto') as typeof import('node:crypto');
+  expect(seen).toEqual([createHash('sha256').update('hardcover:book:20').digest('hex').slice(0, 32)]);
+});

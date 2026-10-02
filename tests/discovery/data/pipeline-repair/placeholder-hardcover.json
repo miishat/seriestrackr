@@ -1,0 +1,53 @@
+{
+  "data": {
+    "series": [
+      {
+        "name": "Example",
+        "author": {
+          "name": "Example Author"
+        },
+        "book_series": [
+          {
+            "id": 1,
+            "position": 2,
+            "featured": true,
+            "compilation": false,
+            "details": "2",
+            "book": {
+              "id": 20,
+              "slug": "untitled",
+              "title": "Untitled (Book 2)",
+              "compilation": false,
+              "contributions": [
+                {
+                  "author": {
+                    "name": "Example Author"
+                  },
+                  "contributor_role": {
+                    "name": "Author"
+                  }
+                }
+              ],
+              "editions": [
+                {
+                  "id": 40,
+                  "title": "Untitled (Book 2)",
+                  "edition_format": "Hardcover",
+                  "reading_format": {
+                    "format": "Read"
+                  },
+                  "isbn_10": null,
+                  "isbn_13": null,
+                  "language": {
+                    "code2": "en",
+                    "code3": "eng"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

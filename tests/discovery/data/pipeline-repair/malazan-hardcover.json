@@ -1,0 +1,168 @@
+{
+  "data": {
+    "series": [
+      {
+        "name": "Novels of the Malazan Empire",
+        "book_series": [
+          {
+            "id": 516458,
+            "position": 5,
+            "featured": false,
+            "compilation": false,
+            "details": "5",
+            "book": {
+              "id": 458681,
+              "slug": "blood-and-bone",
+              "title": "Blood and Bone",
+              "compilation": false,
+              "contributions": [
+                {
+                  "author": {
+                    "name": "Ian C. Esslemont"
+                  },
+                  "contributor_role": {
+                    "name": "Author"
+                  }
+                }
+              ],
+              "editions": [
+                {
+                  "id": 31954488,
+                  "title": "Blood and Bone: A Novel of the Malazan Empire",
+                  "edition_format": "Hardcover",
+                  "reading_format": {
+                    "format": "Read"
+                  },
+                  "isbn_10": null,
+                  "isbn_13": null,
+                  "language": {
+                    "code2": "en",
+                    "code3": "eng"
+                  }
+                },
+                {
+                  "id": 32246520,
+                  "title": "Blood and Bone",
+                  "edition_format": null,
+                  "reading_format": {
+                    "format": "Read"
+                  },
+                  "isbn_10": "0765329972",
+                  "isbn_13": "9780765329974",
+                  "language": {
+                    "code2": "en",
+                    "code3": "eng"
+                  }
+                },
+                {
+                  "id": 30809809,
+                  "title": "Blood and Bone",
+                  "edition_format": null,
+                  "reading_format": {
+                    "format": "Ebook"
+                  },
+                  "isbn_10": "1409043371",
+                  "isbn_13": "9781409043379",
+                  "language": {
+                    "code2": "en",
+                    "code3": "eng"
+                  }
+                },
+                {
+                  "id": 30936496,
+                  "title": "Blood and Bone",
+                  "edition_format": "",
+                  "reading_format": {
+                    "format": "Read"
+                  },
+                  "isbn_10": "0553824732",
+                  "isbn_13": "9780553824735",
+                  "language": {
+                    "code2": "en",
+                    "code3": "eng"
+                  }
+                },
+                {
+                  "id": 30425938,
+                  "title": "Blood and Bone",
+                  "edition_format": "Kindle Edition",
+                  "reading_format": {
+                    "format": "Read"
+                  },
+                  "isbn_10": "0765330016",
+                  "isbn_13": "9780765330017",
+                  "language": {
+                    "code2": "en",
+                    "code3": "eng"
+                  }
+                },
+                {
+                  "id": 32039111,
+                  "title": "Blood and Bone",
+                  "edition_format": "",
+                  "reading_format": {
+                    "format": "Read"
+                  },
+                  "isbn_10": "0593064461",
+                  "isbn_13": "9780593064467",
+                  "language": {
+                    "code2": "en",
+                    "code3": "eng"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": 500345,
+            "position": 5,
+            "featured": false,
+            "compilation": false,
+            "details": "5",
+            "book": {
+              "id": 1828169,
+              "slug": "blood-and-bone-a-novel-of-the-malazan-empire",
+              "title": "Blood and Bone: A Novel of the Malazan Empire",
+              "compilation": false,
+              "contributions": [
+                {
+                  "author": {
+                    "name": "Ian C. Esslemont"
+                  },
+                  "contributor_role": {
+                    "name": "Author"
+                  }
+                }
+              ],
+              "editions": []
+            }
+          },
+          {
+            "id": 812832,
+            "position": 5,
+            "featured": false,
+            "compilation": false,
+            "details": "5",
+            "book": {
+              "id": 2732457,
+              "slug": "blood-and-bone-novels-of-the-malazan-empire-book-5",
+              "title": "Blood and Bone: Novels of the Malazan Empire, Book 5",
+              "compilation": false,
+              "contributions": [
+                {
+                  "author": {
+                    "name": "Ian C. Esslemont"
+                  },
+                  "contributor_role": {
+                    "name": "Author"
+                  }
+                }
+              ],
+              "editions": []
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
