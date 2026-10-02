@@ -87,3 +87,33 @@ test('the typed other market is used for cover searches', async () => {
   await waitFor(() => expect(services.fetchCoverCandidates).toHaveBeenCalled());
   expect(services.fetchCoverCandidates.mock.calls[0][0].preferredMarket).toBe('DE');
 });
+
+test('an author suggestion only edits the form draft and saving uses the normal update path', async () => {
+  services.fetchCoverCandidates.mockResolvedValue({ ...result(), authorSuggestions: [{ author: 'Robert Jackson Bennett', title: 'The Tainted Cup', source: { id: 'a', title: 'Catalogue', url: 'https://openlibrary.org/works/OL2W' } }] });
+  const user = userEvent.setup();
+  const onUpdate = mount(vi.fn(), seriesFixture({ author: 'Robert Jackson Benett' }));
+  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  const suggestion = await screen.findByRole('button', { name: 'Use Robert Jackson Bennett in the form' });
+  expect(screen.getByLabelText('Author')).toHaveValue('Robert Jackson Benett');
+  expect(onUpdate).not.toHaveBeenCalled();
+  await user.click(suggestion);
+  expect(screen.getByLabelText('Author')).toHaveValue('Robert Jackson Bennett');
+  expect(onUpdate).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole('button', { name: 'Save series' }));
+  expect(onUpdate).toHaveBeenCalledTimes(1);
+  expect(onUpdate.mock.calls[0][0].author).toBe('Robert Jackson Bennett');
+});
+
+test('undo restores the cover that was set before an accepted automatic cover', async () => {
+  services.fetchCoverCandidates.mockResolvedValue(result());
+  const user = userEvent.setup();
+  const onUpdate = mount(vi.fn(), seriesFixture({ coverUrl: 'https://example.com/manual.jpg' }));
+  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  await user.click(await screen.findByRole('button', { name: /Select cover/ }));
+  expect(screen.getByLabelText('Cover URL')).toHaveValue(candidate.imageUrl);
+  await user.click(screen.getByRole('button', { name: 'Undo cover choice' }));
+  expect(screen.getByLabelText('Cover URL')).toHaveValue('https://example.com/manual.jpg');
+  expect(screen.queryByRole('button', { name: 'Undo cover choice' })).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: 'Save series' }));
+  expect(onUpdate.mock.calls[0][0]).toMatchObject({ coverUrl: 'https://example.com/manual.jpg', coverAttribution: null });
+});

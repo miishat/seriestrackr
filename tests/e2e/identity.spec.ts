@@ -254,7 +254,7 @@ for (const theme of ['light', 'dark'] as const) {
     await page.screenshot({ path: `node_modules/.cache/playwright-visual/identity-review-${theme}.png`, fullPage: true });
     await save.scrollIntoViewIfNeeded();
     await page.screenshot({ path: `node_modules/.cache/playwright-visual/identity-review-disabled-${theme}.png`, fullPage: true });
-    await page.getByRole('checkbox', { name: 'Save Book', exact: true }).check();
+    await page.getByRole('tab', { name: /^Book/ }).click(); await page.getByRole('checkbox', { name: 'Save Book', exact: true }).check();
     await expect(save).toBeEnabled();
     await page.keyboard.press('Escape');
     await expect(page.getByRole('button', { name: 'Check releases', exact: true }).first()).toBeFocused();

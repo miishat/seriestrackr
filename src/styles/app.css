@@ -1107,3 +1107,44 @@ legend {
   .batch-result-description { grid-column: 1 / -1; }
   .batch-results { padding: 16px; }
 }
+
+/* Discovery review: outline rail and detail pane (approved direction D). */
+dialog:has(.review-layout) { max-width: 1040px; }
+.review-layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 22px; margin: 18px 0; align-items: start; }
+.review-rail { display: flex; flex-direction: column; gap: 2px; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; padding: 12px 8px; position: sticky; top: 0; }
+.review-rail .eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 2px 8px 8px; overflow-wrap: anywhere; }
+.review-tab { display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%; text-align: left; border: 0; border-left: 3px solid transparent; border-radius: 6px; background: transparent; padding: 8px 10px; }
+.review-tab.level-3 { margin-left: 14px; width: calc(100% - 14px); }
+.review-tab[aria-selected=true] { background: var(--soft); border-left-color: var(--accent); font-weight: 700; }
+.review-tab .chip, .related-list .chip { font-size: 11px; border-radius: 99px; padding: 1px 8px; background: var(--soft); color: var(--accent); white-space: nowrap; border: 1px solid var(--line); }
+.review-pane { min-width: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; padding: 20px; }
+.review-pane[hidden] { display: none; }
+.review-pane h3 { font-family: var(--font-display); font-weight: 400; font-size: 24px; margin: 0 0 4px; }
+.review-pane h4 { font-family: var(--font-display); font-weight: 400; font-size: 19px; margin: 6px 0 0; }
+.accept { flex-direction: row; align-items: center; gap: 10px; margin: 14px 0 4px; font-size: 14px; font-weight: 700; }
+.accept input { width: 18px; flex: none; height: 18px; accent-color: var(--accent); }
+.accept-why { margin: 4px 0 0; }
+.related-list, .lifecycle, .author-suggestions { list-style: none; padding: 0; margin: 12px 0; display: grid; gap: 10px; }
+.lifecycle li { padding: 8px 10px; border-left: 3px solid var(--line); overflow-wrap: anywhere; }
+.selection-count { margin-right: auto; align-self: center; }
+.cover-picker-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.cover-options { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; overflow: visible; margin-top: 12px; }
+.cover-choice { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.cover-choice > button, .cover-choice.review-only { display: flex; gap: 12px; align-items: flex-start; text-align: left; width: 100%; padding: 10px; border: 1px solid var(--control-line); border-radius: 8px; background: var(--panel); }
+.cover-choice.review-only { border-style: dashed; }
+.cover-choice.chosen > button, .cover-choice > button[aria-pressed=true] { border: 2px solid var(--accent); background: var(--soft); }
+.cover-choice img { width: 64px; height: 96px; object-fit: contain; flex: none; background: var(--bg); }
+.cover-choice.review-only img { height: 64px; }
+.cover-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; overflow-wrap: anywhere; font-size: 12px; color: var(--muted); }
+.cover-text strong { font-size: 14px; color: var(--ink); }
+.cover-note { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.author-suggestions li { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0; }
+@media (max-width: 760px) {
+  .review-layout { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .review-rail { position: static; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 8px; }
+  .review-rail .eyebrow { display: none; }
+  .review-tab, .review-tab.level-3 { margin-left: 0; width: 100%; border: 1px solid var(--line); border-bottom: 3px solid transparent; flex-wrap: wrap; }
+  .review-tab[aria-selected=true] { border-bottom-color: var(--accent); }
+  .review-pane { padding: 16px; }
+  dialog:has(.review-layout) { padding: 18px; }
+}

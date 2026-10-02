@@ -7,6 +7,12 @@ import type { LibraryDocument } from '../src/features/library/model';
 import { decodeBackup, encodeBackup } from '../src/storage/backup';
 import { seriesFixture } from './fixtures';
 
+const encoder = vi.hoisted(() => ({ fail: false }));
+vi.mock('../src/storage/backup', async (importOriginal) => {
+  const real = await importOriginal<typeof import('../src/storage/backup')>();
+  return { ...real, encodeBackup: (doc: Parameters<typeof real.encodeBackup>[0]) => { if (encoder.fail) throw new Error('Library is not valid for export.'); return real.encodeBackup(doc); } };
+});
+
 const key = 'seriestrackr:v1';
 const limit = 5 * 1024 * 1024;
 
@@ -223,4 +229,19 @@ test('v1 and v2 backups import as version 3 and exports omit unaccepted discover
 test('encodeBackup refuses to serialize a document that fails validation', () => {
   const doc = { ...emptyDocument(), series: [{ id: 'broken' }] } as unknown as LibraryDocument;
   expect(() => encodeBackup(doc)).toThrow(/backup/i);
+});
+
+test('Export now shows a visible error instead of throwing when the document cannot be encoded', async () => {
+  const user = userEvent.setup(); seed(); render(<App />);
+  await user.click(screen.getByRole('button', { name: 'Backups' }));
+  const replacement = { ...documentWithSeries(), series: [seriesFixture({ id: 'new', name: 'Imported' })] };
+  chooseFile(JSON.stringify(replacement));
+  await screen.findByRole('button', { name: 'Confirm replacement' });
+  vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('quota exceeded'); });
+  await user.click(screen.getByRole('button', { name: 'Confirm replacement' }));
+  encoder.fail = true;
+  try {
+    await user.click(screen.getByRole('button', { name: 'Export now' }));
+    expect(screen.getByText(/Could not export: Library is not valid for export/)).toBeVisible();
+  } finally { encoder.fail = false; }
 });

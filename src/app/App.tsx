@@ -43,6 +43,11 @@ export function App() {
   const [pending, setPending] = useState<Pending | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [backupsOpen, setBackupsOpen] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
+  const exportUnsaved = () => {
+    try { downloadJson(encodeBackup(library.doc), 'seriestrackr-unsaved.json'); setExportError(null); }
+    catch (cause) { setExportError(`Could not export: ${cause instanceof Error ? cause.message : String(cause)}`); }
+  };
   const [setupMarket, setSetupMarket] = useState('');
   const [setupError, setSetupError] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Series | null>(null);
@@ -94,14 +99,14 @@ export function App() {
       <nav aria-label="Library tools"><button onClick={() => setSettingsOpen(true)}>Market: {library.doc.settings.market ?? 'Choose'}</button><button onClick={() => library.updateSettings({ ...library.doc.settings, theme: library.doc.settings.theme === 'dark' ? 'light' : 'dark' }, false)}>{library.doc.settings.theme === 'dark' ? 'Light Theme' : 'Dark Theme'}</button><button onClick={() => setBackupsOpen(true)}>Backups</button></nav></header>
     {library.mode === 'recovery' && <div className="warning" role="alert"><strong>Stored library needs recovery.</strong> {library.error} Download the original data, restore a backup, or reset explicitly.
       <button onClick={() => setBackupsOpen(true)}>Open backups</button></div>}
-    {library.mode === 'unsaved' && <div className="warning" role="alert"><strong>Changes are in memory and may be lost.</strong> {library.error} <button onClick={() => downloadJson(encodeBackup(library.doc), 'seriestrackr-unsaved.json')}>Export now</button>{library.recoveryRaw !== null && <button onClick={() => setBackupsOpen(true)}>Open backups</button>}</div>}
+    {library.mode === 'unsaved' && <div className="warning" role="alert"><strong>Changes are in memory and may be lost.</strong> {library.error} <button onClick={exportUnsaved}>Export now</button>{exportError && <span className="form-error" role="alert"> {exportError}</span>}{library.recoveryRaw !== null && <button onClick={() => setBackupsOpen(true)}>Open backups</button>}</div>}
     <section className="intro"><div><div className="eyebrow">Your library</div><h1>What comes next?</h1><p>A bookshelf for the stories you are following. Your next read stays in focus.</p></div>
       {library.doc.series.length > 0 && <div className="summary"><div><b>{library.doc.series.length}</b><span>Tracked series</span></div><div><b>{availableCount}</b><span>Next book available</span></div><div><b>{availableAudioCount}</b><span>Next audiobook available</span></div></div>}</section>
     {library.doc.settings.market && library.mode !== 'recovery' && <LibraryView doc={library.doc} today={today} onEdit={(s) => { setDialogError(null); setEditor(s); }} onFinish={finish} onCheck={(series) => discovery.open(series.id)} onCheckAll={discovery.runBatch} batchRunning={discovery.batch.running} checkingSeriesId={discovery.session?.phase === 'checking' ? discovery.session.seriesId : null} onAdd={() => { setDialogError(null); setEditor('new'); }} onView={(view) => library.updateSettings({ ...library.doc.settings, view }, false)} />}
     {discovery.batch.total > 0 && <section className="batch-results" aria-label="Release check results">
       <div className="batch-results-header"><div>
         <h2>{discovery.batch.running ? 'Checking releases' : 'Release check results'}</h2>
-        <p role="status">{discovery.batch.done} of {discovery.batch.total} checked · Review results before saving.</p>
+        <p role="status">{discovery.batch.done} of {discovery.batch.total} checked ï¿½ Review results before saving.</p>
       </div>{discovery.batch.running && <button onClick={discovery.cancelBatch}>Cancel checks</button>}</div>
       {discovery.batch.running && <progress value={discovery.batch.done} max={discovery.batch.total} aria-label="Release check progress" />}
       <ul className="batch-results-list">{discovery.batch.results.map(result => {
@@ -110,7 +115,7 @@ export function App() {
         const status = result.error ? 'Check failed' : result.response?.summary.status === 'failed' ? 'Check failed' : supported ? 'Ready to review' : 'No supported result';
         const preview = result.error ?? [proposals?.identity?.title,
           proposals?.releases.book ? `Book: ${proposals.releases.book.date ?? 'Date unknown'}` : null,
-          proposals?.releases.audio ? `Audio: ${proposals.releases.audio.date ?? 'Date unknown'}` : null].filter(Boolean).join(' · ');
+          proposals?.releases.audio ? `Audio: ${proposals.releases.audio.date ?? 'Date unknown'}` : null].filter(Boolean).join(' ï¿½ ');
         return <li className="batch-result-row" key={result.seriesId}>
           <div className="batch-result-description"><strong>{library.doc.series.find(s => s.id === result.seriesId)?.name ?? 'Removed series'}</strong>
             {preview && <p>{preview}</p>}

@@ -37,7 +37,7 @@ test('named choices select a decoded portrait cover with attribution', async () 
   const user = userEvent.setup();
   render(<CoverPicker series={seriesFixture()} market="CA" onSelect={onSelect} />);
   await user.click(screen.getByRole('button', { name: 'Find cover' }));
-  const choice = await screen.findByRole('button', { name: /Second by Example Author.*openlibrary.*book.*next/i });
+  const choice = await screen.findByRole('button', { name: /Second by Example Author, Open Library, Book, Next book/ });
   expect(screen.queryByRole('button', { name: /Square/ })).toBeNull();
   await user.click(choice);
   expect(onSelect).toHaveBeenCalledWith('https://covers.openlibrary.org/b/id/1-L.jpg',

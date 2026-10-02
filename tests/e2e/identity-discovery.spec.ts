@@ -49,9 +49,11 @@ test('D and T2 keep discovery review usable at narrow widths', async ({ page }) 
   await expect(review).toBeVisible();
   await expect(review.getByRole('heading', { name: 'Review release details' })).toHaveCSS('font-family', /Newsreader/);
   await expect(review.getByText('Check partially completed', { exact: true })).toBeVisible();
+  await review.getByRole('tab', { name: /^Book/ }).click();
   await expect(review.getByText('Date from GB; no supported CA date found in sources checked.')).toBeVisible();
   const save = review.getByRole('button', { name: 'Save selected changes', exact: true });
   await expect(save).toBeDisabled();
+  await review.getByRole('tab', { name: /^Book/ }).click();
   const book = review.getByRole('checkbox', { name: 'Save Book', exact: true });
   await book.focus(); await page.keyboard.press('Space');
   await expect(save).toBeEnabled();
@@ -90,6 +92,7 @@ for (const theme of ['light', 'dark'] as const) for (const width of [390, 1024])
     await capture(page, `discovery-review-${theme}-${width}`);
     conflict = true;
     await page.getByRole('button', { name: 'Check again', exact: true }).click();
+    await page.getByRole('tab', { name: /^Book/ }).click();
     await expect(page.getByText('Sources disagree about the release date.')).toBeVisible();
     await expect(page.getByRole('checkbox', { name: 'Save Book', exact: true })).toBeDisabled();
     await capture(page, `discovery-conflict-${theme}-${width}`);

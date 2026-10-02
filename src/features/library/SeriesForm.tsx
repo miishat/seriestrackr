@@ -79,7 +79,9 @@ export function SeriesForm({ series, market, onCreate, onUpdate, onCancel, onDel
       <div className="form-grid"><label>Next book title<input value={value.next.title} onChange={(event) => update({ next: { ...value.next, title: event.target.value, attribution: event.target.value === value.next.title ? value.next.attribution : null }, ...(event.target.value === value.next.title ? {} : dropAutomaticCover()) })} placeholder="Title not entered" /></label>
         <label>Cover URL<input type="url" value={value.coverUrl ?? ''} onChange={(event) => update({ coverUrl: event.target.value || null, coverAttribution: null })} placeholder="https://example.com/cover.jpg" /></label>
       </div>
-      <CoverPicker series={effective} market={coverMarket} onSelect={(url, attribution) => update({ coverUrl: url, coverAttribution: attribution })} />
+      <CoverPicker series={effective} market={coverMarket} onSelect={(url, attribution) => update({ coverUrl: url, coverAttribution: attribution })}
+        onUndo={(url, attribution) => update({ coverUrl: url, coverAttribution: attribution })}
+        onAuthorSuggestion={(author) => update({ author, ...dropAutomaticCover() })} />
       <div className="checkbox-row"><label><input type="checkbox" checked={value.formats.book} onChange={(event) => update({ formats: { ...value.formats, book: event.target.checked } })} /> Track book</label>
         <label><input type="checkbox" checked={value.formats.audio} onChange={(event) => update({ formats: { ...value.formats, audio: event.target.checked } })} /> Track audiobook</label></div>
       <ReleaseFields format="book" value={value.releases.book} onChange={(book) => update({ releases: { ...value.releases, book: { ...book, provenance: null } } })} />

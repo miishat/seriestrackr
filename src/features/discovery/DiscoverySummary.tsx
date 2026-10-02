@@ -18,7 +18,7 @@ export function DiscoverySummary({ summary }: { summary: CheckSummary | null }):
     <p className="small">Checked <time dateTime={summary.checkedAt}>{summary.checkedAt}</time>.</p>
     {summary.status === 'partial' && <p>Some sources could not be fully checked or verified. Supported dates and announcements are still usable. This describes source coverage, not book or audiobook availability. See the reasons below.</p>}
     {(summary.status === 'failed' || summary.status === 'cancelled') && <p>Your saved release details are unchanged.</p>}
-    {summary.status === 'complete' && unknown && <p>Some formats have no supported details in sources checked.</p>}
+    {(summary.status === 'complete' || summary.status === 'partial') && unknown && <div className="incomplete-facts">Incomplete details: some formats have no supported details in sources checked.</div>}
     {summary.reasons.length > 0 && <ul>{[...new Set(summary.reasons)].map(reason => <li key={reason}>{reasonLabels[reason]}</li>)}</ul>}
   </div>;
 }
