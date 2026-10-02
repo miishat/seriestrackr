@@ -6,6 +6,22 @@ import { createRateQueue } from '../../server/discovery/rateQueue';
 afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
 
 const signal = () => new AbortController().signal;
+
+test.each([200, 429, 403])('transport status%s is sanitized and observer cannot alter outcome', async status => {
+  const events: unknown[] = [];
+  const fetcher: typeof fetch = async () => Response.json({ ok: true }, { status });
+  const run = (observed: boolean) => fetchProviderJson('googlebooks', '/books/v1/volumes?q=private-title&key=fake-key',
+    { headers: { authorization: 'fake-authorization' } }, signal(), fetcher,
+    observed ? e => { events.push(e); throw Error('observer'); } : undefined);
+  if (status === 200) expect(await run(true)).toEqual(await run(false));
+  else {
+    await expect(run(true)).rejects.toMatchObject({ reason: status === 429 ? 'quota' : 'provider-error' });
+    await expect(run(false)).rejects.toMatchObject({ reason: status === 429 ? 'quota' : 'provider-error' });
+  }
+  expect(events).toEqual([{ stage: 'transport', category: status === 200 ? 'accepted' : 'shape', sources: 0, identities: 0, editions: 0,
+    provider: 'googlebooks', httpStatus: status, ...(status === 200 ? {} : { rule: status === 429 ? 'http-quota' : 'http-failure' }) }]);
+  expect(JSON.stringify(events)).not.toMatch(/private|authorization|fake-key/);
+});
 const json = (body = '{"ok":true}', status = 200) => new Response(body, {
   status, headers: { 'content-type': 'application/json; charset=utf-8' },
 });

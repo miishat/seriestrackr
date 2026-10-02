@@ -1,3 +1,4 @@
+import { emitDiagnostic, diagnosticCounts, diagnosticRecordRef, type DiagnosticObserver, type DiagnosticRule } from './diagnostics';
 import type { CheckRequest, EditionFormat, EvidenceBundle, Reason } from '../../shared/discovery';
 import { emptyUsage } from '../../shared/discovery';
 import { normalizeIdentity } from '../../shared/discoveryPolicy';
@@ -63,27 +64,39 @@ function editionKey(raw: Record<string, unknown>, identifier: string): string {
   }
   return `hardcover:edition:${identifier}`;
 }
-export function normalizeHardcover(input: unknown, request: CheckRequest, checkedAt: string): EvidenceBundle {
+export function normalizeHardcover(input: unknown, request: CheckRequest, checkedAt: string, onDiagnostic?: DiagnosticObserver): EvidenceBundle {
   const envelope = object(input);
   if (Object.hasOwn(envelope, 'errors')) return fail();
   const seriesRows = list(object(envelope.data).series, 5); const evidence = empty();
   const rows = seriesRows.flatMap(item => { const series = object(item); return list(series.book_series, 20).map(row => ({ ...object(row), series: { name: series.name } })); });
   const aliases = new Set(hardcoverAliases(request.target.series).map(normalizeIdentity));
+  const reject = (rule: DiagnosticRule, recordId: string | null) => emitDiagnostic(onDiagnostic, {
+    stage: 'catalog', category: 'target-mismatch', ...diagnosticCounts(evidence), provider: 'hardcover', rule,
+    ...(recordId === null ? {} : { recordRef: diagnosticRecordRef(`hardcover:${recordId}`) }),
+  });
+  if (!rows.length) reject('no-match', null);
   const seen = new Set<string>();
   for (const inputRow of rows) {
     const row = object(inputRow); const book = object(row.book); const bookId = id(book.id);
     const series = text(object(row.series).name); const title = text(book.title); const slug = text(book.slug);
-    if (!bookId || !series || !title || !slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || !aliases.has(normalizeIdentity(series)) ||
-      book.compilation !== false || row.position !== request.target.position || row.featured !== true || row.compilation !== false ||
-      (row.details !== null && row.details !== undefined && row.details !== '' && text(row.details) !== String(request.target.position))) continue;
+    if (!bookId || !series || !title || !slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) { reject('unsupported-title', bookId); continue; }
+    if (!aliases.has(normalizeIdentity(series))) { reject('series-mismatch', bookId); continue; }
+    if (book.compilation !== false || row.compilation !== false) { reject('compilation', bookId); continue; }
+    if (row.position !== request.target.position ||
+      (row.details !== null && row.details !== undefined && row.details !== '' && text(row.details) !== String(request.target.position))) { reject('position-mismatch', bookId); continue; }
+    if (row.featured !== true) { reject('ambiguous-work', bookId); continue; }
     const contributions = list(book.contributions, 30);
     const authors = contributions.filter(item => text(object(object(item).contributor_role).name)?.toLowerCase() === 'author')
       .map(item => text(object(object(item).author).name));
-    if (!authors.includes(request.target.author) && !authors.some(author => author && normalizeIdentity(author) === normalizeIdentity(request.target.author))) continue;
+    if (!authors.includes(request.target.author) && !authors.some(author => author && normalizeIdentity(author) === normalizeIdentity(request.target.author))) { reject('author-mismatch', bookId); continue; }
     const editions = list(book.editions, 20);
     const qualifyingEdition = editions.map(object).find(raw => id(raw.id) && text(raw.title) &&
       normalizeIdentity(String(raw.title)) === normalizeIdentity(title) && language(raw.language) === 'en' && resolvedEditionFormat(raw));
-    if (!qualifyingEdition) continue;
+    if (!qualifyingEdition) {
+      const titleMatches = editions.map(object).filter(raw => id(raw.id) && text(raw.title) && normalizeIdentity(String(raw.title)) === normalizeIdentity(title));
+      reject(!titleMatches.length ? 'unsupported-title' : !titleMatches.some(raw => language(raw.language) === 'en') ? 'edition-language' : 'edition-format', bookId);
+      continue;
+    }
     const sourceId = `hardcover:book:${bookId}`;
     const quote = `Title: ${title}. Author: ${request.target.author}. Series: ${series}. Position: ${request.target.position}. Role: Author. English edition: ${id(qualifyingEdition.id)}. Language: en. Format: ${resolvedEditionFormat(qualifyingEdition)}.`;
     const url = `https://hardcover.app/books/${slug}`;
@@ -97,7 +110,8 @@ export function normalizeHardcover(input: unknown, request: CheckRequest, checke
       const raw = object(inputEdition); const editionId = id(raw.id);
       const format = resolvedEditionFormat(raw);
       const editionTitle = text(raw.title);
-      if (!editionId || !format || (!editionTitle || normalizeIdentity(editionTitle) !== normalizeIdentity(title))) continue;
+      if (!editionId || !editionTitle || normalizeIdentity(editionTitle) !== normalizeIdentity(title)) { reject('unsupported-title', editionId); continue; }
+      if (!format) { reject('edition-format', editionId); continue; }
       const edition = { id: `hardcover:edition:${editionId}`, title, author: request.target.author, position: request.target.position,
         editionKey: editionKey(raw, editionId), format, language: language(raw.language), market: null, date: null, precision: 'none' as const };
       const facts = `Title: ${title}. Author: ${edition.author}. Position: ${edition.position}. Raw format: ${text(raw.edition_format) ?? 'unknown'}. Reading format: ${text(object(raw.reading_format).format) ?? 'unknown'}. Format: ${format}. Language: ${edition.language ?? 'unknown'}. Market: unknown. Date: ${edition.date ?? 'unknown'}. Precision: ${edition.precision}. Edition: ${edition.editionKey}.`;
@@ -114,7 +128,7 @@ export function normalizeHardcover(input: unknown, request: CheckRequest, checke
   const parsed = parseExtraction(evidence, evidence.sources);
   return parsed.ok ? parsed.value : fail();
 }
-export async function collectHardcover(request: CheckRequest, token: string | null | undefined, signal: AbortSignal, fetcher: typeof fetch = fetch): Promise<CatalogResult> {
+export async function collectHardcover(request: CheckRequest, token: string | null | undefined, signal: AbortSignal, fetcher: typeof fetch = fetch, onDiagnostic?: DiagnosticObserver): Promise<CatalogResult> {
   const usage = emptyUsage(); const key = token?.trim();
   if (!key) return { evidence: empty(), usage, reasons: [] };
   try {
@@ -122,9 +136,9 @@ export async function collectHardcover(request: CheckRequest, token: string | nu
       usage.hardcover++;
       return fetchProviderJson('hardcover', '/v1/graphql', { method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: /^Bearer\s/i.test(key) ? key : `Bearer ${key}` },
-        body: JSON.stringify({ query, variables: { names: hardcoverAliases(request.target.series), position: request.target.position } }) }, signal, fetcher);
+        body: JSON.stringify({ query, variables: { names: hardcoverAliases(request.target.series), position: request.target.position } }) }, signal, fetcher, onDiagnostic);
     }, signal);
-    return { evidence: normalizeHardcover(raw, request, new Date().toISOString()), usage, reasons: [] };
+    return { evidence: normalizeHardcover(raw, request, new Date().toISOString(), onDiagnostic), usage, reasons: [] };
   } catch (error) {
     return { evidence: empty(), usage, reasons: [signal.aborted ? 'cancelled' : error instanceof ProviderError ? error.reason : 'provider-error'] };
   }

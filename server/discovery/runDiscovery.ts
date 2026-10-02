@@ -8,7 +8,7 @@ import type { extractEvidence } from './deepseek';
 import { ProviderError } from './http';
 import { buildSearchQueries } from './search';
 import { allocationEvidence, roleReservations } from './evidenceAllocation';
-import { diagnosticCounts, emitDiagnostic, type DiagnosticObserver } from './diagnostics';
+import { diagnosticCounts, diagnosticRecordRef, emitDiagnostic, withDiagnosticTrace, type DiagnosticObserver } from './diagnostics';
 
 export interface DiscoveryDependencies {
   catalogs: typeof collectCatalogs;
@@ -65,8 +65,8 @@ function validatedBundle(raw: EvidenceBundle, namespace: string, reason: (value:
 }
 
 function bound(request: CheckRequest, input: EvidenceBundle, checkedAt: string, suppressed: Set<Format | 'identity'>,
-  prunedWorkFormats: Map<string, PrunedDates>, reason: (value: Reason) => void): EvidenceBundle {
-  const allocation = allocationEvidence(request, input);
+  prunedWorkFormats: Map<string, PrunedDates>, reason: (value: Reason) => void, onDiagnostic?: DiagnosticObserver): EvidenceBundle {
+  const allocation = allocationEvidence(request, input, onDiagnostic);
   const { identities, editions, sources: eligibleSources, conflicts, singletons } = allocation;
   const unresolvedIdentity = (!request.target.title.trim() || !Number.isInteger(request.target.position)) &&
     !selectProposals(request, allocation, checkedAt).identity;
@@ -74,18 +74,28 @@ function bound(request: CheckRequest, input: EvidenceBundle, checkedAt: string, 
   const sourceIds = new Set<string>();
   const keep = (citations: Citation[]): boolean => {
     const needed = new Set([...sourceIds, ...citations.map(item => item.sourceId)]);
-    if (needed.size > 30) return false;
+    if (needed.size > 30) {
+      emitDiagnostic(onDiagnostic, { stage: 'allocation', category: 'bounds', ...diagnosticCounts(retained),
+        rule: 'citation-closure', recordRef: diagnosticRecordRef(JSON.stringify([...new Set(citations.map(item => item.sourceId))].sort())) });
+      return false;
+    }
     needed.forEach(key => sourceIds.add(key)); return true;
   };
   // Identity alternatives are one protected closure. Keeping only the first
   // alternative must never resolve ambiguity after truncation.
   if (identities.length <= 30 && keep(identities.flatMap(item => item.citations))) retained.identities = identities;
   else {
+    if (identities.length > 30) emitDiagnostic(onDiagnostic, { stage: 'allocation', category: 'bounds', ...diagnosticCounts(retained), rule: 'evidence-bound', recordRef: diagnosticRecordRef(JSON.stringify(identities.flatMap(item => item.citations.map(c => c.sourceId)).sort())) });
     reason('budget');
     suppressed.add('identity'); suppressed.add('book'); suppressed.add('audio');
   }
   const keepGroup = (group: EditionEvidence[]) => {
-    if (retained.editions.length + group.length > 100 || !keep(group.flatMap(item => item.citations))) return false;
+    if (retained.editions.length + group.length > 100) {
+      emitDiagnostic(onDiagnostic, { stage: 'allocation', category: 'bounds', ...diagnosticCounts(retained),
+        rule: 'evidence-bound', recordRef: diagnosticRecordRef(JSON.stringify(group.map(item => item.id).sort())) });
+      return false;
+    }
+    if (!keep(group.flatMap(item => item.citations))) return false;
     retained.editions.push(...group); return true;
   };
   for (const group of conflicts) {
@@ -130,6 +140,10 @@ function bound(request: CheckRequest, input: EvidenceBundle, checkedAt: string, 
     .sort((a, b) => Number(b.market === request.preferredMarket) - Number(a.market === request.preferredMarket));
   for (const source of extras.slice(0, 30 - sourceIds.size)) sourceIds.add(source.id);
   retained.sources = eligibleSources.filter(source => sourceIds.has(source.id));
+  for (const source of eligibleSources.filter(source => !sourceIds.has(source.id))) emitDiagnostic(onDiagnostic, {
+    stage: 'allocation', category: 'bounds', ...diagnosticCounts(retained), provider: source.provider,
+    rule: 'evidence-bound', recordRef: diagnosticRecordRef(source.id),
+  });
   if (eligibleSources.length > retained.sources.length || editions.length > retained.editions.length) reason('budget');
   return retained;
 }
@@ -143,7 +157,10 @@ async function abortable<T>(operation: Promise<T>, signal: AbortSignal): Promise
   finally { signal.removeEventListener('abort', onAbort!); }
 }
 
-export async function runDiscovery(input: CheckRequest, dependencies: DiscoveryDependencies, caller: AbortSignal): Promise<CheckResponse> {
+export function runDiscovery(input: CheckRequest, dependencies: DiscoveryDependencies, caller: AbortSignal): Promise<CheckResponse> {
+  return withDiagnosticTrace(() => runDiscoveryInTrace(input, dependencies, caller));
+}
+async function runDiscoveryInTrace(input: CheckRequest, dependencies: DiscoveryDependencies, caller: AbortSignal): Promise<CheckResponse> {
   const parsed = parseCheckRequest(input);
   if (!parsed.ok) throw new Error('invalid-request');
   const request = parsed.value;
@@ -161,7 +178,7 @@ export async function runDiscovery(input: CheckRequest, dependencies: DiscoveryD
     let allocationBudget = false;
     evidence = bound(request, {
     sources: [...evidence.sources, ...incoming.sources], identities: [...evidence.identities, ...incoming.identities], editions: [...evidence.editions, ...incoming.editions],
-    }, checkedAt, suppressed, prunedWorkFormats, value => { reason(value); if (value === 'budget') allocationBudget = true; });
+    }, checkedAt, suppressed, prunedWorkFormats, value => { reason(value); if (value === 'budget') allocationBudget = true; }, dependencies.onDiagnostic);
     if (allocationBudget) emitDiagnostic(dependencies.onDiagnostic, { stage: 'allocation', category: 'bounds', ...diagnosticCounts(evidence) });
   };
   const selection = () => selectProposals(request, evidence, checkedAt);

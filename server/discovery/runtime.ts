@@ -13,7 +13,7 @@ export function createDiscoveryRuntime(config: DiscoveryConfig, fetcher: typeof 
   options: { onDiagnostic?: DiagnosticObserver } = {}): DiscoveryDependencies {
   return {
     catalogs: async (request, markets, signal) => {
-      const hardcover = await collectHardcover(request, config.hardcoverToken, signal, fetcher);
+      const hardcover = await collectHardcover(request, config.hardcoverToken, signal, fetcher, options.onDiagnostic);
       const catalogs = await collectCatalogs(request, markets, signal, fetcher, { googleBooksKey: config.googleBooksKey,
         onDiagnostic: options.onDiagnostic, seedEvidence: hardcover.evidence, appleIsbnJoin: true, appleProductPages: true });
       catalogs.usage.hardcover = hardcover.usage.hardcover;

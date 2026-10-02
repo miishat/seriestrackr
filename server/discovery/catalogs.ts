@@ -244,10 +244,10 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
     const queue = { apple: appleQueue, openlibrary: openLibraryQueue, googlebooks: googleBooksQueue }[provider];
     const cap = { apple: 12, openlibrary: 3, googlebooks: 2 }[provider];
     if (signal.aborted) { reason('cancelled'); return Promise.resolve(unavailable); }
-    if (usage[provider] >= cap) { reason('budget'); return Promise.resolve(unavailable); }
+    if (usage[provider] >= cap) { emitDiagnostic(options.onDiagnostic, { stage: 'catalog', category: 'bounds', ...diagnosticCounts(evidence), provider, rule: 'request-bound' }); reason('budget'); return Promise.resolve(unavailable); }
     const operation = queue.run(async () => {
       usage[provider]++;
-      return fetchProviderJson(provider, path, {}, signal, fetcher);
+      return fetchProviderJson(provider, path, {}, signal, fetcher, options.onDiagnostic);
     }, signal).catch(error => {
       reason(signal.aborted ? 'cancelled' : error instanceof ProviderError ? error.reason : 'provider-error');
       return unavailable;
@@ -313,7 +313,7 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
         const html = await appleQueue.run(async () => {
           if (usage.apple >= 12 || htmlStarted >= 6) throw new ProviderError('apple', 'budget');
           usage.apple++; htmlStarted++;
-          return fetchAppleProductText(source.url, signal, fetcher);
+          return fetchAppleProductText(source.url, signal, fetcher, options.onDiagnostic);
         }, signal);
         const normalized = normalizeAppleProductPage(html, source, edition, targetRequest, checkedAt);
         if (!normalized.sources.length) reason('invalid-evidence');

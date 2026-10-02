@@ -1,3 +1,4 @@
+import { emitDiagnostic, type DiagnosticObserver } from './diagnostics';
 import type { Provider, Reason } from '../../shared/discovery';
 
 const bases = {
@@ -47,7 +48,7 @@ function abortable<T>(operation: Promise<T>, signal: AbortSignal): Promise<T> {
 }
 
 export async function fetchProviderJson(
-  provider: Provider, path: string, init: RequestInit, signal: AbortSignal, fetcher: typeof fetch = fetch,
+  provider: Provider, path: string, init: RequestInit, signal: AbortSignal, fetcher: typeof fetch = fetch, onDiagnostic?: DiagnosticObserver,
 ): Promise<unknown> {
   let combined: AbortSignal | undefined;
   let res: Response | undefined;
@@ -64,6 +65,7 @@ export async function fetchProviderJson(
     combined = AbortSignal.any([signal, AbortSignal.timeout(provider === 'deepseek' ? 45000 : 20000)]);
     combined.throwIfAborted();
     res = await abortable(fetcher(url, { ...init, signal: combined, redirect: 'error' }), combined);
+    emitTransport(onDiagnostic, provider, res);
     if (res.redirected || (res.url && new URL(res.url).origin !== url.origin)) {
       throw new ProviderError(provider, 'provider-error');
     }
@@ -105,7 +107,7 @@ export async function fetchProviderJson(
   }
 }
 
-export async function fetchAppleProductText(url: string, signal: AbortSignal, fetcher: typeof fetch = fetch): Promise<string> {
+export async function fetchAppleProductText(url: string, signal: AbortSignal, fetcher: typeof fetch = fetch, onDiagnostic?: DiagnosticObserver): Promise<string> {
   let combined: AbortSignal | undefined;
   let response: Response | undefined;
   let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
@@ -116,6 +118,7 @@ export async function fetchAppleProductText(url: string, signal: AbortSignal, fe
       !/^\/[a-z]{2}\/(?:book|audiobook)\/[^/]+\/id[1-9]\d*$/.test(parsed.pathname)) throw new ProviderError('apple', 'provider-error');
     combined = AbortSignal.any([signal, AbortSignal.timeout(20000)]);
     response = await abortable(fetcher(parsed, { signal: combined, redirect: 'error', credentials: 'omit', headers: { accept: 'text/html' } }), combined);
+    emitTransport(onDiagnostic, 'apple', response);
     if (response.redirected || (response.url && response.url !== parsed.href)) throw new ProviderError('apple', 'provider-error');
     if (response.status === 429) throw new ProviderError('apple', 'quota');
     if (!response.ok || mime(response.headers) !== 'text/html' || !response.body) throw new ProviderError('apple', 'provider-error');
@@ -146,3 +149,9 @@ export async function fetchAppleProductText(url: string, signal: AbortSignal, fe
   }
 }
 
+
+function emitTransport(observer: DiagnosticObserver | undefined, provider: Provider, response: Response): void {
+  emitDiagnostic(observer, { stage: 'transport', category: response.ok ? 'accepted' : 'shape',
+    sources: 0, identities: 0, editions: 0, provider, httpStatus: response.status,
+    ...(response.ok ? {} : { rule: response.status === 429 ? 'http-quota' : 'http-failure' }) });
+}

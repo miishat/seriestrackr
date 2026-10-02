@@ -1,0 +1,31 @@
+{
+  "sourceRoot": "docs/investigations/2026-10-01-release-pipeline",
+  "fixtures": [
+    {
+      "fixture": "the-last-horizon-hardcover.json",
+      "sourceArtifact": "the-last-horizon/release-1.json",
+      "retrievalTimestamp": "2026-10-02T00:33:48.466Z",
+      "timestampMeaning": "Captured request start timestamp; completion timestamp not supplied",
+      "fields": "captured",
+      "omitted": "Unrelated rows, descriptions, prices, preview URLs and transport headers",
+      "expectedRejectedRule": "no-match"
+    },
+    {
+      "fixture": "the-band-hardcover.json",
+      "sourceArtifact": "the-band/release-1.json",
+      "retrievalTimestamp": "2026-10-02T00:47:12.556Z",
+      "timestampMeaning": "Captured request start timestamp; completion timestamp not supplied",
+      "fields": "captured",
+      "omitted": "Unrelated rows, descriptions, prices, preview URLs and transport headers",
+      "expectedRejectedRule": "unsupported-title"
+    },
+    {
+      "fixture": "publisher-synthetic.json",
+      "sourceArtifact": null,
+      "retrievalTimestamp": null,
+      "fields": "synthetic",
+      "expectedRejectedRule": null,
+      "purpose": "Parser shape sample only; Macmillan HTTP403 bodies are not successful publisher content"
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import { diagnosticCounts, diagnosticRecordRef, emitDiagnostic, type DiagnosticObserver } from './diagnostics';
 import type { CheckRequest, Citation, EditionEvidence, EvidenceBundle, Source } from '../../shared/discovery';
 import { normalizeIdentity, selectProposals } from '../../shared/discoveryPolicy';
 
@@ -9,13 +10,23 @@ const candidateRank = (request: CheckRequest) => (a: EditionEvidence, b: Edition
 
 // Allocation hints only rank already validated evidence. They never establish
 // identity, order, language, country, format or a release date.
-export function allocationEvidence(request: CheckRequest, input: EvidenceBundle) {
+export function allocationEvidence(request: CheckRequest, input: EvidenceBundle, onDiagnostic?: DiagnosticObserver) {
   const matchingAuthor = (author: string) => normalizeIdentity(author) === normalizeIdentity(request.target.author);
   const identities = input.identities.filter(item => matchingAuthor(item.author) && item.position === request.target.position);
   const titles = new Set(identities.map(item => normalizeIdentity(item.title)));
   if (request.target.title.trim()) titles.add(normalizeIdentity(request.target.title));
   const editions = input.editions.filter(item => matchingAuthor(item.author) &&
     (!titles.size || titles.has(normalizeIdentity(item.title))) && (item.position === null || item.position === request.target.position));
+  const retainedItems = new Set([...identities, ...editions]);
+  for (const item of [...input.identities, ...input.editions]) {
+    if (retainedItems.has(item)) continue;
+    const firstSource = input.sources.find(source => item.citations.some(c => c.sourceId === source.id));
+    emitDiagnostic(onDiagnostic, { stage: 'allocation', category: 'target-mismatch', ...diagnosticCounts(input),
+      rule: !matchingAuthor(item.author) ? 'author-mismatch' : item.position !== null && item.position !== request.target.position ? 'position-mismatch' : 'unsupported-title',
+      ...(firstSource ? { provider: firstSource.provider } : {}),
+      recordRef: diagnosticRecordRef('id' in item && typeof item.id === 'string' ? item.id : JSON.stringify(item.citations.map(c => c.sourceId).sort())),
+    });
+  }
   const referenced = new Set([...input.identities, ...input.editions].flatMap(item => item.citations.map(citation => citation.sourceId)));
   const relevant = new Set([...identities, ...editions].flatMap(item => item.citations.map(citation => citation.sourceId)));
   const sources = input.sources.filter(source => !referenced.has(source.id) || relevant.has(source.id));
