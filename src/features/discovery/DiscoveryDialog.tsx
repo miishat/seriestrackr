@@ -138,7 +138,7 @@ export function DiscoveryDialog({ session, series, preferredMarket, stale, onRun
       chip: selection[format] && canSelectFormat(format) ? 'Selected' : result?.proposals.releases[format] ? 'Review' : 'None' })),
     { id: 'covers', label: 'Covers', chip: coverOk ? 'Selected' : coverCandidates.length ? String(coverCandidates.length) : 'None', level: 3 },
     ...(related.length ? [{ id: 'related' as const, label: 'Related works', chip: String(related.length), level: 2 as const }] : []),
-    { id: 'coverage', label: 'Coverage', chip: result?.summary.status === 'partial' ? 'Partial' : 'Complete', level: 2 },
+    { id: 'coverage', label: 'Coverage', chip: ({ complete: 'Complete', partial: 'Partial', failed: 'Failed', cancelled: 'Cancelled' } as const)[result?.summary.status ?? 'complete'], level: 2 },
   ];
   const onTabKey = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
     const move = ({ ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 } as Record<string, number>)[event.key];
@@ -202,7 +202,7 @@ export function DiscoveryDialog({ session, series, preferredMarket, stale, onRun
             })}
             <Pane id="covers" active={pane === 'covers'} title="Choose a cover" note="Optional · No cover is selected by default · Covers belong to a named work and edition">
               <ReviewCovers requestId={result.requestId} candidates={coverCandidates} chosenId={coverOk ? selection.coverId ?? null : null}
-                incomplete={result.summary.status === 'partial'} onDecoded={setDecoded} reasonFor={coverReason}
+                incomplete={result.summary.status !== 'complete'} onDecoded={setDecoded} reasonFor={coverReason}
                 onChoose={id => setSelection(previous => ({ ...previous, coverId: id }))} />
             </Pane>
             {related.length > 0 && <Pane id="related" active={pane === 'related'} title="Related works" note="For reference, outside numbered acceptance · There is no checkbox and none are saved to your library">
@@ -214,9 +214,10 @@ export function DiscoveryDialog({ session, series, preferredMarket, stale, onRun
               </li>)}</ul>
             </Pane>}
             <Pane id="coverage" active={pane === 'coverage'} title="Coverage and release language" note="What the receipt means">
-              {result.summary.status === 'partial'
-                ? <p><strong>Partial coverage.</strong> A source quota, timeout, error or limit affected this run. Valid dates and announcements can still be reviewed and saved.</p>
-                : <p><strong>Complete coverage.</strong> Every source this run needed was checked. Unknown details are listed in the receipt as incomplete details, not as a partial run.</p>}
+              {result.summary.status === 'complete' && <p><strong>Complete coverage.</strong> Every source this run needed was checked. Unknown details are listed in the receipt as incomplete details, not as a partial run.</p>}
+              {result.summary.status === 'partial' && <p><strong>Partial coverage.</strong> A source quota, timeout, error or limit affected this run. Valid dates and announcements can still be reviewed and saved.</p>}
+              {result.summary.status === 'failed' && <p><strong>The check failed.</strong> The sources this run needed could not be checked, so nothing here is confirmed. Try the check again.</p>}
+              {result.summary.status === 'cancelled' && <p><strong>The check was cancelled.</strong> Sources that had not been checked yet are missing. Anything shown comes only from the sources that responded.</p>}
               <p className="small">Coverage describes which sources were checked, not whether a book or audiobook is available.</p>
               <ul className="lifecycle">{(['catalogued', 'announced', 'scheduled', 'released'] as const).map(state => <li key={state}><strong>{releaseLabels[state]}.</strong> {lifecycleMeaning[state]}</li>)}</ul>
               {result.sources.length > 0 && <><h4>Sources checked</h4><Sources sources={result.sources} /></>}

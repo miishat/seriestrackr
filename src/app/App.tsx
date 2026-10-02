@@ -54,7 +54,13 @@ export function App() {
   const [finishTarget, setFinishTarget] = useState<Series | null>(null);
   const [finishTitle, setFinishTitle] = useState('');
   const [toast, setToast] = useState<string | null>(null);
+  const [undoError, setUndoError] = useState<string | null>(null);
   const notify = (message: string) => { setToast(message); window.setTimeout(() => setToast(null), 6000); };
+  const undoLast = () => {
+    const result = library.undo();
+    if (result.ok === false) { setUndoError(`Could not undo. ${result.error}`); window.setTimeout(() => setUndoError(null), 6000); }
+    else setUndoError(null);
+  };
   const closeEditor = () => { setEditor(null); setDialogError(null); };
   const handleUpdate = (value: Series) => {
     const result = library.updateSeries(value, false);
@@ -129,9 +135,10 @@ export function App() {
     </section>}
     <aside className="next-phase"><span>YOUR CHOICE</span><div><strong>Discovery, when you ask for it.</strong><p>Check releases, review sources and choose what to save. Manual tracking works independently.</p></div></aside>
     {library.canUndo && (library.undoKind === 'cover'
-      ? <div className="undo" role="status">Most recent cover choice can be undone until another change or reload. <button onClick={() => library.undo()}>Undo cover</button></div>
-      : <div className="undo" role="status">Most recent finish can be undone until another change or reload. <button onClick={() => library.undo()}>Undo finish</button></div>)}
+      ? <div className="undo" role="status">Most recent cover choice can be undone until another change or reload. <button onClick={undoLast}>Undo cover</button></div>
+      : <div className="undo" role="status">Most recent finish can be undone until another change or reload. <button onClick={undoLast}>Undo finish</button></div>)}
     {toast && <div className="toast" role="status">{toast}</div>}
+    {undoError && <div className="undo" role="alert">{undoError}</div>}
     <Dialog open={library.doc.settings.market === null && library.mode !== 'recovery' && library.recoveryRaw === null} title="Which releases should we track?" onClose={() => {}} closable={false}><p>Choose your preferred country for English releases. Each format can use another country when no supported preferred-country date is found. You can override the preference for each series.</p><MarketSelect value={setupMarket} onChange={setSetupMarket} />{setupError && <p role="alert" className="form-error">{setupError}</p>}<div className="actions"><button className="primary" onClick={setup}>Start tracking</button></div></Dialog>
     <Dialog open={editor !== null} title={editor === 'new' ? 'Add series' : 'Edit series'} onClose={closeEditor}>{editor && <SeriesForm key={editor === 'new' ? 'new' : editor.id} series={editor === 'new' ? undefined : editor} market={library.doc.settings.market ?? ''} onCreate={(input) => { const result = library.addSeries(input); if (result.ok === true) closeEditor(); else setDialogError(result.error); }} onUpdate={handleUpdate} onCancel={closeEditor} onDelete={() => { if (editor !== 'new') setDeleteTarget(editor); }} error={dialogError} />}</Dialog>
     <Dialog open={pending !== null} title="Confirm metadata reset" onClose={() => setPending(null)}><p>{pending?.message}</p><p>Release information will be cleared. A changed next-book identity also clears its cover.</p><div className="actions"><button onClick={() => setPending(null)}>Cancel</button><button className="primary" onClick={confirmReset}>Confirm reset</button></div></Dialog>

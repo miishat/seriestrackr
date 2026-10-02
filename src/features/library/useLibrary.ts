@@ -173,8 +173,13 @@ export function useLibrary() {
       return { ok: true, value: undefined };
     }
     if (!current.current.series.some(item => item.id === entry.seriesId)) return invalid('Series not found.');
-    const restored = validated({ ...current.current, series: current.current.series.map(item => item.id === entry.seriesId
-      ? { ...item, coverUrl: entry.coverUrl, coverAttribution: entry.coverAttribution } : item) });
+    // The saved identity may have changed since the cover was replaced. A restored named
+    // cover that no longer targets the saved title and author is cleared, not reattached.
+    const restoreCover = (item: Series): Series => {
+      const candidate = { ...item, coverUrl: entry.coverUrl, coverAttribution: entry.coverAttribution };
+      return coverTargets(candidate) ? candidate : { ...item, coverUrl: null, coverAttribution: null };
+    };
+    const restored = validated({ ...current.current, series: current.current.series.map(item => item.id === entry.seriesId ? restoreCover(item) : item) });
     if (restored.ok === false) return invalid(restored.error);
     discoveryGuard.current.touch(entry.seriesId);
     commit(restored.value);

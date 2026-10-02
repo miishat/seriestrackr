@@ -194,3 +194,18 @@ test('outline tabs move with arrow keys and keep the detail pane in step', async
   await userEvent.keyboard('{Home}');
   expect(screen.getByRole('tab', { name: /^Next title/ })).toHaveFocus();
 });
+
+test.each([
+  ['complete', 'Complete', /Every source this run needed was checked/],
+  ['partial', 'Partial', /A source quota, timeout, error or limit affected this run/],
+  ['failed', 'Failed', /The check failed/],
+  ['cancelled', 'Cancelled', /The check was cancelled/],
+] as const)('coverage pane for a %s check says so', async (status, chip, text) => {
+  const result = response(); result.summary.status = status;
+  show(result);
+  expect(screen.getByRole('tab', { name: new RegExp(`^Coverage.*${chip}`) })).toBeVisible();
+  await open('Coverage');
+  expect(screen.getByText(text)).toBeVisible();
+  if (status !== 'complete') expect(screen.queryByText(/Every source this run needed was checked/)).toBeNull();
+  if (status === 'failed') expect(screen.getByText(/could not be checked/)).toBeVisible();
+});
