@@ -16,8 +16,11 @@ const usableTitle = (title: string) => title.length > 0 && title.length <= 300 &
 // stray first line (an injected sentence, a banner) cannot become a title.
 const titled = (source: Source, title: string) => {
   const page = normalizeIdentity(source.title), heading = normalizeIdentity(title);
-  return page.includes(heading) || heading.includes(page);
+  return page.length > 0 && heading.length > 0 && (page.includes(heading) || heading.includes(page));
 };
+// A numbered identity may never rename a title the request already supplies.
+const matchesRequested = (request: CheckRequest, title: string) =>
+  !request.target.title.trim() || normalizeIdentity(request.target.title) === normalizeIdentity(title);
 const sectionBreak = /\n\s*(?:Recommended(?: Books)?|You May Also Like|Related (?:Books|Products)|Also by|The Complete Series|Customers Also|Reviews?)\b/i;
 
 // A verified block longer than one citation allows is split into exact pieces.
@@ -40,7 +43,7 @@ function macmillanNumbered(source: Source, request: CheckRequest): IdentityEvide
   if (!block) return null;
   const pattern = new RegExp(`^([^\\n]+)\\n(?:[^\\n]+\\n)?${escape(request.target.series)} \\(Volume ${request.target.position}\\)\\nAuthor: ${escape(request.target.author)}$`, 'i');
   const matched = pattern.exec(block);
-  if (!matched || !usableTitle(matched[1].trim()) || !titled(source, matched[1].trim())) return null;
+  if (!matched || !usableTitle(matched[1].trim()) || !titled(source, matched[1].trim()) || !matchesRequested(request, matched[1].trim())) return null;
   const citations = citationsFor(source, block);
   return citations.length ? { title: matched[1].trim(), author: request.target.author,
     position: request.target.position, citations } : null;
@@ -55,7 +58,7 @@ function aethonNumbered(source: Source, request: CheckRequest): IdentityEvidence
   const { series, author, position } = request.target;
   const pattern = new RegExp(`(?:^|\\n)[ \\t]*${flexible(series)}\\s+${position}:[ \\t]*([^\\n]+)\\n\\s*${flexible(series)}\\s+Book\\s+${position}\\s+By\\s+${flexible(author)}(?![\\w])`, 'gi');
   const found = [...head.matchAll(pattern)];
-  if (found.length !== 1 || !usableTitle(found[0][1].trim()) || !titled(source, found[0][1].trim())) return null;
+  if (found.length !== 1 || !usableTitle(found[0][1].trim()) || !titled(source, found[0][1].trim()) || !matchesRequested(request, found[0][1].trim())) return null;
   const citations = citationsFor(source, found[0][0].trim());
   return citations.length ? { title: found[0][1].trim(), author, position, citations } : null;
 }
@@ -72,7 +75,7 @@ function authorSiteContinuation(source: Source, request: CheckRequest): RelatedW
   const host = hostOf(source);
   const { series, author, title: requested } = request.target;
   const compact = author.toLowerCase().replace(/[^a-z0-9]/g, '');
-  if (!host || !compact || host.replace(/^www\./, '').split('.')[0] !== compact) return null;
+  if (!host || !compact || !new RegExp(`^(?:www\\.)?${compact}\\.[a-z]{2,24}$`).test(host)) return null;
   const lines = source.text.split('\n').map(line => line.trim()).filter(Boolean);
   // The page's own masthead must name the requested author.
   if (!lines.slice(0, 5).some(line => normalizeIdentity(line) === normalizeIdentity(author))) return null;
@@ -103,7 +106,13 @@ function macmillanPrequel(source: Source, request: CheckRequest): RelatedWorkEvi
   const copy = stop < 0 ? source.text : source.text.slice(0, stop);
   const known = [series, requested].map(item => item.trim()).filter(Boolean).map(item => flexible(item.replace(/^the\s+/i, ''))).join('|');
   const link = new RegExp(`\\bprequel\\s+(?:novel\\s+)?to\\s+(?:the\\s+)?(?:${known})\\b`, 'i');
-  const linked = sentences(copy).filter(item => link.test(item));
+  // The sentence must be about this product: it names the heading, or it is a
+  // lead sentence that itself opens with the prequel phrase. Negations never count.
+  const body = sentences(copy.slice(copy.indexOf(header) + header.length));
+  const opens = /^(?:an?\s+|the\s+)?(?:[\w'-]+\s+){0,2}prequel\s+(?:novel\s+)?to\b/i;
+  const negated = /\b(?:not|never|no|isn't|wasn't|nor)\b/i;
+  const linked = body.filter((item, index) => link.test(item) && !negated.test(item) &&
+    (item.toLowerCase().includes(title.toLowerCase()) || (index < 3 && opens.test(item))));
   if (linked.length !== 1) return null;
   const citations = [...lineQuote(source, title), ...lineQuote(source, authorLine), ...lineQuote(source, linked[0])];
   return citations.length === 3 ? { title, author, relationship: 'prequel', position: null, citations } : null;

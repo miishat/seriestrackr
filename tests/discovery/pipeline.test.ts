@@ -682,3 +682,36 @@ test('a primary-source search result yields related works and never numbered ide
   expect(result.summary.usage.tavily).toBeLessThanOrEqual(3);
   expect(parseCheckResponse(result).ok).toBe(true);
 });
+
+test('a late publisher identity survives 30 or more catalogue noise sources within the original counters', async () => {
+  const req = request({ formats: ['book'], target: { series: 'Novels of the Malazan Empire', author: 'Ian C. Esslemont', position: 5, title: '', orderNote: '' } });
+  const noise = Array.from({ length: 35 }, (_, i) => ({ id: `noise-${i}`, title: `Noise ${i}`, url: `https://example.com/noise-${i}`,
+    provider: 'tavily' as const, market: null, retrievedAt: '2026-09-29T12:00:00Z', text: `Unrelated catalogue entry number ${i}.` }));
+  const deps = dependencies({ sources: noise, identities: [], editions: [], related: [] });
+  const primary = 'Blood and Bone\nA Novel of the Malazan Empire\nNovels of the Malazan Empire (Volume 5)\nAuthor: Ian C. Esslemont\nBook Details';
+  deps.search = vi.fn(async () => ({ identities: [], editions: [], sources: [{ id: 'publisher', title: 'Blood and Bone',
+    url: 'https://us.macmillan.com/books/9781429943635/bloodandbone/', provider: 'tavily' as const, market: null,
+    retrievedAt: '2026-09-29T12:00:00Z', text: primary }] }));
+  const result = await runDiscovery(req, deps, new AbortController().signal);
+  expect(result.proposals.identity).toMatchObject({ title: 'Blood and Bone', position: 5 });
+  const ids = new Set(result.sources.map(item => item.id));
+  expect(result.sources.length).toBeLessThanOrEqual(30);
+  expect(result.proposals.identity!.citations.length).toBeGreaterThan(0);
+  expect(result.proposals.identity!.citations.every(item => ids.has(item.sourceId))).toBe(true);
+  expect(result.sources.some(item => item.url.includes('macmillan.com'))).toBe(true);
+  expect(result.summary.usage.tavily).toBeLessThanOrEqual(3);
+  expect(parseCheckResponse(result).ok).toBe(true);
+});
+
+test('more than 12 related claims are dropped whole under the budget, never capped', async () => {
+  const req = request({ formats: ['book'], target: { series: 'Example', author: 'Example Author', position: 2, title: 'Second', orderNote: '' } });
+  const sources = Array.from({ length: 13 }, (_, i) => ({ id: `rel-${i}`, title: `Prequel ${i}`, url: `https://example.com/rel-${i}`,
+    provider: 'tavily' as const, market: null, retrievedAt: '2026-09-29T12:00:00Z', text: `Prequel ${i} is a prequel to Example.` }));
+  const related = sources.map((item, i) => ({ title: `Prequel ${i}`, author: 'Example Author', relationship: 'prequel' as const,
+    position: null, citations: [{ sourceId: item.id, quote: `Prequel ${i} is a prequel to Example.` }] }));
+  const deps = dependencies({ sources, identities: [], editions: [], related }); deps.canSearch = false;
+  const result = await runDiscovery(req, deps, new AbortController().signal);
+  expect(result.proposals.related).toEqual([]);
+  expect(result.summary.reasons).toContain('budget');
+  expect(parseCheckResponse(result).ok).toBe(true);
+});

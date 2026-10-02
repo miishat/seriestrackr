@@ -127,3 +127,51 @@ test('custom order notes keep related works manual-only', () => {
   const req = request({ target: { series: 'S', author: 'A', position: 2, title: '', orderNote: 'Read in publication order' } });
   expect(selectProposals(req, { ...bundle([]), sources: [source({ id: 's1' })], related: [a] }, checkedAt).related).toEqual([]);
 });
+
+test.each([
+  'https://jzacharypike.attacker.example/blogs/highlights/crypt-currency-is-coming',
+  'https://jzacharypike.com.attacker.example/blogs/highlights/crypt-currency-is-coming',
+  'https://jzacharypike.example.com/blogs/highlights/crypt-currency-is-coming',
+  'https://jzacharypikefan.com/blogs/highlights/crypt-currency-is-coming',
+  'https://notjzacharypike.com/blogs/highlights/crypt-currency-is-coming',
+])('author-site continuation rejects spoofed host %s', url => {
+  expect(parseRelatedPrimary(pike(pikeText, url), pikeReq())).toBeNull();
+});
+
+test('author-site continuation accepts the exact registrable domain with optional www', () => {
+  expect(parseRelatedPrimary(pike(pikeText, 'https://www.jzacharypike.com/blog/x'), pikeReq())).not.toBeNull();
+});
+
+test('Macmillan prequel sentence about another book on the same author page is ignored', () => {
+  const text = "Other Book\nA Novel\nAuthor: Christopher Buehlman\nBook Details\nA standalone horror novel. Fans may also enjoy The Daughters' War, a prequel to Blacktongue.";
+  expect(parseRelatedPrimary({ ...mac(text), title: 'Other Book' }, blackReq())).toBeNull();
+});
+
+test.each([
+  'Not a prequel to Blacktongue, this is a standalone.',
+  "The Daughters' War is not a prequel to Blacktongue.",
+])('Macmillan prequel rejects negation: %s', sentence => {
+  const text = `The Daughters' War\nA Novel\nAuthor: Christopher Buehlman\nBook Details\n${sentence}`;
+  expect(parseRelatedPrimary(mac(text), blackReq())).toBeNull();
+});
+
+test('Macmillan prequel accepts a sentence naming the product heading', () => {
+  const text = "The Daughters' War\nA Novel\nAuthor: Christopher Buehlman\nBook Details\nA dark tale. The Daughters' War is a prequel to Blacktongue.";
+  expect(parseRelatedPrimary(mac(text), blackReq())).toMatchObject({ title: "The Daughters' War", relationship: 'prequel' });
+});
+
+test('numbered parsers never emit a title that differs from a supplied target title', () => {
+  const named = request({ target: { ...malazan().target, title: 'Another Title' } });
+  expect(parseNumberedPrimary(source({ text: product }), named)).toBeNull();
+  const matching = request({ target: { ...malazan().target, title: 'Blood and Bone' } });
+  expect(parseNumberedPrimary(source({ text: product }), matching)).toMatchObject({ title: 'Blood and Bone' });
+  const text = 'Home\nSeries\nBook of the Dead 5: Ascension\nBook of the Dead\nBook\n5\nBy\nRinoZ\nDescription';
+  const aethonNamed = request({ target: { ...aethonReq().target, title: 'Other' } });
+  expect(parseNumberedPrimary(aethon(text), aethonNamed)).toBeNull();
+});
+
+test('numbered parsers do not pass when the retrieved source title is empty', () => {
+  expect(parseNumberedPrimary(source({ title: '', text: product }), malazan())).toBeNull();
+  const text = 'Home\nSeries\nBook of the Dead 5: Ascension\nBook of the Dead\nBook\n5\nBy\nRinoZ\nDescription';
+  expect(parseNumberedPrimary({ ...aethon(text), title: '' }, aethonReq())).toBeNull();
+});
