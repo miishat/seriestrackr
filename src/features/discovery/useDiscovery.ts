@@ -8,6 +8,9 @@ import type { DiscoverySession } from './discoverySession';
 
 const staleMessage = 'The series changed. Check again before saving.';
 export function useDiscovery(library: ReturnType<typeof useLibrary>) {
+  const [batch, setBatch] = useState<{ running: boolean; total: number; done: number; results: DiscoverySession[] }>({ running: false, total: 0, done: 0, results: [] });
+  const batchToken = useRef(0);
+  const retainedReviews = useRef(new Set<string>());
   const [session, setSession] = useState<DiscoverySession | null>(null);
   const sessionRef = useRef(session);
   const libraryRef = useRef(library);
@@ -19,7 +22,8 @@ export function useDiscovery(library: ReturnType<typeof useLibrary>) {
   const invalidate = () => {
     generation.current += 1;
     controller.current?.abort();
-    if (sessionRef.current) libraryRef.current.cancelDiscovery(sessionRef.current.seriesId);
+    const current = sessionRef.current;
+    if (current && (!current.snapshot || !retainedReviews.current.has(current.snapshot.requestId))) libraryRef.current.cancelDiscovery(current.seriesId);
   };
   useEffect(() => {
     mounted.current = true;
@@ -28,6 +32,8 @@ export function useDiscovery(library: ReturnType<typeof useLibrary>) {
   const currentGeneration = (token: number) => mounted.current && token === generation.current;
   const close = () => { invalidate(); publish(null); };
   const open = (seriesId: string) => {
+    const cached = batch.results.find(item => item.seriesId === seriesId);
+    if (cached?.snapshot && libraryRef.current.isDiscoveryCurrent(cached.snapshot)) { invalidate(); publish(cached); return; }
     invalidate();
     const series = libraryRef.current.doc.series.find(item => item.id === seriesId);
     if (!series || series.readingStatus === 'completed') { publish(null); return; }
@@ -82,5 +88,37 @@ export function useDiscovery(library: ReturnType<typeof useLibrary>) {
     if (accepted.ok) close();
     return accepted;
   };
-  return { session, open, run, close, accept };
+  const runBatch = async (seriesIds: string[]) => {
+    if (batch.running) return;
+    close();
+    const token = ++batchToken.current;
+    const ids = [...new Set(seriesIds)].filter(id => libraryRef.current.doc.series.some(s => s.id === id && s.readingStatus === 'active'));
+    setBatch({ running: true, total: ids.length, done: 0, results: [] });
+    const results: DiscoverySession[] = [];
+    for (const seriesId of ids) {
+      if (token !== batchToken.current || !mounted.current) break;
+      // Preserve completed snapshots for review instead of cancelling them.
+      publish({ seriesId, phase: 'ready', capabilities: null, snapshot: null, response: null, error: null });
+      await run(false);
+      if (token !== batchToken.current || !mounted.current) break;
+      const result = sessionRef.current;
+      if (result) {
+        results.push(result);
+        if (result.snapshot && result.response) retainedReviews.current.add(result.snapshot.requestId);
+      }
+      publish(null);
+      setBatch({ running: true, total: ids.length, done: results.length, results: [...results] });
+      if (result?.error?.includes('unavailable') || result?.error?.includes('quota') || result?.response?.summary.reasons.includes('quota')) break;
+    }
+    if (token === batchToken.current && mounted.current) {
+      publish(null);
+      setBatch({ running: false, total: ids.length, done: results.length, results: [...results] });
+    }
+  };
+  const cancelBatch = () => {
+    ++batchToken.current;
+    close();
+    setBatch(previous => ({ ...previous, running: false }));
+  };
+  return { session, open, run, close, accept, batch, runBatch, cancelBatch };
 }

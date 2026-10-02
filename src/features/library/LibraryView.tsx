@@ -29,7 +29,8 @@ function FilterMenu<T extends string>({ label, allLabel, options, selected, onCh
     <div className="filter-panel" role="group" aria-label={label}>{options.map(([value, text]) => <label key={value}><input type="checkbox" aria-label={`${label}: ${text}`} checked={selected.includes(value)} onChange={(event) => toggle(value, event.target.checked)} />{text}</label>)}</div>
   </details>;
 }
-export function LibraryView({ doc, today, onEdit, onFinish, onCheck, checkingSeriesId = null, onAdd, onView }: {
+export function LibraryView({ doc, today, onEdit, onFinish, onCheck, checkingSeriesId = null, onAdd, onView, onCheckAll, batchRunning = false }: {
+  onCheckAll?: (seriesIds: string[]) => void; batchRunning?: boolean;
   doc: LibraryDocument; today: string; onEdit: (series: Series) => void; onFinish: (series: Series) => void; onCheck?: (series: Series) => void; checkingSeriesId?: string | null; onAdd: () => void; onView: (view: LibraryDocument['settings']['view']) => void;
 }) {
   const [query, setQuery] = useState('');
@@ -49,6 +50,7 @@ export function LibraryView({ doc, today, onEdit, onFinish, onCheck, checkingSer
       <div className="library-search-row">
         <label className="visually-hidden" htmlFor="library-search">Search series or author</label><input id="library-search" type="search" placeholder="Search series or author" value={query} onChange={(event) => setQuery(event.target.value)} />
         <button className="primary" onClick={onAdd}>Add series</button>
+        {onCheckAll && <button disabled={batchRunning || !filtered.some(s => s.readingStatus === 'active')} onClick={() => onCheckAll(filtered.filter(s => s.readingStatus === 'active').map(s => s.id))}>Check visible releases</button>}
       </div>
       <div className="library-options-row">
         <div className="library-filter-group" role="group" aria-labelledby="library-filters-label">
