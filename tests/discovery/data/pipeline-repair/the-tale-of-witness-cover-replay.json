@@ -1,0 +1,79 @@
+{
+ "request": {
+  "requestId": "replay-cover-the-tale-of-witness",
+  "seriesId": "replay-the-tale-of-witness",
+  "series": "The Tale of Witness",
+  "author": "Steven Erikson",
+  "nextTitle": "Legacies of Betrayal",
+  "position": 3,
+  "previousTitle": "No Life Forsaken",
+  "preferredMarket": "US"
+ },
+ "responses": [
+  {
+   "url": "https://api.hardcover.app/v1/graphql",
+   "query": {
+    "names": [
+     "The Tale of Witness",
+     "Tale of Witness",
+     "Witness",
+     "The Witness",
+     "Witness Series",
+     "Witness Mysteries",
+     "Witness Trilogy",
+     "Tales of Witness"
+    ],
+    "author": "Steven Erikson",
+    "positions": [
+     3,
+     2
+    ]
+   },
+   "status": 200,
+   "contentType": "application/json",
+   "body": "{\"data\":{\"series\":[]}}"
+  },
+  {
+   "url": "https://www.googleapis.com/books/v1/volumes?q=intitle%3ALegacies+of+Betrayal+inauthor%3ASteven+Erikson&maxResults=20&langRestrict=en",
+   "query": null,
+   "status": 200,
+   "contentType": "application/json; charset=UTF-8",
+   "body": "{\"kind\":\"books#volumes\",\"totalItems\":0}"
+  },
+  {
+   "url": "https://itunes.apple.com/search?term=Legacies+of+Betrayal+Steven+Erikson&country=us&entity=ebook&limit=20",
+   "query": null,
+   "status": 200,
+   "contentType": "text/javascript; charset=utf-8",
+   "body": "{\"resultCount\":2,\"results\":[{\"trackId\":6775515467,\"trackName\":\"Legacies of Betrayal\",\"artworkUrl100\":\"https://is1-ssl.mzstatic.com/image/thumb/Publication211/v4/0c/48/9e/0c489e91-505f-5013-5889-44b3f16e7d46/9780765399960.jpg/100x100bb.jpg\",\"trackViewUrl\":\"https://books.apple.com/us/book/legacies-of-betrayal/id6775515467?uo=4\",\"artworkUrl60\":\"https://is1-ssl.mzstatic.com/image/thumb/Publication211/v4/0c/48/9e/0c489e91-505f-5013-5889-44b3f16e7d46/9780765399960.jpg/60x60bb.jpg\",\"artistId\":409271502,\"artistName\":\"Steven Erikson\",\"releaseDate\":\"2026-10-06T07:00:00Z\",\"kind\":\"ebook\"},{\"trackId\":385992927,\"trackName\":\"Toll the Hounds\",\"artworkUrl100\":\"https://is1-ssl.mzstatic.com/image/thumb/Publication/f9/3d/ef/mzi.jtdcpdhy.jpg/100x100bb.jpg\",\"trackViewUrl\":\"https://books.apple.com/us/book/toll-the-hounds/id385992927?uo=4\",\"artworkUrl60\":\"https://is1-ssl.mzstatic.com/image/thumb/Publication/f9/3d/ef/mzi.jtdcpdhy.jpg/60x60bb.jpg\",\"artistId\":409271502,\"artistName\":\"Steven Erikson\",\"releaseDate\":\"2008-09-16T07:00:00Z\",\"kind\":\"ebook\"}]}"
+  },
+  {
+   "url": "https://openlibrary.org/search.json?title=Legacies+of+Betrayal&author=Steven+Erikson&limit=20&fields=key%2Ctitle%2Cauthor_name%2Ccover_edition_key%2Ccover_i",
+   "query": null,
+   "status": 200,
+   "contentType": "application/json",
+   "body": "{\"numFound\":0,\"start\":0,\"numFoundExact\":true,\"num_found\":0,\"documentation_url\":\"https://openlibrary.org/dev/docs/api/search\",\"q\":\"\",\"offset\":null,\"docs\":[]}"
+  },
+  {
+   "url": "https://www.googleapis.com/books/v1/volumes?q=intitle%3ALegacies+of+Betrayal&maxResults=20&langRestrict=en",
+   "query": null,
+   "status": 200,
+   "contentType": "application/json; charset=UTF-8",
+   "body": "{\"kind\":\"books#volumes\",\"totalItems\":0}"
+  },
+  {
+   "url": "https://openlibrary.org/search.json?title=Legacies+of+Betrayal&limit=20&fields=key%2Ctitle%2Cauthor_name%2Ccover_edition_key%2Ccover_i",
+   "query": null,
+   "status": 200,
+   "contentType": "application/json",
+   "body": "{\"numFound\":0,\"start\":0,\"numFoundExact\":true,\"num_found\":0,\"documentation_url\":\"https://openlibrary.org/dev/docs/api/search\",\"q\":\"\",\"offset\":null,\"docs\":[]}"
+  },
+  {
+   "url": "https://itunes.apple.com/search?term=Legacies+of+Betrayal+Steven+Erikson&country=us&entity=audiobook&limit=20",
+   "query": null,
+   "status": 200,
+   "contentType": "text/javascript; charset=utf-8",
+   "body": "{\"resultCount\":0,\"results\":[]}"
+  }
+ ]
+}

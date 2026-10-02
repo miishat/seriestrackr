@@ -52,5 +52,1079 @@
       "purpose": "Synthetic Macmillan, Aethon, author-site and prequel parser shapes using real product URLs; no descriptions, prices, preview URLs or credentials. Macmillan HTTP403 bodies are not successful publisher content. Aethon heading/series/byline order follows the captured ascension-publisher.html structure.",
       "expectedRejectedRule": null
     }
-  ]
+  ],
+  "replays": {
+    "note": "Each response row is listed in order. captured rows keep the investigation source file and request start time; captured-rekeyed rows reuse a captured body under the URL the current request builder emits (Open Library fields and limit, keyed Google); synthetic rows were written for this suite and are not provider output. Apple product pages are reduced to the canonical link, the Book or Audiobook JSON-LD block, the product heading and the infobar badges; other bodies drop descriptions, prices and preview links. Credentials were never recorded and request keys are removed before matching.",
+    "sourceRoot": "docs/investigations/2026-10-01-release-pipeline",
+    "fixtures": [
+      {
+        "fixture": "ana-and-din-mysteries-replay.json",
+        "kind": "release",
+        "responses": [
+          {
+            "index": 0,
+            "origin": "captured",
+            "source": "ana-and-din-mysteries/release-1.json",
+            "capturedAt": "2026-10-02T00:34:26.136Z"
+          },
+          {
+            "index": 1,
+            "origin": "captured",
+            "source": "ana-and-din-mysteries/release-2.json",
+            "capturedAt": "2026-10-02T00:34:26.285Z"
+          },
+          {
+            "index": 2,
+            "origin": "captured",
+            "source": "ana-and-din-mysteries/release-3.json",
+            "capturedAt": "2026-10-02T00:34:28.796Z"
+          },
+          {
+            "index": 3,
+            "origin": "captured",
+            "source": "ana-and-din-mysteries/release-4.json",
+            "capturedAt": "2026-10-02T00:34:31.904Z"
+          },
+          {
+            "index": 4,
+            "origin": "captured",
+            "source": "ana-and-din-mysteries/release-5.json",
+            "capturedAt": "2026-10-02T00:34:31.977Z"
+          },
+          {
+            "index": 5,
+            "origin": "captured",
+            "source": "ana-and-din-mysteries/release-6.json",
+            "capturedAt": "2026-10-02T00:34:35.005Z"
+          },
+          {
+            "index": 6,
+            "origin": "captured",
+            "source": "ana-and-din-mysteries/release-7.json",
+            "capturedAt": "2026-10-02T00:34:38.110Z"
+          },
+          {
+            "index": 7,
+            "origin": "captured",
+            "source": "ana-and-din-mysteries/release-8.json",
+            "capturedAt": "2026-10-02T00:34:41.218Z"
+          },
+          {
+            "index": 8,
+            "origin": "captured",
+            "source": "ana-and-din-mysteries/release-9.json",
+            "capturedAt": "2026-10-02T00:34:44.332Z"
+          },
+          {
+            "index": 9,
+            "origin": "captured",
+            "source": "ana-and-din-mysteries/release-10.json",
+            "capturedAt": "2026-10-02T00:34:44.350Z"
+          },
+          {
+            "index": 10,
+            "origin": "captured",
+            "source": "ana-and-din-mysteries/release-11.json",
+            "capturedAt": "2026-10-02T00:34:44.513Z"
+          },
+          {
+            "index": 11,
+            "origin": "synthetic",
+            "purpose": "no-records api.tavily.com"
+          }
+        ]
+      },
+      {
+        "fixture": "book-of-the-dead-replay.json",
+        "kind": "release",
+        "responses": [
+          {
+            "index": 0,
+            "origin": "captured",
+            "source": "book-of-the-dead/release-1.json",
+            "capturedAt": "2026-10-02T00:35:00.046Z"
+          },
+          {
+            "index": 1,
+            "origin": "captured",
+            "source": "book-of-the-dead/release-2.json",
+            "capturedAt": "2026-10-02T00:35:00.198Z"
+          },
+          {
+            "index": 2,
+            "origin": "captured",
+            "source": "book-of-the-dead/release-3.json",
+            "capturedAt": "2026-10-02T00:35:02.968Z"
+          },
+          {
+            "index": 3,
+            "origin": "captured",
+            "source": "book-of-the-dead/release-4.json",
+            "capturedAt": "2026-10-02T00:35:06.083Z"
+          },
+          {
+            "index": 4,
+            "origin": "captured",
+            "source": "ascension-apple-product.html"
+          },
+          {
+            "index": 5,
+            "origin": "captured",
+            "source": "book-of-the-dead/release-5.json",
+            "capturedAt": "2026-10-02T00:35:06.093Z"
+          },
+          {
+            "index": 6,
+            "origin": "captured",
+            "source": "book-of-the-dead/release-6.json",
+            "capturedAt": "2026-10-02T00:35:09.200Z"
+          },
+          {
+            "index": 7,
+            "origin": "captured",
+            "source": "book-of-the-dead/release-8.json",
+            "capturedAt": "2026-10-02T00:35:15.404Z"
+          },
+          {
+            "index": 8,
+            "origin": "captured",
+            "source": "book-of-the-dead/release-10.json",
+            "capturedAt": "2026-10-02T00:35:18.538Z"
+          },
+          {
+            "index": 9,
+            "origin": "captured",
+            "source": "book-of-the-dead/release-11.json",
+            "capturedAt": "2026-10-02T00:35:18.882Z"
+          }
+        ]
+      },
+      {
+        "fixture": "novels-of-the-malazan-empire-replay.json",
+        "kind": "release",
+        "responses": [
+          {
+            "index": 0,
+            "origin": "captured",
+            "source": "novels-of-the-malazan-empire/release-1.json",
+            "capturedAt": "2026-10-02T00:35:19.152Z"
+          },
+          {
+            "index": 1,
+            "origin": "synthetic",
+            "purpose": "no-records www.googleapis.com"
+          },
+          {
+            "index": 2,
+            "origin": "synthetic",
+            "purpose": "no-records itunes.apple.com"
+          },
+          {
+            "index": 3,
+            "origin": "synthetic",
+            "purpose": "no-records itunes.apple.com"
+          },
+          {
+            "index": 4,
+            "origin": "synthetic",
+            "purpose": "no-records openlibrary.org"
+          },
+          {
+            "index": 5,
+            "origin": "synthetic",
+            "purpose": "no-records itunes.apple.com"
+          },
+          {
+            "index": 6,
+            "origin": "synthetic",
+            "purpose": "no-records itunes.apple.com"
+          },
+          {
+            "index": 7,
+            "origin": "synthetic",
+            "purpose": "no-records itunes.apple.com"
+          },
+          {
+            "index": 8,
+            "origin": "synthetic",
+            "purpose": "no-records itunes.apple.com"
+          },
+          {
+            "index": 9,
+            "origin": "synthetic",
+            "purpose": "no-records itunes.apple.com"
+          },
+          {
+            "index": 10,
+            "origin": "synthetic",
+            "purpose": "no-records api.tavily.com"
+          },
+          {
+            "index": 11,
+            "origin": "synthetic",
+            "purpose": "no-records api.tavily.com"
+          }
+        ]
+      },
+      {
+        "fixture": "path-to-ascendancy-replay.json",
+        "kind": "release",
+        "responses": [
+          {
+            "index": 0,
+            "origin": "captured",
+            "source": "path-to-ascendancy/release-1.json",
+            "capturedAt": "2026-10-02T00:35:37.524Z"
+          },
+          {
+            "index": 1,
+            "origin": "captured",
+            "source": "path-to-ascendancy/release-2.json",
+            "capturedAt": "2026-10-02T00:35:37.722Z"
+          },
+          {
+            "index": 2,
+            "origin": "captured",
+            "source": "path-to-ascendancy/release-3.json",
+            "capturedAt": "2026-10-02T00:35:40.273Z"
+          },
+          {
+            "index": 3,
+            "origin": "captured",
+            "source": "path-to-ascendancy/release-4.json",
+            "capturedAt": "2026-10-02T00:35:43.382Z"
+          },
+          {
+            "index": 4,
+            "origin": "captured",
+            "source": "path-to-ascendancy/release-5.json",
+            "capturedAt": "2026-10-02T00:35:43.484Z"
+          },
+          {
+            "index": 5,
+            "origin": "captured",
+            "source": "path-to-ascendancy/release-6.json",
+            "capturedAt": "2026-10-02T00:35:44.598Z"
+          },
+          {
+            "index": 6,
+            "origin": "captured",
+            "source": "path-to-ascendancy/release-7.json",
+            "capturedAt": "2026-10-02T00:35:45.711Z"
+          },
+          {
+            "index": 7,
+            "origin": "captured",
+            "source": "path-to-ascendancy/release-8.json",
+            "capturedAt": "2026-10-02T00:35:46.492Z"
+          },
+          {
+            "index": 8,
+            "origin": "captured",
+            "source": "path-to-ascendancy/release-9.json",
+            "capturedAt": "2026-10-02T00:35:49.596Z"
+          },
+          {
+            "index": 9,
+            "origin": "captured",
+            "source": "path-to-ascendancy/release-10.json",
+            "capturedAt": "2026-10-02T00:35:52.699Z"
+          },
+          {
+            "index": 10,
+            "origin": "captured",
+            "source": "path-to-ascendancy/release-11.json",
+            "capturedAt": "2026-10-02T00:35:55.809Z"
+          },
+          {
+            "index": 11,
+            "origin": "captured",
+            "source": "path-to-ascendancy/release-12.json",
+            "capturedAt": "2026-10-02T00:35:55.821Z"
+          },
+          {
+            "index": 12,
+            "origin": "captured",
+            "source": "path-to-ascendancy/release-13.json",
+            "capturedAt": "2026-10-02T00:35:56.003Z"
+          },
+          {
+            "index": 13,
+            "origin": "synthetic",
+            "purpose": "no-records api.tavily.com"
+          }
+        ]
+      },
+      {
+        "fixture": "the-band-replay.json",
+        "kind": "release",
+        "responses": [
+          {
+            "index": 0,
+            "origin": "captured",
+            "source": "the-band/release-1.json",
+            "capturedAt": "2026-10-02T00:47:12.556Z"
+          },
+          {
+            "index": 1,
+            "origin": "captured",
+            "source": "the-band/release-2.json",
+            "capturedAt": "2026-10-02T00:47:12.761Z"
+          },
+          {
+            "index": 2,
+            "origin": "captured",
+            "source": "the-band/release-3.json",
+            "capturedAt": "2026-10-02T00:47:13.107Z"
+          },
+          {
+            "index": 3,
+            "origin": "captured",
+            "source": "the-band/release-4.json",
+            "capturedAt": "2026-10-02T00:47:16.215Z"
+          },
+          {
+            "index": 4,
+            "origin": "captured",
+            "source": "the-band/release-5.html",
+            "capturedAt": "2026-10-02T00:47:19.321Z"
+          },
+          {
+            "index": 5,
+            "origin": "captured",
+            "source": "the-band/release-6.html",
+            "capturedAt": "2026-10-02T00:47:22.429Z"
+          },
+          {
+            "index": 6,
+            "origin": "captured",
+            "source": "the-band/release-7.json",
+            "capturedAt": "2026-10-02T00:47:22.784Z"
+          },
+          {
+            "index": 7,
+            "origin": "captured",
+            "source": "the-band/release-8.json",
+            "capturedAt": "2026-10-02T00:47:23.896Z"
+          }
+        ]
+      },
+      {
+        "fixture": "the-blacktongue-thief-replay.json",
+        "kind": "release",
+        "responses": [
+          {
+            "index": 0,
+            "origin": "captured",
+            "source": "the-blacktongue-thief/release-1.json",
+            "capturedAt": "2026-10-02T00:33:10.543Z"
+          },
+          {
+            "index": 1,
+            "origin": "captured",
+            "source": "the-blacktongue-thief/release-2.json",
+            "capturedAt": "2026-10-02T00:33:10.716Z"
+          },
+          {
+            "index": 2,
+            "origin": "captured",
+            "source": "the-blacktongue-thief/release-3.json",
+            "capturedAt": "2026-10-02T00:33:11.104Z"
+          },
+          {
+            "index": 3,
+            "origin": "captured",
+            "source": "the-blacktongue-thief/release-4.json",
+            "capturedAt": "2026-10-02T00:33:14.211Z"
+          },
+          {
+            "index": 4,
+            "origin": "captured",
+            "source": "the-blacktongue-thief/release-5.json",
+            "capturedAt": "2026-10-02T00:33:14.291Z"
+          },
+          {
+            "index": 5,
+            "origin": "captured",
+            "source": "the-blacktongue-thief/release-6.json",
+            "capturedAt": "2026-10-02T00:33:15.401Z"
+          },
+          {
+            "index": 6,
+            "origin": "captured",
+            "source": "the-blacktongue-thief/release-7.json",
+            "capturedAt": "2026-10-02T00:33:16.508Z"
+          },
+          {
+            "index": 7,
+            "origin": "captured",
+            "source": "the-blacktongue-thief/release-8.json",
+            "capturedAt": "2026-10-02T00:33:17.321Z"
+          },
+          {
+            "index": 8,
+            "origin": "captured",
+            "source": "the-blacktongue-thief/release-9.json",
+            "capturedAt": "2026-10-02T00:33:20.436Z"
+          },
+          {
+            "index": 9,
+            "origin": "captured",
+            "source": "the-blacktongue-thief/release-10.json",
+            "capturedAt": "2026-10-02T00:33:23.550Z"
+          },
+          {
+            "index": 10,
+            "origin": "captured",
+            "source": "the-blacktongue-thief/release-11.json",
+            "capturedAt": "2026-10-02T00:33:26.653Z"
+          },
+          {
+            "index": 11,
+            "origin": "captured",
+            "source": "the-blacktongue-thief/release-12.json",
+            "capturedAt": "2026-10-02T00:33:26.680Z"
+          },
+          {
+            "index": 12,
+            "origin": "captured",
+            "source": "the-blacktongue-thief/release-13.json",
+            "capturedAt": "2026-10-02T00:33:26.811Z"
+          },
+          {
+            "index": 13,
+            "origin": "synthetic",
+            "purpose": "primary-search-response"
+          }
+        ]
+      },
+      {
+        "fixture": "the-dark-profit-saga-replay.json",
+        "kind": "release",
+        "responses": [
+          {
+            "index": 0,
+            "origin": "captured",
+            "source": "the-dark-profit-saga/release-1.json",
+            "capturedAt": "2026-10-02T00:34:07.437Z"
+          },
+          {
+            "index": 1,
+            "origin": "captured",
+            "source": "the-dark-profit-saga/release-2.json",
+            "capturedAt": "2026-10-02T00:34:07.621Z"
+          },
+          {
+            "index": 2,
+            "origin": "captured",
+            "source": "the-dark-profit-saga/release-3.json",
+            "capturedAt": "2026-10-02T00:34:10.155Z"
+          },
+          {
+            "index": 3,
+            "origin": "captured",
+            "source": "the-dark-profit-saga/release-4.json",
+            "capturedAt": "2026-10-02T00:34:13.257Z"
+          },
+          {
+            "index": 4,
+            "origin": "captured",
+            "source": "the-dark-profit-saga/release-5.json",
+            "capturedAt": "2026-10-02T00:34:13.370Z"
+          },
+          {
+            "index": 5,
+            "origin": "captured",
+            "source": "the-dark-profit-saga/release-6.json",
+            "capturedAt": "2026-10-02T00:34:16.369Z"
+          },
+          {
+            "index": 6,
+            "origin": "captured",
+            "source": "the-dark-profit-saga/release-7.json",
+            "capturedAt": "2026-10-02T00:34:19.475Z"
+          },
+          {
+            "index": 7,
+            "origin": "captured",
+            "source": "the-dark-profit-saga/release-8.json",
+            "capturedAt": "2026-10-02T00:34:22.588Z"
+          },
+          {
+            "index": 8,
+            "origin": "captured",
+            "source": "the-dark-profit-saga/release-9.json",
+            "capturedAt": "2026-10-02T00:34:25.694Z"
+          },
+          {
+            "index": 9,
+            "origin": "captured",
+            "source": "the-dark-profit-saga/release-10.json",
+            "capturedAt": "2026-10-02T00:34:25.765Z"
+          },
+          {
+            "index": 10,
+            "origin": "captured",
+            "source": "the-dark-profit-saga/release-11.json",
+            "capturedAt": "2026-10-02T00:34:25.924Z"
+          },
+          {
+            "index": 11,
+            "origin": "synthetic",
+            "purpose": "primary-search-response"
+          }
+        ]
+      },
+      {
+        "fixture": "the-devils-replay.json",
+        "kind": "release",
+        "responses": [
+          {
+            "index": 0,
+            "origin": "captured",
+            "source": "the-devils/release-1.json",
+            "capturedAt": "2026-10-02T00:34:44.731Z"
+          },
+          {
+            "index": 1,
+            "origin": "captured",
+            "source": "the-devils/release-2.json",
+            "capturedAt": "2026-10-02T00:34:44.916Z"
+          },
+          {
+            "index": 2,
+            "origin": "captured",
+            "source": "the-devils/release-3.json",
+            "capturedAt": "2026-10-02T00:34:47.434Z"
+          },
+          {
+            "index": 3,
+            "origin": "captured",
+            "source": "the-devils/release-4.json",
+            "capturedAt": "2026-10-02T00:34:50.546Z"
+          },
+          {
+            "index": 4,
+            "origin": "captured",
+            "source": "the-devils/release-5.html",
+            "capturedAt": "2026-10-02T00:34:53.658Z"
+          },
+          {
+            "index": 5,
+            "origin": "captured",
+            "source": "the-devils/release-6.json",
+            "capturedAt": "2026-10-02T00:34:53.745Z"
+          },
+          {
+            "index": 6,
+            "origin": "captured",
+            "source": "the-devils/release-7.json",
+            "capturedAt": "2026-10-02T00:34:56.759Z"
+          },
+          {
+            "index": 7,
+            "origin": "captured",
+            "source": "the-devils/release-8.json",
+            "capturedAt": "2026-10-02T00:34:59.862Z"
+          },
+          {
+            "index": 8,
+            "origin": "captured",
+            "source": "the-devils/release-9.json",
+            "capturedAt": "2026-10-02T00:34:59.878Z"
+          }
+        ]
+      },
+      {
+        "fixture": "the-last-horizon-replay.json",
+        "kind": "release",
+        "responses": [
+          {
+            "index": 0,
+            "origin": "captured",
+            "source": "the-last-horizon/release-1.json",
+            "capturedAt": "2026-10-02T00:33:48.466Z"
+          },
+          {
+            "index": 1,
+            "origin": "captured",
+            "source": "the-last-horizon/release-2.json",
+            "capturedAt": "2026-10-02T00:33:48.662Z"
+          },
+          {
+            "index": 2,
+            "origin": "captured",
+            "source": "the-last-horizon/release-3.json",
+            "capturedAt": "2026-10-02T00:33:51.491Z"
+          },
+          {
+            "index": 3,
+            "origin": "captured",
+            "source": "the-last-horizon/release-4.json",
+            "capturedAt": "2026-10-02T00:33:54.599Z"
+          },
+          {
+            "index": 4,
+            "origin": "captured",
+            "source": "the-last-horizon/release-5.json",
+            "capturedAt": "2026-10-02T00:33:54.612Z"
+          },
+          {
+            "index": 5,
+            "origin": "captured",
+            "source": "the-last-horizon/release-6.json",
+            "capturedAt": "2026-10-02T00:33:57.713Z"
+          },
+          {
+            "index": 6,
+            "origin": "captured",
+            "source": "the-last-horizon/release-7.json",
+            "capturedAt": "2026-10-02T00:34:00.818Z"
+          },
+          {
+            "index": 7,
+            "origin": "captured",
+            "source": "the-last-horizon/release-8.json",
+            "capturedAt": "2026-10-02T00:34:03.932Z"
+          },
+          {
+            "index": 8,
+            "origin": "captured",
+            "source": "the-last-horizon/release-9.json",
+            "capturedAt": "2026-10-02T00:34:07.049Z"
+          },
+          {
+            "index": 9,
+            "origin": "captured",
+            "source": "the-last-horizon/release-10.json",
+            "capturedAt": "2026-10-02T00:34:07.067Z"
+          },
+          {
+            "index": 10,
+            "origin": "captured",
+            "source": "the-last-horizon/release-11.json",
+            "capturedAt": "2026-10-02T00:34:07.225Z"
+          },
+          {
+            "index": 11,
+            "origin": "synthetic",
+            "purpose": "no-records api.tavily.com"
+          }
+        ]
+      },
+      {
+        "fixture": "the-sun-eater-replay.json",
+        "kind": "release",
+        "responses": [
+          {
+            "index": 0,
+            "origin": "captured",
+            "source": "the-sun-eater/release-1.json",
+            "capturedAt": "2026-10-02T00:47:01.825Z"
+          },
+          {
+            "index": 1,
+            "origin": "captured",
+            "source": "the-sun-eater/release-2.json",
+            "capturedAt": "2026-10-02T00:47:02.072Z"
+          },
+          {
+            "index": 2,
+            "origin": "captured",
+            "source": "the-sun-eater/release-3.json",
+            "capturedAt": "2026-10-02T00:47:02.393Z"
+          },
+          {
+            "index": 3,
+            "origin": "captured",
+            "source": "the-sun-eater/release-4.json",
+            "capturedAt": "2026-10-02T00:47:05.495Z"
+          },
+          {
+            "index": 4,
+            "origin": "captured",
+            "source": "the-sun-eater/release-5.html",
+            "capturedAt": "2026-10-02T00:47:08.609Z"
+          },
+          {
+            "index": 5,
+            "origin": "captured",
+            "source": "the-sun-eater/release-6.json",
+            "capturedAt": "2026-10-02T00:47:09.308Z"
+          },
+          {
+            "index": 6,
+            "origin": "captured",
+            "source": "the-sun-eater/release-7.json",
+            "capturedAt": "2026-10-02T00:47:10.420Z"
+          },
+          {
+            "index": 7,
+            "origin": "captured",
+            "source": "the-sun-eater/release-8.json",
+            "capturedAt": "2026-10-02T00:47:11.533Z"
+          },
+          {
+            "index": 8,
+            "origin": "captured",
+            "source": "the-sun-eater/release-9.json",
+            "capturedAt": "2026-10-02T00:47:11.717Z"
+          },
+          {
+            "index": 9,
+            "origin": "captured",
+            "source": "the-sun-eater/release-10.html",
+            "capturedAt": "2026-10-02T00:47:14.817Z"
+          },
+          {
+            "index": 10,
+            "origin": "captured",
+            "source": "the-sun-eater/release-11.json",
+            "capturedAt": "2026-10-02T00:47:17.925Z"
+          }
+        ]
+      },
+      {
+        "fixture": "the-tale-of-witness-replay.json",
+        "kind": "release",
+        "responses": [
+          {
+            "index": 0,
+            "origin": "captured",
+            "source": "the-tale-of-witness/release-1.json",
+            "capturedAt": "2026-10-02T00:33:26.979Z"
+          },
+          {
+            "index": 1,
+            "origin": "captured",
+            "source": "the-tale-of-witness/release-2.json",
+            "capturedAt": "2026-10-02T00:33:27.154Z"
+          },
+          {
+            "index": 2,
+            "origin": "captured",
+            "source": "the-tale-of-witness/release-3.json",
+            "capturedAt": "2026-10-02T00:33:29.757Z"
+          },
+          {
+            "index": 3,
+            "origin": "captured",
+            "source": "the-tale-of-witness/release-4.json",
+            "capturedAt": "2026-10-02T00:33:32.860Z"
+          },
+          {
+            "index": 4,
+            "origin": "captured",
+            "source": "the-tale-of-witness/release-5.html",
+            "capturedAt": "2026-10-02T00:33:35.962Z"
+          },
+          {
+            "index": 5,
+            "origin": "captured",
+            "source": "the-tale-of-witness/release-6.json",
+            "capturedAt": "2026-10-02T00:33:36.056Z"
+          },
+          {
+            "index": 6,
+            "origin": "captured",
+            "source": "the-tale-of-witness/release-7.json",
+            "capturedAt": "2026-10-02T00:33:39.072Z"
+          },
+          {
+            "index": 7,
+            "origin": "captured",
+            "source": "the-tale-of-witness/release-8.html",
+            "capturedAt": "2026-10-02T00:33:42.180Z"
+          },
+          {
+            "index": 8,
+            "origin": "captured",
+            "source": "the-tale-of-witness/release-9.json",
+            "capturedAt": "2026-10-02T00:33:45.283Z"
+          },
+          {
+            "index": 9,
+            "origin": "captured",
+            "source": "the-tale-of-witness/release-10.html",
+            "capturedAt": "2026-10-02T00:33:48.389Z"
+          }
+        ]
+      },
+      {
+        "fixture": "the-tale-of-witness-cover-replay.json",
+        "kind": "cover",
+        "responses": [
+          {
+            "index": 0,
+            "origin": "synthetic",
+            "purpose": "no-records api.hardcover.app"
+          },
+          {
+            "index": 1,
+            "origin": "captured",
+            "source": "the-tale-of-witness/release-2.json",
+            "capturedAt": "2026-10-02T00:33:27.154Z"
+          },
+          {
+            "index": 2,
+            "origin": "captured",
+            "source": "the-tale-of-witness/release-3.json",
+            "capturedAt": "2026-10-02T00:33:29.757Z"
+          },
+          {
+            "index": 3,
+            "origin": "captured-rekeyed",
+            "source": "the-tale-of-witness/cover-1.json",
+            "capturedAt": "2026-10-02T00:33:29.668Z"
+          },
+          {
+            "index": 4,
+            "origin": "synthetic",
+            "purpose": "no-records www.googleapis.com"
+          },
+          {
+            "index": 5,
+            "origin": "captured-rekeyed",
+            "source": "the-tale-of-witness/cover-1.json",
+            "capturedAt": "2026-10-02T00:33:29.668Z"
+          },
+          {
+            "index": 6,
+            "origin": "captured",
+            "source": "the-tale-of-witness/release-4.json",
+            "capturedAt": "2026-10-02T00:33:32.860Z"
+          }
+        ]
+      },
+      {
+        "fixture": "ana-and-din-mysteries-cover-replay.json",
+        "kind": "cover",
+        "responses": [
+          {
+            "index": 0,
+            "origin": "synthetic",
+            "purpose": "no-records api.hardcover.app"
+          },
+          {
+            "index": 1,
+            "origin": "captured-rekeyed",
+            "source": "ana-and-din-mysteries/cover-2.json",
+            "capturedAt": "2026-10-02T00:33:30.467Z"
+          },
+          {
+            "index": 2,
+            "origin": "captured-rekeyed",
+            "source": "ana-and-din-mysteries/cover-1.json",
+            "capturedAt": "2026-10-02T00:33:30.467Z"
+          },
+          {
+            "index": 3,
+            "origin": "captured-rekeyed",
+            "source": "controls.json#8 (Bennett-author control served for the Benett request)"
+          },
+          {
+            "index": 4,
+            "origin": "captured-rekeyed",
+            "source": "ana-and-din-mysteries/cover-1.json",
+            "capturedAt": "2026-10-02T00:33:30.467Z"
+          },
+          {
+            "index": 5,
+            "origin": "synthetic",
+            "purpose": "no-records itunes.apple.com"
+          },
+          {
+            "index": 6,
+            "origin": "synthetic",
+            "purpose": "no-records itunes.apple.com"
+          }
+        ]
+      },
+      {
+        "fixture": "the-devils-cover-replay.json",
+        "kind": "cover",
+        "responses": [
+          {
+            "index": 0,
+            "origin": "synthetic",
+            "purpose": "no-records api.hardcover.app"
+          },
+          {
+            "index": 1,
+            "origin": "captured",
+            "source": "the-devils/release-2.json",
+            "capturedAt": "2026-10-02T00:34:44.916Z"
+          },
+          {
+            "index": 2,
+            "origin": "captured-rekeyed",
+            "source": "the-devils/cover-1.json",
+            "capturedAt": "2026-10-02T00:33:30.648Z"
+          },
+          {
+            "index": 3,
+            "origin": "synthetic",
+            "purpose": "no-records www.googleapis.com"
+          },
+          {
+            "index": 4,
+            "origin": "captured-rekeyed",
+            "source": "the-devils/cover-1.json",
+            "capturedAt": "2026-10-02T00:33:30.648Z"
+          },
+          {
+            "index": 5,
+            "origin": "captured",
+            "source": "the-devils/release-3.json",
+            "capturedAt": "2026-10-02T00:34:47.434Z"
+          },
+          {
+            "index": 6,
+            "origin": "captured",
+            "source": "the-devils/release-4.json",
+            "capturedAt": "2026-10-02T00:34:50.546Z"
+          }
+        ]
+      },
+      {
+        "fixture": "the-last-horizon-cover-replay.json",
+        "kind": "cover",
+        "responses": [
+          {
+            "index": 0,
+            "origin": "synthetic",
+            "purpose": "no-records api.hardcover.app"
+          },
+          {
+            "index": 1,
+            "origin": "captured-rekeyed",
+            "source": "the-last-horizon/cover-2.json",
+            "capturedAt": "2026-10-02T00:33:29.949Z"
+          },
+          {
+            "index": 2,
+            "origin": "captured-rekeyed",
+            "source": "the-last-horizon/cover-1.json",
+            "capturedAt": "2026-10-02T00:33:29.948Z"
+          },
+          {
+            "index": 3,
+            "origin": "synthetic",
+            "purpose": "no-records www.googleapis.com"
+          },
+          {
+            "index": 4,
+            "origin": "captured-rekeyed",
+            "source": "the-last-horizon/cover-1.json",
+            "capturedAt": "2026-10-02T00:33:29.948Z"
+          },
+          {
+            "index": 5,
+            "origin": "synthetic",
+            "purpose": "no-records itunes.apple.com"
+          },
+          {
+            "index": 6,
+            "origin": "synthetic",
+            "purpose": "no-records itunes.apple.com"
+          }
+        ]
+      },
+      {
+        "fixture": "the-dark-profit-saga-cover-replay.json",
+        "kind": "cover",
+        "responses": [
+          {
+            "index": 0,
+            "origin": "synthetic",
+            "purpose": "no-records api.hardcover.app"
+          },
+          {
+            "index": 1,
+            "origin": "captured-rekeyed",
+            "source": "the-dark-profit-saga/cover-2.json",
+            "capturedAt": "2026-10-02T00:33:30.271Z"
+          },
+          {
+            "index": 2,
+            "origin": "captured-rekeyed",
+            "source": "the-dark-profit-saga/cover-1.json",
+            "capturedAt": "2026-10-02T00:33:30.270Z"
+          },
+          {
+            "index": 3,
+            "origin": "synthetic",
+            "purpose": "no-records www.googleapis.com"
+          },
+          {
+            "index": 4,
+            "origin": "captured-rekeyed",
+            "source": "the-dark-profit-saga/cover-1.json",
+            "capturedAt": "2026-10-02T00:33:30.270Z"
+          },
+          {
+            "index": 5,
+            "origin": "synthetic",
+            "purpose": "no-records itunes.apple.com"
+          },
+          {
+            "index": 6,
+            "origin": "synthetic",
+            "purpose": "no-records itunes.apple.com"
+          }
+        ]
+      },
+      {
+        "fixture": "book-of-the-dead-cover-replay.json",
+        "kind": "cover",
+        "responses": [
+          {
+            "index": 0,
+            "origin": "synthetic",
+            "purpose": "hardcover series wrapper around captured controls.json#13 book and cached_image"
+          },
+          {
+            "index": 1,
+            "origin": "captured",
+            "source": "book-of-the-dead/release-2.json",
+            "capturedAt": "2026-10-02T00:35:00.198Z"
+          },
+          {
+            "index": 2,
+            "origin": "captured-rekeyed",
+            "source": "book-of-the-dead/cover-1.json",
+            "capturedAt": "2026-10-02T00:33:30.817Z"
+          },
+          {
+            "index": 3,
+            "origin": "synthetic",
+            "purpose": "no-records www.googleapis.com"
+          },
+          {
+            "index": 4,
+            "origin": "captured-rekeyed",
+            "source": "book-of-the-dead/cover-1.json",
+            "capturedAt": "2026-10-02T00:33:30.817Z"
+          },
+          {
+            "index": 5,
+            "origin": "captured",
+            "source": "book-of-the-dead/release-3.json",
+            "capturedAt": "2026-10-02T00:35:02.968Z"
+          },
+          {
+            "index": 6,
+            "origin": "captured",
+            "source": "book-of-the-dead/release-4.json",
+            "capturedAt": "2026-10-02T00:35:06.083Z"
+          }
+        ]
+      }
+    ],
+    "knownSynthetic": [
+      "Blacktongue primary search: Daughters War Macmillan product text (the saved Macmillan HTTP 403 body is not publisher content)",
+      "Dark Profit primary search: Pike announcement text (the saved author-site body was HTTP 429)",
+      "Hardcover cover series wrapper in book-of-the-dead-cover-replay.json around the captured cached_image object"
+    ]
+  }
 }

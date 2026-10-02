@@ -1,0 +1,77 @@
+{
+ "request": {
+  "requestId": "replay-cover-book-of-the-dead",
+  "seriesId": "replay-book-of-the-dead",
+  "series": "Book of the Dead",
+  "author": "RinoZ",
+  "nextTitle": "Ascension",
+  "position": 5,
+  "previousTitle": "Vengeance",
+  "preferredMarket": "US"
+ },
+ "responses": [
+  {
+   "url": "https://api.hardcover.app/v1/graphql",
+   "query": {
+    "names": [
+     "Book of the Dead",
+     "The Book of the Dead",
+     "Book of the Dead Series",
+     "Book of the Dead Mysteries",
+     "Book of the Dead Trilogy",
+     "Tales of Book of the Dead"
+    ],
+    "author": "RinoZ",
+    "positions": [
+     5,
+     4
+    ]
+   },
+   "status": 200,
+   "contentType": "application/json",
+   "body": "{\"data\":{\"series\":[{\"id\":1,\"name\":\"Book of the Dead\",\"author\":{\"name\":\"RinoZ\"},\"book_series\":[{\"position\":5,\"book\":{\"id\":2176532,\"slug\":\"book-of-the-dead-5-ascension\",\"title\":\"Ascension\",\"compilation\":false,\"cached_image\":{\"id\":6888073,\"url\":\"https://assets.hardcover.app/edition/32392216/72a223d6-ca01-4430-966e-4083cce1ee0b.jpg\",\"color\":\"#d8d8d8\",\"width\":1617,\"height\":2560,\"color_name\":\"Silver\"},\"contributions\":[{\"author\":{\"name\":\"RinoZ\"},\"contributor_role\":{\"name\":\"Author\"}}]}}]}]}}"
+  },
+  {
+   "url": "https://www.googleapis.com/books/v1/volumes?q=intitle%3AAscension+inauthor%3ARinoZ&maxResults=20&langRestrict=en",
+   "query": null,
+   "status": 200,
+   "contentType": "application/json; charset=UTF-8",
+   "body": "{\"kind\":\"books#volumes\",\"totalItems\":0}"
+  },
+  {
+   "url": "https://openlibrary.org/search.json?title=Ascension&author=RinoZ&limit=20&fields=key%2Ctitle%2Cauthor_name%2Ccover_edition_key%2Ccover_i",
+   "query": null,
+   "status": 200,
+   "contentType": "application/json",
+   "body": "{\"numFound\":0,\"start\":0,\"numFoundExact\":true,\"num_found\":0,\"documentation_url\":\"https://openlibrary.org/dev/docs/api/search\",\"q\":\"\",\"offset\":null,\"docs\":[]}"
+  },
+  {
+   "url": "https://www.googleapis.com/books/v1/volumes?q=intitle%3AAscension&maxResults=20&langRestrict=en",
+   "query": null,
+   "status": 200,
+   "contentType": "application/json; charset=UTF-8",
+   "body": "{\"kind\":\"books#volumes\",\"totalItems\":0}"
+  },
+  {
+   "url": "https://openlibrary.org/search.json?title=Ascension&limit=20&fields=key%2Ctitle%2Cauthor_name%2Ccover_edition_key%2Ccover_i",
+   "query": null,
+   "status": 200,
+   "contentType": "application/json",
+   "body": "{\"numFound\":0,\"start\":0,\"numFoundExact\":true,\"num_found\":0,\"documentation_url\":\"https://openlibrary.org/dev/docs/api/search\",\"q\":\"\",\"offset\":null,\"docs\":[]}"
+  },
+  {
+   "url": "https://itunes.apple.com/search?term=Ascension+RinoZ&country=us&entity=ebook&limit=20",
+   "query": null,
+   "status": 200,
+   "contentType": "text/javascript; charset=utf-8",
+   "body": "{\"resultCount\":0,\"results\":[]}"
+  },
+  {
+   "url": "https://itunes.apple.com/search?term=Ascension+RinoZ&country=us&entity=audiobook&limit=20",
+   "query": null,
+   "status": 200,
+   "contentType": "text/javascript; charset=utf-8",
+   "body": "{\"resultCount\":1,\"results\":[{\"wrapperType\":\"audiobook\",\"artistId\":1238991543,\"collectionId\":6793687365,\"artistName\":\"Rinoz\",\"collectionName\":\"Ascension: A LitRPG Adventure (Book of the Dead 5) (Unabridged)\",\"collectionViewUrl\":\"https://books.apple.com/us/audiobook/ascension-a-litrpg-adventure-book-of-the-dead-5-unabridged/id6793687365?uo=4\",\"artworkUrl60\":\"https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/bc/40/b8/bc40b880-f41a-4010-09b1-1c682a839b1e/rm_image.jpg/60x60bb.jpg\",\"artworkUrl100\":\"https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/bc/40/b8/bc40b880-f41a-4010-09b1-1c682a839b1e/rm_image.jpg/100x100bb.jpg\",\"copyright\":\"© 2026 Aethon Audio\",\"country\":\"USA\",\"releaseDate\":\"2026-08-19T07:00:00Z\",\"primaryGenreName\":\"Sci-Fi & Fantasy\"}]}"
+  }
+ ]
+}

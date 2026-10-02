@@ -1,0 +1,116 @@
+{
+ "request": {
+  "requestId": "replay-novels-of-the-malazan-empire",
+  "seriesId": "replay-novels-of-the-malazan-empire",
+  "target": {
+   "series": "Novels of the Malazan Empire",
+   "author": "Ian C. Esslemont",
+   "position": 5,
+   "title": "",
+   "orderNote": ""
+  },
+  "preferredMarket": "US",
+  "formats": [
+   "book",
+   "audio"
+  ],
+  "useAi": false
+ },
+ "responses": [
+  {
+   "url": "https://api.hardcover.app/v1/graphql",
+   "query": {
+    "names": [
+     "Novels of the Malazan Empire",
+     "The Novels of the Malazan Empire",
+     "Novels of the Malazan Empire Series",
+     "Novels of the Malazan Empire Mysteries",
+     "Novels of the Malazan Empire Trilogy",
+     "Tales of Novels of the Malazan Empire"
+    ],
+    "position": 5,
+    "author": "Ian C. Esslemont"
+   },
+   "status": 200,
+   "contentType": "application/json; charset=utf-8",
+   "body": "{\"data\":{\"series\":[{\"name\":\"Novels of the Malazan Empire\",\"book_series\":[{\"id\":516458,\"position\":5,\"featured\":false,\"compilation\":false,\"details\":\"5\",\"book\":{\"id\":458681,\"slug\":\"blood-and-bone\",\"title\":\"Blood and Bone\",\"compilation\":false,\"contributions\":[{\"author\":{\"name\":\"Ian C. Esslemont\"},\"contributor_role\":{\"name\":\"Author\"}}],\"editions\":[{\"id\":31954488,\"title\":\"Blood and Bone: A Novel of the Malazan Empire\",\"edition_format\":\"Hardcover\",\"reading_format\":{\"format\":\"Read\"},\"isbn_10\":null,\"isbn_13\":null,\"language\":{\"code2\":\"en\",\"code3\":\"eng\"}},{\"id\":32246520,\"title\":\"Blood and Bone\",\"edition_format\":null,\"reading_format\":{\"format\":\"Read\"},\"isbn_10\":\"0765329972\",\"isbn_13\":\"9780765329974\",\"language\":{\"code2\":\"en\",\"code3\":\"eng\"}},{\"id\":30809809,\"title\":\"Blood and Bone\",\"edition_format\":null,\"reading_format\":{\"format\":\"Ebook\"},\"isbn_10\":\"1409043371\",\"isbn_13\":\"9781409043379\",\"language\":{\"code2\":\"en\",\"code3\":\"eng\"}},{\"id\":30936496,\"title\":\"Blood and Bone\",\"edition_format\":\"\",\"reading_format\":{\"format\":\"Read\"},\"isbn_10\":\"0553824732\",\"isbn_13\":\"9780553824735\",\"language\":{\"code2\":\"en\",\"code3\":\"eng\"}},{\"id\":30425938,\"title\":\"Blood and Bone\",\"edition_format\":\"Kindle Edition\",\"reading_format\":{\"format\":\"Read\"},\"isbn_10\":\"0765330016\",\"isbn_13\":\"9780765330017\",\"language\":{\"code2\":\"en\",\"code3\":\"eng\"}},{\"id\":32039111,\"title\":\"Blood and Bone\",\"edition_format\":\"\",\"reading_format\":{\"format\":\"Read\"},\"isbn_10\":\"0593064461\",\"isbn_13\":\"9780593064467\",\"language\":{\"code2\":\"en\",\"code3\":\"eng\"}}]}},{\"id\":500345,\"position\":5,\"featured\":false,\"compilation\":false,\"details\":\"5\",\"book\":{\"id\":1828169,\"slug\":\"blood-and-bone-a-novel-of-the-malazan-empire\",\"title\":\"Blood and Bone: A Novel of the Malazan Empire\",\"compilation\":false,\"contributions\":[{\"author\":{\"name\":\"Ian C. Esslemont\"},\"contributor_role\":{\"name\":\"Author\"}}],\"editions\":[]}},{\"id\":812832,\"position\":5,\"featured\":false,\"compilation\":false,\"details\":\"5\",\"book\":{\"id\":2732457,\"slug\":\"blood-and-bone-novels-of-the-malazan-empire-book-5\",\"title\":\"Blood and Bone: Novels of the Malazan Empire, Book 5\",\"compilation\":false,\"contributions\":[{\"author\":{\"name\":\"Ian C. Esslemont\"},\"contributor_role\":{\"name\":\"Author\"}}],\"editions\":[]}}]}]}}"
+  },
+  {
+   "url": "https://www.googleapis.com/books/v1/volumes?q=intitle%3ABlood+and+Bone+inauthor%3AIan+C.+Esslemont&maxResults=20&showPreorders=true&langRestrict=en",
+   "query": null,
+   "status": 200,
+   "contentType": "application/json; charset=UTF-8",
+   "body": "{\"kind\":\"books#volumes\",\"totalItems\":0}"
+  },
+  {
+   "url": "https://itunes.apple.com/search?term=Blood+and+Bone+Ian+C.+Esslemont&country=us&entity=ebook&limit=20",
+   "query": null,
+   "status": 200,
+   "contentType": "text/javascript; charset=utf-8",
+   "body": "{\"resultCount\":0,\"results\":[]}"
+  },
+  {
+   "url": "https://itunes.apple.com/search?term=Blood+and+Bone+Ian+C.+Esslemont&country=us&entity=audiobook&limit=20",
+   "query": null,
+   "status": 200,
+   "contentType": "text/javascript; charset=utf-8",
+   "body": "{\"resultCount\":0,\"results\":[]}"
+  },
+  {
+   "url": "https://openlibrary.org/search.json?title=Blood+and+Bone&author=Ian+C.+Esslemont&limit=20&fields=key%2Ctitle%2Cauthor_name%2Cauthor_key%2Cedition_key%2Cfirst_publish_year%2Clanguage",
+   "query": null,
+   "status": 200,
+   "contentType": "application/json",
+   "body": "{\"numFound\":0,\"docs\":[]}"
+  },
+  {
+   "url": "https://itunes.apple.com/search?term=Blood+and+Bone+Ian+C.+Esslemont&country=gb&entity=ebook&limit=20",
+   "query": null,
+   "status": 200,
+   "contentType": "text/javascript; charset=utf-8",
+   "body": "{\"resultCount\":0,\"results\":[]}"
+  },
+  {
+   "url": "https://itunes.apple.com/search?term=Blood+and+Bone+Ian+C.+Esslemont&country=gb&entity=audiobook&limit=20",
+   "query": null,
+   "status": 200,
+   "contentType": "text/javascript; charset=utf-8",
+   "body": "{\"resultCount\":0,\"results\":[]}"
+  },
+  {
+   "url": "https://itunes.apple.com/search?term=Blood+and+Bone+Ian+C.+Esslemont&country=ca&entity=ebook&limit=20",
+   "query": null,
+   "status": 200,
+   "contentType": "text/javascript; charset=utf-8",
+   "body": "{\"resultCount\":0,\"results\":[]}"
+  },
+  {
+   "url": "https://itunes.apple.com/search?term=Blood+and+Bone+Ian+C.+Esslemont&country=ca&entity=audiobook&limit=20",
+   "query": null,
+   "status": 200,
+   "contentType": "text/javascript; charset=utf-8",
+   "body": "{\"resultCount\":0,\"results\":[]}"
+  },
+  {
+   "url": "https://itunes.apple.com/lookup?isbn=9781409043379&country=us&entity=ebook&limit=5",
+   "query": null,
+   "status": 200,
+   "contentType": "text/javascript; charset=utf-8",
+   "body": "{\"resultCount\":0,\"results\":[]}"
+  },
+  {
+   "url": "https://api.tavily.com/search",
+   "query": "Blood and Bone Ian C. Esslemont ebook hardcover publication release date English US",
+   "status": 200,
+   "contentType": "application/json",
+   "body": "{\"results\":[]}"
+  },
+  {
+   "url": "https://api.tavily.com/search",
+   "query": "Blood and Bone Ian C. Esslemont audiobook release date English US",
+   "status": 200,
+   "contentType": "application/json",
+   "body": "{\"results\":[]}"
+  }
+ ]
+}

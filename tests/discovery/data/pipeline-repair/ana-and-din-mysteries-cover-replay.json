@@ -1,0 +1,77 @@
+{
+ "request": {
+  "requestId": "replay-cover-ana-and-din-mysteries",
+  "seriesId": "replay-ana-and-din-mysteries",
+  "series": "Ana and Din Mysteries",
+  "author": "Robert Jackson Benett",
+  "nextTitle": "",
+  "position": 4,
+  "previousTitle": "A Trade of Blood",
+  "preferredMarket": "US"
+ },
+ "responses": [
+  {
+   "url": "https://api.hardcover.app/v1/graphql",
+   "query": {
+    "names": [
+     "Ana and Din Mysteries",
+     "Ana and Din",
+     "The Ana and Din",
+     "Ana and Din Series",
+     "Ana and Din Trilogy",
+     "Tales of Ana and Din"
+    ],
+    "author": "Robert Jackson Benett",
+    "positions": [
+     4,
+     3
+    ]
+   },
+   "status": 200,
+   "contentType": "application/json",
+   "body": "{\"data\":{\"series\":[]}}"
+  },
+  {
+   "url": "https://www.googleapis.com/books/v1/volumes?q=intitle%3AA+Trade+of+Blood+inauthor%3ARobert+Jackson+Benett&maxResults=20&langRestrict=en",
+   "query": null,
+   "status": 429,
+   "contentType": "application/json; charset=UTF-8",
+   "body": "{\"error\":{\"code\":429,\"message\":\"Quota exceeded for quota metric 'Queries' and limit 'Queries per day' of service 'books.googleapis.com' for consumer 'project_number:624717413613'.\",\"errors\":[{\"message\":\"Quota exceeded for quota metric 'Queries' and limit 'Queries per day' of service 'books.googleapis.com' for consumer 'project_number:624717413613'.\",\"domain\":\"global\",\"reason\":\"rateLimitExceeded\"}],\"status\":\"RESOURCE_EXHAUSTED\",\"details\":[{\"@type\":\"type.googleapis.com/google.rpc.ErrorInfo\",\"reason\":\"RATE_LIMIT_EXCEEDED\",\"domain\":\"googleapis.com\",\"metadata\":{\"service\":\"books.googleapis.com\",\"quota_limit\":\"defaultPerDayPerProject\",\"quota_unit\":\"1/d/{project}\",\"quota_metric\":\"books.googleapis.com/default\",\"quota_location\":\"global\",\"quota_limit_value\":\"0\",\"consumer\":\"projects/624717413613\"}},{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"url\":\"https://cloud.google.com/docs/quotas/help/request_increase\"}]}]}}"
+  },
+  {
+   "url": "https://openlibrary.org/search.json?title=A+Trade+of+Blood&author=Robert+Jackson+Benett&limit=20&fields=key%2Ctitle%2Cauthor_name%2Ccover_edition_key%2Ccover_i",
+   "query": null,
+   "status": 200,
+   "contentType": "application/json",
+   "body": "{\"numFound\":0,\"start\":0,\"numFoundExact\":true,\"num_found\":0,\"documentation_url\":\"https://openlibrary.org/dev/docs/api/search\",\"q\":\"\",\"offset\":null,\"docs\":[]}"
+  },
+  {
+   "url": "https://www.googleapis.com/books/v1/volumes?q=intitle%3AA+Trade+of+Blood&maxResults=20&langRestrict=en",
+   "query": null,
+   "status": 200,
+   "contentType": "application/json; charset=UTF-8",
+   "body": "{\"kind\":\"books#volumes\",\"totalItems\":1,\"items\":[{\"kind\":\"books#volume\",\"id\":\"fQB1EQAAQBAJ\",\"volumeInfo\":{\"title\":\"A Trade of Blood\",\"authors\":[\"Robert Jackson Bennett\"],\"publishedDate\":\"2026-08-04\",\"industryIdentifiers\":[{\"type\":\"ISBN_13\",\"identifier\":\"9780593723869\"},{\"type\":\"ISBN_10\",\"identifier\":\"0593723864\"}],\"imageLinks\":{\"smallThumbnail\":\"http://books.google.com/books/content?id=fQB1EQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api\",\"thumbnail\":\"http://books.google.com/books/content?id=fQB1EQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api\"},\"language\":\"en\"},\"saleInfo\":{\"country\":\"CA\",\"saleability\":\"FOR_SALE\",\"isEbook\":true}},{\"kind\":\"books#volume\",\"id\":\"fQB1EQAAQBAJ\",\"volumeInfo\":{\"title\":\"A Trade of Blood\",\"authors\":[\"Robert Jackson Bennett\"],\"publishedDate\":\"2026-08-04\",\"industryIdentifiers\":[{\"type\":\"ISBN_13\",\"identifier\":\"9780593723869\"},{\"type\":\"ISBN_10\",\"identifier\":\"0593723864\"}],\"imageLinks\":{\"smallThumbnail\":\"http://books.google.com/books/content?id=fQB1EQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api\",\"thumbnail\":\"http://books.google.com/books/content?id=fQB1EQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api\"},\"language\":\"en\"},\"saleInfo\":{\"country\":\"CA\",\"saleability\":\"FOR_SALE\",\"isEbook\":true}},{\"kind\":\"books#volume\",\"id\":\"3V-UDwAAQBAJ\",\"volumeInfo\":{\"title\":\"Foundryside\",\"subtitle\":\"A Novel\",\"authors\":[\"Robert Jackson Bennett\"],\"publishedDate\":\"2019-05-21\",\"industryIdentifiers\":[{\"type\":\"ISBN_13\",\"identifier\":\"9780525573845\"},{\"type\":\"ISBN_10\",\"identifier\":\"0525573844\"}],\"imageLinks\":{\"smallThumbnail\":\"http://books.google.com/books/content?id=3V-UDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api\",\"thumbnail\":\"http://books.google.com/books/content?id=3V-UDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api\"},\"language\":\"en\"},\"saleInfo\":{\"country\":\"CA\",\"saleability\":\"NOT_FOR_SALE\",\"isEbook\":false}}]}"
+  },
+  {
+   "url": "https://openlibrary.org/search.json?title=A+Trade+of+Blood&limit=20&fields=key%2Ctitle%2Cauthor_name%2Ccover_edition_key%2Ccover_i",
+   "query": null,
+   "status": 200,
+   "contentType": "application/json",
+   "body": "{\"numFound\":0,\"start\":0,\"numFoundExact\":true,\"num_found\":0,\"documentation_url\":\"https://openlibrary.org/dev/docs/api/search\",\"q\":\"\",\"offset\":null,\"docs\":[]}"
+  },
+  {
+   "url": "https://itunes.apple.com/search?term=+Robert+Jackson+Benett&country=us&entity=ebook&limit=20",
+   "query": null,
+   "status": 200,
+   "contentType": "text/javascript; charset=utf-8",
+   "body": "{\"resultCount\":0,\"results\":[]}"
+  },
+  {
+   "url": "https://itunes.apple.com/search?term=+Robert+Jackson+Benett&country=us&entity=audiobook&limit=20",
+   "query": null,
+   "status": 200,
+   "contentType": "text/javascript; charset=utf-8",
+   "body": "{\"resultCount\":0,\"results\":[]}"
+  }
+ ]
+}
