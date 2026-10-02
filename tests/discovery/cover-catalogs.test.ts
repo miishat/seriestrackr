@@ -191,3 +191,43 @@ test('twenty Google rows do not crowd out Apple and Open Library candidates', as
   expect(result.candidates).toHaveLength(9);
   expect(providers).toContain('apple'); expect(providers).toContain('openlibrary');
 }, 20000);
+
+const cfg = { tavilyKey: null, deepseekKey: null, googleBooksKey: 'gk', model: 'deepseek-flash' } as const;
+const spelling: CoverRequest = { requestId: 'correction', seriesId: 'ana', series: 'Ana and Din Mysteries', author: 'Robert Jackson Benett',
+  nextTitle: '', position: 4, previousTitle: 'A Trade of Blood', preferredMarket: 'US' };
+
+test('a title-only correction is a suggestion, not a verified cover', async () => {
+  const req = { ...spelling };
+  const fetcher = vi.fn<typeof fetch>(async input => {
+    const url = new URL(String(input));
+    if (url.hostname !== 'openlibrary.org') return Response.json({ items: [] });
+    return Response.json(url.searchParams.has('author') ? { docs: [] } : {
+      docs: [{ key: '/works/OL1W', title: 'A Trade of Blood', author_name: ['Robert Jackson Bennett'], cover_i: 15249591 }] });
+  });
+  const result = await collectCoverCandidates(req, cfg, new AbortController().signal, fetcher);
+  expect(result.candidates).toEqual([]);
+  expect(result.authorSuggestions).toMatchObject([{ author: 'Robert Jackson Bennett', title: 'A Trade of Blood' }]);
+  expect(req.author).toBe('Robert Jackson Benett');
+  expect(result.authorSuggestions).toHaveLength(1);
+}, 20000);
+
+test('an unrelated title-only book is neither a candidate nor a suggestion, and calls stay within the two-call cap', async () => {
+  const urls: string[] = [];
+  const fetcher = vi.fn<typeof fetch>(async input => {
+    const url = new URL(String(input)); urls.push(`${url.hostname}${url.pathname}${url.searchParams.has('author') ? '?author' : ''}`);
+    if (url.hostname === 'openlibrary.org') return Response.json({ docs: [{ key: '/works/OL2W', title: 'Foundryside', author_name: ['Robert Jackson Bennett'], cover_i: 1 }] });
+    return Response.json({ items: [], results: [] });
+  });
+  const result = await collectCoverCandidates({ ...spelling }, cfg, new AbortController().signal, fetcher);
+  expect(result.candidates).toEqual([]);
+  expect(result.authorSuggestions).toEqual([]);
+  expect(urls.filter(u => u.startsWith('openlibrary')).length).toBe(2);
+  expect(urls.filter(u => u.startsWith('www.googleapis')).length).toBe(2);
+}, 20000);
+
+test('suggestions are deduplicated by author and title and capped at three', () => {
+  const docs = ['Aa One', 'Bb Two', 'Cc Three', 'Dd Four', 'aa one'].map((author, i) => ({ key: `/works/OL${i + 1}W`, title: 'NextBook', author_name: [author], cover_i: i + 1 }));
+  const rows = [...docs, ...docs.slice(0, 1)];
+  const batch = normalizeOpenLibraryCovers({ docs: rows }, cover());
+  expect(batch.authorSuggestions.map(item => item.author)).toEqual(['Aa One', 'Bb Two', 'Cc Three']);
+});

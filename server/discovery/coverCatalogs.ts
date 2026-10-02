@@ -5,6 +5,13 @@ import { candidate as parseCandidate, validateCoverImageUrl } from '../../shared
 import { bindWorkTitle, hardcoverAliases } from './workIdentity';
 
 export interface CoverBatch { candidates: CoverCandidate[]; authorSuggestions: AuthorSuggestion[] }
+export const MAX_AUTHOR_SUGGESTIONS = 3;
+// One suggestion per normalised author and title; the first provider to report it keeps the attribution.
+export function dedupeSuggestions(items: AuthorSuggestion[]): AuthorSuggestion[] {
+  const seen = new Set<string>();
+  return items.filter(item => { const key = `${normalizeIdentity(item.author)}|${normalizeIdentity(item.title)}`; if (seen.has(key)) return false; seen.add(key); return true; })
+    .slice(0, MAX_AUTHOR_SUGGESTIONS);
+}
 export const emptyBatch = (): CoverBatch => ({ candidates: [], authorSuggestions: [] });
 
 const object = (input: unknown): Record<string, unknown> => input !== null && typeof input === 'object' && !Array.isArray(input)
@@ -28,7 +35,7 @@ export function bindWork(request: CoverRequest, actualTitle: string, actualAutho
     if (!title) continue;
     const authorOk = actualAuthors.length > 0 && actualAuthors.every(author => normalizeIdentity(author) === normalizeIdentity(request.author));
     if (authorOk) return { role, title };
-    return { mismatch: role === 'next' && actualAuthors[0] ? { author: actualAuthors[0], title: actualTitle, source } : null };
+    return { mismatch: actualAuthors.length === 1 ? { author: actualAuthors[0], title: actualTitle, source } : null };
   }
   return null;
 }
@@ -48,7 +55,7 @@ function push(batch: CoverBatch, request: CoverRequest, input: { provider: Cover
   source: SourceLink; imageUrl: unknown; format: CoverCandidate['format']; editionKey: string | null; width?: unknown; height?: unknown }): void {
   const bound = bindWork(request, input.actualTitle, input.authors, input.source);
   if (!bound) return;
-  if ('mismatch' in bound) { if (bound.mismatch) batch.authorSuggestions.push(bound.mismatch); return; }
+  if ('mismatch' in bound) { if (bound.mismatch) batch.authorSuggestions = dedupeSuggestions([...batch.authorSuggestions, bound.mismatch]); return; }
   const imageUrl = validateCoverImageUrl(input.imageUrl);
   if (!imageUrl) return;
   const id = `${input.provider}:${input.id}`;

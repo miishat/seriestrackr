@@ -104,7 +104,7 @@ export function parseCoverRequest(input: unknown): Parsed<CoverRequest> {
 export function parseCoverResult(input: unknown): Parsed<CoverResult> {
   try {
     const value = record(input, 'result');
-    if (!Array.isArray(value.authorSuggestions) || value.authorSuggestions.length > 9 || !Array.isArray(value.outcomes) || value.outcomes.length > 4) fail('result');
+    if (!Array.isArray(value.authorSuggestions) || value.authorSuggestions.length > 3 || !Array.isArray(value.outcomes) || value.outcomes.length > 4) fail('result');
     const authorSuggestions: AuthorSuggestion[] = (value.authorSuggestions as unknown[]).map((item, index) => {
       const suggestion = record(item, `result.authorSuggestions[${index}]`);
       return { author: str(suggestion.author, 'author'), title: str(suggestion.title, 'title'), source: sourceLink(suggestion.source, 'source') };

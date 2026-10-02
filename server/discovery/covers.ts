@@ -2,7 +2,7 @@ import type { AuthorSuggestion, CoverCandidate, CoverProvider, CoverRequest, Cov
 import { MAX_COVER_CANDIDATES } from '../../shared/coverValidation';
 import type { DiscoveryConfig } from './config';
 import { appleQueue, googleBooksQueue, openLibraryQueue } from './catalogs';
-import { emptyBatch, normalizeAppleCovers, normalizeGoogleCovers, normalizeHardcoverCovers, normalizeOpenLibraryCovers, type CoverBatch } from './coverCatalogs';
+import { dedupeSuggestions, emptyBatch, normalizeAppleCovers, normalizeGoogleCovers, normalizeHardcoverCovers, normalizeOpenLibraryCovers, type CoverBatch } from './coverCatalogs';
 import { diagnosticCounts, emitDiagnostic, type DiagnosticObserver } from './diagnostics';
 import { hardcoverQueue } from './hardcover';
 import { fetchProviderJson, ProviderError } from './http';
@@ -27,24 +27,27 @@ export async function collectCoverCandidates(request: CoverRequest, config: Disc
   const combined = AbortSignal.any([signal, AbortSignal.timeout(90000)]);
   const trackers = new Map<CoverProvider, Tracker>();
   const run = async (provider: CoverProvider, queue: { run<T>(job: () => Promise<T>, signal: AbortSignal): Promise<T> }, path: string, init: RequestInit,
-    normalize: (raw: unknown) => CoverBatch): Promise<void> => {
+    normalize: (raw: unknown) => CoverBatch): Promise<CoverBatch | null> => {
     const tracker = trackers.get(provider)!;
-    if (combined.aborted || tracker.calls >= budget[provider]) return;
+    if (combined.aborted || tracker.calls >= budget[provider]) return null;
     tracker.calls++;
     try {
       const raw = await queue.run(() => fetchProviderJson(provider, path, init, combined, fetcher, onDiagnostic), combined);
       const batch = normalize(raw);
       tracker.batch.candidates.push(...batch.candidates);
-      tracker.batch.authorSuggestions.push(...batch.authorSuggestions);
+      tracker.batch.authorSuggestions = dedupeSuggestions([...tracker.batch.authorSuggestions, ...batch.authorSuggestions]);
+      return batch;
     } catch (error) {
       const reason = error instanceof ProviderError ? error.reason : 'provider-error';
       if (reason === 'quota' || reason === 'budget') tracker.quota = true; else tracker.failed = true;
     }
+    return null;
   };
   const start = (provider: CoverProvider): void => { trackers.set(provider, { calls: 0, quota: false, failed: false, batch: emptyBatch() }); };
   const jobs: Promise<void>[] = [];
   const author = request.author;
-  const titles = [request.nextTitle, ...(request.previousTitle ? [request.previousTitle] : [])];
+  const titles = [request.nextTitle, request.previousTitle].filter(title => title.trim() !== '');
+  const hasRole = (batch: CoverBatch | null, title: string) => batch?.candidates.some(item => item.role === (title === request.nextTitle ? 'next' : 'previous')) ?? false;
 
   const token = config.hardcoverToken?.trim();
   if (token) {
@@ -53,16 +56,20 @@ export async function collectCoverCandidates(request: CoverRequest, config: Disc
     jobs.push(run('hardcover', hardcoverQueue, '/v1/graphql', { method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: /^Bearer\s/i.test(token) ? token : `Bearer ${token}` },
       body: JSON.stringify({ query: hardcoverQuery, variables: { names: hardcoverAliases(request.series), author, positions } }) },
-    raw => normalizeHardcoverCovers(raw, request)));
+    raw => normalizeHardcoverCovers(raw, request)).then(() => undefined));
   }
   const googleKey = config.googleBooksKey?.trim();
   if (googleKey) {
     start('googlebooks');
     jobs.push((async () => {
-      for (const title of titles.slice(0, 2)) {
-        const params = new URLSearchParams({ q: `intitle:${title} inauthor:${author}`, key: googleKey, maxResults: '20', langRestrict: 'en' });
-        await run('googlebooks', googleBooksQueue, `/books/v1/volumes?${params}`, {}, raw => normalizeGoogleCovers(raw, request));
-      }
+      // Slot one is the exact-author search; the remaining slot may run one title-only fallback for a known title without a candidate.
+      const exact = titles[0];
+      if (!exact) return;
+      const first = await run('googlebooks', googleBooksQueue, `/books/v1/volumes?${new URLSearchParams({ q: `intitle:${exact} inauthor:${author}`, key: googleKey, maxResults: '20', langRestrict: 'en' })}`, {},
+        raw => normalizeGoogleCovers(raw, request));
+      const missing = titles.find(title => !hasRole(first, title));
+      if (missing) await run('googlebooks', googleBooksQueue, `/books/v1/volumes?${new URLSearchParams({ q: `intitle:${missing}`, key: googleKey, maxResults: '20', langRestrict: 'en' })}`, {},
+        raw => normalizeGoogleCovers(raw, request));
     })());
   }
   start('apple');
@@ -74,10 +81,14 @@ export async function collectCoverCandidates(request: CoverRequest, config: Disc
   })());
   start('openlibrary');
   jobs.push((async () => {
-    for (const title of titles.slice(0, 2)) {
-      const params = new URLSearchParams({ title, author, limit: '20', fields: 'key,title,author_name,cover_edition_key,cover_i' });
-      await run('openlibrary', openLibraryQueue, `/search.json?${params}`, {}, raw => normalizeOpenLibraryCovers(raw, request));
-    }
+    const exact = titles[0];
+    if (!exact) return;
+    const fields = 'key,title,author_name,cover_edition_key,cover_i';
+    const first = await run('openlibrary', openLibraryQueue, `/search.json?${new URLSearchParams({ title: exact, author, limit: '20', fields })}`, {},
+      raw => normalizeOpenLibraryCovers(raw, request));
+    const missing = titles.find(title => !hasRole(first, title));
+    if (missing) await run('openlibrary', openLibraryQueue, `/search.json?${new URLSearchParams({ title: missing, limit: '20', fields })}`, {},
+      raw => normalizeOpenLibraryCovers(raw, request));
   })());
   await Promise.all(jobs);
 
@@ -102,6 +113,6 @@ export async function collectCoverCandidates(request: CoverRequest, config: Disc
   for (let depth = 0; ordered.length < MAX_COVER_CANDIDATES && lanes.some(lane => depth < lane.length); depth++) {
     for (const lane of lanes) if (depth < lane.length && ordered.length < MAX_COVER_CANDIDATES) ordered.push(lane[depth]);
   }
-  const authorSuggestions = suggestions.filter((item, index) => suggestions.findIndex(other => other.source.id === item.source.id) === index).slice(0, 9);
+  const authorSuggestions = dedupeSuggestions(suggestions);
   return { requestId: request.requestId, seriesId: request.seriesId, candidates: ordered, authorSuggestions, outcomes };
 }
