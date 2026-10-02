@@ -1124,6 +1124,8 @@
     "knownSynthetic": [
       "Blacktongue primary search: Daughters War Macmillan product text (the saved Macmillan HTTP 403 body is not publisher content)",
       "Dark Profit primary search: Pike announcement text (the saved author-site body was HTTP 429)",
+      "Malazan replay rows 1 to 11: empty Google Books, Apple (US, GB, CA ebook and audiobook, ISBN lookup), Open Library and Tavily responses (11 of 12 rows are synthetic; only the Hardcover row is captured)",
+      "Ana and Din cover replay: the Google Books response for the unsuffixed A Trade of Blood query is the Bennett control body served under the Benett request URL",
       "Hardcover cover series wrapper in book-of-the-dead-cover-replay.json around the captured cached_image object"
     ]
   }

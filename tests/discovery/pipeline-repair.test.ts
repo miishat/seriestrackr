@@ -72,7 +72,10 @@ test('repairs numbered work, relation, lifecycle and clean receipt cases', async
   expect(malazan.proposals.identity).toMatchObject({ title: 'Blood and Bone', position: 5 });
   expect(ascension.proposals.releases.audio).toMatchObject({ date: '2026-08-19' });
   expect(ascension.proposals.releases.book?.state).not.toBe('announced');
-  expect((path.coverCandidates ?? []).filter(c => c.role === 'next')).toEqual([]);
+  // With no chosen identity and a blank title the release path emits no cover sidecar at all. This does not exercise the stored book 3 art.
+  expect(path.proposals.identity).toBeNull();
+  expect(path.coverCandidates).toEqual([]);
+  expect(path.summary).toMatchObject({ status: 'partial', reasons: ['budget', 'unknown-identity'] });
   expect(sunEater.summary).toMatchObject({ status: 'complete', reasons: [] });
   expect(band.summary).toMatchObject({ status: 'complete', reasons: [] });
   expect(global).not.toHaveBeenCalled();
@@ -85,7 +88,7 @@ test('related works never become numbered identity, and unresolved identity stay
   expect(blacktongue.proposals.related.map(r => [r.title, r.position])).toEqual([["The Daughters' War", null]]);
   expect(darkProfit.proposals.related.map(r => [r.title, r.relationship, r.position])).toEqual([['Crypt Currency', 'continuation', null]]);
   for (const result of [blacktongue, darkProfit]) {
-    expect(result.summary.reasons).toContain('unknown-identity');
+    expect(result.summary).toMatchObject({ status: 'partial', reasons: ['budget', 'unknown-identity'] });
     expect(result.summary.formats).toEqual({ book: 'unknown', audio: 'unknown' });
     expect(result.proposals.releases).toEqual({ book: null, audio: null });
   }
@@ -109,10 +112,15 @@ test('supplied-title rechecks keep their dates; blank-title autonomous discovery
   const lastHorizon = await replay('the-last-horizon');
   const ana = await replay('ana-and-din-mysteries');
   // Saved-title rechecks: the supplied title is verified, not discovered.
+  expect(witness.summary).toMatchObject({ status: 'partial', reasons: ['budget'] });
+  expect(devils.summary).toMatchObject({ status: 'partial', reasons: ['budget'] });
   expect(witness.proposals.releases.book).toMatchObject({ title: 'Legacies of Betrayal', date: '2026-10-06' });
   expect(witness.proposals.releases.audio).toMatchObject({ date: '2026-10-01' });
   expect(devils.proposals.releases.book).toMatchObject({ title: 'The Heretics', date: '2027-05-11' });
   // Blank-title autonomous discovery with sparse primary evidence proposes nothing and fabricates no candidate.
+  // Unknown identity alone is complete (Last Horizon); a budget reason makes the check partial (Ana and Din).
+  expect(lastHorizon.summary).toMatchObject({ status: 'complete', reasons: ['unknown-identity'] });
+  expect(ana.summary).toMatchObject({ status: 'partial', reasons: ['budget', 'unknown-identity'] });
   for (const result of [lastHorizon, ana]) {
     expect(result.proposals.identity).toBeNull();
     expect(result.proposals.related).toEqual([]);
@@ -148,7 +156,7 @@ test('Ana and Din author spelling is a reviewed suggestion, never a silent chang
   expect(result.outcomes).toContainEqual({ provider: 'googlebooks', state: 'quota' });
 });
 
-test('Devils offers only the next work as portrait art and does not reuse the stored square asset', async () => {
+test('Devils cover replay offers only The Heretics as next-work Apple ebook art and none of the recorded candidates carries the old square asset id', async () => {
   vi.useFakeTimers();
   const result = await replayCover('the-devils');
   expect(result.candidates.length).toBeGreaterThan(0);

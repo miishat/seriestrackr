@@ -241,17 +241,17 @@ A saved-title recheck feeds the title already stored in the library and verifies
 | --- | --- | --- |
 | Blacktongue Thief, position 2 | blank-title | No identity; The Daughters' War offered as a prequel, review-only, no position. Primary evidence is a synthetic Macmillan sample. |
 | Dark Profit Saga, position 4 | blank-title | No identity; Crypt Currency offered as a continuation, review-only. Primary evidence is a synthetic author-site sample. Cover: Google Books quota, others no-match, no candidate. |
-| Malazan Empire, position 5 | blank-title | Blood and Bone at position 5 from the non-featured Hardcover row. |
+| Malazan Empire, position 5 | blank-title | Blood and Bone at position 5 from the non-featured Hardcover row. Complete. Apple, Google Books and Tavily enrichment is not demonstrated: those rows are synthetic and empty. |
 | Book of the Dead, position 5 | saved-title | Ebook catalogued without a date (not announced); audiobook 2026-08-19 from the Apple product page. Cover: Hardcover 1617 by 2560 first, audio art last. |
-| Path to Ascendancy, position 5 | blank-title | No identity and no next-book cover candidate; the stored book 3 art is not reused. |
+| Path to Ascendancy, position 5 | blank-title | No identity; the release path emits no cover candidates (cover art is a separate Find cover action, so the stored book 3 art is not exercised). Partial with budget and unknown-identity reasons. |
 | Tale of Witness, position 3 | saved-title | Book 2026-10-06, audio 2026-10-01. Cover: exact-work Apple ebook art labelled next. |
-| The Devils, position 2 | saved-title | Book 2027-05-11. Cover: only The Heretics as next, the stored square asset is not offered. |
+| The Devils, position 2 | saved-title | Book 2027-05-11. Cover: every recorded candidate is The Heretics as next Apple ebook art and none carries the old square asset id (the previous-title search is never queried). |
 | Last Horizon, position 5 | blank-title | No identity, sparse primary control produces no candidate. Cover: honest empty result with Google Books quota apart from no-match. |
 | Ana and Din, position 4 | blank-title | No identity, no fabricated candidate. Cover: author suggestion Bennett for review, Foundryside rejected. |
 | Sun Eater, position 7 (control) | saved-title | Complete, no reasons, book 2025-11-18, audio 2025-11-20. |
 | The Band, position 2 (control) | saved-title | Complete, no reasons, book and audio 2018-08-28. |
 
-All 13 cases replay and every assertion holds. No case was skipped. The release replays ended partial for the unresolved-identity cases (budget and unknown-identity), which is the intended honest outcome.
+All 13 cases replay and every assertion holds. No case was skipped. Asserted release statuses: Blacktongue, Dark Profit, Path to Ascendancy and Ana and Din ended partial with reasons budget and unknown-identity; Last Horizon ended complete with only unknown-identity (unknown identity alone does not make a check partial); Malazan, Sun Eater, The Band and Book of the Dead ended complete. Witness and Devils ended partial with a budget reason.
 
 ### Behavior measured
 
@@ -264,8 +264,10 @@ All 13 cases replay and every assertion holds. No case was skipped. The release 
 
 ### Measured limitations and unverified items
 
-- Fixtures use three response origins, recorded in the manifest: captured, captured with a re-keyed request URL (the current builder adds Open Library fields and a limit, and the Google key), and synthetic. The Blacktongue and Dark Profit primary-search rows, the empty enrichment rows and the Hardcover series wrapper are synthetic.
+- Fixtures use three response origins, recorded in the manifest: captured, captured with a re-keyed request URL (the current builder adds Open Library fields and a limit, and the Google key), and synthetic. The Blacktongue and Dark Profit primary-search rows, the empty enrichment rows (11 of 12 Malazan rows) and the Hardcover series wrapper are synthetic.
 - Not verified against live data: the Hardcover `series.author` provider filter, the Apple badge markup, the Pike author-site grammar and the Macmillan numbered grammar (both from synthetic samples, since the saved publisher responses were HTTP 403 and 429), and the Hardcover `cached_image` shape.
+- The Ana and Din cover replay serves the Bennett control Google Books response under the Benett request URL, so the fuzzy Benett to Bennett match is inferred, not captured.
+- The pilot runs only the release path, so the cover service budgets are not live-checked.
 - Replay proves the pipeline rules, not live provider availability. Live source availability, Amazon-exclusive Will Wight ebooks and provider quota remain external limits.
 - Apple cover candidates carry no dimensions, so portrait or square shape is not asserted by the replay for them.
 - With the next title known, the previous-title Open Library search is not made, so The Devils does not offer its old square art as a previous cover.
