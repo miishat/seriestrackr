@@ -222,7 +222,8 @@ async function runDiscoveryInTrace(input: CheckRequest, dependencies: DiscoveryD
     }, checkedAt, suppressed, prunedWorkFormats, value => { reason(value); if (value === 'budget') allocationBudget = true; }, dependencies.onDiagnostic);
     if (allocationBudget) emitDiagnostic(dependencies.onDiagnostic, { stage: 'allocation', category: 'bounds', ...diagnosticCounts(evidence) });
   };
-  const markets = [...new Set([request.preferredMarket, 'US', 'GB', 'CA'])];
+  // Fallback storefronts are slow (Apple spaces calls 3.1 s apart), so they are opt-in.
+  const markets = [...new Set(request.fallbackMarkets ? [request.preferredMarket, 'US', 'GB', 'CA'] : [request.preferredMarket])];
   // Catalog usage is the shared aggregate snapshot; counters never move backwards.
   const absorb = (value: CatalogResult['usage']) => {
     for (const key of ['apple', 'openlibrary', 'googlebooks', 'hardcover'] as const) usage[key] = Math.max(usage[key], value[key]);
@@ -271,7 +272,7 @@ async function runDiscoveryInTrace(input: CheckRequest, dependencies: DiscoveryD
   };
   // Rebuild after each query so an explicitly validated identity can narrow the
   // remaining format searches without providing a researched expected answer.
-  while (!signal.aborted && context.canClaim('tavily')) {
+  while (request.useSearch && !signal.aborted && context.canClaim('tavily')) {
     const gaps = needs();
     if (!gaps.identity && !gaps.book && !gaps.audio) break;
     if (!dependencies.canSearch) { reason('missing-key'); break; }

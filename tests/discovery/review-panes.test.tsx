@@ -23,7 +23,7 @@ const cover = (overrides: Partial<CoverCandidate> = {}): CoverCandidate => ({ id
   imageUrl: 'https://assets.hardcover.app/second.jpg', workKey: 'second|example author', editionKey: null, width: null, height: null, ...overrides });
 const session = (result: CheckResponse): DiscoverySession => ({ seriesId: 's1', phase: 'review', capabilities, snapshot: null, response: result, error: null });
 function show(result: CheckResponse, overrides: Partial<Parameters<typeof DiscoveryDialog>[0]> = {}) {
-  const props = { session: session(result), series: seriesFixture(), preferredMarket: 'CA', stale: false,
+  const props = { session: session(result), series: seriesFixture(), preferredMarket: 'CA', stale: false, apiKeys: { tavily: null, deepseek: null },
     onRun: vi.fn(), onClose: vi.fn(), onAccept: vi.fn(() => ({ ok: true as const, value: undefined })), ...overrides };
   return { ...render(<DiscoveryDialog {...props} />), props };
 }

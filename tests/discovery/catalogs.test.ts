@@ -90,11 +90,11 @@ async function collect(req = request(), markets = ['CA', 'US', 'GB'], responder:
 test('collector queries preferred formats, Open Library once, then bounded unique fallback countries', async () => {
   const { result, urls } = await collect(request(), [' ca ', 'US', 'GB', 'CA', 'FR', 'bad', 'us']);
   expect(urls.map(url => url.hostname === 'itunes.apple.com' ? `${url.searchParams.get('country')}:${url.searchParams.get('entity')}` : url.pathname))
-    .toEqual(['ca:ebook', 'ca:audiobook', '/search.json', 'us:ebook', 'us:audiobook', 'gb:ebook', 'gb:audiobook']);
-  expect(result.usage).toMatchObject({ apple: 6, openlibrary: 1, tavily: 0, deepseek: 0 });
+    .toEqual(['ca:ebook,audiobook', '/search.json', 'us:ebook,audiobook', 'gb:ebook,audiobook']);
+  expect(result.usage).toMatchObject({ apple: 3, openlibrary: 1, tavily: 0, deepseek: 0 });
   for (const url of urls.filter(url => url.hostname === 'itunes.apple.com')) {
     expect(url.searchParams.get('term')).toBe('Second Example Author');
-    expect(url.searchParams.get('limit')).toBe('20');
+    expect(url.searchParams.get('limit')).toBe('40');
   }
 });
 
@@ -313,14 +313,15 @@ test('Google ISBN never supplies missing Apple language and actual CA book and G
       volumeInfo: { ...volume().volumeInfo, publishedDate: '2027-03-02', industryIdentifiers: [{ type: 'ISBN_13', identifier: apple.ebook.results[0].isbn13 }] },
     })] });
     if (url.hostname === 'openlibrary.org') return json({ docs: [] });
-    return json({ results: url.searchParams.get('entity') === 'ebook' ? [apple.ebook.results[0]]
-      : url.searchParams.get('country') === 'gb' ? [{ ...apple.audio.results[0], collectionViewUrl: 'https://books.apple.com/gb/audiobook/second/id51' }] : [] });
+    const entity = url.searchParams.get('entity') ?? '';
+    return json({ results: [...(entity.includes('ebook') ? [apple.ebook.results[0]] : []),
+      ...(entity.includes('audiobook') && url.searchParams.get('country') === 'gb' ? [{ ...apple.audio.results[0], collectionViewUrl: 'https://books.apple.com/gb/audiobook/second/id51' }] : [])] });
   }, googleOptions);
   expect(result.evidence.editions.find(item => item.id.startsWith('apple:'))?.language).toBeNull();
   const proposals = selectProposals(request(), result.evidence, checkedAt);
   expect(proposals.releases.book?.provenance.sourceMarket).toBe('CA'); expect(proposals.releases.book?.provenance.editionFormat).toBe('ebook');
   expect(proposals.releases.audio?.provenance.sourceMarket).toBe('GB');
-  expect(urls.filter(url => url.searchParams.get('entity') === 'ebook')).toHaveLength(1);
+  expect(urls.filter(url => url.searchParams.get('entity')?.includes('ebook'))).toHaveLength(1);
 });
 
 test.each([
@@ -396,12 +397,14 @@ test('cancelling a started Google request keeps one attempt and stops all later 
 test('fallback is per format and preserves actual source market', async () => {
   const { result, urls } = await collect(request(), ['CA', 'US', 'GB'], url => {
     if (url.hostname === 'openlibrary.org') return json({ docs: [] });
-    if (url.searchParams.get('entity') === 'ebook') return json({ results: [apple.ebook.results[1]] });
-    return json(url.searchParams.get('country') === 'us' ? { results: [{ ...apple.audio.results[0], collectionViewUrl: 'https://books.apple.com/us/audiobook/second/id51' }] } : { results: [] });
+    const entity = url.searchParams.get('entity') ?? '';
+    return json({ results: [...(entity.includes('ebook') ? [apple.ebook.results[1]] : []),
+      ...(entity.includes('audiobook') && url.searchParams.get('country') === 'us' ? [{ ...apple.audio.results[0], collectionViewUrl: 'https://books.apple.com/us/audiobook/second/id51' }] : [])] });
   });
-  expect(urls.filter(url => url.searchParams.get('entity') === 'ebook')).toHaveLength(1);
+  // The preferred market answers the book, so later storefronts are asked about the audiobook alone.
+  expect(urls.filter(url => url.searchParams.get('entity')?.includes('ebook'))).toHaveLength(1);
   expect(selectProposals(request(), result.evidence, checkedAt).releases.audio?.provenance.sourceMarket).toBe('US');
-  expect(result.usage.apple).toBe(4);
+  expect(result.usage.apple).toBe(3);
 });
 
 test('collector fetches at most two exact editions and joins Apple language only by shared ISBN', async () => {
@@ -485,7 +488,7 @@ test.each([
 
 test('four allowed countries bound requests even when arbitrary extra inputs are supplied', async () => {
   const { result, urls } = await collect(request({ preferredMarket: 'AU' }), ['AU', 'US', 'GB', 'CA', 'FR', 'DE']);
-  expect(result.usage.apple).toBe(8);
+  expect(result.usage.apple).toBe(4);
   expect(result.usage.openlibrary).toBe(1);
   expect(new Set(urls.filter(url => url.hostname === 'itunes.apple.com').map(url => url.searchParams.get('country')))).toEqual(new Set(['au', 'us', 'gb', 'ca']));
 });
@@ -529,19 +532,20 @@ test('concurrent collection calls share provider start spacing', async () => {
 });
 
 test('cancellation after successful evidence stops remaining retrieval and retains its facts', async () => {
+  vi.resetModules(); const { collectCatalogs: isolatedCollect } = await import('../../server/discovery/catalogs');
   vi.useFakeTimers();
   const controller = new AbortController();
   const urls: URL[] = [];
   const fetcher: typeof fetch = async input => {
     const url = new URL(String(input)); urls.push(url);
-    if (url.hostname === 'openlibrary.org') controller.abort();
+    if (url.hostname === 'openlibrary.org') setTimeout(() => controller.abort(), 1500);
     return json(url.hostname === 'itunes.apple.com' ? { results: [apple.ebook.results[0]] } : { docs: [] });
   };
-  const pending = collectCatalogs(request({ formats: ['book'] }), ['CA', 'US', 'GB'], controller.signal, fetcher);
+  const pending = isolatedCollect(request({ formats: ['book'] }), ['CA', 'US', 'GB'], controller.signal, fetcher);
   await vi.runAllTimersAsync();
   const result = await pending;
   expect(result.reasons).toEqual(['cancelled']);
-  expect(urls).toHaveLength(2);
+  expect(urls.filter(url => url.searchParams.get('country') && url.searchParams.get('country') !== 'ca')).toEqual([]);
   expect(result.evidence.editions[0].date).toBe('2027-03-01');
 });
 
@@ -581,4 +585,21 @@ test('exhausting a shared Apple ledger stops further starts and signals budget',
   await vi.runAllTimersAsync(); const result = await pending;
   expect(fetcher.mock.calls.every(([input]) => new URL(String(input)).hostname !== 'itunes.apple.com')).toBe(true);
   expect(result.reasons).toContain('budget'); expect(result.usage.apple).toBe(12);
+});
+
+test('independent providers start together instead of waiting behind the Apple queue', async () => {
+  vi.useFakeTimers();
+  const starts: Record<string, number> = {};
+  const fetcher: typeof fetch = async input => {
+    const url = new URL(String(input));
+    const key = url.hostname === 'itunes.apple.com' ? 'apple' : url.hostname === 'openlibrary.org' ? 'openlibrary' : 'google';
+    starts[key] = performance.now();
+    // A slow Apple answer must not hold up the other providers.
+    if (key === 'apple') await new Promise(resolve => setTimeout(resolve, 2000));
+    return json(key === 'google' ? { totalItems: 0 } : { results: [], docs: [] });
+  };
+  const pending = collectCatalogs(request(), ['CA'], new AbortController().signal, fetcher, googleOptions);
+  await vi.runAllTimersAsync();
+  await pending;
+  expect(starts.openlibrary - starts.apple).toBeLessThan(1000);
 });

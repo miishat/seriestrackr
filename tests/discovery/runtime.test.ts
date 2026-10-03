@@ -68,7 +68,7 @@ test('failed Hardcover preserves independent catalog evidence and attempted coun
   });
   const runtime = createDiscoveryRuntime({ tavilyKey: null, deepseekKey: null, hardcoverToken: 'fake', model: 'deepseek-flash' }, fetcher);
   const pending = runtime.catalogs(request(), ['CA'], new AbortController().signal); await vi.runAllTimersAsync(); const result = await pending;
-  expect(result.usage).toMatchObject({ hardcover: 1, apple: 2, openlibrary: 1 }); expect(result.reasons).toContain('invalid-evidence');
+  expect(result.usage).toMatchObject({ hardcover: 1, apple: 1, openlibrary: 1 }); expect(result.reasons).toContain('invalid-evidence');
   expect(JSON.stringify(result)).not.toContain('fictional-secret');
 });
 
@@ -121,10 +121,11 @@ test('runtime hydrates canonical Hardcover seed with keyless English Apple produ
       '@type': audio ? 'Audiobook' : 'Book', additionalType: 'Product', name: literalTitle, author: 'Example Author',
       bookFormat: audio ? undefined : 'EBook', inLanguage: audio ? undefined : 'en-US', datePublished: '2027-03-01',
     })}</script><main class="is-books-theme"><article><section class="product-hero"><h1 class="product-header__title">${literalTitle}</h1></section><section class="section--book-infobar"><figure class="book-badge"><div class="book-badge__eyebrow">LANGUAGE</div><div class="book-badge__caption">English</div></figure></section></article></main>`, { headers: { 'content-type': 'text/html' } });
-    if (url.hostname === 'itunes.apple.com') return Response.json({ results: [{ trackId: identifier, collectionId: identifier,
-      trackName: literalTitle, collectionName: literalTitle, artistName: 'Example Author', releaseDate: '2027-03-01T00:00:00Z',
-      trackViewUrl: `https://books.apple.com/ca/book/found-second/id${identifier}`, collectionViewUrl: `https://books.apple.com/ca/audiobook/found-second/id${identifier}`,
-    }] });
+    // One combined search answers both formats, each record typed as Apple types it.
+    if (url.hostname === 'itunes.apple.com') return Response.json({ results: [
+      { kind: 'ebook', trackId: 50, trackName: 'Found Second', artistName: 'Example Author', releaseDate: '2027-03-01T00:00:00Z', trackViewUrl: 'https://books.apple.com/ca/book/found-second/id50' },
+      { wrapperType: 'audiobook', collectionId: 51, collectionName: 'Found Second: Example, Book 2 (Unabridged)', artistName: 'Example Author', releaseDate: '2027-03-01T00:00:00Z', collectionViewUrl: 'https://books.apple.com/ca/audiobook/found-second/id51' },
+    ] });
     return Response.json({ docs: [] });
   };
   const runtime = createDiscoveryRuntime({ tavilyKey: 'fake-unused-search', deepseekKey: 'fake-unused-ai', hardcoverToken: 'fake-token', model: 'deepseek-flash' }, fetcher);
@@ -132,7 +133,7 @@ test('runtime hydrates canonical Hardcover seed with keyless English Apple produ
   expect(result.proposals.identity?.title).toBe('Found Second'); expect(original.target.title).toBe('');
   expect(result.proposals.releases.book?.date).toBe('2027-03-01'); expect(result.proposals.releases.audio?.date).toBe('2027-03-01');
   expect(result.proposals.releases.audio?.title).toBe('Found Second');
-  expect(result.summary.usage).toMatchObject({ hardcover: 1, apple: 4, googlebooks: 0, tavily: 0, deepseek: 0 });
+  expect(result.summary.usage).toMatchObject({ hardcover: 1, apple: 3, googlebooks: 0, tavily: 0, deepseek: 0 });
   expect(urls.filter(url => url.hostname === 'books.apple.com')).toHaveLength(2);
   for (const release of Object.values(result.proposals.releases)) {
     expect(release?.provenance.sources.some(source => new URL(source.url).hostname === 'books.apple.com')).toBe(true);

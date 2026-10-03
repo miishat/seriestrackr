@@ -9,7 +9,8 @@ import { DiscoverySummary } from './DiscoverySummary';
 import { ReviewCovers } from './ReviewCovers';
 import { selectableCover } from '../../services/coverImages';
 import type { CoverCandidate } from '../../../shared/covers';
-import type { DiscoverySession } from './discoverySession';
+import type { DiscoverySession, RunOptions } from './discoverySession';
+import type { ApiKeys } from '../../storage/apiKeys';
 
 const emptySelection = (): Selection => ({ title: false, book: false, audio: false, coverId: null });
 const formatLabels: Record<Format, string> = { book: 'Book', audio: 'Audiobook' };
@@ -68,11 +69,13 @@ function Comparison({ label, current, suggested, checked, disabled, onChange, wh
   </>;
 }
 
-export function DiscoveryDialog({ session, series, preferredMarket, stale, onRun, onClose, onAccept }: {
-  session: DiscoverySession; series: Series; preferredMarket: string; stale: boolean;
-  onRun: (useAi: boolean) => void; onClose: () => void; onAccept: (selection: Selection) => Result<void>;
+export function DiscoveryDialog({ session, series, preferredMarket, stale, apiKeys, onRun, onClose, onAccept }: {
+  session: DiscoverySession; series: Series; preferredMarket: string; stale: boolean; apiKeys: ApiKeys;
+  onRun: (options: RunOptions) => void; onClose: () => void; onAccept: (selection: Selection) => Result<void>;
 }): React.JSX.Element {
   const [useAi, setUseAi] = useState(false);
+  const [useSearch, setUseSearch] = useState(false);
+  const [fallbackMarkets, setFallbackMarkets] = useState(true);
   const [selection, setSelection] = useState<Selection>(emptySelection);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [pane, setPane] = useState<PaneId>('title');
@@ -85,9 +88,10 @@ export function DiscoveryDialog({ session, series, preferredMarket, stale, onRun
   const preparing = session.phase === 'preparing';
   const reviewing = session.phase === 'review' && result !== null;
   const readyToRun = !checking && !preparing;
-  const aiEnabled = readyToRun && session.capabilities?.ai === true;
+  const aiEnabled = readyToRun && session.capabilities?.ai === true && apiKeys.deepseek !== null;
+  const searchEnabled = readyToRun && session.capabilities?.search === true && apiKeys.tavily !== null;
   useEffect(() => {
-    setUseAi(false); setSelection(emptySelection()); setSaveError(null); setPane('title'); setDecoded([]);
+    setUseAi(false); setUseSearch(false); setFallbackMarkets(true); setSelection(emptySelection()); setSaveError(null); setPane('title'); setDecoded([]);
   }, [session.seriesId, session.phase, session.snapshot?.requestId, result?.requestId]);
   const undatedWithoutMarket = (proposal: ReleaseProposal) => proposal.state === 'released' && proposal.date === null && proposal.provenance.sourceMarket === null;
   const formatBlock = (format: Format): string | null => {
@@ -120,8 +124,8 @@ export function DiscoveryDialog({ session, series, preferredMarket, stale, onRun
   const selected = count > 0;
   const related = result?.proposals.related ?? [];
   const run = () => {
-    const choice = aiEnabled && useAi;
-    setUseAi(false); setSelection(emptySelection()); setSaveError(null); onRun(choice);
+    const choice: RunOptions = { useAi: aiEnabled && useAi, useSearch: searchEnabled && useSearch, fallbackMarkets: readyToRun && fallbackMarkets };
+    setUseAi(false); setUseSearch(false); setFallbackMarkets(true); setSelection(emptySelection()); setSaveError(null); onRun(choice);
   };
   const save = () => {
     if (!reviewing || stale || !selected) return;
@@ -226,11 +230,14 @@ export function DiscoveryDialog({ session, series, preferredMarket, stale, onRun
         </div>
       </>}
       <label className="checkbox-label"><input type="checkbox" checked={useAi && aiEnabled} disabled={!aiEnabled} onChange={event => setUseAi(event.target.checked)} />Use DeepSeek for this check</label>
-      <p className="small">DeepSeek API usage is billed. At most one extraction request.</p>
+      {apiKeys.deepseek === null && <p className="small">Add your own DeepSeek key in Settings to use AI. It is billed to you, never to this app.</p>}
+      {apiKeys.deepseek !== null && <p className="small">DeepSeek API usage is billed. At most one extraction request.</p>}
+      <label className="checkbox-label"><input type="checkbox" checked={useSearch && searchEnabled} disabled={!searchEnabled} onChange={event => setUseSearch(event.target.checked)} />Use Tavily web search for this check</label>
+      {apiKeys.tavily === null ? <p className="small">Add your own Tavily key in Settings to use web search.</p> : <p className="small">Tavily searches are billed to your key. At most 3 searches.</p>}
+      <label className="checkbox-label"><input type="checkbox" checked={fallbackMarkets && readyToRun} disabled={!readyToRun} onChange={event => setFallbackMarkets(event.target.checked)} />Also search other storefronts (US, UK, Canada). Slower, about 12 s longer.</label>
       {session.capabilities && <>
         <p className="small">Estimated maximum AI usage: ${session.capabilities.estimatedMaxAiUsd.toFixed(4)} USD, rates as of {session.capabilities.pricingAsOf}. This estimate is not a guaranteed dollar cap.</p>
         <p className="small">At most {session.capabilities.limits.ai} extraction request and {session.capabilities.limits.search} searches. Source-only checking is available without optional AI or search keys.</p>
-        {!session.capabilities.ai && <p className="small">DeepSeek is unavailable because no AI key is configured.</p>}
       </>}
       {saveError && <p className="form-error" role="alert">{saveError}</p>}
     </div>

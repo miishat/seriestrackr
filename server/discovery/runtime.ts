@@ -8,12 +8,13 @@ import type { CoverRequest, CoverResult } from '../../shared/covers';
 import { collectCoverCandidates } from './covers';
 import type { DiagnosticObserver } from './diagnostics';
 import { createRetrievalContext } from './retrievalContext';
+import type { ResponseCache } from './responseCache';
 
 // No per-check state lives in this factory. Catalog counters are local to its
 // single check's retrieval context, created by runDiscovery, and the
 // existing catalog provider queues remain global across runtimes/checks.
 export function createDiscoveryRuntime(config: DiscoveryConfig, fetcher: typeof fetch = fetch,
-  options: { onDiagnostic?: DiagnosticObserver } = {}): DiscoveryDependencies & { covers: (request: CoverRequest, signal: AbortSignal) => Promise<CoverResult> } {
+  options: { onDiagnostic?: DiagnosticObserver; responseCache?: ResponseCache } = {}): DiscoveryDependencies & { covers: (request: CoverRequest, signal: AbortSignal) => Promise<CoverResult> } {
   return {
     covers: (request, signal) => collectCoverCandidates(request, config, signal, fetcher, options.onDiagnostic),
     catalogs: async (request, markets, signal, context = createRetrievalContext(), phase = 'initial', seed) => {
@@ -22,7 +23,7 @@ export function createDiscoveryRuntime(config: DiscoveryConfig, fetcher: typeof 
         ? await collectHardcover(request, config.hardcoverToken, signal, fetcher, options.onDiagnostic, context) : null;
       const catalogs = await collectCatalogs(request, markets, signal, fetcher, { googleBooksKey: config.googleBooksKey,
         onDiagnostic: options.onDiagnostic, seedEvidence: hardcover ? hardcover.evidence : seed, appleIsbnJoin: true, appleProductPages: true,
-        context, phase });
+        context, phase, responseCache: options.responseCache });
       catalogs.reasons = [...new Set([...(hardcover?.reasons ?? []), ...catalogs.reasons])];
       if (hardcover?.covers) catalogs.covers = hardcover.covers;
       return catalogs;

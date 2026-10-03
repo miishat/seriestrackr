@@ -24,10 +24,10 @@ test('render makes no requests; explicit open and run send only latest target wi
   expect(getDiscoveryCapabilities).not.toHaveBeenCalled(); expect(checkDiscovery).not.toHaveBeenCalled();
   await act(async () => { result.current.discovery.open('s1'); });
   expect(result.current.discovery.session?.phase).toBe('ready');
-  await act(async () => { await result.current.discovery.run(false); });
+  await act(async () => { await result.current.discovery.run({ useAi: false, useSearch: false, fallbackMarkets: false }); });
   expect(checkDiscovery).toHaveBeenCalledTimes(1);
   expect(vi.mocked(checkDiscovery).mock.calls[0][0]).toMatchObject({ seriesId: 's1', preferredMarket: 'CA', formats: ['book', 'audio'], useAi: false });
-  expect(Object.keys(vi.mocked(checkDiscovery).mock.calls[0][0]).sort()).toEqual(['formats', 'preferredMarket', 'requestId', 'seriesId', 'target', 'useAi']);
+  expect(Object.keys(vi.mocked(checkDiscovery).mock.calls[0][0]).sort()).toEqual(['fallbackMarkets', 'formats', 'preferredMarket', 'requestId', 'seriesId', 'target', 'useAi', 'useSearch']);
   expect(result.current.discovery.session?.phase).toBe('review');
   expect(result.current.library.doc.series[0].releases.book.origin).toBe('manual');
 });
@@ -37,7 +37,7 @@ test.each(['edit', 'finish-undo', 'equal-import'] as const)('late result after %
   vi.mocked(checkDiscovery).mockImplementation(() => new Promise(resolve => { complete = resolve; }));
   await act(async () => { result.current.discovery.open('s1'); });
   let running!: Promise<void>;
-  act(() => { running = result.current.discovery.run(false); });
+  act(() => { running = result.current.discovery.run({ useAi: false, useSearch: false, fallbackMarkets: false }); });
   const sent = vi.mocked(checkDiscovery).mock.calls[0][0];
   act(() => {
     const library = result.current.library;
@@ -60,7 +60,7 @@ test('closed and superseded generations ignore late capabilities and checks even
   await act(async () => { pending[1](capabilities); });
   let complete!: (value: ReturnType<typeof response>) => void;
   vi.mocked(checkDiscovery).mockImplementation(() => new Promise(resolve => { complete = resolve; }));
-  let running!: Promise<void>; act(() => { running = result.current.discovery.run(false); });
+  let running!: Promise<void>; act(() => { running = result.current.discovery.run({ useAi: false, useSearch: false, fallbackMarkets: false }); });
   const sent = vi.mocked(checkDiscovery).mock.calls[0][0];
   act(() => result.current.discovery.close());
   await act(async () => { complete(response({ requestId: sent.requestId, seriesId: sent.seriesId, summary: { ...response().summary, requestId: sent.requestId } })); await running; });
@@ -70,7 +70,7 @@ test('operational error preserves accepted facts and retries require another run
   const { result } = mount(); const original = result.current.library.doc.series[0].releases;
   vi.mocked(checkDiscovery).mockRejectedValue(new Error('Discovery service is unavailable.'));
   await act(async () => { result.current.discovery.open('s1'); });
-  await act(async () => { await result.current.discovery.run(false); });
+  await act(async () => { await result.current.discovery.run({ useAi: false, useSearch: false, fallbackMarkets: false }); });
   expect(result.current.discovery.session?.phase).toBe('error');
   expect(result.current.library.doc.series[0].releases).toEqual(original); expect(checkDiscovery).toHaveBeenCalledTimes(1);
 });
@@ -81,7 +81,7 @@ test('run uses the latest override position market formats and target rather tha
     result.current.library.updateSeries({ ...series, marketOverride: 'GB', formats: { book: false, audio: true },
       next: { ...series.next, title: 'New Second', positionOverride: 2.5, orderNote: 'Optional novella' } }, true);
   });
-  await act(async () => { await result.current.discovery.run(true); });
+  await act(async () => { await result.current.discovery.run({ useAi: true, useSearch: false, fallbackMarkets: true }); });
   expect(vi.mocked(checkDiscovery).mock.calls[0][0]).toMatchObject({ preferredMarket: 'GB', formats: ['audio'], useAi: false,
     target: { title: 'New Second', position: 2.5, orderNote: 'Optional novella' } });
 });
@@ -90,7 +90,7 @@ test('unmount aborts and invalidates late results without storage history', asyn
   await act(async () => { result.current.discovery.open('s1'); });
   let complete!: (value: ReturnType<typeof response>) => void;
   vi.mocked(checkDiscovery).mockImplementation(() => new Promise(resolve => { complete = resolve; }));
-  let running!: Promise<void>; act(() => { running = result.current.discovery.run(false); });
+  let running!: Promise<void>; act(() => { running = result.current.discovery.run({ useAi: false, useSearch: false, fallbackMarkets: false }); });
   const [sent, signal] = vi.mocked(checkDiscovery).mock.calls[0];
   unmount(); expect(signal.aborted).toBe(true);
   complete(response({ requestId: sent.requestId, seriesId: sent.seriesId, summary: { ...response().summary, requestId: sent.requestId } }));
@@ -102,7 +102,7 @@ test('repeated run clicks cannot start concurrent POST requests', async () => {
   await act(async () => { result.current.discovery.open('s1'); });
   let complete!: (value: ReturnType<typeof response>) => void;
   vi.mocked(checkDiscovery).mockImplementation(() => new Promise(resolve => { complete = resolve; }));
-  let running!: Promise<void>; act(() => { running = result.current.discovery.run(false); void result.current.discovery.run(false); });
+  let running!: Promise<void>; act(() => { running = result.current.discovery.run({ useAi: false, useSearch: false, fallbackMarkets: false }); void result.current.discovery.run({ useAi: false, useSearch: false, fallbackMarkets: false }); });
   expect(checkDiscovery).toHaveBeenCalledTimes(1); const sent = vi.mocked(checkDiscovery).mock.calls[0][0];
   await act(async () => { complete(response({ requestId: sent.requestId, seriesId: sent.seriesId, summary: { ...response().summary, requestId: sent.requestId } })); await running; });
 });

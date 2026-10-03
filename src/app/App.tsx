@@ -12,6 +12,7 @@ import { useLibrary } from '../features/library/useLibrary';
 import { staleSeriesIds } from '../features/discovery/autoTrack';
 import { useDiscovery } from '../features/discovery/useDiscovery';
 import { DiscoveryDialog } from '../features/discovery/DiscoveryDialog';
+import { loadBrowserApiKeys } from '../storage/apiKeys';
 import { MarketSelect, SettingsDialog } from '../features/settings/SettingsDialog';
 import { downloadJson, encodeBackup } from '../storage/backup';
 
@@ -170,7 +171,7 @@ export function App({ autoTrack = true }: { autoTrack?: boolean } = {}) {
     <Dialog open={deleteTarget !== null} title="Delete series" onClose={() => setDeleteTarget(null)}><p>Delete {deleteTarget?.name}? This removes its progress and release details.</p><div className="actions"><button onClick={() => setDeleteTarget(null)}>Cancel delete</button><button className="danger" onClick={() => { if (deleteTarget) { const result = library.deleteSeries(deleteTarget.id); if (result.ok === true) { setDeleteTarget(null); closeEditor(); } else setDialogError(result.error); } }}>Delete {deleteTarget?.name}</button></div></Dialog>
     <Dialog open={finishTarget !== null} title="Finish next book" onClose={() => setFinishTarget(null)}><p>Enter the title before moving this book to Last finished.</p><label>Finished book title<input value={finishTitle} onChange={(event) => setFinishTitle(event.target.value)} /></label>{dialogError && <p role="alert">{dialogError}</p>}<div className="actions"><button onClick={() => setFinishTarget(null)}>Cancel</button><button className="primary" onClick={finishWithTitle}>Finish book</button></div></Dialog>
     <Dialog open={settingsOpen} closable={false} title="Settings" onClose={() => setSettingsOpen(false)}><SettingsDialog settings={library.doc.settings} onSave={handleSettings} onCancel={() => setSettingsOpen(false)} error={dialogError} /></Dialog>
-    {!discovery.batch.running && discovery.session && discoverySeries && <DiscoveryDialog session={discovery.session} series={discoverySeries} preferredMarket={discoverySeries.marketOverride ?? library.doc.settings.market ?? ''} stale={!!discovery.session.snapshot && !library.isDiscoveryCurrent(discovery.session.snapshot)} onRun={discovery.run} onClose={discovery.close} onAccept={discovery.accept} />}
+    {!discovery.batch.running && discovery.session && discoverySeries && <DiscoveryDialog apiKeys={loadBrowserApiKeys()} session={discovery.session} series={discoverySeries} preferredMarket={discoverySeries.marketOverride ?? library.doc.settings.market ?? ''} stale={!!discovery.session.snapshot && !library.isDiscoveryCurrent(discovery.session.snapshot)} onRun={discovery.run} onClose={discovery.close} onAccept={discovery.accept} />}
     {backupsOpen && <BackupDialog doc={library.doc} mode={library.mode} recoveryRaw={library.recoveryRaw} onReplace={library.replaceLibrary} onReset={library.resetLibrary} onClose={() => setBackupsOpen(false)} />}
   </div>;
 }

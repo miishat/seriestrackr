@@ -1,5 +1,6 @@
 import type { Capabilities, CheckRequest, CheckResponse } from '../../shared/discovery';
 import { parseCheckRequest, parseCheckResponse } from '../../shared/discoveryValidation';
+import type { ApiKeys } from '../storage/apiKeys';
 
 const invalidResponse = () => new Error('Discovery returned an invalid response.');
 const unavailable = () => new Error('Discovery service is unavailable. Start the local discovery service and try again.');
@@ -36,14 +37,14 @@ function cancelled(error: unknown, signal: AbortSignal): void {
   if (error !== null && typeof error === 'object' && 'name' in error && error.name === 'AbortError') throw error;
 }
 
-async function fetchJson(path: '/api/discovery/capabilities' | '/api/discovery/check', signal: AbortSignal, body?: string): Promise<unknown> {
+async function fetchJson(path: '/api/discovery/capabilities' | '/api/discovery/check', signal: AbortSignal, body?: string, keyHeaders: Record<string, string> = {}): Promise<unknown> {
   cancelled(null, signal);
   let reply: Response;
   try {
     reply = await fetch(path, {
       method: body === undefined ? 'GET' : 'POST', signal,
       mode: 'same-origin', credentials: 'same-origin', redirect: 'error', cache: 'no-store',
-      headers: body === undefined ? { Accept: 'application/json' } : { Accept: 'application/json', 'Content-Type': 'application/json' },
+      headers: body === undefined ? { Accept: 'application/json' } : { Accept: 'application/json', 'Content-Type': 'application/json', ...keyHeaders },
       ...(body === undefined ? {} : { body }),
     });
   } catch (error) {
@@ -72,10 +73,13 @@ export async function getDiscoveryCapabilities(signal: AbortSignal): Promise<Cap
   return capabilities(await fetchJson('/api/discovery/capabilities', signal));
 }
 
-export async function checkDiscovery(request: CheckRequest, signal: AbortSignal): Promise<CheckResponse> {
+// A key leaves the browser only for a provider this request opts into, and only to the local service.
+export async function checkDiscovery(request: CheckRequest, signal: AbortSignal, keys: ApiKeys = { tavily: null, deepseek: null }): Promise<CheckResponse> {
   const parsed = parseCheckRequest(request);
   if (!parsed.ok) throw new Error('Invalid discovery request.');
-  const result = parseCheckResponse(await fetchJson('/api/discovery/check', signal, JSON.stringify(parsed.value)));
+  const result = parseCheckResponse(await fetchJson('/api/discovery/check', signal, JSON.stringify(parsed.value), {
+    ...(parsed.value.useSearch && keys.tavily ? { 'X-Tavily-Key': keys.tavily } : {}),
+    ...(parsed.value.useAi && keys.deepseek ? { 'X-Deepseek-Key': keys.deepseek } : {}) }));
   if (!result.ok || result.value.requestId !== parsed.value.requestId || result.value.seriesId !== parsed.value.seriesId) throw invalidResponse();
   return result.value;
 }

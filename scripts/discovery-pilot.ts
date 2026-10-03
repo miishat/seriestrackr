@@ -43,7 +43,7 @@ export function readPilotCases(root: string): Record<string, CheckRequest> {
     if (Object.keys(item).sort().join(',') !== 'author,formats,position,preferredMarket,series,title' || item.title !== '') throw new Error('invalid-cases');
     const parsed = parseCheckRequest({ requestId: `pilot-${caseId}`, seriesId: `pilot-${caseId}`,
       target: { series: item.series, author: item.author, position: item.position, title: item.title, orderNote: '' },
-      preferredMarket: item.preferredMarket, formats: item.formats, useAi: false });
+      preferredMarket: item.preferredMarket, formats: item.formats, useAi: false, useSearch: true, fallbackMarkets: true });
     if (!parsed.ok) throw new Error('invalid-cases');
     result[caseId] = parsed.value;
   }

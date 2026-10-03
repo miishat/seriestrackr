@@ -77,7 +77,7 @@ test('ISBN join is skipped when the format is not requested, when a date exists,
   const dated = await collect({ appleIsbnJoin: true },
     url => url.hostname === 'www.googleapis.com' ? json({ items: [isbnVolume()] })
       : json(url.hostname === 'itunes.apple.com' ? { results: [{
-        trackId: 7, trackName: 'Second', artistName: 'Example Author', language: 'en',
+        kind: 'ebook', trackId: 7, trackName: 'Second', artistName: 'Example Author', language: 'en',
         releaseDate: '2027-03-01T00:00:00Z', trackViewUrl: 'https://books.apple.com/ca/book/second/id7' }] } : { docs: [] }));
   expect(dated.urls.some(url => url.pathname === '/lookup')).toBe(false);
 

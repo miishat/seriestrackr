@@ -9,6 +9,7 @@ import { createRateQueue } from './rateQueue';
 import { normalizeGoogleBooks } from './googleBooks';
 import { diagnosticCounts, emitDiagnostic, type DiagnosticObserver } from './diagnostics';
 import type { CoverCandidate } from '../../shared/covers';
+import { responseKey, type ResponseCache } from './responseCache';
 import { createRetrievalContext, type RetrievalContext, type RetrievalPhase } from './retrievalContext';
 
 // overflow names the formats whose exact Apple record set could not be proven complete within the record limit.
@@ -238,7 +239,7 @@ function joinAppleLanguages(evidence: EvidenceBundle, originalLanguages: Map<str
 
 export async function collectCatalogs(request: CheckRequest, markets: string[], signal: AbortSignal, fetcher: typeof fetch = fetch,
   options: { googleBooksKey?: string | null; onDiagnostic?: DiagnosticObserver; appleIsbnJoin?: boolean; appleProductPages?: boolean; seedEvidence?: EvidenceBundle;
-  context?: RetrievalContext; phase?: RetrievalPhase } = {}): Promise<CatalogResult> {
+  context?: RetrievalContext; phase?: RetrievalPhase; responseCache?: ResponseCache } = {}): Promise<CatalogResult> {
   const evidence = empty();
   const context = options.context ?? createRetrievalContext();
   const seeded = { sources: new Set<string>(), identities: new Set<string>() };
@@ -282,13 +283,16 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
     const key = `${provider}:${path}`;
     const cached = queries.get(key);
     if (cached) return cached;
-    const queue = { apple: appleQueue, openlibrary: openLibraryQueue, googlebooks: googleBooksQueue }[provider];
+    // A recent identical response needs no request, so it takes no queue slot and counts as no attempt.
+    const shared = options.responseCache?.get(responseKey(provider, path));
+    if (shared) return Promise.resolve(shared.value);
+    const queue ={ apple: appleQueue, openlibrary: openLibraryQueue, googlebooks: googleBooksQueue }[provider];
     if (signal.aborted) { reason('cancelled'); return Promise.resolve(unavailable); }
     if (!context.canClaim(provider)) { emitDiagnostic(options.onDiagnostic, { stage: 'catalog', category: 'bounds', ...diagnosticCounts(evidence), provider, rule: 'request-bound' }); reason('budget'); return Promise.resolve(unavailable); }
     const operation = queue.run(async () => {
       if (!context.claim(provider)) throw new ProviderError(provider, 'budget');
       return fetchProviderJson(provider, path, {}, signal, fetcher, options.onDiagnostic);
-    }, signal).catch(error => {
+    }, signal).then(value => { options.responseCache?.set(responseKey(provider, path), value); return value; }).catch(error => {
       reason(signal.aborted ? 'cancelled' : error instanceof ProviderError ? error.reason : 'provider-error');
       return unavailable;
     });
@@ -308,23 +312,34 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
     // Query narrowing must not erase alternatives for an originally unknown title.
     merge(evidence, normalizeGoogleBooks(raw, request, checkedAt));
   }
-  async function appleSearch(market: string, format: 'book' | 'audio'): Promise<void> {
+  // Apple spaces calls 3.1 s apart, so every format of a market is asked in one search. Its records say what
+  // they are (`kind: ebook`, `wrapperType: audiobook`); a single-entity response is one format by construction.
+  const appleRowFormat = (row: Record<string, unknown>): 'ebook' | 'audio' | null =>
+    row.kind === 'ebook' ? 'ebook' : row.wrapperType === 'audiobook' ? 'audio' : null;
+  async function appleSearch(market: string, wanted: Array<'book' | 'audio'>): Promise<void> {
     const target = effectiveRequest().target;
     const term = `${target.title || target.series} ${target.author}`;
-    const params = new URLSearchParams({ term, country: market.toLowerCase(), entity: format === 'book' ? 'ebook' : 'audiobook', limit: '20' });
+    const combined = wanted.length > 1;
+    // Apple may return more than the limit, and a combined response shares it, so ask for room for both formats.
+    const params = new URLSearchParams({ term, country: market.toLowerCase(), entity: wanted.map(format => format === 'book' ? 'ebook' : 'audiobook').join(','), limit: combined ? '40' : '20' });
     const raw = await retrieve('apple', `/search?${params}`);
     if (raw === unavailable) return;
     const results = object(raw).results;
     if (!Array.isArray(results)) { reason('invalid-evidence'); return; }
-    if (results.length > 20) reason('budget');
-    const languageStates = new Map<string, LanguageMetadata>();
-    const incomplete = { value: false };
-    const normalized = normalizeAppleRecords(raw, market, format === 'book' ? 'ebook' : 'audio', checkedAt, languageStates,
-      { title: target.title, author: request.target.author, request: { ...request, target } }, incomplete);
-    if (incomplete.value) overflow.add(format);
-    if (results.length && !normalized.sources.length) reason('invalid-evidence');
-    for (const [incomingId, actualId] of merge(evidence, normalized)) {
-      if (!originalLanguages.has(actualId) && languageStates.has(incomingId)) originalLanguages.set(actualId, languageStates.get(incomingId)!);
+    if (combined && results.length && !results.some(row => appleRowFormat(object(row)) !== null)) reason('invalid-evidence');
+    for (const format of wanted) {
+      const kind = format === 'book' ? 'ebook' : 'audio';
+      const rows = combined ? results.filter(row => appleRowFormat(object(row)) === kind) : results;
+      if (rows.length > 20) reason('budget');
+      const languageStates = new Map<string, LanguageMetadata>();
+      const incomplete = { value: false };
+      const normalized = normalizeAppleRecords({ results: rows }, market, kind, checkedAt, languageStates,
+        { title: target.title, author: request.target.author, request: { ...request, target } }, incomplete);
+      if (incomplete.value) overflow.add(format);
+      if (rows.length && !normalized.sources.length) reason('invalid-evidence');
+      for (const [incomingId, actualId] of merge(evidence, normalized)) {
+        if (!originalLanguages.has(actualId) && languageStates.has(incomingId)) originalLanguages.set(actualId, languageStates.get(incomingId)!);
+      }
     }
     joinAppleLanguages(evidence, originalLanguages);
   }
@@ -424,10 +439,13 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
     }
   };
 
-  if (googleBooksKey && !signal.aborted) await googleSearch(initialQuery);
-  for (const format of formats) if (countries[0] && !signal.aborted) await appleSearch(countries[0], format);
-  if (countries[0] && !signal.aborted) await hydrateApple(countries[0]);
-  if (!signal.aborted) {
+  const applePreferred = async (): Promise<void> => {
+    if (countries[0] && !signal.aborted) await appleSearch(countries[0], formats);
+    if (countries[0] && !signal.aborted) await hydrateApple(countries[0]);
+  };
+
+  const openLibraryPhase = async (): Promise<void> => {
+    if (signal.aborted) return;
     const target = effectiveRequest().target;
     const params = new URLSearchParams({ title: target.title || target.series, author: target.author, limit: '20', fields: 'key,title,author_name,author_key,edition_key,first_publish_year,language' });
     const raw = await retrieve('openlibrary', `/search.json?${params}`);
@@ -459,14 +477,25 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
       }
       joinAppleLanguages(evidence, originalLanguages);
     }
+  };
+
+  // Providers have independent rate queues. With a known title no provider's query
+  // depends on another's evidence, so their waits overlap. An unknown title keeps the
+  // original order because Google and Apple identities narrow later queries.
+  if (request.target.title.trim()) {
+    await Promise.all([googleBooksKey && !signal.aborted ? googleSearch(initialQuery) : Promise.resolve(), applePreferred(), openLibraryPhase()]);
+    joinAppleLanguages(evidence, originalLanguages);
+  } else {
+    if (googleBooksKey && !signal.aborted) await googleSearch(initialQuery);
+    await applePreferred();
+    await openLibraryPhase();
   }
   for (const market of countries.slice(1)) {
-    for (const format of formats) {
-      if (signal.aborted) break;
-      const proposal = selectProposals(request, evidence, checkedAt).releases[format];
-      if (proposal?.date && proposal.provenance.sourceMarket === preferred) continue;
-      await appleSearch(market, format);
-    }
+    if (signal.aborted) break;
+    // One search covers every format that still has no preferred-market date.
+    const releases = selectProposals(request, evidence, checkedAt).releases;
+    const missing = formats.filter(format => !(releases[format]?.date && releases[format]!.provenance.sourceMarket === preferred));
+    if (missing.length) await appleSearch(market, missing);
     if (!signal.aborted) await hydrateApple(market);
   }
   if (googleBooksKey && !signal.aborted) {

@@ -68,20 +68,22 @@ Google Books supplies qualified identity/English ebook evidence and ebook ISBNs.
 
 Apple product pages can supply a day only when the exact edition, title, author, format, explicit English language and date are bound to the same product through JSON-LD or a scoped product badge. Requests use fixed HTTPS `books.apple.com` product URLs, allowed HTML MIME, a 1 MiB body cap and 20-second timeout, without redirects or cookies. Catalog and HTML starts share the global 3100 ms Apple queue and a 12-start per-check ceiling; HTML additionally has a six-start ceiling. Missing or ambiguous evidence stays unknown.
 
-DeepSeek is the sole optional AI provider (`deepseek-flash`). It is off by default, token-billed and requires a visible per-check choice. It interprets bounded supplied public evidence, never supplies dates from memory and never runs automatically. The latest live pilot made zero AI calls. Runtime attempt counts are not invoices or account quota balances. No automatic paid retries or provider switching occur.
+DeepSeek is the sole optional AI provider (`deepseek-flash`). It is off by default, token-billed, needs the person's own key and requires a visible per-check choice. Tavily web search follows the same rule. Checks started from a batch, including the automatic check on open, use only the free catalogs and the preferred storefront. A check opened from a series can add web search, AI and the other storefronts (US, GB, CA), which is slower because Apple calls are spaced 3.1 s apart. Successful catalog responses are cached in the service for 30 minutes. It interprets bounded supplied public evidence, never supplies dates from memory and never runs automatically. The latest live pilot made zero AI calls. Runtime attempt counts are not invoices or account quota balances. No automatic paid retries or provider switching occur.
 
 ## Service-only credentials
 
-The user already supplied the provider keys. Keep them in these Git-ignored local service files:
+Two kinds of key exist.
+
+Tavily (web search) and DeepSeek (AI) are billed to whoever owns the key, so the app never uses its own. Each person enters their own keys in Settings. They are stored only in that browser (`seriestrackr:apiKeys`, apart from the library, so backups never carry them) and are sent to the local service in `X-Tavily-Key` and `X-Deepseek-Key` headers only on a check that opts into that provider. The service uses them for that request and keeps nothing. `TAVILY_API_KEY` and `DEEPSEEK_API_KEY` in env files are ignored by the service.
+
+The free catalog keys stay in these Git-ignored local service files:
 
 | File | Service variable |
 | --- | --- |
-| `.env.discovery.local` | `TAVILY_API_KEY` |
-| `.env.deepseek.local` | `DEEPSEEK_API_KEY` |
 | `.env.google-books.local` | `GOOGLE_BOOKS_API_KEY` |
 | `.env.hardcover.local` | `HARDCOVER_API_TOKEN` |
 
-Never put credentials in `VITE_*`, frontend code, browser storage, backups, logs or chat. The runtime exposes factual fields and source id/title/URL, without raw HTML, raw provider responses, prompts or secrets. Unaccepted proposals are transient and must not enter persisted library records or backups.
+Never put credentials in `VITE_*`, frontend code, logs or chat. The only credentials in browser storage are the person's own Tavily and DeepSeek keys described above. The runtime exposes factual fields and source id/title/URL, without raw HTML, raw provider responses, prompts or secrets. Unaccepted proposals are transient and must not enter persisted library records or backups.
 
 ## Storage, backups and recovery
 
