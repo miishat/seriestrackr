@@ -78,14 +78,30 @@ export function useLibrary() {
 
   const validated = (candidate: LibraryDocument): Result<LibraryDocument> => parseDocument(candidate);
 
-  const addSeries = (input: Omit<Series, 'id'>): Result<void> => {
+  const addSeries = (input: Omit<Series, 'id'>): Result<Series> => {
     const allowed = requireReady();
-    if (allowed.ok === false) return allowed;
+    if (allowed.ok === false) return { ok: false, error: allowed.error };
     const candidate = { ...current.current, series: [...current.current.series, { ...input, id: crypto.randomUUID() }] };
     const checked = validated(candidate);
-    if (checked.ok === false) return invalid(checked.error);
+    if (checked.ok === false) return { ok: false, error: checked.error };
+    const created = checked.value.series[checked.value.series.length - 1];
     undoSnapshot.current = null;
-    discoveryGuard.current.touch(checked.value.series[checked.value.series.length - 1].id);
+    discoveryGuard.current.touch(created.id);
+    commit(checked.value);
+    return { ok: true, value: created };
+  };
+
+  // Fills an empty cover found after adding a series, only while its identity is unchanged.
+  const setAutomaticCover = (expected: Series, url: string, attribution: NonNullable<Series['coverAttribution']>): Result<void> => {
+    const allowed = requireReady();
+    if (allowed.ok === false) return allowed;
+    const before = current.current.series.find(item => item.id === expected.id);
+    if (!before) return invalid('Series not found.');
+    if (before.coverUrl !== null || identityChanged(expected, before)) return invalid('The series changed before its cover was found.');
+    const updated = { ...before, coverUrl: url, coverAttribution: attribution };
+    if (!coverTargets(updated)) return invalid('The cover does not match this series.');
+    const checked = validated({ ...current.current, series: current.current.series.map(item => item.id === before.id ? updated : item) });
+    if (checked.ok === false) return invalid(checked.error);
     commit(checked.value);
     return { ok: true, value: undefined };
   };
@@ -280,5 +296,5 @@ export function useLibrary() {
 
   return { doc, mode, error, recoveryRaw, canUndo: undoSnapshot.current !== null, undoKind: undoSnapshot.current?.kind ?? null,
     beginDiscovery, isDiscoveryCurrent, cancelDiscovery, recordDiscoveryCheck, acceptDiscovery,
-    addSeries, updateSeries, deleteSeries, markFinished, undo, updateSettings, replaceLibrary, resetLibrary };
+    addSeries, setAutomaticCover, updateSeries, deleteSeries, markFinished, undo, updateSettings, replaceLibrary, resetLibrary };
 }

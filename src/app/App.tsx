@@ -7,6 +7,7 @@ import { LibraryView } from '../features/library/LibraryView';
 import { SeriesForm } from '../features/library/SeriesForm';
 import type { LibraryDocument, Series } from '../features/library/model';
 import { displayRelease, localToday } from '../features/library/releases';
+import { findAutomaticCover } from '../features/library/autoCover';
 import { useLibrary } from '../features/library/useLibrary';
 import { useDiscovery } from '../features/discovery/useDiscovery';
 import { DiscoveryDialog } from '../features/discovery/DiscoveryDialog';
@@ -103,6 +104,14 @@ export function App() {
   useEffect(() => { document.documentElement.dataset.theme = library.doc.settings.theme; }, [library.doc.settings.theme]);
   const availableCount = library.doc.series.filter((s) => s.readingStatus !== 'completed' && s.formats.book && displayRelease(s.releases.book, today) === 'released').length;
   const availableAudioCount = library.doc.series.filter((s) => s.readingStatus !== 'completed' && s.formats.audio && displayRelease(s.releases.audio, today) === 'released').length;
+  const autoCover = (series: Series) => {
+    const market = series.marketOverride ?? library.doc.settings.market;
+    if (series.coverUrl || !market) return;
+    void findAutomaticCover(series, market, new AbortController().signal)
+      .then(cover => { if (cover) library.setAutomaticCover(series, cover.url, cover.attribution); })
+      .catch(() => {});
+  };
+
   return <div className="app-shell">
     <header className="site-header"><div className="brand"><BrandMark /><div><strong>Series<span>Trackr</span></strong><BrandTagline /></div></div>
       <nav aria-label="Library tools"><button onClick={() => setSettingsOpen(true)}>Market: {library.doc.settings.market ?? 'Choose'}</button><button onClick={() => library.updateSettings({ ...library.doc.settings, theme: library.doc.settings.theme === 'dark' ? 'light' : 'dark' }, false)}>{library.doc.settings.theme === 'dark' ? 'Light' : 'Dark'}</button><button onClick={() => setBackupsOpen(true)}>Backups</button></nav></header>
@@ -143,7 +152,7 @@ export function App() {
     {toast && <div className="toast" role="status">{toast}</div>}
     {undoError && <div className="undo" role="alert">{undoError}</div>}
     <Dialog open={library.doc.settings.market === null && library.mode !== 'recovery' && library.recoveryRaw === null} title="Which releases should we track?" onClose={() => {}} closable={false}><p>Choose your preferred country for English releases. Each format can use another country when no supported preferred-country date is found. You can override the preference for each series.</p><MarketSelect value={setupMarket} onChange={setSetupMarket} />{setupError && <p role="alert" className="form-error">{setupError}</p>}<div className="actions"><button className="primary" onClick={setup}>Start tracking</button></div></Dialog>
-    <Dialog open={editor !== null} title={editor === 'new' ? 'Add series' : 'Edit series'} onClose={closeEditor}>{editor && <SeriesForm key={editor === 'new' ? 'new' : editor.id} series={editor === 'new' ? undefined : editor} market={library.doc.settings.market ?? ''} onCreate={(input) => { const result = library.addSeries(input); if (result.ok === true) closeEditor(); else setDialogError(result.error); }} onUpdate={handleUpdate} onCancel={closeEditor} onDelete={() => { if (editor !== 'new') setDeleteTarget(editor); }} error={dialogError} />}</Dialog>
+    <Dialog open={editor !== null} title={editor === 'new' ? 'Add series' : 'Edit series'} onClose={closeEditor}>{editor && <SeriesForm key={editor === 'new' ? 'new' : editor.id} series={editor === 'new' ? undefined : editor} market={library.doc.settings.market ?? ''} onCreate={(input) => { const result = library.addSeries(input); if (result.ok === true) { closeEditor(); autoCover(result.value); } else setDialogError(result.error); }} onUpdate={handleUpdate} onCancel={closeEditor} onDelete={() => { if (editor !== 'new') setDeleteTarget(editor); }} error={dialogError} />}</Dialog>
     <Dialog open={pending !== null} title="Confirm metadata reset" onClose={() => setPending(null)}><p>{pending?.message}</p><p>Release information will be cleared. A changed next-book identity also clears its cover.</p><div className="actions"><button onClick={() => setPending(null)}>Cancel</button><button className="primary" onClick={confirmReset}>Confirm reset</button></div></Dialog>
     <Dialog open={deleteTarget !== null} title="Delete series" onClose={() => setDeleteTarget(null)}><p>Delete {deleteTarget?.name}? This removes its progress and release details.</p><div className="actions"><button onClick={() => setDeleteTarget(null)}>Cancel delete</button><button className="danger" onClick={() => { if (deleteTarget) { const result = library.deleteSeries(deleteTarget.id); if (result.ok === true) { setDeleteTarget(null); closeEditor(); } else setDialogError(result.error); } }}>Delete {deleteTarget?.name}</button></div></Dialog>
     <Dialog open={finishTarget !== null} title="Finish next book" onClose={() => setFinishTarget(null)}><p>Enter the title before moving this book to Last finished.</p><label>Finished book title<input value={finishTitle} onChange={(event) => setFinishTitle(event.target.value)} /></label>{dialogError && <p role="alert">{dialogError}</p>}<div className="actions"><button onClick={() => setFinishTarget(null)}>Cancel</button><button className="primary" onClick={finishWithTitle}>Finish book</button></div></Dialog>

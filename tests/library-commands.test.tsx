@@ -267,3 +267,13 @@ test('a saved identity change clears an attributed cover that targets another ti
     coverUrl: 'https://example.com/z.jpg', coverAttribution: stale }, true).ok).toBe(true); });
   expect(result.current.doc.series[0]).toMatchObject({ coverUrl: null, coverAttribution: null });
 });
+
+test('setAutomaticCover fills an empty cover only while the identity is unchanged', () => {
+  const { result } = mount(seeded([]));
+  let created!: Series;
+  act(() => { const added = result.current.addSeries(newSeries()); if (added.ok) created = added.value; });
+  const attribution = { title: created.next.title, author: created.author, role: 'next' as const, source: { id: 'h', title: 'Hardcover', url: 'https://hardcover.app/books/x' }, editionKey: null };
+  act(() => { expect(result.current.setAutomaticCover(created, 'https://assets.hardcover.app/x.jpg', attribution).ok).toBe(true); });
+  expect(result.current.doc.series.find(s => s.id === created.id)?.coverUrl).toBe('https://assets.hardcover.app/x.jpg');
+  act(() => { expect(result.current.setAutomaticCover(created, 'https://assets.hardcover.app/y.jpg', attribution).ok).toBe(false); });
+});
