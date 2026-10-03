@@ -7,6 +7,11 @@ Entries use development dates because no versioned releases have been tagged.
 
 ### Added
 
+- **Your own Tavily and DeepSeek keys.** Settings now has fields for them. Keys stay in this browser, are left out of backups, and are sent only to the local discovery service on a check that turns that provider on. The service no longer uses Tavily or DeepSeek keys from its env files.
+- **Web search is opt in per check**, like DeepSeek, and is off in every batch.
+- **Other storefronts are opt in** for a check you start yourself (on by default there, with a box to turn them off). Automatic and batch checks look only at your preferred country.
+- A short-lived service cache of successful catalog responses (30 minutes), so retries and series that share a query cost almost nothing.
+- `scripts/discovery-timing.ts`, a live timing run over a library snapshot that prints no keys or bodies.
 - **Named cover choices** from a local, user-triggered cover service (Hardcover, Google Books, Apple, Open Library). Each choice shows its title, author, provider, book or audiobook format, and next or previous role. Audiobook art is review-only and never selectable as a book cover.
 - **Last-read covers.** When a series has no next book title, the cover picker now offers covers for the last book you read.
 - **Author spelling suggestions** (for example Benett and Bennett) that only edit the open form and never change the saved author silently.
@@ -19,6 +24,7 @@ Entries use development dates because no versioned releases have been tagged.
 
 ### Changed
 
+- **Release checks are much faster.** A full automatic pass over 14 series dropped from about 249 s to about 70 s (median per series from about 20 s to about 4 s). Apple ebook and audiobook searches now share one call per country, and Apple, Open Library and Google Books waits overlap when the title is known.
 - The library is saved as version 3 and records which title and author an automatic cover belongs to. Version 1 and 2 libraries and backups still import, keeping their covers, releases and sources.
 - Hardcover series matching now uses the series relationship (position, author role and aliases) instead of the old "featured" flag, and bounds its results so a provider that ignores its limit cannot hide a conflict.
 - Late-found primary-source identities are enriched within the original request budgets, and one shared budget now covers the initial and follow-up searches. The primary-source search now takes priority over the audiobook search when the series identity is unresolved.
