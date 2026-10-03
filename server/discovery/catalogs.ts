@@ -424,10 +424,13 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
     }
   };
 
-  if (googleBooksKey && !signal.aborted) await googleSearch(initialQuery);
-  for (const format of formats) if (countries[0] && !signal.aborted) await appleSearch(countries[0], format);
-  if (countries[0] && !signal.aborted) await hydrateApple(countries[0]);
-  if (!signal.aborted) {
+  const applePreferred = async (): Promise<void> => {
+    for (const format of formats) if (countries[0] && !signal.aborted) await appleSearch(countries[0], format);
+    if (countries[0] && !signal.aborted) await hydrateApple(countries[0]);
+  };
+
+  const openLibraryPhase = async (): Promise<void> => {
+    if (signal.aborted) return;
     const target = effectiveRequest().target;
     const params = new URLSearchParams({ title: target.title || target.series, author: target.author, limit: '20', fields: 'key,title,author_name,author_key,edition_key,first_publish_year,language' });
     const raw = await retrieve('openlibrary', `/search.json?${params}`);
@@ -459,6 +462,18 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
       }
       joinAppleLanguages(evidence, originalLanguages);
     }
+  };
+
+  // Providers have independent rate queues. With a known title no provider's query
+  // depends on another's evidence, so their waits overlap. An unknown title keeps the
+  // original order because Google and Apple identities narrow later queries.
+  if (request.target.title.trim()) {
+    await Promise.all([googleBooksKey && !signal.aborted ? googleSearch(initialQuery) : Promise.resolve(), applePreferred(), openLibraryPhase()]);
+    joinAppleLanguages(evidence, originalLanguages);
+  } else {
+    if (googleBooksKey && !signal.aborted) await googleSearch(initialQuery);
+    await applePreferred();
+    await openLibraryPhase();
   }
   for (const market of countries.slice(1)) {
     for (const format of formats) {

@@ -90,7 +90,7 @@ async function collect(req = request(), markets = ['CA', 'US', 'GB'], responder:
 test('collector queries preferred formats, Open Library once, then bounded unique fallback countries', async () => {
   const { result, urls } = await collect(request(), [' ca ', 'US', 'GB', 'CA', 'FR', 'bad', 'us']);
   expect(urls.map(url => url.hostname === 'itunes.apple.com' ? `${url.searchParams.get('country')}:${url.searchParams.get('entity')}` : url.pathname))
-    .toEqual(['ca:ebook', 'ca:audiobook', '/search.json', 'us:ebook', 'us:audiobook', 'gb:ebook', 'gb:audiobook']);
+    .toEqual(['ca:ebook', '/search.json', 'ca:audiobook', 'us:ebook', 'us:audiobook', 'gb:ebook', 'gb:audiobook']);
   expect(result.usage).toMatchObject({ apple: 6, openlibrary: 1, tavily: 0, deepseek: 0 });
   for (const url of urls.filter(url => url.hostname === 'itunes.apple.com')) {
     expect(url.searchParams.get('term')).toBe('Second Example Author');
@@ -529,19 +529,20 @@ test('concurrent collection calls share provider start spacing', async () => {
 });
 
 test('cancellation after successful evidence stops remaining retrieval and retains its facts', async () => {
+  vi.resetModules(); const { collectCatalogs: isolatedCollect } = await import('../../server/discovery/catalogs');
   vi.useFakeTimers();
   const controller = new AbortController();
   const urls: URL[] = [];
   const fetcher: typeof fetch = async input => {
     const url = new URL(String(input)); urls.push(url);
-    if (url.hostname === 'openlibrary.org') controller.abort();
+    if (url.hostname === 'openlibrary.org') setTimeout(() => controller.abort(), 1500);
     return json(url.hostname === 'itunes.apple.com' ? { results: [apple.ebook.results[0]] } : { docs: [] });
   };
-  const pending = collectCatalogs(request({ formats: ['book'] }), ['CA', 'US', 'GB'], controller.signal, fetcher);
+  const pending = isolatedCollect(request({ formats: ['book'] }), ['CA', 'US', 'GB'], controller.signal, fetcher);
   await vi.runAllTimersAsync();
   const result = await pending;
   expect(result.reasons).toEqual(['cancelled']);
-  expect(urls).toHaveLength(2);
+  expect(urls.filter(url => url.searchParams.get('country') && url.searchParams.get('country') !== 'ca')).toEqual([]);
   expect(result.evidence.editions[0].date).toBe('2027-03-01');
 });
 
@@ -581,4 +582,20 @@ test('exhausting a shared Apple ledger stops further starts and signals budget',
   await vi.runAllTimersAsync(); const result = await pending;
   expect(fetcher.mock.calls.every(([input]) => new URL(String(input)).hostname !== 'itunes.apple.com')).toBe(true);
   expect(result.reasons).toContain('budget'); expect(result.usage.apple).toBe(12);
+});
+
+test('independent providers start together instead of waiting behind the Apple queue', async () => {
+  vi.useFakeTimers();
+  const starts: Record<string, number> = {};
+  const fetcher: typeof fetch = async input => {
+    const url = new URL(String(input));
+    const key = url.hostname === 'itunes.apple.com' ? `apple:${url.searchParams.get('entity')}` : url.hostname === 'openlibrary.org' ? 'openlibrary' : 'google';
+    starts[key] = performance.now();
+    return json(key === 'google' ? { totalItems: 0 } : { results: [], docs: [] });
+  };
+  const pending = collectCatalogs(request(), ['CA'], new AbortController().signal, fetcher, googleOptions);
+  await vi.runAllTimersAsync();
+  await pending;
+  expect(starts.openlibrary - starts['apple:ebook']).toBeLessThan(1000);
+  expect(starts['apple:audiobook'] - starts['apple:ebook']).toBeGreaterThanOrEqual(3100);
 });

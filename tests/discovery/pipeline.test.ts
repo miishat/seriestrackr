@@ -399,7 +399,9 @@ test('production catalog cancellation keeps actual attempted transport usage and
   const operation = runDiscovery(request(), deps, abort.signal);
   await vi.runAllTimersAsync(); const result = await operation;
   expect(result.summary.status).toBe('cancelled'); expect(fetcher).toHaveBeenCalledOnce();
-  expect(result.summary.usage).toMatchObject({ apple: 1, openlibrary: 0, tavily: 0, deepseek: 0 });
+  // Apple and Open Library queue together, so whichever provider reaches the transport first is the one attempted.
+  expect(result.summary.usage.apple + result.summary.usage.openlibrary).toBe(1);
+  expect(result.summary.usage).toMatchObject({ tavily: 0, deepseek: 0 });
 });
 test('fractional positions require explicit identity and never substitute integer main entries', async () => {
   const req = request(); req.target.position = 2.5;
