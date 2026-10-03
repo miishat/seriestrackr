@@ -16,7 +16,7 @@ export function ReleaseSummary({ format, release, today, compact = false, bookTi
   const oldEvidence = hasOldAnnouncementEvidence(release, today);
   return <div className="release-summary"><span className="small label-upper">{format === 'book' ? 'Book' : 'Audiobook'}</span>
     <span className={`badge ${state}`}>{releaseLabels[state]}</span>
-    {(release.date || state !== 'catalogued') && <span className="sub">{release.date ? release.date : state === 'not-checked' ? 'No check recorded' : state === 'announced' ? 'Date Unknown' : state === 'not-found' ? 'No supported result' : 'Manual entry'}</span>}
+    <span className="sub">{release.date ? release.date : state === 'not-checked' ? 'No check recorded' : state === 'announced' || state === 'catalogued' ? 'Date Unknown' : state === 'not-found' ? 'No supported result' : 'Manual entry'}</span>
     {oldEvidence && <span className="sub evidence-old">Evidence is old{onReview && !compact && <> <button type="button" onClick={onReview} disabled={reviewDisabled} aria-label={`Review ${format === 'book' ? 'book' : 'audiobook'} announcement again${series ? ` for ${series.name}` : ''}`}>Review again</button></>}</span>}
     {compact && bookTitle?.trim() && !release.source && <span className="sub release-title">{bookTitle}</span>}
     {release.source && /^https?:\/\//i.test(release.source.url) && <a href={release.source.url} title={release.source.title} target="_blank" rel="noreferrer">{compact && bookTitle?.trim() ? bookTitle : release.source.title}</a>}
