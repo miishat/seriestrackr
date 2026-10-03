@@ -1,0 +1,165 @@
+[
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "hardcover",
+    "httpStatus": 200
+  },
+  {
+    "stage": "catalog",
+    "category": "target-mismatch",
+    "sources": 10,
+    "identities": 1,
+    "editions": 9,
+    "provider": "hardcover",
+    "rule": "unsupported-title",
+    "recordRef": "637131da39f973180c1f164d80fb0b92"
+  },
+  {
+    "stage": "catalog",
+    "category": "target-mismatch",
+    "sources": 10,
+    "identities": 1,
+    "editions": 9,
+    "provider": "hardcover",
+    "rule": "unsupported-title",
+    "recordRef": "c543026b9d3ad9f9b41fadb0d4f0f112"
+  },
+  {
+    "stage": "catalog",
+    "category": "target-mismatch",
+    "sources": 10,
+    "identities": 1,
+    "editions": 9,
+    "provider": "hardcover",
+    "rule": "unsupported-title",
+    "recordRef": "a2311fd97b005d9898b1763741784dc9"
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "googlebooks",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "apple",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "apple",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "apple",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "openlibrary",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "openlibrary",
+    "httpStatus": 200
+  },
+  {
+    "stage": "catalog",
+    "category": "shape",
+    "sources": 17,
+    "identities": 2,
+    "editions": 13
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "openlibrary",
+    "httpStatus": 200
+  },
+  {
+    "stage": "catalog",
+    "category": "shape",
+    "sources": 17,
+    "identities": 2,
+    "editions": 13
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "apple",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "apple",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "googlebooks",
+    "httpStatus": 200
+  },
+  {
+    "stage": "allocation",
+    "category": "target-mismatch",
+    "sources": 17,
+    "identities": 2,
+    "editions": 13,
+    "provider": "apple",
+    "rule": "unsupported-title",
+    "recordRef": "cb0234aaa246cf036d93796e01451a42"
+  },
+  {
+    "stage": "allocation",
+    "category": "target-mismatch",
+    "sources": 17,
+    "identities": 2,
+    "editions": 13,
+    "provider": "apple",
+    "rule": "author-mismatch",
+    "recordRef": "444d42ff5dcf5e898fd4dbb32dfa5dca"
+  }
+]

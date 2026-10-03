@@ -1,0 +1,113 @@
+[
+  {
+    "number": 1,
+    "url": "https://api.hardcover.app/v1/graphql",
+    "query": {
+      "names": [
+        "Book of the Dead",
+        "The Book of the Dead",
+        "Book of the Dead Series",
+        "Book of the Dead Mysteries",
+        "Book of the Dead Trilogy",
+        "Tales of Book of the Dead"
+      ],
+      "position": 5,
+      "author": "RinoZ"
+    },
+    "startedAt": "2026-10-03T05:37:19.526Z",
+    "status": 200,
+    "mime": "application/json; charset=utf-8",
+    "bytes": 920,
+    "bodyFile": "book-of-the-dead/release-1.json"
+  },
+  {
+    "number": 2,
+    "url": "https://www.googleapis.com/books/v1/volumes?q=intitle%3AAscension+inauthor%3ARinoZ&maxResults=20&showPreorders=true&langRestrict=en",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:19.688Z",
+    "status": 200,
+    "mime": "application/json; charset=UTF-8",
+    "bytes": 49,
+    "bodyFile": "book-of-the-dead/release-2.json"
+  },
+  {
+    "number": 3,
+    "url": "https://itunes.apple.com/search?term=Ascension+RinoZ&country=us&entity=ebook&limit=20",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:21.048Z",
+    "status": 200,
+    "mime": "text/javascript; charset=utf-8",
+    "bytes": 42,
+    "bodyFile": "book-of-the-dead/release-3.json"
+  },
+  {
+    "number": 4,
+    "url": "https://itunes.apple.com/search?term=Ascension+RinoZ&country=us&entity=audiobook&limit=20",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:24.152Z",
+    "status": 200,
+    "mime": "text/javascript; charset=utf-8",
+    "bytes": 2277,
+    "bodyFile": "book-of-the-dead/release-4.json"
+  },
+  {
+    "number": 5,
+    "url": "https://books.apple.com/us/audiobook/ascension-a-litrpg-adventure-book-of-the-dead-5-unabridged/id6793687365?uo=4",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:27.260Z",
+    "status": 200,
+    "mime": "text/html",
+    "bytes": 244911,
+    "bodyFile": "book-of-the-dead/release-5.html"
+  },
+  {
+    "number": 6,
+    "url": "https://openlibrary.org/search.json?title=Ascension&author=RinoZ&limit=20&fields=key%2Ctitle%2Cauthor_name%2Cauthor_key%2Cedition_key%2Cfirst_publish_year%2Clanguage",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:27.905Z",
+    "status": 200,
+    "mime": "application/json",
+    "bytes": 156,
+    "bodyFile": "book-of-the-dead/release-6.json"
+  },
+  {
+    "number": 7,
+    "url": "https://itunes.apple.com/search?term=Ascension+RinoZ&country=gb&entity=ebook&limit=20",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:30.364Z",
+    "status": 200,
+    "mime": "text/javascript; charset=utf-8",
+    "bytes": 42,
+    "bodyFile": "book-of-the-dead/release-7.json"
+  },
+  {
+    "number": 8,
+    "url": "https://itunes.apple.com/search?term=Ascension+RinoZ&country=ca&entity=ebook&limit=20",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:33.469Z",
+    "status": 200,
+    "mime": "text/javascript; charset=utf-8",
+    "bytes": 42,
+    "bodyFile": "book-of-the-dead/release-8.json"
+  },
+  {
+    "number": 9,
+    "url": "https://www.googleapis.com/books/v1/volumes?q=Book+of+the+Dead+inauthor%3ARinoZ&maxResults=20&showPreorders=true&langRestrict=en",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:33.503Z",
+    "status": 200,
+    "mime": "application/json; charset=UTF-8",
+    "bytes": 49,
+    "bodyFile": "book-of-the-dead/release-9.json"
+  },
+  {
+    "number": 10,
+    "url": "https://api.tavily.com/search",
+    "query": "Ascension RinoZ ebook hardcover publication release date English US",
+    "startedAt": "2026-10-03T05:37:33.856Z",
+    "status": 200,
+    "mime": "application/json",
+    "bytes": 35439,
+    "bodyFile": "book-of-the-dead/release-10.json"
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "requestId": "audit-the-dark-profit-saga",
+  "seriesId": "bf56eeea-3d03-4926-b287-84b262a6541c",
+  "target": {
+    "series": "The Dark Profit Saga",
+    "author": "J. Zachary Pike",
+    "position": 4,
+    "title": "",
+    "orderNote": ""
+  },
+  "preferredMarket": "US",
+  "formats": [
+    "book",
+    "audio"
+  ],
+  "useAi": false
+}

@@ -1,0 +1,113 @@
+[
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "hardcover",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "googlebooks",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "apple",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "apple",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "openlibrary",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "apple",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "apple",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "apple",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "apple",
+    "httpStatus": 200
+  },
+  {
+    "stage": "allocation",
+    "category": "target-mismatch",
+    "sources": 5,
+    "identities": 1,
+    "editions": 4,
+    "provider": "apple",
+    "rule": "unsupported-title",
+    "recordRef": "bbdc77e972bb89a7e266988b6cf97555"
+  },
+  {
+    "stage": "allocation",
+    "category": "target-mismatch",
+    "sources": 5,
+    "identities": 1,
+    "editions": 4,
+    "provider": "apple",
+    "rule": "unsupported-title",
+    "recordRef": "dfe6416b00d76e7f3f40a1658bda6434"
+  },
+  {
+    "stage": "allocation",
+    "category": "target-mismatch",
+    "sources": 5,
+    "identities": 1,
+    "editions": 4,
+    "provider": "apple",
+    "rule": "unsupported-title",
+    "recordRef": "fcf13e1589c3b44e9e20bf103b72c8a5"
+  }
+]

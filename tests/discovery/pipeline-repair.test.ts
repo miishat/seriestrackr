@@ -195,7 +195,7 @@ test('Dark Profit separates provider quota from no-match and offers no cover', a
 test('every replay fixture has a manifest, matching row count and no credential material', () => {
   const manifest = JSON.parse(readFileSync(dataUrl('manifest.json'), 'utf8'));
   const names = readdirSync(dataUrl('')).filter(name => name.endsWith('-replay.json')).sort();
-  expect(names.length).toBe(17);
+  expect(names.length).toBe(18);
   expect(manifest.replays.fixtures.map((f: { fixture: string }) => f.fixture).sort()).toEqual(names);
   for (const entry of manifest.replays.fixtures) {
     const saved = load<unknown>(entry.fixture);
@@ -222,4 +222,11 @@ test('requests with no recorded row fail closed instead of reaching the network'
   await pending;
   expect(unexpected).toEqual(['api.hardcover.app']);
   expect(global).not.toHaveBeenCalled();
+});
+
+test('The Bound and the Broken proposes its next book again despite a double-space Hardcover author', async () => {
+  vi.useFakeTimers();
+  const bound = await replay('the-bound-and-the-broken');
+  expect(bound.proposals.identity).toMatchObject({ title: 'Of Gods and Ashes', position: 5 });
+  expect(bound.proposals.releases.book).toMatchObject({ state: 'catalogued', date: null });
 });

@@ -1,0 +1,133 @@
+[
+  {
+    "number": 1,
+    "url": "https://api.hardcover.app/v1/graphql",
+    "query": {
+      "names": [
+        "Dungeon Crawler Carl",
+        "The Dungeon Crawler Carl",
+        "Dungeon Crawler Carl Series",
+        "Dungeon Crawler Carl Mysteries",
+        "Dungeon Crawler Carl Trilogy",
+        "Tales of Dungeon Crawler Carl"
+      ],
+      "position": 8,
+      "author": "Matt Dinniman"
+    },
+    "startedAt": "2026-10-03T05:37:04.965Z",
+    "status": 200,
+    "mime": "application/json; charset=utf-8",
+    "bytes": 3584,
+    "bodyFile": "dungeon-crawler-carl/release-1.json"
+  },
+  {
+    "number": 2,
+    "url": "https://www.googleapis.com/books/v1/volumes?q=intitle%3AA+Parade+of+Horribles+inauthor%3AMatt+Dinniman&maxResults=20&showPreorders=true&langRestrict=en",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:05.151Z",
+    "status": 200,
+    "mime": "application/json; charset=UTF-8",
+    "bytes": 10043,
+    "bodyFile": "dungeon-crawler-carl/release-2.json"
+  },
+  {
+    "number": 3,
+    "url": "https://itunes.apple.com/search?term=A+Parade+of+Horribles+Matt+Dinniman&country=us&entity=ebook&limit=20",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:05.495Z",
+    "status": 200,
+    "mime": "text/javascript; charset=utf-8",
+    "bytes": 42,
+    "bodyFile": "dungeon-crawler-carl/release-3.json"
+  },
+  {
+    "number": 4,
+    "url": "https://itunes.apple.com/search?term=A+Parade+of+Horribles+Matt+Dinniman&country=us&entity=audiobook&limit=20",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:08.607Z",
+    "status": 200,
+    "mime": "text/javascript; charset=utf-8",
+    "bytes": 5217,
+    "bodyFile": "dungeon-crawler-carl/release-4.json"
+  },
+  {
+    "number": 5,
+    "url": "https://books.apple.com/us/audiobook/a-parade-of-horribles-dungeon-crawler-carl-book/id6767724978?uo=4",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:11.715Z",
+    "status": 200,
+    "mime": "text/html",
+    "bytes": 344781,
+    "bodyFile": "dungeon-crawler-carl/release-5.html"
+  },
+  {
+    "number": 6,
+    "url": "https://openlibrary.org/search.json?title=A+Parade+of+Horribles&author=Matt+Dinniman&limit=20&fields=key%2Ctitle%2Cauthor_name%2Cauthor_key%2Cedition_key%2Cfirst_publish_year%2Clanguage",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:12.398Z",
+    "status": 200,
+    "mime": "application/json",
+    "bytes": 541,
+    "bodyFile": "dungeon-crawler-carl/release-6.json"
+  },
+  {
+    "number": 7,
+    "url": "https://openlibrary.org/books/OL62519239M.json",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:13.511Z",
+    "status": 200,
+    "mime": "application/json",
+    "bytes": 481,
+    "bodyFile": "dungeon-crawler-carl/release-7.json"
+  },
+  {
+    "number": 8,
+    "url": "https://openlibrary.org/books/OL61932789M.json",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:14.619Z",
+    "status": 200,
+    "mime": "application/json",
+    "bytes": 1514,
+    "bodyFile": "dungeon-crawler-carl/release-8.json"
+  },
+  {
+    "number": 9,
+    "url": "https://itunes.apple.com/search?term=A+Parade+of+Horribles+Matt+Dinniman&country=gb&entity=ebook&limit=20",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:14.824Z",
+    "status": 200,
+    "mime": "text/javascript; charset=utf-8",
+    "bytes": 42,
+    "bodyFile": "dungeon-crawler-carl/release-9.json"
+  },
+  {
+    "number": 10,
+    "url": "https://itunes.apple.com/search?term=A+Parade+of+Horribles+Matt+Dinniman&country=ca&entity=ebook&limit=20",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:17.934Z",
+    "status": 200,
+    "mime": "text/javascript; charset=utf-8",
+    "bytes": 42,
+    "bodyFile": "dungeon-crawler-carl/release-10.json"
+  },
+  {
+    "number": 11,
+    "url": "https://www.googleapis.com/books/v1/volumes?q=Dungeon+Crawler+Carl+inauthor%3AMatt+Dinniman&maxResults=20&showPreorders=true&langRestrict=en",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:17.977Z",
+    "status": 200,
+    "mime": "application/json; charset=UTF-8",
+    "bytes": 96879,
+    "bodyFile": "dungeon-crawler-carl/release-11.json"
+  },
+  {
+    "number": 12,
+    "url": "https://api.tavily.com/search",
+    "query": "A Parade of Horribles Matt Dinniman ebook hardcover publication release date English US",
+    "startedAt": "2026-10-03T05:37:18.417Z",
+    "status": 200,
+    "mime": "application/json",
+    "bytes": 37994,
+    "bodyFile": "dungeon-crawler-carl/release-12.json"
+  }
+]

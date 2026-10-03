@@ -84,8 +84,8 @@ test('one fixed GraphQL call has explicit guard fields and counts malformed atte
   expect(fetcher).toHaveBeenCalledOnce(); const [url, init] = fetcher.mock.calls[0];
   expect(String(url)).toBe('https://api.hardcover.app/v1/graphql');
   expect(init).toMatchObject({ method: 'POST', redirect: 'error', headers: { Authorization: 'Bearer fake-secret' } });
-  const body = JSON.parse(String(init?.body)); expect(body.variables).toEqual({ names: hardcoverAliases('Example'), position: 2, author: 'Example Author' });
-  expect(body.query).toContain('contributor_role { name }'); expect(body.query).toContain('author: {name: {_eq: $author}}'); expect(body.query).toContain('language { code2 code3 }');
+  const body = JSON.parse(String(init?.body)); expect(body.variables).toEqual({ names: hardcoverAliases('Example'), position: 2 });
+  expect(body.query).toContain('contributor_role { name }'); expect(body.query).not.toContain('$author'); expect(body.query).toContain('limit: 20'); expect(body.query).toContain('language { code2 code3 }');
 });
 
 
@@ -219,13 +219,13 @@ test('series author is checked again after the provider constraint', () => {
   const right = envelope(); right.data.series[0] = { ...right.data.series[0], author: { name: 'Example Author' } } as never;
   expect(normalizeHardcover(right, req, checkedAt).identities).toHaveLength(1);
 });
-test('six series rows stay unresolved even when only one survives local filtering', () => {
+test('other authors do not count toward the series bound; an overflowing raw result stays unresolved', () => {
   const series = Array.from({ length: 6 }, (_, index) => ({ name: index ? `Unrelated ${index}` : 'Example', author: { name: index ? `Other ${index}` : 'Example Author' }, book_series: index ? [] : [row()] }));
-  const raw = { data: { series } };
+  expect(normalizeHardcover({ data: { series } }, req, checkedAt).identities).toHaveLength(1);
+  const flood = Array.from({ length: 20 }, (_, index) => ({ ...series[index % 6], name: index ? `Unrelated ${index}` : 'Example' }));
+  const raw = { data: { series: flood } };
   expect(() => normalizeHardcover(raw, req, checkedAt)).toThrow('budget');
   expect(rules(raw)).toContain('request-bound');
-  const five = { data: { series: series.slice(0, 5) } };
-  expect(normalizeHardcover(five, req, checkedAt).identities).toHaveLength(1);
 });
 test('six plausible requested-author rows are unresolved', () => {
   const series = Array.from({ length: 6 }, () => ({ name: 'Example', author: { name: 'Example Author' }, book_series: [row()] }));
@@ -240,4 +240,22 @@ test('hashed diagnostic ids carry book and edition prefixes', () => {
   normalizeHardcover(envelope([row({ position: 9 })]), req, checkedAt, event => seen.push(event.recordRef));
   const { createHash } = require('node:crypto') as typeof import('node:crypto');
   expect(seen).toEqual([createHash('sha256').update('hardcover:book:20').digest('hex').slice(0, 32)]);
+});
+
+const withAuthor = (name: string, rows: unknown[] = [row()]) => ({ name: 'Example', author: { name }, book_series: rows });
+test('a Hardcover author stored with stray whitespace still matches the requested author', () => {
+  const result = normalizeHardcover({ data: { series: [withAuthor('Example  Author')] } }, req, checkedAt);
+  expect(result.identities).toHaveLength(1);
+});
+test('same-name series by another author are rejected and never count toward ambiguity or the series bound', () => {
+  const rule: string[] = [];
+  const others = Array.from({ length: 8 }, (_, i) => withAuthor(`Someone Else ${i}`, [row({ book: { ...row().book, id: 100 + i, slug: `other-${i}`, title: `Other ${i}`, editions: [{ ...row().book.editions[0], id: 200 + i, title: `Other ${i}` }] } })]));
+  const result = normalizeHardcover({ data: { series: [...others, withAuthor('Example Author')] } }, req, checkedAt, d => { if ('rule' in d && d.rule) rule.push(String(d.rule)); });
+  expect(result.identities).toHaveLength(1); expect(result.identities[0].title).toBe('Second');
+  expect(selectProposals(req, result, checkedAt).identity).not.toBeNull();
+  expect(rule.filter(item => item === 'author-mismatch')).toHaveLength(8); expect(rule).not.toContain('request-bound');
+});
+test('six matching-author series still exceed the ambiguity bound', () => {
+  const six = Array.from({ length: 6 }, () => withAuthor('Example Author'));
+  expect(() => normalizeHardcover({ data: { series: six } }, req, checkedAt)).toThrow();
 });

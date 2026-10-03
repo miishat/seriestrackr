@@ -1119,6 +1119,78 @@
             "capturedAt": "2026-10-02T00:35:06.083Z"
           }
         ]
+      },
+      {
+        "fixture": "the-bound-and-the-broken-replay.json",
+        "kind": "release",
+        "responses": [
+          {
+            "index": 0,
+            "origin": "captured",
+            "source": "../2026-10-03-next-book/the-bound-and-the-broken/release-1.json",
+            "capturedAt": "2026-10-03T05:41:37.247Z"
+          },
+          {
+            "index": 1,
+            "origin": "captured",
+            "source": "../2026-10-03-next-book/the-bound-and-the-broken/release-2.json",
+            "capturedAt": "2026-10-03T05:41:37.431Z"
+          },
+          {
+            "index": 2,
+            "origin": "captured",
+            "source": "../2026-10-03-next-book/the-bound-and-the-broken/release-3.json",
+            "capturedAt": "2026-10-03T05:41:37.764Z"
+          },
+          {
+            "index": 3,
+            "origin": "captured",
+            "source": "../2026-10-03-next-book/the-bound-and-the-broken/release-4.json",
+            "capturedAt": "2026-10-03T05:41:40.875Z"
+          },
+          {
+            "index": 4,
+            "origin": "captured",
+            "source": "../2026-10-03-next-book/the-bound-and-the-broken/release-5.json",
+            "capturedAt": "2026-10-03T05:41:40.944Z"
+          },
+          {
+            "index": 5,
+            "origin": "captured",
+            "source": "../2026-10-03-next-book/the-bound-and-the-broken/release-6.json",
+            "capturedAt": "2026-10-03T05:41:43.980Z"
+          },
+          {
+            "index": 6,
+            "origin": "captured",
+            "source": "../2026-10-03-next-book/the-bound-and-the-broken/release-7.json",
+            "capturedAt": "2026-10-03T05:41:47.089Z"
+          },
+          {
+            "index": 7,
+            "origin": "captured",
+            "source": "../2026-10-03-next-book/the-bound-and-the-broken/release-8.json",
+            "capturedAt": "2026-10-03T05:41:50.204Z"
+          },
+          {
+            "index": 8,
+            "origin": "captured",
+            "source": "../2026-10-03-next-book/the-bound-and-the-broken/release-9.json",
+            "capturedAt": "2026-10-03T05:41:53.316Z"
+          },
+          {
+            "index": 9,
+            "origin": "captured",
+            "source": "../2026-10-03-next-book/the-bound-and-the-broken/release-10.json",
+            "capturedAt": "2026-10-03T05:41:53.370Z"
+          },
+          {
+            "index": 10,
+            "origin": "captured",
+            "source": "../2026-10-03-next-book/the-bound-and-the-broken/release-11.json",
+            "capturedAt": "2026-10-03T05:41:54.491Z"
+          }
+        ]
       }
     ],
     "knownSynthetic": [

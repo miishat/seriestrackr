@@ -1,0 +1,588 @@
+{
+  "kind": "books#volumes",
+  "totalItems": 3,
+  "items": [
+    {
+      "kind": "books#volume",
+      "id": "EhReDwAAQBAJ",
+      "etag": "xbDA+4gejcY",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/EhReDwAAQBAJ",
+      "volumeInfo": {
+        "title": "Son of a Liche",
+        "authors": [
+          "J. Zachary Pike"
+        ],
+        "publisher": "Gnomish Press",
+        "publishedDate": "2018-05-22",
+        "description": "A doubly disgraced dwarven hero. A band of accident-prone adventurers. Giving redemption a second shot may have been a grave mistake… Son of a Liche is the second book in The Dark Profit Saga, a trilogy of humorous epic fantasy novels. If you like rib-tickling shenanigans, second-rate heroes, and imaginative new takes on tired tropes, then you’ll love J. Zachary Pike’s hilarious blend of finance and high fantasy. Version 1.1.2",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9780990859659"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "0990859657"
+          }
+        ],
+        "readingModes": {
+          "text": true,
+          "image": true
+        },
+        "pageCount": 718,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": true,
+        "contentVersion": "2.6.6.0.preview.3",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=EhReDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=EhReDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=EhReDwAAQBAJ&pg=PT788&dq=The+Dark+Profit+Saga+inauthor:J.+Zachary+Pike&hl=&cd=1&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=EhReDwAAQBAJ&source=gbs_api",
+        "canonicalVolumeLink": "https://play.google.com/store/books/details?id=EhReDwAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FOR_SALE",
+        "isEbook": true,
+        "listPrice": {
+          "amount": 9.99,
+          "currencyCode": "CAD"
+        },
+        "retailPrice": {
+          "amount": 9.99,
+          "currencyCode": "CAD"
+        },
+        "buyLink": "https://play.google.com/store/books/details?id=EhReDwAAQBAJ&rdid=book-EhReDwAAQBAJ&rdot=1&source=gbs_api",
+        "offers": [
+          {
+            "finskyOfferType": 1,
+            "listPrice": {
+              "amountInMicros": 9990000,
+              "currencyCode": "CAD"
+            },
+            "retailPrice": {
+              "amountInMicros": 9990000,
+              "currencyCode": "CAD"
+            },
+            "giftable": true
+          }
+        ]
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": true
+        },
+        "pdf": {
+          "isAvailable": true
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=EhReDwAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "... \u003cb\u003eProfit Saga\u003c/b\u003e A disgraced dwarven hero. A band of deadbeat adventurers. His last shot at redemption could get him killed. If you like down-and-out heroes, sidesplitting ... \u003cb\u003eZachary Pike&#39;s dark\u003c/b\u003e and If You Enjoyed This Book... ..."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "TAJeDwAAQBAJ",
+      "etag": "SU6ucthfo1U",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/TAJeDwAAQBAJ",
+      "volumeInfo": {
+        "title": "Orconomics",
+        "subtitle": "A Satire",
+        "authors": [
+          "J. Zachary Pike"
+        ],
+        "publisher": "Gnomish Press",
+        "publishedDate": "2014-10-01",
+        "description": "A disgraced dwarven hero. A band of deadbeat adventurers. His last shot at redemption could get him killed. Orconomics: A Satire is the first book in The Dark Profit Saga of humorous epic fantasy novels. If you like down-and-out heroes, sidesplitting misadventures, and ingenious world-building, then you’ll love J. Zachary Pike’s dark and delightful ribbing of high fantasy. Version 2.2.1",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9780990859604"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "0990859606"
+          }
+        ],
+        "readingModes": {
+          "text": true,
+          "image": true
+        },
+        "pageCount": 432,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "averageRating": 5,
+        "ratingsCount": 1,
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": true,
+        "contentVersion": "2.7.8.0.preview.3",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=TAJeDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=TAJeDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=TAJeDwAAQBAJ&pg=PT470&dq=The+Dark+Profit+Saga+inauthor:J.+Zachary+Pike&hl=&cd=2&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=TAJeDwAAQBAJ&source=gbs_api",
+        "canonicalVolumeLink": "https://play.google.com/store/books/details?id=TAJeDwAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FOR_SALE",
+        "isEbook": true,
+        "listPrice": {
+          "amount": 6.99,
+          "currencyCode": "CAD"
+        },
+        "retailPrice": {
+          "amount": 6.99,
+          "currencyCode": "CAD"
+        },
+        "buyLink": "https://play.google.com/store/books/details?id=TAJeDwAAQBAJ&rdid=book-TAJeDwAAQBAJ&rdot=1&source=gbs_api",
+        "offers": [
+          {
+            "finskyOfferType": 1,
+            "listPrice": {
+              "amountInMicros": 6990000,
+              "currencyCode": "CAD"
+            },
+            "retailPrice": {
+              "amountInMicros": 6990000,
+              "currencyCode": "CAD"
+            },
+            "giftable": true
+          }
+        ]
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": true
+        },
+        "pdf": {
+          "isAvailable": true
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=TAJeDwAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "... jzacharypike.com/newsletter/. More by J. \u003cb\u003eZachary Pike\u003c/b\u003e Son of a Liche — Book 2 of \u003cb\u003eThe Dark Profit Saga\u003c/b\u003e Still bruised and heartbroken from their last calamitous quest, Gorm Ingerson and his band of washed-up heroes try to make amends for&nbsp;..."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "rIbrEAAAQBAJ",
+      "etag": "KYI/zCEE3L4",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/rIbrEAAAQBAJ",
+      "volumeInfo": {
+        "title": "Dragonfired",
+        "authors": [
+          "J. Zachary Pike"
+        ],
+        "publisher": "Gnomish Press",
+        "publishedDate": "2023-09-01",
+        "description": "The monarch wants him dead. A dragon’s torching the realm. Is his heroic gig about to be a critical catastrophe? Gorm Ingerson knows the king is a fink. With the land’s insidious ruler hell-bent on his destruction, the axe-wielding Dwarf berserker is desperate to beat him to the punch. But when he discovers the rotten regent’s claim of a town razed by the world’s richest dragon is false, the gruff adventurer fears there’s more than a personal grudge at stake. Struggling to convince his old comrades that they need to help him solve the mystery, the dwarven idealist stumbles into a sinister smuggling ring. And with strange creatures, cunning assassins, and vindictive bankers all plotting his demise, Gorm worries this time the price of doing the right thing will be fatally high. Can he make a saving throw against death with a high-stakes roll at disadvantage? Dragonfired is the thrilling third book in the Dark Profit Saga satirical fantasy trilogy. If you like witty banter, RPG references, and clever sendups of popular tropes, then you’ll love J. Zachary Pike’s laugh-out-loud conclusion. Buy Dragonfired to gamble with initiative today!",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9781963158007"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "1963158008"
+          }
+        ],
+        "readingModes": {
+          "text": true,
+          "image": false
+        },
+        "pageCount": 685,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": true,
+        "contentVersion": "1.2.2.0.preview.2",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=rIbrEAAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=rIbrEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=rIbrEAAAQBAJ&printsec=frontcover&dq=The+Dark+Profit+Saga+inauthor:J.+Zachary+Pike&hl=&cd=3&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=rIbrEAAAQBAJ&source=gbs_api",
+        "canonicalVolumeLink": "https://play.google.com/store/books/details?id=rIbrEAAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FOR_SALE",
+        "isEbook": true,
+        "listPrice": {
+          "amount": 9.99,
+          "currencyCode": "CAD"
+        },
+        "retailPrice": {
+          "amount": 9.99,
+          "currencyCode": "CAD"
+        },
+        "buyLink": "https://play.google.com/store/books/details?id=rIbrEAAAQBAJ&rdid=book-rIbrEAAAQBAJ&rdot=1&source=gbs_api",
+        "offers": [
+          {
+            "finskyOfferType": 1,
+            "listPrice": {
+              "amountInMicros": 9990000,
+              "currencyCode": "CAD"
+            },
+            "retailPrice": {
+              "amountInMicros": 9990000,
+              "currencyCode": "CAD"
+            },
+            "giftable": true
+          }
+        ]
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": true
+        },
+        "pdf": {
+          "isAvailable": false
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=rIbrEAAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "Dragonfired is the thrilling third book in the Dark Profit Saga satirical fantasy trilogy. If you like witty banter, RPG references, and clever sendups of popular tropes, then you’ll love J. Zachary Pike’s laugh-out-loud conclusion."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "EhReDwAAQBAJ",
+      "etag": "B3fm6f9xM2o",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/EhReDwAAQBAJ",
+      "volumeInfo": {
+        "title": "Son of a Liche",
+        "authors": [
+          "J. Zachary Pike"
+        ],
+        "publisher": "Gnomish Press",
+        "publishedDate": "2018-05-22",
+        "description": "A doubly disgraced dwarven hero. A band of accident-prone adventurers. Giving redemption a second shot may have been a grave mistake… Son of a Liche is the second book in The Dark Profit Saga, a trilogy of humorous epic fantasy novels. If you like rib-tickling shenanigans, second-rate heroes, and imaginative new takes on tired tropes, then you’ll love J. Zachary Pike’s hilarious blend of finance and high fantasy. Version 1.1.2",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9780990859659"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "0990859657"
+          }
+        ],
+        "readingModes": {
+          "text": true,
+          "image": true
+        },
+        "pageCount": 718,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": true,
+        "contentVersion": "2.6.6.0.preview.3",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=EhReDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=EhReDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=EhReDwAAQBAJ&printsec=frontcover&dq=The+Dark+Profit+Saga+inauthor:J.+Zachary+Pike&hl=&cd=4&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=EhReDwAAQBAJ&source=gbs_api",
+        "canonicalVolumeLink": "https://play.google.com/store/books/details?id=EhReDwAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FOR_SALE",
+        "isEbook": true,
+        "listPrice": {
+          "amount": 9.99,
+          "currencyCode": "CAD"
+        },
+        "retailPrice": {
+          "amount": 9.99,
+          "currencyCode": "CAD"
+        },
+        "buyLink": "https://play.google.com/store/books/details?id=EhReDwAAQBAJ&rdid=book-EhReDwAAQBAJ&rdot=1&source=gbs_api",
+        "offers": [
+          {
+            "finskyOfferType": 1,
+            "listPrice": {
+              "amountInMicros": 9990000,
+              "currencyCode": "CAD"
+            },
+            "retailPrice": {
+              "amountInMicros": 9990000,
+              "currencyCode": "CAD"
+            },
+            "giftable": true
+          }
+        ]
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": true
+        },
+        "pdf": {
+          "isAvailable": true
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=EhReDwAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "A doubly disgraced dwarven hero. A band of accident-prone adventurers. Giving redemption a second shot may have been a grave mistake… Son of a Liche is the second book in The Dark Profit Saga, a trilogy of humorous epic fantasy novels."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "TAJeDwAAQBAJ",
+      "etag": "rT0hdvg78OA",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/TAJeDwAAQBAJ",
+      "volumeInfo": {
+        "title": "Orconomics",
+        "subtitle": "A Satire",
+        "authors": [
+          "J. Zachary Pike"
+        ],
+        "publisher": "Gnomish Press",
+        "publishedDate": "2014-10-01",
+        "description": "A disgraced dwarven hero. A band of deadbeat adventurers. His last shot at redemption could get him killed. Orconomics: A Satire is the first book in The Dark Profit Saga of humorous epic fantasy novels. If you like down-and-out heroes, sidesplitting misadventures, and ingenious world-building, then you’ll love J. Zachary Pike’s dark and delightful ribbing of high fantasy. Version 2.2.1",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9780990859604"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "0990859606"
+          }
+        ],
+        "readingModes": {
+          "text": true,
+          "image": true
+        },
+        "pageCount": 432,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "averageRating": 5,
+        "ratingsCount": 1,
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": true,
+        "contentVersion": "2.7.8.0.preview.3",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=TAJeDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=TAJeDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=TAJeDwAAQBAJ&printsec=frontcover&dq=The+Dark+Profit+Saga+inauthor:J.+Zachary+Pike&hl=&cd=5&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=TAJeDwAAQBAJ&source=gbs_api",
+        "canonicalVolumeLink": "https://play.google.com/store/books/details?id=TAJeDwAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FOR_SALE",
+        "isEbook": true,
+        "listPrice": {
+          "amount": 6.99,
+          "currencyCode": "CAD"
+        },
+        "retailPrice": {
+          "amount": 6.99,
+          "currencyCode": "CAD"
+        },
+        "buyLink": "https://play.google.com/store/books/details?id=TAJeDwAAQBAJ&rdid=book-TAJeDwAAQBAJ&rdot=1&source=gbs_api",
+        "offers": [
+          {
+            "finskyOfferType": 1,
+            "listPrice": {
+              "amountInMicros": 6990000,
+              "currencyCode": "CAD"
+            },
+            "retailPrice": {
+              "amountInMicros": 6990000,
+              "currencyCode": "CAD"
+            },
+            "giftable": true
+          }
+        ]
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": true
+        },
+        "pdf": {
+          "isAvailable": true
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=TAJeDwAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "A disgraced dwarven hero. A band of deadbeat adventurers. His last shot at redemption could get him killed. Orconomics: A Satire is the first book in The Dark Profit Saga of humorous epic fantasy novels."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "rIbrEAAAQBAJ",
+      "etag": "8L5q2/ifrYw",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/rIbrEAAAQBAJ",
+      "volumeInfo": {
+        "title": "Dragonfired",
+        "authors": [
+          "J. Zachary Pike"
+        ],
+        "publisher": "Gnomish Press",
+        "publishedDate": "2023-09-01",
+        "description": "The monarch wants him dead. A dragon’s torching the realm. Is his heroic gig about to be a critical catastrophe? Gorm Ingerson knows the king is a fink. With the land’s insidious ruler hell-bent on his destruction, the axe-wielding Dwarf berserker is desperate to beat him to the punch. But when he discovers the rotten regent’s claim of a town razed by the world’s richest dragon is false, the gruff adventurer fears there’s more than a personal grudge at stake. Struggling to convince his old comrades that they need to help him solve the mystery, the dwarven idealist stumbles into a sinister smuggling ring. And with strange creatures, cunning assassins, and vindictive bankers all plotting his demise, Gorm worries this time the price of doing the right thing will be fatally high. Can he make a saving throw against death with a high-stakes roll at disadvantage? Dragonfired is the thrilling third book in the Dark Profit Saga satirical fantasy trilogy. If you like witty banter, RPG references, and clever sendups of popular tropes, then you’ll love J. Zachary Pike’s laugh-out-loud conclusion. Buy Dragonfired to gamble with initiative today!",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9781963158007"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "1963158008"
+          }
+        ],
+        "readingModes": {
+          "text": true,
+          "image": false
+        },
+        "pageCount": 685,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": true,
+        "contentVersion": "1.2.2.0.preview.2",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=rIbrEAAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=rIbrEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=rIbrEAAAQBAJ&pg=PP1&dq=The+Dark+Profit+Saga+inauthor:J.+Zachary+Pike&hl=&cd=6&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=rIbrEAAAQBAJ&source=gbs_api",
+        "canonicalVolumeLink": "https://play.google.com/store/books/details?id=rIbrEAAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FOR_SALE",
+        "isEbook": true,
+        "listPrice": {
+          "amount": 9.99,
+          "currencyCode": "CAD"
+        },
+        "retailPrice": {
+          "amount": 9.99,
+          "currencyCode": "CAD"
+        },
+        "buyLink": "https://play.google.com/store/books/details?id=rIbrEAAAQBAJ&rdid=book-rIbrEAAAQBAJ&rdot=1&source=gbs_api",
+        "offers": [
+          {
+            "finskyOfferType": 1,
+            "listPrice": {
+              "amountInMicros": 9990000,
+              "currencyCode": "CAD"
+            },
+            "retailPrice": {
+              "amountInMicros": 9990000,
+              "currencyCode": "CAD"
+            },
+            "giftable": true
+          }
+        ]
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": true
+        },
+        "pdf": {
+          "isAvailable": false
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=rIbrEAAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "... IS LEGAL TENDER IN ALAND OF SWAT AND SORETRY . Marja Queen of Andare THANE RESERVE THE FREEDLANDS DRAGONFIRED SHOWR TAWENK DRAGONFIRED \u003cb\u003eTHE DARK PROFIT SAGA\u003c/b\u003e DRAGONFIRED \u003cb\u003eThe Dark Profit Saga\u003c/b\u003e Book 3 J. \u003cb\u003eZACHARY PIKE\u003c/b\u003e. Front Cover."
+      }
+    }
+  ]
+}

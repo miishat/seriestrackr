@@ -1,0 +1,122 @@
+[
+  {
+    "number": 1,
+    "url": "https://api.hardcover.app/v1/graphql",
+    "query": {
+      "names": [
+        "The Bound and the Broken",
+        "Bound and the Broken",
+        "Bound and the Broken Series",
+        "Bound and the Broken Mysteries",
+        "Bound and the Broken Trilogy",
+        "Tales of Bound and the Broken"
+      ],
+      "position": 5
+    },
+    "startedAt": "2026-10-03T05:41:37.247Z",
+    "status": 200,
+    "mime": "application/json; charset=utf-8",
+    "bytes": 772,
+    "bodyFile": "the-bound-and-the-broken/release-1.json"
+  },
+  {
+    "number": 2,
+    "url": "https://www.googleapis.com/books/v1/volumes?q=intitle%3AOf+Gods+and+Ashes+inauthor%3ARyan+Cahill&maxResults=20&showPreorders=true&langRestrict=en",
+    "query": null,
+    "startedAt": "2026-10-03T05:41:37.431Z",
+    "status": 200,
+    "mime": "application/json; charset=UTF-8",
+    "bytes": 49,
+    "bodyFile": "the-bound-and-the-broken/release-2.json"
+  },
+  {
+    "number": 3,
+    "url": "https://itunes.apple.com/search?term=Of+Gods+and+Ashes+Ryan+Cahill&country=us&entity=ebook&limit=20",
+    "query": null,
+    "startedAt": "2026-10-03T05:41:37.764Z",
+    "status": 200,
+    "mime": "text/javascript; charset=utf-8",
+    "bytes": 42,
+    "bodyFile": "the-bound-and-the-broken/release-3.json"
+  },
+  {
+    "number": 4,
+    "url": "https://itunes.apple.com/search?term=Of+Gods+and+Ashes+Ryan+Cahill&country=us&entity=audiobook&limit=20",
+    "query": null,
+    "startedAt": "2026-10-03T05:41:40.875Z",
+    "status": 200,
+    "mime": "text/javascript; charset=utf-8",
+    "bytes": 3076,
+    "bodyFile": "the-bound-and-the-broken/release-4.json"
+  },
+  {
+    "number": 5,
+    "url": "https://openlibrary.org/search.json?title=Of+Gods+and+Ashes&author=Ryan+Cahill&limit=20&fields=key%2Ctitle%2Cauthor_name%2Cauthor_key%2Cedition_key%2Cfirst_publish_year%2Clanguage",
+    "query": null,
+    "startedAt": "2026-10-03T05:41:40.944Z",
+    "status": 200,
+    "mime": "application/json",
+    "bytes": 156,
+    "bodyFile": "the-bound-and-the-broken/release-5.json"
+  },
+  {
+    "number": 6,
+    "url": "https://itunes.apple.com/search?term=Of+Gods+and+Ashes+Ryan+Cahill&country=gb&entity=ebook&limit=20",
+    "query": null,
+    "startedAt": "2026-10-03T05:41:43.980Z",
+    "status": 200,
+    "mime": "text/javascript; charset=utf-8",
+    "bytes": 42,
+    "bodyFile": "the-bound-and-the-broken/release-6.json"
+  },
+  {
+    "number": 7,
+    "url": "https://itunes.apple.com/search?term=Of+Gods+and+Ashes+Ryan+Cahill&country=gb&entity=audiobook&limit=20",
+    "query": null,
+    "startedAt": "2026-10-03T05:41:47.089Z",
+    "status": 200,
+    "mime": "text/javascript; charset=utf-8",
+    "bytes": 3076,
+    "bodyFile": "the-bound-and-the-broken/release-7.json"
+  },
+  {
+    "number": 8,
+    "url": "https://itunes.apple.com/search?term=Of+Gods+and+Ashes+Ryan+Cahill&country=ca&entity=ebook&limit=20",
+    "query": null,
+    "startedAt": "2026-10-03T05:41:50.204Z",
+    "status": 200,
+    "mime": "text/javascript; charset=utf-8",
+    "bytes": 42,
+    "bodyFile": "the-bound-and-the-broken/release-8.json"
+  },
+  {
+    "number": 9,
+    "url": "https://itunes.apple.com/search?term=Of+Gods+and+Ashes+Ryan+Cahill&country=ca&entity=audiobook&limit=20",
+    "query": null,
+    "startedAt": "2026-10-03T05:41:53.316Z",
+    "status": 200,
+    "mime": "text/javascript; charset=utf-8",
+    "bytes": 3076,
+    "bodyFile": "the-bound-and-the-broken/release-9.json"
+  },
+  {
+    "number": 10,
+    "url": "https://api.tavily.com/search",
+    "query": "Of Gods and Ashes Ryan Cahill ebook hardcover publication release date English US",
+    "startedAt": "2026-10-03T05:41:53.370Z",
+    "status": 200,
+    "mime": "application/json",
+    "bytes": 40487,
+    "bodyFile": "the-bound-and-the-broken/release-10.json"
+  },
+  {
+    "number": 11,
+    "url": "https://api.tavily.com/search",
+    "query": "Of Gods and Ashes Ryan Cahill audiobook release date English US",
+    "startedAt": "2026-10-03T05:41:54.491Z",
+    "status": 200,
+    "mime": "application/json",
+    "bytes": 37246,
+    "bodyFile": "the-bound-and-the-broken/release-11.json"
+  }
+]

@@ -28,8 +28,7 @@
      "Band Trilogy",
      "Tales of Band"
     ],
-    "position": 2,
-    "author": "Nicholas Eames"
+    "position": 2
    },
    "status": 200,
    "contentType": "application/json; charset=utf-8",

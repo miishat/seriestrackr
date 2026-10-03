@@ -1,0 +1,133 @@
+[
+  {
+    "number": 1,
+    "url": "https://api.hardcover.app/v1/graphql",
+    "query": {
+      "names": [
+        "The Dark Profit Saga",
+        "Dark Profit Saga",
+        "Dark Profit Saga Series",
+        "Dark Profit Saga Mysteries",
+        "Dark Profit Saga Trilogy",
+        "Tales of Dark Profit Saga"
+      ],
+      "position": 4,
+      "author": "J. Zachary Pike"
+    },
+    "startedAt": "2026-10-03T05:37:34.939Z",
+    "status": 200,
+    "mime": "application/json; charset=utf-8",
+    "bytes": 116,
+    "bodyFile": "the-dark-profit-saga/release-1.json"
+  },
+  {
+    "number": 2,
+    "url": "https://www.googleapis.com/books/v1/volumes?q=The+Dark+Profit+Saga+inauthor%3AJ.+Zachary+Pike&maxResults=20&showPreorders=true&langRestrict=en",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:35.091Z",
+    "status": 200,
+    "mime": "application/json; charset=UTF-8",
+    "bytes": 24389,
+    "bodyFile": "the-dark-profit-saga/release-2.json"
+  },
+  {
+    "number": 3,
+    "url": "https://itunes.apple.com/search?term=The+Dark+Profit+Saga+J.+Zachary+Pike&country=us&entity=ebook&limit=20",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:36.572Z",
+    "status": 200,
+    "mime": "text/javascript; charset=utf-8",
+    "bytes": 19037,
+    "bodyFile": "the-dark-profit-saga/release-3.json"
+  },
+  {
+    "number": 4,
+    "url": "https://itunes.apple.com/search?term=The+Dark+Profit+Saga+J.+Zachary+Pike&country=us&entity=audiobook&limit=20",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:39.677Z",
+    "status": 200,
+    "mime": "text/javascript; charset=utf-8",
+    "bytes": 13818,
+    "bodyFile": "the-dark-profit-saga/release-4.json"
+  },
+  {
+    "number": 5,
+    "url": "https://openlibrary.org/search.json?title=The+Dark+Profit+Saga&author=J.+Zachary+Pike&limit=20&fields=key%2Ctitle%2Cauthor_name%2Cauthor_key%2Cedition_key%2Cfirst_publish_year%2Clanguage",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:39.719Z",
+    "status": 200,
+    "mime": "application/json",
+    "bytes": 156,
+    "bodyFile": "the-dark-profit-saga/release-5.json"
+  },
+  {
+    "number": 6,
+    "url": "https://itunes.apple.com/search?term=The+Dark+Profit+Saga+J.+Zachary+Pike&country=gb&entity=ebook&limit=20",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:42.786Z",
+    "status": 200,
+    "mime": "text/javascript; charset=utf-8",
+    "bytes": 18944,
+    "bodyFile": "the-dark-profit-saga/release-6.json"
+  },
+  {
+    "number": 7,
+    "url": "https://itunes.apple.com/search?term=The+Dark+Profit+Saga+J.+Zachary+Pike&country=gb&entity=audiobook&limit=20",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:45.900Z",
+    "status": 200,
+    "mime": "text/javascript; charset=utf-8",
+    "bytes": 13818,
+    "bodyFile": "the-dark-profit-saga/release-7.json"
+  },
+  {
+    "number": 8,
+    "url": "https://itunes.apple.com/search?term=The+Dark+Profit+Saga+J.+Zachary+Pike&country=ca&entity=ebook&limit=20",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:49.008Z",
+    "status": 200,
+    "mime": "text/javascript; charset=utf-8",
+    "bytes": 18902,
+    "bodyFile": "the-dark-profit-saga/release-8.json"
+  },
+  {
+    "number": 9,
+    "url": "https://itunes.apple.com/search?term=The+Dark+Profit+Saga+J.+Zachary+Pike&country=ca&entity=audiobook&limit=20",
+    "query": null,
+    "startedAt": "2026-10-03T05:37:52.120Z",
+    "status": 200,
+    "mime": "text/javascript; charset=utf-8",
+    "bytes": 13818,
+    "bodyFile": "the-dark-profit-saga/release-9.json"
+  },
+  {
+    "number": 10,
+    "url": "https://api.tavily.com/search",
+    "query": "The Dark Profit Saga J. Zachary Pike book 4 reading order next novel",
+    "startedAt": "2026-10-03T05:37:52.155Z",
+    "status": 200,
+    "mime": "application/json",
+    "bytes": 54379,
+    "bodyFile": "the-dark-profit-saga/release-10.json"
+  },
+  {
+    "number": 11,
+    "url": "https://api.tavily.com/search",
+    "query": "The Dark Profit Saga J. Zachary Pike ebook hardcover publication release date English US",
+    "startedAt": "2026-10-03T05:37:53.315Z",
+    "status": 200,
+    "mime": "application/json",
+    "bytes": 48921,
+    "bodyFile": "the-dark-profit-saga/release-11.json"
+  },
+  {
+    "number": 12,
+    "url": "https://api.tavily.com/search",
+    "query": "The Dark Profit Saga J. Zachary Pike book 4 official publisher author announcement",
+    "startedAt": "2026-10-03T05:37:54.653Z",
+    "status": 200,
+    "mime": "application/json",
+    "bytes": 56339,
+    "bodyFile": "the-dark-profit-saga/release-12.json"
+  }
+]

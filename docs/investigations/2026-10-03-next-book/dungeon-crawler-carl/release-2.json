@@ -1,0 +1,228 @@
+{
+  "kind": "books#volumes",
+  "totalItems": 1,
+  "items": [
+    {
+      "kind": "books#volume",
+      "id": "jJSvEQAAQBAJ",
+      "etag": "mtz2ba3K1SY",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/jJSvEQAAQBAJ",
+      "volumeInfo": {
+        "title": "A Parade of Horribles",
+        "authors": [
+          "Matt Dinniman"
+        ],
+        "publisher": "Penguin Group",
+        "publishedDate": "2026-05-12",
+        "description": "AN INSTANT #1 NEW YORK TIMES BESTSELLER • It’s off to the races in the explosive eighth book in the Dungeon Crawler Carl series—featuring bonus material exclusive to this print edition. As chaos and mass panic spread outside the dungeon in the wake of Faction Wars, Carl and Donut find themselves on the tenth floor, where they’re forced to compete in a surprisingly normal set of tasks. Well, normal for the dungeon. Races. Get from point A to point B, and don’t come in last. After each race, they pick an upgrade for their vehicle and the track gets more challenging. It all seems a little too normal, a little too simple. Ignore those strange glitches that are occurring with increasing frequency. Don’t listen to those whispers about what’s happening on the mysterious eleventh floor, something the system AI calls A Parade of Horribles. Nobody, not even the showrunners, knows what that means. Just that the AI has ominously dubbed it “a coming-out party for the ages.” Everything is fine, Crawler. I repeat, everything is fine. Carl hates that it’s business as usual. The rules of this floor have taken away his agency. That just will not do. So Carl is planning a party of his own. It’s a plan so dangerous, so insane, he can’t even consult his friends lest the AI put a stop to it. Because if it goes wrong, it’s not just the end of Carl and Donut. No. The stakes are higher than they’ve ever been. Includes part eight of the exclusive bonus story “Backstage at the Pineapple Cabaret.”",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9798217190065"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": true
+        },
+        "pageCount": 705,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "1.2.1.0.preview.1",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=jJSvEQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=jJSvEQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=jJSvEQAAQBAJ&printsec=frontcover&dq=intitle:A+Parade+of+Horribles+inauthor:Matt+Dinniman&hl=&cd=1&source=gbs_api",
+        "infoLink": "http://books.google.ca/books?id=jJSvEQAAQBAJ&dq=intitle:A+Parade+of+Horribles+inauthor:Matt+Dinniman&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/A_Parade_of_Horribles.html?hl=&id=jJSvEQAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/A_Parade_of_Horribles-sample-pdf.acsm?id=jJSvEQAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=jJSvEQAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "AN INSTANT #1 NEW YORK TIMES BESTSELLER • It’s off to the races in the explosive eighth book in the Dungeon Crawler Carl series—featuring bonus material exclusive to this print edition."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "LZMUEgAAQBAJ",
+      "etag": "6TjEogIk7ig",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/LZMUEgAAQBAJ",
+      "volumeInfo": {
+        "title": "A Parade Of Horribles",
+        "authors": [
+          "MATT DINNIMAN "
+        ],
+        "publisher": "MATT DINNIMAN ",
+        "publishedDate": "2026-10-01",
+        "description": "A Parade of Horribles is a fantasy novel by Matt Dinniman that follows the chaotic adventures of characters in a dungeon setting",
+        "readingModes": {
+          "text": false,
+          "image": true
+        },
+        "pageCount": 100,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "preview-1.0.0",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=LZMUEgAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=LZMUEgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=LZMUEgAAQBAJ&pg=PA12&dq=intitle:A+Parade+of+Horribles+inauthor:Matt+Dinniman&hl=&cd=2&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=LZMUEgAAQBAJ&source=gbs_api",
+        "canonicalVolumeLink": "https://play.google.com/store/books/details?id=LZMUEgAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FOR_SALE",
+        "isEbook": true,
+        "listPrice": {
+          "amount": 6.99,
+          "currencyCode": "CAD"
+        },
+        "retailPrice": {
+          "amount": 6.99,
+          "currencyCode": "CAD"
+        },
+        "buyLink": "https://play.google.com/store/books/details?id=LZMUEgAAQBAJ&rdid=book-LZMUEgAAQBAJ&rdot=1&source=gbs_api",
+        "offers": [
+          {
+            "finskyOfferType": 1,
+            "listPrice": {
+              "amountInMicros": 6990000,
+              "currencyCode": "CAD"
+            },
+            "retailPrice": {
+              "amountInMicros": 6990000,
+              "currencyCode": "CAD"
+            },
+            "giftable": true
+          }
+        ]
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/A_Parade_Of_Horribles-sample-pdf.acsm?id=LZMUEgAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=LZMUEgAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "MATT \u003cb\u003eDINNIMAN\u003c/b\u003e. Calloway family entry in the Wickham Cove Ancient and Horrible \u003cb\u003eParade\u003c/b\u003e. In costume. In good faith. And must complete the route.&quot; There was a very long silence. &quot;I&#39;m sorry,&quot; said Dot. &quot;I think I&#39;ve misheard.&quot; &quot;You have not&nbsp;..."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "_8H10QEACAAJ",
+      "etag": "Pjux5LCv9S8",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/_8H10QEACAAJ",
+      "volumeInfo": {
+        "title": "A Parade of Horribles",
+        "subtitle": "Dungeon Crawler Carl, Book 8",
+        "authors": [
+          "Matt Dinniman"
+        ],
+        "publishedDate": "2026-05-12",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_10",
+            "identifier": "1965800823"
+          },
+          {
+            "type": "ISBN_13",
+            "identifier": "9781965800829"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": false
+        },
+        "pageCount": 0,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "preview-1.0.0",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=_8H10QEACAAJ&dq=intitle:A+Parade+of+Horribles+inauthor:Matt+Dinniman&hl=&cd=3&source=gbs_api",
+        "infoLink": "http://books.google.ca/books?id=_8H10QEACAAJ&dq=intitle:A+Parade+of+Horribles+inauthor:Matt+Dinniman&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/A_Parade_of_Horribles.html?hl=&id=_8H10QEACAAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "NO_PAGES",
+        "embeddable": false,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": false
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=_8H10QEACAAJ&hl=&source=gbs_api",
+        "accessViewStatus": "NONE",
+        "quoteSharingAllowed": false
+      }
+    }
+  ]
+}

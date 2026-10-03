@@ -1,0 +1,17 @@
+{
+  "requestId": "audit-the-bound-and-the-broken",
+  "seriesId": "6a4b8bb6-c037-4119-aa4f-8b1be4c1736a",
+  "target": {
+    "series": "The Bound and the Broken",
+    "author": "Ryan Cahill",
+    "position": 5,
+    "title": "",
+    "orderNote": ""
+  },
+  "preferredMarket": "US",
+  "formats": [
+    "book",
+    "audio"
+  ],
+  "useAi": false
+}

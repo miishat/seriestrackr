@@ -28,8 +28,7 @@
      "Book of the Dead Trilogy",
      "Tales of Book of the Dead"
     ],
-    "position": 5,
-    "author": "RinoZ"
+    "position": 5
    },
    "status": 200,
    "contentType": "application/json; charset=utf-8",

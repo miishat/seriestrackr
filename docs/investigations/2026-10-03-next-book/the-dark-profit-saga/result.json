@@ -1,0 +1,190 @@
+{
+  "requestId": "audit-the-dark-profit-saga",
+  "seriesId": "bf56eeea-3d03-4926-b287-84b262a6541c",
+  "summary": {
+    "requestId": "audit-the-dark-profit-saga",
+    "checkedAt": "2026-10-03T05:37:34.939Z",
+    "status": "partial",
+    "reasons": [
+      "budget",
+      "unknown-identity"
+    ],
+    "formats": {
+      "book": "unknown",
+      "audio": "unknown"
+    },
+    "usage": {
+      "apple": 6,
+      "openlibrary": 1,
+      "googlebooks": 1,
+      "hardcover": 1,
+      "tavily": 3,
+      "deepseek": 0,
+      "inputTokens": 0,
+      "outputTokens": 0
+    }
+  },
+  "proposals": {
+    "identity": null,
+    "identityAttribution": null,
+    "releases": {
+      "book": null,
+      "audio": null
+    },
+    "conflicts": [],
+    "related": []
+  },
+  "sources": [
+    {
+      "id": "catalog:2b54c30fd0ac50b82453f90ed1a247be",
+      "title": "Orconomics",
+      "url": "https://books.apple.com/us/book/orconomics/id923885528?uo=4"
+    },
+    {
+      "id": "catalog:71bd99701cc9e7959ba8b95346f85141",
+      "title": "Son of a Liche",
+      "url": "https://books.apple.com/us/book/son-of-a-liche/id1377324982?uo=4"
+    },
+    {
+      "id": "catalog:9ee10038c69577035a598a60dae42767",
+      "title": "Dragonfired",
+      "url": "https://books.apple.com/us/book/dragonfired/id6475168368?uo=4"
+    },
+    {
+      "id": "catalog:ff275c23f8cb0d7585004c9c9f86142a",
+      "title": "The Cabal of Thotash",
+      "url": "https://books.apple.com/us/book/the-cabal-of-thotash/id1103542970?uo=4"
+    },
+    {
+      "id": "catalog:0159eb3ead52f942df2d1825ad1db418",
+      "title": "Death and Taxes",
+      "url": "https://books.apple.com/us/book/death-and-taxes/id1103558206?uo=4"
+    },
+    {
+      "id": "catalog:9bf5320bc65229690c79a8683cef3ac2",
+      "title": "A Song of Three Spirits",
+      "url": "https://books.apple.com/us/book/a-song-of-three-spirits/id1444490698?uo=4"
+    },
+    {
+      "id": "catalog:c072ad5e03743773f9d5e97fcfe50b3c",
+      "title": "The Ebook Machine",
+      "url": "https://books.apple.com/us/book/the-ebook-machine/id1171711081?uo=4"
+    },
+    {
+      "id": "catalog:a54206faa74547e415818dd30806a61a",
+      "title": "Dragonfired: The Dark Profit Saga, Book 3 (Unabridged)",
+      "url": "https://books.apple.com/us/audiobook/dragonfired-the-dark-profit-saga-book-3-unabridged/id1735545125?uo=4"
+    },
+    {
+      "id": "catalog:604c819910990aa58423b0f71ef84c5d",
+      "title": "Orconomics: A Satire: The Dark Profit Saga, Book 1 (Unabridged)",
+      "url": "https://books.apple.com/us/audiobook/orconomics-a-satire-the-dark-profit-saga-book-1-unabridged/id1735537866?uo=4"
+    },
+    {
+      "id": "catalog:254029fcb376f7c9a51ba363fd00f69c",
+      "title": "Son of a Liche: The Dark Profit Saga, Book 2 (Unabridged)",
+      "url": "https://books.apple.com/us/audiobook/son-of-a-liche-the-dark-profit-saga-book-2-unabridged/id1735543380?uo=4"
+    },
+    {
+      "id": "catalog:6b00eeac68607e40ca04d8e07c381701",
+      "title": "Crypt Currency: The Dark Profit Saga, Book 4 (Unabridged)",
+      "url": "https://books.apple.com/us/audiobook/crypt-currency-the-dark-profit-saga-book-4-unabridged/id1894367111?uo=4"
+    },
+    {
+      "id": "catalog:56ec0d3178066c3aeac4060068798954",
+      "title": "A Song of Three Spirits",
+      "url": "https://books.apple.com/us/audiobook/a-song-of-three-spirits/id1474389114?uo=4"
+    },
+    {
+      "id": "catalog:6de30a2e746dd1a0450da75ccb39d89a",
+      "title": "Orconomics",
+      "url": "https://books.apple.com/gb/book/orconomics/id923885528?uo=4"
+    },
+    {
+      "id": "catalog:b565fcba5d9b0c0ee3ae25bc3674d1bc",
+      "title": "Son of a Liche",
+      "url": "https://books.apple.com/gb/book/son-of-a-liche/id1377324982?uo=4"
+    },
+    {
+      "id": "catalog:ee9672b41c64b20fb9b696af8a0ab32c",
+      "title": "Dragonfired",
+      "url": "https://books.apple.com/gb/book/dragonfired/id6475168368?uo=4"
+    },
+    {
+      "id": "catalog:8fbfad48608801a8835a865c3e45f129",
+      "title": "The Cabal of Thotash",
+      "url": "https://books.apple.com/gb/book/the-cabal-of-thotash/id1103542970?uo=4"
+    },
+    {
+      "id": "catalog:ccdeb15412649c07474b2efc44c9bffc",
+      "title": "Death and Taxes",
+      "url": "https://books.apple.com/gb/book/death-and-taxes/id1103558206?uo=4"
+    },
+    {
+      "id": "catalog:29b1c546e791cf6f11c38b822a09a935",
+      "title": "The Ebook Machine",
+      "url": "https://books.apple.com/gb/book/the-ebook-machine/id1171711081?uo=4"
+    },
+    {
+      "id": "catalog:5e851e43f4a7feef78789a8c216b1cc2",
+      "title": "A Song of Three Spirits",
+      "url": "https://books.apple.com/gb/book/a-song-of-three-spirits/id1444490698?uo=4"
+    },
+    {
+      "id": "catalog:b590364a81649e1ecff2a45786557c35",
+      "title": "Dragonfired: The Dark Profit Saga, Book 3 (Unabridged)",
+      "url": "https://books.apple.com/gb/audiobook/dragonfired-the-dark-profit-saga-book-3-unabridged/id1735545125?uo=4"
+    },
+    {
+      "id": "catalog:9f34fea02a59aac71d49892b58b20eb4",
+      "title": "A Song of Three Spirits",
+      "url": "https://books.apple.com/gb/audiobook/a-song-of-three-spirits/id1474389114?uo=4"
+    },
+    {
+      "id": "catalog:6cb83ae73c44afcf098db96850e265df",
+      "title": "Orconomics",
+      "url": "https://books.apple.com/ca/book/orconomics/id923885528?uo=4"
+    },
+    {
+      "id": "catalog:d4ba25af88a638456cf996c2d11640b7",
+      "title": "Son of a Liche",
+      "url": "https://books.apple.com/ca/book/son-of-a-liche/id1377324982?uo=4"
+    },
+    {
+      "id": "catalog:ed6a083effea8f68983074276e535e3f",
+      "title": "Dragonfired",
+      "url": "https://books.apple.com/ca/book/dragonfired/id6475168368?uo=4"
+    },
+    {
+      "id": "catalog:7c2853cb9e378f58978bb2c8b191c7bf",
+      "title": "The Cabal of Thotash",
+      "url": "https://books.apple.com/ca/book/the-cabal-of-thotash/id1103542970?uo=4"
+    },
+    {
+      "id": "catalog:bbf5b28864c46dc341cba864b8c4eda4",
+      "title": "Death and Taxes",
+      "url": "https://books.apple.com/ca/book/death-and-taxes/id1103558206?uo=4"
+    },
+    {
+      "id": "catalog:f671eb6c3f6b62ee26695bdd50f89892",
+      "title": "The Ebook Machine",
+      "url": "https://books.apple.com/ca/book/the-ebook-machine/id1171711081?uo=4"
+    },
+    {
+      "id": "catalog:5d64d1f24eb88a20b4b219a7cfa0cd66",
+      "title": "A Song of Three Spirits",
+      "url": "https://books.apple.com/ca/book/a-song-of-three-spirits/id1444490698?uo=4"
+    },
+    {
+      "id": "catalog:6ab0550e4421994796226b08f959e442",
+      "title": "A Song of Three Spirits",
+      "url": "https://books.apple.com/ca/audiobook/a-song-of-three-spirits/id1474389114?uo=4"
+    },
+    {
+      "id": "search1:46536fe78a68073ff394a6b2fac4a390",
+      "title": "The Dark Profit Saga by J. Zachary Pike",
+      "url": "https://www.goodreads.com/series/207236-the-dark-profit-saga"
+    }
+  ],
+  "coverCandidates": []
+}

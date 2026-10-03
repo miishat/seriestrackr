@@ -1,0 +1,181 @@
+{
+  "evidence": {
+    "sources": [
+      {
+        "id": "hardcover:book:2176532",
+        "title": "Ascension",
+        "url": "https://hardcover.app/books/book-of-the-dead-5-ascension",
+        "provider": "hardcover",
+        "market": null,
+        "retrievedAt": "2026-10-03T05:37:19.688Z",
+        "text": "Title: Ascension. Author: RinoZ. Series: Book of the Dead. Position: 5. Role: Author. English edition: 32392216. Language: en. Format: ebook."
+      },
+      {
+        "id": "hardcover:edition:32392216",
+        "title": "Ascension",
+        "url": "https://hardcover.app/books/book-of-the-dead-5-ascension",
+        "provider": "hardcover",
+        "market": null,
+        "retrievedAt": "2026-10-03T05:37:19.688Z",
+        "text": "Title: Ascension. Author: RinoZ. Position: 5. Raw format: Kindle. Reading format: Ebook. Format: ebook. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: hardcover:edition:32392216."
+      },
+      {
+        "id": "hardcover:edition:33213232",
+        "title": "Ascension",
+        "url": "https://hardcover.app/books/book-of-the-dead-5-ascension",
+        "provider": "hardcover",
+        "market": null,
+        "retrievedAt": "2026-10-03T05:37:19.688Z",
+        "text": "Title: Ascension. Author: RinoZ. Position: 5. Raw format: Audible. Reading format: Listened. Format: audio. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: hardcover:edition:33213232."
+      },
+      {
+        "id": "apple:6793687365:US:audio",
+        "title": "Ascension: A LitRPG Adventure (Book of the Dead 5) (Unabridged)",
+        "url": "https://books.apple.com/us/audiobook/ascension-a-litrpg-adventure-book-of-the-dead-5-unabridged/id6793687365?uo=4",
+        "provider": "apple",
+        "market": "US",
+        "retrievedAt": "2026-10-03T05:37:19.688Z",
+        "text": "Title: Ascension: A LitRPG Adventure (Book of the Dead 5) (Unabridged). Author: Rinoz. Format: audio. Language: unknown. Market: US. Date: 2026-08-19. Precision: day. Edition: apple:6793687365."
+      },
+      {
+        "id": "apple-page:6793687365:US:audio",
+        "title": "Ascension: A LitRPG Adventure (Book of the Dead 5) (Unabridged)",
+        "url": "https://books.apple.com/us/audiobook/ascension-a-litrpg-adventure-book-of-the-dead-5-unabridged/id6793687365?uo=4",
+        "provider": "apple",
+        "market": "US",
+        "retrievedAt": "2026-10-03T05:37:19.688Z",
+        "text": "Title: Ascension: A LitRPG Adventure (Book of the Dead 5) (Unabridged). Author: Rinoz. Format: audio. Language: en. Product LANGUAGE badge: English. Market: US. Date: 2026-08-19. Precision: day. Edition: apple:6793687365. Canonical title: Ascension. Literal audio label: Ascension: A LitRPG Adventure (Book of the Dead 5) (Unabridged). Requested series: Book of the Dead. Requested position: 5. Exact supported unabridged title relationship. Publication: published."
+      }
+    ],
+    "identities": [
+      {
+        "title": "Ascension",
+        "author": "RinoZ",
+        "position": 5,
+        "citations": [
+          {
+            "sourceId": "hardcover:book:2176532",
+            "quote": "Title: Ascension. Author: RinoZ. Series: Book of the Dead. Position: 5. Role: Author. English edition: 32392216. Language: en. Format: ebook."
+          }
+        ]
+      }
+    ],
+    "editions": [
+      {
+        "id": "hardcover:edition:32392216",
+        "title": "Ascension",
+        "author": "RinoZ",
+        "position": 5,
+        "editionKey": "hardcover:edition:32392216",
+        "format": "ebook",
+        "language": "en",
+        "market": null,
+        "date": null,
+        "precision": "none",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "hardcover:book:2176532",
+            "quote": "Title: Ascension. Author: RinoZ. Series: Book of the Dead. Position: 5. Role: Author. English edition: 32392216. Language: en. Format: ebook."
+          },
+          {
+            "sourceId": "hardcover:edition:32392216",
+            "quote": "Title: Ascension. Author: RinoZ. Position: 5. Raw format: Kindle. Reading format: Ebook. Format: ebook. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: hardcover:edition:32392216."
+          }
+        ]
+      },
+      {
+        "id": "hardcover:edition:33213232",
+        "title": "Ascension",
+        "author": "RinoZ",
+        "position": 5,
+        "editionKey": "hardcover:edition:33213232",
+        "format": "audio",
+        "language": "en",
+        "market": null,
+        "date": null,
+        "precision": "none",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "hardcover:book:2176532",
+            "quote": "Title: Ascension. Author: RinoZ. Series: Book of the Dead. Position: 5. Role: Author. English edition: 32392216. Language: en. Format: ebook."
+          },
+          {
+            "sourceId": "hardcover:edition:33213232",
+            "quote": "Title: Ascension. Author: RinoZ. Position: 5. Raw format: Audible. Reading format: Listened. Format: audio. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: hardcover:edition:33213232."
+          }
+        ]
+      },
+      {
+        "id": "apple:6793687365:US:audio",
+        "title": "Ascension: A LitRPG Adventure (Book of the Dead 5) (Unabridged)",
+        "author": "Rinoz",
+        "position": null,
+        "editionKey": "apple:6793687365",
+        "format": "audio",
+        "language": null,
+        "market": "US",
+        "date": "2026-08-19",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:6793687365:US:audio",
+            "quote": "Title: Ascension: A LitRPG Adventure (Book of the Dead 5) (Unabridged). Author: Rinoz. Format: audio. Language: unknown. Market: US. Date: 2026-08-19. Precision: day. Edition: apple:6793687365."
+          }
+        ]
+      },
+      {
+        "id": "apple-page:6793687365:US:audio",
+        "title": "Ascension",
+        "author": "Rinoz",
+        "position": null,
+        "editionKey": "apple:6793687365",
+        "format": "audio",
+        "language": "en",
+        "market": "US",
+        "date": "2026-08-19",
+        "precision": "day",
+        "publication": "published",
+        "citations": [
+          {
+            "sourceId": "apple-page:6793687365:US:audio",
+            "quote": "Title: Ascension: A LitRPG Adventure (Book of the Dead 5) (Unabridged). Author: Rinoz. Format: audio. Language: en. Product LANGUAGE badge: English. Market: US. Date: 2026-08-19. Precision: day. Edition: apple:6793687365. Canonical title: Ascension. Literal audio label: Ascension: A LitRPG Adventure (Book of the Dead 5) (Unabridged). Requested series: Book of the Dead. Requested position: 5. Exact supported unabridged title relationship. Publication: published."
+          }
+        ]
+      }
+    ]
+  },
+  "usage": {
+    "apple": 5,
+    "openlibrary": 1,
+    "googlebooks": 2,
+    "tavily": 0,
+    "hardcover": 1,
+    "deepseek": 0,
+    "inputTokens": 0,
+    "outputTokens": 0
+  },
+  "reasons": [],
+  "covers": [
+    {
+      "id": "hardcover:book:2176532",
+      "title": "Ascension",
+      "author": "RinoZ",
+      "role": "next",
+      "format": "print",
+      "provider": "hardcover",
+      "source": {
+        "id": "hardcover:book:2176532",
+        "title": "Ascension",
+        "url": "https://hardcover.app/books/book-of-the-dead-5-ascension"
+      },
+      "imageUrl": "https://assets.hardcover.app/edition/32392216/72a223d6-ca01-4430-966e-4083cce1ee0b.jpg",
+      "workKey": "ascension|rinoz",
+      "editionKey": null,
+      "width": 1617,
+      "height": 2560
+    }
+  ]
+}
