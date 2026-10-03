@@ -145,8 +145,8 @@ export function App({ autoTrack = true }: { autoTrack?: boolean } = {}) {
         const supported = proposals?.identity || proposals?.releases.book || proposals?.releases.audio;
         const status = result.error ? 'Check failed' : result.response?.summary.status === 'failed' ? 'Check failed' : supported ? 'Ready to review' : 'No supported result';
         const preview = result.error ?? [proposals?.identity?.title,
-          proposals?.releases.book ? `Book: ${proposals.releases.book.date ?? 'Date unknown'}` : null,
-          proposals?.releases.audio ? `Audio: ${proposals.releases.audio.date ?? 'Date unknown'}` : null].filter(Boolean).join(' | ');
+          proposals?.releases.book ? `Book: ${proposals.releases.book.date ?? 'Date Unknown'}` : null,
+          proposals?.releases.audio ? `Audio: ${proposals.releases.audio.date ?? 'Date Unknown'}` : null].filter(Boolean).join(' | ');
         return <li className="batch-result-row" key={result.seriesId}>
           <div className="batch-result-description"><strong>{library.doc.series.find(s => s.id === result.seriesId)?.name ?? 'Removed series'}</strong>
             {preview && <p>{preview}</p>}

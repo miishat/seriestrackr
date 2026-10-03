@@ -207,7 +207,7 @@ export function useLibrary() {
     if (allowed.ok === false) return allowed;
     const marketChanged = settings.market !== current.current.settings.market;
     const checkedSettings = validated({ ...current.current, settings, series: current.current.series.map(item => marketChanged && item.marketOverride === null
-      ? { ...item, lastCheck: null, releases: { book: emptyRelease(), audio: emptyRelease() } } : item) });
+      ? { ...item, lastCheck: null, autoUpdate: null, releases: { book: emptyRelease(), audio: emptyRelease() } } : item) });
     if (checkedSettings.ok === false) return invalid(checkedSettings.error);
     const affected = marketChanged ? current.current.series.filter((item) => item.marketOverride === null) : [];
     if (affected.length > 0 && !confirmReset) {
@@ -216,7 +216,7 @@ export function useLibrary() {
     const next: LibraryDocument = {
       ...checkedSettings.value,
       series: checkedSettings.value.series.map((item) => marketChanged && item.marketOverride === null
-        ? { ...item, lastCheck: null, releases: { book: emptyRelease(), audio: emptyRelease() } }
+        ? { ...item, lastCheck: null, autoUpdate: null, releases: { book: emptyRelease(), audio: emptyRelease() } }
         : item),
     };
     undoSnapshot.current = null;

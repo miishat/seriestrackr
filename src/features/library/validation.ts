@@ -108,6 +108,11 @@ function coverAttribution(value: unknown, path: string): CoverAttribution {
 }
 
 // The previous state is parsed with the same series rules, so an undo can only restore a valid series.
+// An undo record that no longer validates is dropped rather than rejecting the whole library.
+function tolerantAutoUpdate(value: unknown, owner: RecordValue, path: string, defaultMarket: string | null): AutoUpdate | null {
+  try { return autoUpdate(value, owner, path, defaultMarket); } catch { return null; }
+}
+
 function autoUpdate(value: unknown, owner: RecordValue, path: string, defaultMarket: string | null): AutoUpdate {
   const input = record(value, `${path}.autoUpdate`);
   const at = string(input.at, `${path}.autoUpdate.at`, true);
@@ -163,7 +168,7 @@ function series(value: unknown, path: string, legacy: boolean, defaultMarket: st
     coverAttribution: attributed,
     releases: { book: release(releases.book, `${path}.releases.book`, legacy, 'book', marketOverride ?? defaultMarket), audio: release(releases.audio, `${path}.releases.audio`, legacy, 'audio', marketOverride ?? defaultMarket) },
     lastCheck: legacy ? null : metadata(input.lastCheck, parseCheckSummary),
-    autoUpdate: versioned && input.autoUpdate !== undefined && input.autoUpdate !== null ? autoUpdate(input.autoUpdate, input, path, defaultMarket) : null,
+    autoUpdate: versioned && input.autoUpdate !== undefined && input.autoUpdate !== null ? tolerantAutoUpdate(input.autoUpdate, input, path, defaultMarket) : null,
   };
 }
 

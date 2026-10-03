@@ -318,3 +318,19 @@ test('an edit that changes reading status clears the automatic update', () => {
   expect(result.current.doc.series[0].readingStatus).toBe('paused');
   expect(result.current.doc.series[0].autoUpdate).toBeNull();
 });
+
+test('changing the default market clears automatic updates on reset series and keeps overridden ones', () => {
+  const { result } = acceptAutomatically();
+  expect(result.current.doc.series[0].autoUpdate).not.toBeNull();
+  act(() => { expect(result.current.updateSettings({ ...result.current.doc.settings, market: 'US' }, true).ok).toBe(true); });
+  expect(result.current.doc.series[0].autoUpdate).toBeNull();
+  expect(result.current.doc.series[0].releases.book.state).toBe('not-checked');
+
+  const overridden = mount(seeded([seriesFixture({ id: 's1', marketOverride: 'CA' })]));
+  const started = overridden.result.current.beginDiscovery('s1', 'r1');
+  if (started.ok === false) throw new Error(started.error);
+  act(() => { overridden.result.current.acceptDiscovery(started.value, response({ seriesId: 's1' }), { title: false, book: true, audio: false }, true); });
+  const before = overridden.result.current.doc.series[0].autoUpdate;
+  act(() => { expect(overridden.result.current.updateSettings({ ...overridden.result.current.doc.settings, market: 'US' }, true).ok).toBe(true); });
+  expect(overridden.result.current.doc.series[0].autoUpdate).toEqual(before);
+});

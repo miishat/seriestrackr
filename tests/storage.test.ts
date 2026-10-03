@@ -77,3 +77,29 @@ test('autoUpdate round-trips and a missing field loads as null', () => {
   const old = parseDocument({ ...doc, series: [legacy] });
   expect(old.ok && old.value.series[0].autoUpdate).toBeNull();
 });
+
+function docWithAutoUpdate(mutate: (au: any) => any) {
+  const base = seriesFixture();
+  const au = { at: '2026-10-03T00:00:00Z', previous: { next: base.next, releases: base.releases, coverUrl: null, coverAttribution: null } };
+  const series = [seriesFixture({ id: 'a', autoUpdate: mutate(au) }), seriesFixture({ id: 'b' })];
+  return JSON.parse(JSON.stringify({ ...emptyDocument(), settings: { ...emptyDocument().settings, market: 'CA' }, series }));
+}
+
+test('a malformed autoUpdate timestamp loads as null without rejecting the document', () => {
+  const parsed = parseDocument(docWithAutoUpdate(au => ({ ...au, at: 'not a date' })));
+  expect(parsed.ok).toBe(true);
+  if (parsed.ok) {
+    expect(parsed.value.series).toHaveLength(2);
+    expect(parsed.value.series[0].autoUpdate).toBeNull();
+    expect(parsed.value.series[0].next.title).toBe(seriesFixture().next.title);
+  }
+});
+
+test('an invalid autoUpdate previous state loads as null without rejecting the document', () => {
+  const parsed = parseDocument(docWithAutoUpdate(au => ({ ...au, previous: { ...au.previous, releases: 'bad' } })));
+  expect(parsed.ok).toBe(true);
+  if (parsed.ok) {
+    expect(parsed.value.series).toHaveLength(2);
+    expect(parsed.value.series[0].autoUpdate).toBeNull();
+  }
+});
