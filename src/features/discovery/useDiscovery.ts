@@ -51,7 +51,14 @@ export function useDiscovery(library: ReturnType<typeof useLibrary>) {
     }
   }, [fingerprint]);
   const currentGeneration = (token: number) => mounted.current && token === generation.current;
-  const close = () => { invalidate(); publish(null); };
+  const close = () => {
+    const current = sessionRef.current;
+    if (current?.phase === 'review') {
+      if (current.snapshot) retainedReviews.current.delete(current.snapshot.requestId);
+      setBatch(previous => ({ ...previous, results: previous.results.filter(item => item.seriesId !== current.seriesId) }));
+    }
+    invalidate(); publish(null);
+  };
   const open = (seriesId: string) => {
     const cached = batch.results.find(item => item.seriesId === seriesId);
     if (cached?.snapshot && libraryRef.current.isDiscoveryCurrent(cached.snapshot)) { invalidate(); publish(cached); return; }
@@ -146,5 +153,13 @@ export function useDiscovery(library: ReturnType<typeof useLibrary>) {
     close();
     setBatch(previous => ({ ...previous, running: false }));
   };
-  return { session, open, run, close, accept, batch, runBatch, cancelBatch };
+  const dismissResult = (seriesId: string) => {
+    if (batch.running) return;
+    const result = batch.results.find(item => item.seriesId === seriesId);
+    if (result?.snapshot) retainedReviews.current.delete(result.snapshot.requestId);
+    libraryRef.current.cancelDiscovery(seriesId);
+    setBatch(previous => ({ ...previous, results: previous.results.filter(item => item.seriesId !== seriesId) }));
+    if (sessionRef.current?.seriesId === seriesId) { invalidate(); publish(null); }
+  };
+  return { session, open, run, close, accept, batch, runBatch, cancelBatch, dismissResult };
 }

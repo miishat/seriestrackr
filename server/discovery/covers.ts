@@ -46,8 +46,13 @@ export async function collectCoverCandidates(request: CoverRequest, config: Disc
   const start = (provider: CoverProvider): void => { trackers.set(provider, { calls: 0, quota: false, failed: false, batch: emptyBatch() }); };
   const jobs: Promise<void>[] = [];
   const author = request.author;
-  const titles = [request.nextTitle, request.previousTitle].filter(title => title.trim() !== '');
-  const hasRole = (batch: CoverBatch | null, title: string) => batch?.candidates.some(item => item.role === (title === request.nextTitle ? 'next' : 'previous')) ?? false;
+  // Each searched title keeps the role it came from, so a blank next title can never be mistaken for the last read book.
+  const entries = ([['next', request.nextTitle], ['previous', request.previousTitle ?? '']] as const).filter(([, title]) => title.trim() !== '');
+  const titles = entries.map(([, title]) => title);
+  const hasRole = (batch: CoverBatch | null, title: string) => {
+    const role = entries.find(([, name]) => name === title)?.[0] ?? 'previous';
+    return batch?.candidates.some(item => item.role === role) ?? false;
+  };
 
   const token = config.hardcoverToken?.trim();
   if (token) {
@@ -75,7 +80,7 @@ export async function collectCoverCandidates(request: CoverRequest, config: Disc
   start('apple');
   jobs.push((async () => {
     for (const [entity, format] of [['ebook', 'ebook'], ['audiobook', 'audio']] as const) {
-      const params = new URLSearchParams({ term: `${request.nextTitle} ${author}`, country: request.preferredMarket.toLowerCase(), entity, limit: '20' });
+      const params = new URLSearchParams({ term: `${titles[0] ?? ''} ${author}`, country: request.preferredMarket.toLowerCase(), entity, limit: '20' });
       await run('apple', appleQueue, `/search?${params}`, {}, raw => normalizeAppleCovers(raw, format, request));
     }
   })());

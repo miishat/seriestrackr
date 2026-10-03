@@ -38,6 +38,8 @@ export function App() {
   const discovery = useDiscovery(library);
   const discoverySeries = library.doc.series.find(series => series.id === discovery.session?.seriesId);
   const today = useToday();
+  const [summaryFilter, setSummaryFilter] = useState<{ kind: 'all' | 'book' | 'audio'; sequence: number } | null>(null);
+  const filterSummary = (kind: 'all' | 'book' | 'audio') => setSummaryFilter(previous => ({ kind, sequence: (previous?.sequence ?? 0) + 1 }));
   const [editor, setEditor] = useState<Series | 'new' | null>(null);
   const [dialogError, setDialogError] = useState<string | null>(null);
   const [pending, setPending] = useState<Pending | null>(null);
@@ -103,17 +105,17 @@ export function App() {
   const availableAudioCount = library.doc.series.filter((s) => s.readingStatus !== 'completed' && s.formats.audio && displayRelease(s.releases.audio, today) === 'released').length;
   return <div className="app-shell">
     <header className="site-header"><div className="brand"><BrandMark /><div><strong>Series<span>Trackr</span></strong><BrandTagline /></div></div>
-      <nav aria-label="Library tools"><button onClick={() => setSettingsOpen(true)}>Market: {library.doc.settings.market ?? 'Choose'}</button><button onClick={() => library.updateSettings({ ...library.doc.settings, theme: library.doc.settings.theme === 'dark' ? 'light' : 'dark' }, false)}>{library.doc.settings.theme === 'dark' ? 'Light Theme' : 'Dark Theme'}</button><button onClick={() => setBackupsOpen(true)}>Backups</button></nav></header>
+      <nav aria-label="Library tools"><button onClick={() => setSettingsOpen(true)}>Market: {library.doc.settings.market ?? 'Choose'}</button><button onClick={() => library.updateSettings({ ...library.doc.settings, theme: library.doc.settings.theme === 'dark' ? 'light' : 'dark' }, false)}>{library.doc.settings.theme === 'dark' ? 'Light' : 'Dark'}</button><button onClick={() => setBackupsOpen(true)}>Backups</button></nav></header>
     {library.mode === 'recovery' && <div className="warning" role="alert"><strong>Stored library needs recovery.</strong> {library.error} Download the original data, restore a backup, or reset explicitly.
       <button onClick={() => setBackupsOpen(true)}>Open backups</button></div>}
     {library.mode === 'unsaved' && <div className="warning" role="alert"><strong>Changes are in memory and may be lost.</strong> {library.error} <button onClick={exportUnsaved}>Export now</button>{exportError && <span className="form-error" role="alert"> {exportError}</span>}{library.recoveryRaw !== null && <button onClick={() => setBackupsOpen(true)}>Open backups</button>}</div>}
     <section className="intro"><div><div className="eyebrow">Your library</div><h1>What comes next?</h1><p>A bookshelf for the stories you are following. Your next read stays in focus.</p></div>
-      {library.doc.series.length > 0 && <div className="summary"><div><b>{library.doc.series.length}</b><span>Tracked series</span></div><div><b>{availableCount}</b><span>Next book available</span></div><div><b>{availableAudioCount}</b><span>Next audiobook available</span></div></div>}</section>
-    {library.doc.settings.market && library.mode !== 'recovery' && <LibraryView doc={library.doc} today={today} onEdit={(s) => { setDialogError(null); setEditor(s); }} onFinish={finish} onCheck={(series) => discovery.open(series.id)} onCheckAll={discovery.runBatch} batchRunning={discovery.batch.running} checkingSeriesId={discovery.session?.phase === 'checking' ? discovery.session.seriesId : null} onAdd={() => { setDialogError(null); setEditor('new'); }} onView={(view) => library.updateSettings({ ...library.doc.settings, view }, false)} />}
-    {discovery.batch.total > 0 && <section className="batch-results" aria-label="Release check results">
+      {library.doc.series.length > 0 && <div className="summary"><button onClick={() => filterSummary('all')}><b>{library.doc.series.length}</b><span>Tracked series</span></button><button onClick={() => filterSummary('book')}><b>{availableCount}</b><span>Next book available</span></button><button onClick={() => filterSummary('audio')}><b>{availableAudioCount}</b><span>Next audiobook available</span></button></div>}</section>
+    {library.doc.settings.market && library.mode !== 'recovery' && <LibraryView summaryFilter={summaryFilter} doc={library.doc} today={today} onEdit={(s) => { setDialogError(null); setEditor(s); }} onFinish={finish} onCheck={(series) => discovery.open(series.id)} onCheckAll={discovery.runBatch} batchRunning={discovery.batch.running} checkingSeriesId={discovery.session?.phase === 'checking' ? discovery.session.seriesId : null} onAdd={() => { setDialogError(null); setEditor('new'); }} onView={(view) => library.updateSettings({ ...library.doc.settings, view }, false)} />}
+    {(discovery.batch.running || discovery.batch.results.length > 0) && <section className="batch-results" aria-label="Release check results">
       <div className="batch-results-header"><div>
         <h2>{discovery.batch.running ? 'Checking releases' : 'Release check results'}</h2>
-        <p role="status">{discovery.batch.done} of {discovery.batch.total} checked · Review results before saving.</p>
+        <p role="status">{discovery.batch.done} of {discovery.batch.total} checked | Review results before saving.</p>
       </div>{discovery.batch.running && <button onClick={discovery.cancelBatch}>Cancel checks</button>}</div>
       {discovery.batch.running && <progress value={discovery.batch.done} max={discovery.batch.total} aria-label="Release check progress" />}
       <ul className="batch-results-list">{discovery.batch.results.map(result => {
@@ -122,18 +124,19 @@ export function App() {
         const status = result.error ? 'Check failed' : result.response?.summary.status === 'failed' ? 'Check failed' : supported ? 'Ready to review' : 'No supported result';
         const preview = result.error ?? [proposals?.identity?.title,
           proposals?.releases.book ? `Book: ${proposals.releases.book.date ?? 'Date unknown'}` : null,
-          proposals?.releases.audio ? `Audio: ${proposals.releases.audio.date ?? 'Date unknown'}` : null].filter(Boolean).join(' · ');
+          proposals?.releases.audio ? `Audio: ${proposals.releases.audio.date ?? 'Date unknown'}` : null].filter(Boolean).join(' | ');
         return <li className="batch-result-row" key={result.seriesId}>
           <div className="batch-result-description"><strong>{library.doc.series.find(s => s.id === result.seriesId)?.name ?? 'Removed series'}</strong>
             {preview && <p>{preview}</p>}
             {result.response?.summary.status === 'partial' && <span className="sub">Some sources need attention</span>}
           </div>
           <span className={`badge ${supported ? 'announced' : 'not-found'}`}>{status}</span>
-          {result.response && <button aria-label={`Review ${library.doc.series.find(s => s.id === result.seriesId)?.name ?? 'series'} results`} disabled={discovery.batch.running} onClick={() => discovery.open(result.seriesId)}>Review results</button>}
+          <div className="batch-result-actions">{result.response && <button aria-label={`Review ${library.doc.series.find(s => s.id === result.seriesId)?.name ?? 'series'} results`} disabled={discovery.batch.running} onClick={() => discovery.open(result.seriesId)}>Review results</button>}
+          <button disabled={discovery.batch.running} aria-label={`Dismiss ${library.doc.series.find(s => s.id === result.seriesId)?.name ?? 'series'} result`} onClick={() => discovery.dismissResult(result.seriesId)}>Dismiss</button></div>
         </li>;
       })}</ul>
     </section>}
-    <aside className="next-phase"><span>YOUR CHOICE</span><div><strong>Discovery, when you ask for it.</strong><p>Check releases, review sources and choose what to save. Manual tracking works independently.</p></div></aside>
+    <aside className="discovery-footer"><strong>Check releases. Review sources. Choose what to save.</strong><p>Manual tracking is always available.</p></aside>
     {library.canUndo && (library.undoKind === 'cover'
       ? <div className="undo" role="status">Most recent cover choice can be undone until another change or reload. <button onClick={undoLast}>Undo cover</button></div>
       : <div className="undo" role="status">Most recent finish can be undone until another change or reload. <button onClick={undoLast}>Undo finish</button></div>)}
@@ -144,7 +147,7 @@ export function App() {
     <Dialog open={pending !== null} title="Confirm metadata reset" onClose={() => setPending(null)}><p>{pending?.message}</p><p>Release information will be cleared. A changed next-book identity also clears its cover.</p><div className="actions"><button onClick={() => setPending(null)}>Cancel</button><button className="primary" onClick={confirmReset}>Confirm reset</button></div></Dialog>
     <Dialog open={deleteTarget !== null} title="Delete series" onClose={() => setDeleteTarget(null)}><p>Delete {deleteTarget?.name}? This removes its progress and release details.</p><div className="actions"><button onClick={() => setDeleteTarget(null)}>Cancel delete</button><button className="danger" onClick={() => { if (deleteTarget) { const result = library.deleteSeries(deleteTarget.id); if (result.ok === true) { setDeleteTarget(null); closeEditor(); } else setDialogError(result.error); } }}>Delete {deleteTarget?.name}</button></div></Dialog>
     <Dialog open={finishTarget !== null} title="Finish next book" onClose={() => setFinishTarget(null)}><p>Enter the title before moving this book to Last finished.</p><label>Finished book title<input value={finishTitle} onChange={(event) => setFinishTitle(event.target.value)} /></label>{dialogError && <p role="alert">{dialogError}</p>}<div className="actions"><button onClick={() => setFinishTarget(null)}>Cancel</button><button className="primary" onClick={finishWithTitle}>Finish book</button></div></Dialog>
-    <Dialog open={settingsOpen} title="Settings" onClose={() => setSettingsOpen(false)}><SettingsDialog settings={library.doc.settings} onSave={handleSettings} onCancel={() => setSettingsOpen(false)} error={dialogError} /></Dialog>
+    <Dialog open={settingsOpen} closable={false} title="Settings" onClose={() => setSettingsOpen(false)}><SettingsDialog settings={library.doc.settings} onSave={handleSettings} onCancel={() => setSettingsOpen(false)} error={dialogError} /></Dialog>
     {!discovery.batch.running && discovery.session && discoverySeries && <DiscoveryDialog session={discovery.session} series={discoverySeries} preferredMarket={discoverySeries.marketOverride ?? library.doc.settings.market ?? ''} stale={!!discovery.session.snapshot && !library.isDiscoveryCurrent(discovery.session.snapshot)} onRun={discovery.run} onClose={discovery.close} onAccept={discovery.accept} />}
     {backupsOpen && <BackupDialog doc={library.doc} mode={library.mode} recoveryRaw={library.recoveryRaw} onReplace={library.replaceLibrary} onReset={library.resetLibrary} onClose={() => setBackupsOpen(false)} />}
   </div>;

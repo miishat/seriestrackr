@@ -5,6 +5,38 @@ Entries use development dates because no versioned releases have been tagged.
 
 ## Unreleased
 
+### Added
+
+- **Named cover choices** from a local, user-triggered cover service (Hardcover, Google Books, Apple, Open Library). Each choice shows its title, author, provider, book or audiobook format, and next or previous role. Audiobook art is review-only and never selectable as a book cover.
+- **Last-read covers.** When a series has no next book title, the cover picker now offers covers for the last book you read.
+- **Author spelling suggestions** (for example Benett and Bennett) that only edit the open form and never change the saved author silently.
+- **Related works review** for prequels and unnumbered continuations found on supported publisher and author pages. They are shown with citations for review and are never accepted into the library.
+- **Catalogue lifecycle states.** A release can now read "Edition found; release unverified", "Announced", "Scheduled" or "Available". Catalogue evidence alone no longer implies an announcement or availability.
+- **Discovery review layout** with an outline rail and detail pane that becomes tabs on narrow screens, plus separate coverage explanations for complete, partial, failed and cancelled checks.
+- **Undo for an accepted cover**, from the review dialog and the cover picker.
+- **Cover unverified** label for a manually entered cover URL, and an **Evidence is old** notice with a "Review again" button for old Hardcover-only announcements. Neither changes saved facts.
+- A bounded replay of the recorded failure matrix, and a dry-run pilot script (`scripts/discovery-pipeline-repair-pilot.ts`) that runs one case at a time with AI disabled.
+
+### Changed
+
+- The library is saved as version 3 and records which title and author an automatic cover belongs to. Version 1 and 2 libraries and backups still import, keeping their covers, releases and sources.
+- Hardcover series matching now uses the series relationship (position, author role and aliases) instead of the old "featured" flag, and bounds its results so a provider that ignores its limit cannot hide a conflict.
+- Late-found primary-source identities are enriched within the original request budgets, and one shared budget now covers the initial and follow-up searches. The primary-source search now takes priority over the audiobook search when the series identity is unresolved.
+- Apple results beyond the first 20 now suppress the affected format's date when completeness cannot be shown, instead of silently dropping a possibly earlier date.
+- A model-asserted "published" status needs explicit release wording in its cited text. Pre-order or future wording yields "Announced", anything else "Edition found". Deterministic sources win ties over model-extracted ones.
+- Release checks explain why a rejection happened with fixed rules and hashed record references, without keeping titles, queries, headers or keys.
+- Announced releases show "Announced" with "Date Unknown" where the date would appear. The theme toggle reads "Dark" or "Light", and library table actions and the discovery footer were reorganized.
+
+### Fixed
+
+- Hardcover position-5 entries that were not flagged as featured (such as Blood and Bone) are no longer skipped.
+- Audiobook titles with decorations such as "(Unabridged)" bind to the right work, and the wrong work is no longer accepted.
+- A bad cover record can no longer fail a whole release check or discard a verified identity.
+- Editing last finished, the position override, the author or the title now cancels a pending cover search and drops a stale automatic cover instead of saving it against the wrong book.
+- A failed check is no longer described as "Complete coverage".
+- "Export now" in unsaved mode shows an error instead of throwing when the library cannot be encoded.
+- Removed stray replacement characters from the batch results text.
+
 ## 2026-10-01
 
 ### Added

@@ -158,7 +158,7 @@ test('an undated available proposal with no source market is explained and canno
 });
 
 test.each([
-  ['catalogued', 'Edition found; release unverified'], ['announced', 'Announced; date unknown'],
+  ['catalogued', 'Edition found; release unverified'], ['announced', 'Announced'],
 ] as const)('%s undated proposals use the exact lifecycle copy', async (state, copy) => {
   const result = response(); const proposal = result.proposals.releases.book!;
   proposal.state = state; proposal.date = null; proposal.provenance.datePrecision = 'none';

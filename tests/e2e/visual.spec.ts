@@ -36,7 +36,7 @@ async function clippedElements(page: import('@playwright/test').Page): Promise<s
 }
 
 async function setTheme(page: import('@playwright/test').Page, theme: 'light' | 'dark') {
-  const toggle = page.getByRole('button', { name: theme === 'light' ? 'Light Theme' : 'Dark Theme' });
+  const toggle = page.getByRole('button', { name: theme === 'light' ? 'Light' : 'Dark' });
   if (await toggle.count()) await toggle.click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
 }
@@ -91,7 +91,7 @@ test('approved desktop card states fit both widths, themes and 200% effective zo
       original.call(this, key, value);
     };
   });
-  await page.getByRole('button', { name: 'Dark Theme' }).click();
+  await page.getByRole('button', { name: 'Dark' }).click();
   await expect(page.getByRole('alert')).toContainText('Changes are in memory and may be lost');
   await page.screenshot({ path: `${output}/unsaved-banner.png`, fullPage: true });
 });

@@ -249,16 +249,16 @@ test('Export now shows a visible error instead of throwing when the document can
 test('a stale export error is cleared once the library leaves unsaved mode', async () => {
   const user = userEvent.setup(); seed(); render(<App />);
   const save = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('quota exceeded'); });
-  await user.click(screen.getByRole('button', { name: /Dark Theme|Light Theme/ }));
+  await user.click(screen.getByRole('button', { name: /^(Dark|Light)$/ }));
   encoder.fail = true;
   try {
     await user.click(await screen.findByRole('button', { name: 'Export now' }));
     expect(screen.getByText(/Could not export/)).toBeVisible();
     save.mockRestore();
-    await user.click(screen.getByRole('button', { name: /Dark Theme|Light Theme/ }));
+    await user.click(screen.getByRole('button', { name: /^(Dark|Light)$/ }));
     expect(screen.queryByRole('button', { name: 'Export now' })).toBeNull();
     vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('quota exceeded'); });
-    await user.click(screen.getByRole('button', { name: /Dark Theme|Light Theme/ }));
+    await user.click(screen.getByRole('button', { name: /^(Dark|Light)$/ }));
     await screen.findByRole('button', { name: 'Export now' });
     expect(screen.queryByText(/Could not export/)).toBeNull();
   } finally { encoder.fail = false; }

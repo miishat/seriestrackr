@@ -17,7 +17,7 @@ export function SettingsDialog({ settings, onSave, onCancel, error }: { settings
     <div className="form-grid"><MarketSelect value={value.market ?? ''} onChange={(market) => setValue({ ...value, market: market || null })} />
       <label>Theme<select value={value.theme} onChange={(event) => setValue({ ...value, theme: event.target.value as Settings['theme'] })}><option value="light">Light</option><option value="dark">Dark</option></select></label>
       <label>Default view<select value={value.view} onChange={(event) => setValue({ ...value, view: event.target.value as Settings['view'] })}><option value="grid">Bookshelf cards</option><option value="compact">Compact cards</option><option value="list">Release table</option></select></label>
-      <label className="checkbox-label"><input type="checkbox" checked={value.showCovers} onChange={(event) => setValue({ ...value, showCovers: event.target.checked })} /> Show covers</label>
+      <label>Covers<select value={value.showCovers ? 'show' : 'hide'} onChange={(event) => setValue({ ...value, showCovers: event.target.value === 'show' })}><option value="show">Show</option><option value="hide">Hide</option></select></label>
     </div><p className="small">Language: English. Book and audiobook tracking can be set for each series.</p>
     {(localError || error) && <p role="alert" className="form-error">{localError || error}</p>}
     <div className="actions"><button type="button" onClick={onCancel}>Cancel</button><button className="primary" type="submit">Save settings</button></div>

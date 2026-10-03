@@ -5,7 +5,7 @@ import { displayRelease, displaySeriesRelease, hasOldAnnouncementEvidence, relea
 import { DiscoverySummary } from '../discovery/DiscoverySummary';
 
 export { releaseLabels };
-function Cover({ url, title }: { url: string | null; title: string }) {
+export function Cover({ url, title }: { url: string | null; title: string }) {
   const [broken, setBroken] = useState(false);
   if (!url || broken) return <div className="cover-placeholder">No cover available</div>;
   return <img className="cover-image" src={url} alt={`Cover for ${title || 'next unread book'}`} onError={() => setBroken(true)} />;
@@ -16,9 +16,9 @@ export function ReleaseSummary({ format, release, today, compact = false, bookTi
   const oldEvidence = hasOldAnnouncementEvidence(release, today);
   return <div className="release-summary"><span className="small label-upper">{format === 'book' ? 'Book' : 'Audiobook'}</span>
     <span className={`badge ${state}`}>{releaseLabels[state]}</span>
-    {(release.date || (state !== 'announced' && state !== 'catalogued')) && <span className="sub">{release.date ? release.date : state === 'not-checked' ? 'No check recorded' : state === 'not-found' ? 'No supported result' : 'Manual entry'}</span>}
+    {(release.date || state !== 'catalogued') && <span className="sub">{release.date ? release.date : state === 'not-checked' ? 'No check recorded' : state === 'announced' ? 'Date Unknown' : state === 'not-found' ? 'No supported result' : 'Manual entry'}</span>}
     {oldEvidence && <span className="sub evidence-old">Evidence is old{onReview && !compact && <> <button type="button" onClick={onReview} disabled={reviewDisabled} aria-label={`Review ${format === 'book' ? 'book' : 'audiobook'} announcement again${series ? ` for ${series.name}` : ''}`}>Review again</button></>}</span>}
-    {compact && bookTitle?.trim() && !release.source && <span className="sub">{bookTitle}</span>}
+    {compact && bookTitle?.trim() && !release.source && <span className="sub release-title">{bookTitle}</span>}
     {release.source && /^https?:\/\//i.test(release.source.url) && <a href={release.source.url} title={release.source.title} target="_blank" rel="noreferrer">{compact && bookTitle?.trim() ? bookTitle : release.source.title}</a>}
     {!compact && release.provenance && <div className="small">English {release.provenance.editionFormat === 'audio' ? 'audiobook' : release.provenance.editionFormat} · {release.provenance.sourceMarket ? `Source country: ${release.provenance.sourceMarket}` : 'Source country unspecified'}
       {release.date && <span className="sub">Earliest supported date in sources checked.</span>}
@@ -74,7 +74,7 @@ export function SeriesCard({ series, today, market, showCovers, compact = false,
       {series.formats.book && <ReleaseSummary series={series} format="book" release={series.releases.book} today={today} onReview={onCheck} reviewDisabled={checking || checkDisabled} />}
       {series.formats.audio && <ReleaseSummary series={series} format="audio" release={series.releases.audio} today={today} onReview={onCheck} reviewDisabled={checking || checkDisabled} />}
     </div>}
-    <DiscoverySummary summary={series.lastCheck} />
+    {series.lastCheck && <details className="compact-details"><summary>Check details</summary><DiscoverySummary summary={series.lastCheck} /></details>}
     <div className="card-footer"><button onClick={onEdit}>Edit details</button>{series.readingStatus !== 'completed' && <><button onClick={onFinish}>Mark finished</button>{onCheck && <button onClick={onCheck} disabled={checking || checkDisabled}>{checking ? 'Checking…' : 'Check releases'}</button>}</>}</div>
   </article>;
 }

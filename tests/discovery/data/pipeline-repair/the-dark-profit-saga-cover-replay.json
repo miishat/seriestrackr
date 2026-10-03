@@ -60,14 +60,14 @@
    "body": "{\"numFound\":1,\"start\":0,\"numFoundExact\":true,\"num_found\":1,\"documentation_url\":\"https://openlibrary.org/dev/docs/api/search\",\"q\":\"\",\"offset\":null,\"docs\":[{\"author_key\":[\"OL7639117A\"],\"author_name\":[\"J. Zachary Pike\"],\"ebook_access\":\"no_ebook\",\"edition_count\":4,\"first_publish_year\":2023,\"has_fulltext\":false,\"key\":\"/works/OL37625983W\",\"language\":[\"eng\"],\"public_scan_b\":false,\"title\":\"Dragonfired\"}]}"
   },
   {
-   "url": "https://itunes.apple.com/search?term=+J.+Zachary+Pike&country=us&entity=ebook&limit=20",
+   "url": "https://itunes.apple.com/search?term=Dragonfired+J.+Zachary+Pike&country=us&entity=ebook&limit=20",
    "query": null,
    "status": 200,
    "contentType": "text/javascript; charset=utf-8",
    "body": "{\"resultCount\":0,\"results\":[]}"
   },
   {
-   "url": "https://itunes.apple.com/search?term=+J.+Zachary+Pike&country=us&entity=audiobook&limit=20",
+   "url": "https://itunes.apple.com/search?term=Dragonfired+J.+Zachary+Pike&country=us&entity=audiobook&limit=20",
    "query": null,
    "status": 200,
    "contentType": "text/javascript; charset=utf-8",

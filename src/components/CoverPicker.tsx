@@ -40,6 +40,7 @@ export function CoverPicker({ series, market, onSelect, onUndo, onAuthorSuggesti
       <button type="button" onClick={() => { setStored(current => current && { ...current, chosenId: '' }); void search(); }} disabled={busy}>{busy ? 'Searching...' : 'Find cover'}</button>
       <span className="small">Optional. Covers are only searched when you ask.</span>
     </div>
+    {!series.next.title.trim() && !!series.lastFinished?.title.trim() && <p className="small">No next title yet. Covers for the last book you read are offered.</p>}
     {state.error && <p className="form-error" role="alert">{state.error}</p>}
     {state.phase === 'ready' && state.candidates.length === 0 && incomplete &&
       <p role="alert">Cover search incomplete. Some sources could not be checked. Try again or add a URL manually.</p>}

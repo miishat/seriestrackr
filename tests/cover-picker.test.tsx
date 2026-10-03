@@ -143,3 +143,47 @@ test.each(['edit author', 'edit url'])('undo is withdrawn after %s so it cannot 
   await user.click(screen.getByRole('button', { name }));
   expect(screen.queryByRole('button', { name: 'Undo cover choice' })).toBeNull();
 });
+
+test('a blank previous title is sent as null so the service accepts the request', async () => {
+  services.fetchCoverCandidates.mockResolvedValue(result([]));
+  const base = seriesFixture();
+  const { result: hook } = renderHook(() => useCoverSearch({ ...base, lastFinished: { position: 1, title: '  ' } }, 'CA'));
+  await act(async () => { await hook.current.search(); });
+  expect(services.fetchCoverCandidates.mock.calls[0][0].previousTitle).toBeNull();
+});
+
+test.each([
+  ['next title with no last finished title', (s: ReturnType<typeof seriesFixture>) => ({ ...s, next: { ...s.next, title: ' ' }, lastFinished: null }), /next book/i],
+  ['author', (s: ReturnType<typeof seriesFixture>) => ({ ...s, author: '' }), /author/i],
+  ['series name', (s: ReturnType<typeof seriesFixture>) => ({ ...s, name: '' }), /series name/i],
+])('a missing %s explains what to fill in instead of calling the service', async (_name, edit, message) => {
+  const { result: hook } = renderHook(() => useCoverSearch(edit(seriesFixture()), 'CA'));
+  await act(async () => { await hook.current.search(); });
+  expect(services.fetchCoverCandidates).not.toHaveBeenCalled();
+  expect(hook.current.state.phase).toBe('error');
+  expect(hook.current.state.error).toMatch(message);
+});
+
+const noNext = () => seriesFixture({ next: { positionOverride: null, title: '', orderNote: '', attribution: null }, lastFinished: { position: 1, title: 'First' } });
+
+test('a blank next title still searches for the last read book and offers a selectable previous cover', async () => {
+  services.fetchCoverCandidates.mockResolvedValue(result([candidate({ id: 'p1', title: 'First', role: 'previous', workKey: 'first|example author' })]));
+  const onSelect = vi.fn();
+  const user = userEvent.setup();
+  render(<CoverPicker series={noNext()} market="CA" onSelect={onSelect} />);
+  expect(screen.getByText('No next title yet. Covers for the last book you read are offered.')).toBeTruthy();
+  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  expect(services.fetchCoverCandidates).toHaveBeenCalledTimes(1);
+  expect(services.fetchCoverCandidates.mock.calls[0][0]).toMatchObject({ nextTitle: '', previousTitle: 'First' });
+  await user.click(await screen.findByRole('button', { name: /Select cover: First by Example Author, Open Library, Book, Previous book/ }));
+  expect(onSelect).toHaveBeenCalledWith('https://covers.openlibrary.org/b/id/1-L.jpg',
+    { title: 'First', author: 'Example Author', role: 'previous', source: candidate().source, editionKey: null });
+});
+
+test('with neither a next title nor a last finished title the search names both and sends nothing', async () => {
+  const user = userEvent.setup();
+  render(<CoverPicker series={seriesFixture({ next: { positionOverride: null, title: ' ', orderNote: '', attribution: null }, lastFinished: null })} market="CA" onSelect={vi.fn()} />);
+  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  expect((await screen.findByRole('alert')).textContent).toMatch(/next book's title or a last finished title/);
+  expect(services.fetchCoverCandidates).not.toHaveBeenCalled();
+});

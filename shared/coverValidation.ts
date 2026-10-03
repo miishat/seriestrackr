@@ -36,6 +36,9 @@ const record = (input: unknown, path: string): Record<string, unknown> =>
   input !== null && typeof input === 'object' && !Array.isArray(input) ? input as Record<string, unknown> : fail(path);
 const str = (input: unknown, path: string, max = 300): string =>
   typeof input === 'string' && input.trim() && input.length <= max ? input : fail(path);
+// A blank value is allowed for a field that another field can stand in for; the caller still requires one non-blank title.
+const optionalStr = (input: unknown, path: string, max = 300): string =>
+  typeof input === 'string' && input.length <= max ? input : fail(path);
 const dim = (input: unknown, path: string): number | null =>
   input === null ? null : typeof input === 'number' && Number.isFinite(input) && input > 0 && input <= 20000 ? input : fail(path);
 
@@ -93,10 +96,13 @@ export function parseCoverRequest(input: unknown): Parsed<CoverRequest> {
     if (typeof value.position !== 'number' || !Number.isSafeInteger(value.position) || value.position < 1 || value.position > 1000) fail('request.position');
     const market = str(value.preferredMarket, 'request.preferredMarket', 2);
     if (!/^[A-Z]{2}$/.test(market)) fail('request.preferredMarket');
+    const nextTitle = optionalStr(value.nextTitle, 'request.nextTitle');
+    const previousTitle = value.previousTitle === null ? null : optionalStr(value.previousTitle, 'request.previousTitle');
+    if (!nextTitle.trim() && !previousTitle?.trim()) fail('request.nextTitle');
     return { ok: true, value: {
       requestId: str(value.requestId, 'request.requestId', 100), seriesId: str(value.seriesId, 'request.seriesId', 100),
-      series: str(value.series, 'request.series'), author: str(value.author, 'request.author'), nextTitle: str(value.nextTitle, 'request.nextTitle'),
-      position: value.position as number, previousTitle: value.previousTitle === null ? null : str(value.previousTitle, 'request.previousTitle'),
+      series: str(value.series, 'request.series'), author: str(value.author, 'request.author'), nextTitle,
+      position: value.position as number, previousTitle,
       preferredMarket: market } };
   } catch (error) { return { ok: false, error: error instanceof Error ? error.message : 'invalid input' }; }
 }
