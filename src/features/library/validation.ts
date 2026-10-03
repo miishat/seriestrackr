@@ -1,4 +1,4 @@
-import type { BookRef, CoverAttribution, Format, LibraryDocument, ReadingStatus, Release, ReleaseState, Result, Series } from './model';
+import type { AutoUpdate, BookRef, CoverAttribution, Format, LibraryDocument, ReadingStatus, Release, ReleaseState, Result, Series } from './model';
 import { isCalendarDate } from './releases';
 import { parseAttribution, parseCheckSummary, parseProvenance } from '../../../shared/discoveryValidation';
 
@@ -107,6 +107,17 @@ function coverAttribution(value: unknown, path: string): CoverAttribution {
   };
 }
 
+// The previous state is parsed with the same series rules, so an undo can only restore a valid series.
+function autoUpdate(value: unknown, owner: RecordValue, path: string, defaultMarket: string | null): AutoUpdate {
+  const input = record(value, `${path}.autoUpdate`);
+  const at = string(input.at, `${path}.autoUpdate.at`, true);
+  if (!Number.isFinite(Date.parse(at))) throw new Error(`${path}.autoUpdate.at must be a timestamp.`);
+  const previous = record(input.previous, `${path}.autoUpdate.previous`);
+  const restored = series({ ...owner, next: previous.next, releases: previous.releases, coverUrl: previous.coverUrl,
+    coverAttribution: previous.coverAttribution, autoUpdate: null }, `${path}.autoUpdate.previous`, false, defaultMarket, true);
+  return { at, previous: { next: restored.next, releases: restored.releases, coverUrl: restored.coverUrl, coverAttribution: restored.coverAttribution } };
+}
+
 function series(value: unknown, path: string, legacy: boolean, defaultMarket: string | null, versioned: boolean): Series {
   const input = record(value, path);
   const next = record(input.next, `${path}.next`);
@@ -152,6 +163,7 @@ function series(value: unknown, path: string, legacy: boolean, defaultMarket: st
     coverAttribution: attributed,
     releases: { book: release(releases.book, `${path}.releases.book`, legacy, 'book', marketOverride ?? defaultMarket), audio: release(releases.audio, `${path}.releases.audio`, legacy, 'audio', marketOverride ?? defaultMarket) },
     lastCheck: legacy ? null : metadata(input.lastCheck, parseCheckSummary),
+    autoUpdate: versioned && input.autoUpdate !== undefined && input.autoUpdate !== null ? autoUpdate(input.autoUpdate, input, path, defaultMarket) : null,
   };
 }
 

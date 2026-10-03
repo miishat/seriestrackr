@@ -1,5 +1,7 @@
 import { expect, test, vi } from 'vitest';
 import { emptyDocument } from '../src/features/library/model';
+import { parseDocument } from '../src/features/library/validation';
+import { seriesFixture } from './fixtures';
 import { loadBrowserLibrary, loadLibrary, saveLibrary } from '../src/storage/libraryStorage';
 
 test('empty library survives reload', () => {
@@ -63,4 +65,15 @@ test('v2 storage loads as version 3 in memory without writing', () => {
   const setItem = vi.fn();
   expect(loadLibrary({ getItem: () => raw, setItem } as unknown as Storage)).toEqual({ kind: 'ready', doc: emptyDocument() });
   expect(setItem).not.toHaveBeenCalled();
+});
+
+test('autoUpdate round-trips and a missing field loads as null', () => {
+  const base = seriesFixture();
+  const series = seriesFixture({ autoUpdate: { at: '2026-10-03T00:00:00Z', previous: { next: base.next, releases: base.releases, coverUrl: null, coverAttribution: null } } });
+  const doc = { ...emptyDocument(), settings: { ...emptyDocument().settings, market: 'CA' }, series: [series] };
+  const parsed = parseDocument(JSON.parse(JSON.stringify(doc)));
+  expect(parsed.ok && parsed.value.series[0].autoUpdate).toEqual(series.autoUpdate);
+  const { autoUpdate: _drop, ...legacy } = series;
+  const old = parseDocument({ ...doc, series: [legacy] });
+  expect(old.ok && old.value.series[0].autoUpdate).toBeNull();
 });

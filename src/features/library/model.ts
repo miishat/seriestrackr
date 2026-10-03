@@ -15,6 +15,10 @@ export interface Release {
 export interface CoverAttribution {
   title: string; author: string; role: 'next' | 'previous'; source: SourceLink; editionKey: string | null;
 }
+export interface AutoUpdate {
+  at: string;
+  previous: Pick<Series, 'next' | 'releases' | 'coverUrl' | 'coverAttribution'>;
+}
 export interface Series {
   id: string;
   name: string;
@@ -31,6 +35,7 @@ export interface Series {
   coverAttribution: CoverAttribution | null;
   releases: Record<Format, Release>;
   lastCheck: CheckSummary | null;
+  autoUpdate: AutoUpdate | null;
 }
 export interface LibraryDocument {
   version: 3;

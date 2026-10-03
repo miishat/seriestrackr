@@ -10,7 +10,7 @@ const blank: Input = {
   name: '', author: '', readingStatus: 'active', lastFinished: null, currentBook: null,
   next: { positionOverride: null, title: '', orderNote: '', attribution: null }, publicationRunComplete: false,
   latestPublishedPosition: null, formats: { book: true, audio: true }, marketOverride: null,
-  lastCheck: null, coverUrl: null, coverAttribution: null, releases: { book: emptyRelease(), audio: emptyRelease() },
+  lastCheck: null, autoUpdate: null, coverUrl: null, coverAttribution: null, releases: { book: emptyRelease(), audio: emptyRelease() },
 };
 function numberOrNull(value: string): number | null { return value.trim() ? Number(value) : null; }
 
