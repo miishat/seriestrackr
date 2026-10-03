@@ -787,6 +787,7 @@ legend {
   margin-top: 20px;
   align-items: center;
 }
+.actions .actions-start { margin-right: auto; }
 
 .checkbox-row {
   display: flex;

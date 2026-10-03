@@ -263,3 +263,15 @@ test('a stale export error is cleared once the library leaves unsaved mode', asy
     expect(screen.queryByText(/Could not export/)).toBeNull();
   } finally { encoder.fail = false; }
 });
+
+test('import preview puts download, cancel and confirm in one action row', async () => {
+  seed();
+  render(<App />);
+  await userEvent.click(screen.getByRole('button', { name: 'Backups' }));
+  chooseFile(encodeBackup(documentWithSeries()));
+  const preview = await screen.findByRole('region', { name: 'Import preview' });
+  const row = within(preview).getByRole('button', { name: 'Confirm replacement' }).parentElement!;
+  expect(row).toHaveClass('actions');
+  expect(within(row).getAllByRole('button').map(button => button.textContent)).toEqual(['Download current backup', 'Cancel replacement', 'Confirm replacement']);
+  expect(within(row).getByRole('button', { name: 'Download current backup' })).toHaveClass('actions-start');
+});
