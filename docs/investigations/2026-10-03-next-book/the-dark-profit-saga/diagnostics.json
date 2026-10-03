@@ -1,0 +1,540 @@
+[
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "hardcover",
+    "httpStatus": 200
+  },
+  {
+    "stage": "catalog",
+    "category": "target-mismatch",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "hardcover",
+    "rule": "no-match"
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "googlebooks",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "apple",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "apple",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "openlibrary",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "apple",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "apple",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "apple",
+    "httpStatus": 200
+  },
+  {
+    "stage": "transport",
+    "category": "accepted",
+    "sources": 0,
+    "identities": 0,
+    "editions": 0,
+    "provider": "apple",
+    "httpStatus": 200
+  },
+  {
+    "stage": "allocation",
+    "category": "target-mismatch",
+    "sources": 30,
+    "identities": 0,
+    "editions": 48,
+    "provider": "apple",
+    "rule": "author-mismatch",
+    "recordRef": "97a050f8342c5ec182d234cb80e1d6d2"
+  },
+  {
+    "stage": "allocation",
+    "category": "target-mismatch",
+    "sources": 30,
+    "identities": 0,
+    "editions": 48,
+    "provider": "apple",
+    "rule": "author-mismatch",
+    "recordRef": "7e5ad58e0dd007a589ffafa116cb4349"
+  },
+  {
+    "stage": "allocation",
+    "category": "target-mismatch",
+    "sources": 30,
+    "identities": 0,
+    "editions": 48,
+    "provider": "apple",
+    "rule": "author-mismatch",
+    "recordRef": "613bc7faca30b1ac16082e2137bf99cd"
+  },
+  {
+    "stage": "allocation",
+    "category": "target-mismatch",
+    "sources": 30,
+    "identities": 0,
+    "editions": 48,
+    "provider": "apple",
+    "rule": "author-mismatch",
+    "recordRef": "9b7b3e65b18e90964c6c2cab2a301ac9"
+  },
+  {
+    "stage": "allocation",
+    "category": "target-mismatch",
+    "sources": 30,
+    "identities": 0,
+    "editions": 48,
+    "provider": "apple",
+    "rule": "author-mismatch",
+    "recordRef": "107dc2a2e1e7800ab3cfb1c1a8f45d84"
+  },
+  {
+    "stage": "allocation",
+    "category": "target-mismatch",
+    "sources": 30,
+    "identities": 0,
+    "editions": 48,
+    "provider": "apple",
+    "rule": "author-mismatch",
+    "recordRef": "aeacfed3baa1d3ba5ef7a0327923ccde"
+  },
+  {
+    "stage": "allocation",
+    "category": "target-mismatch",
+    "sources": 30,
+    "identities": 0,
+    "editions": 48,
+    "provider": "apple",
+    "rule": "author-mismatch",
+    "recordRef": "ebc10fa39eb7299ebe2218aafde1cc13"
+  },
+  {
+    "stage": "allocation",
+    "category": "target-mismatch",
+    "sources": 30,
+    "identities": 0,
+    "editions": 48,
+    "provider": "apple",
+    "rule": "author-mismatch",
+    "recordRef": "3b2eaf777a749aa148e3f9f089d4e04d"
+  },
+  {
+    "stage": "allocation",
+    "category": "target-mismatch",
+    "sources": 30,
+    "identities": 0,
+    "editions": 48,
+    "provider": "apple",
+    "rule": "author-mismatch",
+    "recordRef": "81144686df51a5fe86d94a8198c152e6"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 0,
+    "identities": 0,
+    "editions": 30,
+    "rule": "citation-closure",
+    "recordRef": "de6ffa9ef42f68dc0ee379573bf65184"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 0,
+    "identities": 0,
+    "editions": 30,
+    "rule": "citation-closure",
+    "recordRef": "fda1e3aaa341e45737df055903adbf88"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 0,
+    "identities": 0,
+    "editions": 30,
+    "rule": "citation-closure",
+    "recordRef": "8a86fb9e4e70d4c8a0783b4e02454be7"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 0,
+    "identities": 0,
+    "editions": 30,
+    "rule": "citation-closure",
+    "recordRef": "4803887de081e196bb56c135292ce928"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 0,
+    "identities": 0,
+    "editions": 30,
+    "rule": "citation-closure",
+    "recordRef": "4c489fa59b4d5e8b2bf0c35824b3a0ef"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 0,
+    "identities": 0,
+    "editions": 30,
+    "rule": "citation-closure",
+    "recordRef": "d89eb5963c48ca2ac556dab1ffbbf9de"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 0,
+    "identities": 0,
+    "editions": 30,
+    "rule": "citation-closure",
+    "recordRef": "b9f8d6bd84aa0b11bdfd620445efe2d9"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 0,
+    "identities": 0,
+    "editions": 30,
+    "rule": "citation-closure",
+    "recordRef": "eaba6a91decf3ecff2877e764f0efea1"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 0,
+    "identities": 0,
+    "editions": 30,
+    "rule": "citation-closure",
+    "recordRef": "b67b51bf7a47f94456521fa24ed19493"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 30,
+    "provider": "googlebooks",
+    "rule": "evidence-bound",
+    "recordRef": "a58e880e796f0a7eabc97f16316ebe9e"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 30,
+    "provider": "googlebooks",
+    "rule": "evidence-bound",
+    "recordRef": "6536a2c94906f6471b2670e21197ad3a"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 30,
+    "provider": "googlebooks",
+    "rule": "evidence-bound",
+    "recordRef": "f4dd9b8b2bf13eb944d4e516b6e050c5"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 30,
+    "provider": "apple",
+    "rule": "evidence-bound",
+    "recordRef": "6f6ca86b6ff180704af299e7aa88f86f"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 30,
+    "provider": "apple",
+    "rule": "evidence-bound",
+    "recordRef": "ea0f0c44315c9db518691f5a4aa311f6"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 30,
+    "provider": "apple",
+    "rule": "evidence-bound",
+    "recordRef": "66a7eb4cbb21eb095e277a2d2f2740ae"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 30,
+    "provider": "apple",
+    "rule": "evidence-bound",
+    "recordRef": "1a3897aec148be6d9e3be99e36e4ea89"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 30,
+    "provider": "apple",
+    "rule": "evidence-bound",
+    "recordRef": "c2189162b7b9beedad7f278751229525"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 30,
+    "provider": "apple",
+    "rule": "evidence-bound",
+    "recordRef": "d79932709e4951aef6507532e5431bbd"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 30
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 0,
+    "identities": 0,
+    "editions": 29,
+    "rule": "citation-closure",
+    "recordRef": "f7a327754a4d5117d6fbcd9f34bc0599"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 29,
+    "provider": "apple",
+    "rule": "evidence-bound",
+    "recordRef": "5f3a70f158b35352f5fe1f0b39e02b97"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 29,
+    "provider": "tavily",
+    "rule": "evidence-bound",
+    "recordRef": "1fb47e64c795978c5601beb0343bf897"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 29,
+    "provider": "tavily",
+    "rule": "evidence-bound",
+    "recordRef": "6630ea9ba13c95d64f7c0cdfaa0f2c8d"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 29,
+    "provider": "tavily",
+    "rule": "evidence-bound",
+    "recordRef": "3885b080f2ddfee5daa1967023ca109b"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 29,
+    "provider": "tavily",
+    "rule": "evidence-bound",
+    "recordRef": "4284db47bbff2cf3747afa86b9a1aaf4"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 29
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 29,
+    "provider": "tavily",
+    "rule": "evidence-bound",
+    "recordRef": "6677d4a8a1de1b38df7d0bfd947e072f"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 29,
+    "provider": "tavily",
+    "rule": "evidence-bound",
+    "recordRef": "2a8149099814436dadaa9d3bff4b5b5b"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 29,
+    "provider": "tavily",
+    "rule": "evidence-bound",
+    "recordRef": "06d5fe1223a3e396a5c307c370bc2960"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 29,
+    "provider": "tavily",
+    "rule": "evidence-bound",
+    "recordRef": "e95a6641e617303314ff371d5b074b86"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 29,
+    "provider": "tavily",
+    "rule": "evidence-bound",
+    "recordRef": "40e7c0f377aef08623494409ca922d9a"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 29
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 29,
+    "provider": "tavily",
+    "rule": "evidence-bound",
+    "recordRef": "4ae1a2500b028a3678948fa349cf0aae"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 29,
+    "provider": "tavily",
+    "rule": "evidence-bound",
+    "recordRef": "cae39b9d687feba93363e4bbdbb0dbda"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 29,
+    "provider": "tavily",
+    "rule": "evidence-bound",
+    "recordRef": "0b88862e5659b987bb6977601da5836c"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 29,
+    "provider": "tavily",
+    "rule": "evidence-bound",
+    "recordRef": "8d2433b6bedba45e92ae8f4e41667868"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 29,
+    "provider": "tavily",
+    "rule": "evidence-bound",
+    "recordRef": "0ee662b192085b61e2303f667db72241"
+  },
+  {
+    "stage": "allocation",
+    "category": "bounds",
+    "sources": 30,
+    "identities": 0,
+    "editions": 29
+  }
+]

@@ -25,7 +25,7 @@ function Sources({ sources, citations = [] }: { sources: SourceLink[]; citations
 }
 function currentRelease(release: Release): string {
   if (release.date) return release.date;
-  return { 'not-checked': 'Not checked', 'not-found': 'Date Unknown', catalogued: 'Edition found; release unverified', announced: 'Announced',
+  return { 'not-checked': 'Not checked', 'not-found': 'Date Unknown', catalogued: 'Listed', announced: 'Announced',
     scheduled: 'Date Unknown', released: 'Available' }[release.state];
 }
 function ProposalDetails({ proposal, preferredMarket }: { proposal: ReleaseProposal; preferredMarket: string }) {

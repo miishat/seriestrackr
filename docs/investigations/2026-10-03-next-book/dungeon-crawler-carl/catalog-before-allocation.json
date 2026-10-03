@@ -1,0 +1,501 @@
+{
+  "evidence": {
+    "sources": [
+      {
+        "id": "hardcover:book:1817542",
+        "title": "A Parade of Horribles",
+        "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026",
+        "provider": "hardcover",
+        "market": null,
+        "retrievedAt": "2026-10-03T05:37:05.149Z",
+        "text": "Title: A Parade of Horribles. Author: Matt Dinniman. Series: Dungeon Crawler Carl. Position: 8. Role: Author. English edition: 31939771. Language: en. Format: ebook."
+      },
+      {
+        "id": "hardcover:edition:31939771",
+        "title": "A Parade of Horribles",
+        "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026",
+        "provider": "hardcover",
+        "market": null,
+        "retrievedAt": "2026-10-03T05:37:05.149Z",
+        "text": "Title: A Parade of Horribles. Author: Matt Dinniman. Position: 8. Raw format: Kindle edition. Reading format: Ebook. Format: ebook. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: hardcover:edition:31939771."
+      },
+      {
+        "id": "hardcover:edition:32462067",
+        "title": "A Parade of Horribles",
+        "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026",
+        "provider": "hardcover",
+        "market": null,
+        "retrievedAt": "2026-10-03T05:37:05.149Z",
+        "text": "Title: A Parade of Horribles. Author: Matt Dinniman. Position: 8. Raw format: Hardcover. Reading format: Read. Format: print. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: isbn:9798217190065."
+      },
+      {
+        "id": "hardcover:edition:32763102",
+        "title": "A Parade of Horribles",
+        "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026",
+        "provider": "hardcover",
+        "market": null,
+        "retrievedAt": "2026-10-03T05:37:05.149Z",
+        "text": "Title: A Parade of Horribles. Author: Matt Dinniman. Position: 8. Raw format: Audible. Reading format: Listened. Format: audio. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: isbn:9798350448757."
+      },
+      {
+        "id": "hardcover:edition:32648677",
+        "title": "A Parade of Horribles",
+        "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026",
+        "provider": "hardcover",
+        "market": null,
+        "retrievedAt": "2026-10-03T05:37:05.149Z",
+        "text": "Title: A Parade of Horribles. Author: Matt Dinniman. Position: 8. Raw format: Kindle. Reading format: Ebook. Format: ebook. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: hardcover:edition:32648677."
+      },
+      {
+        "id": "hardcover:edition:32769552",
+        "title": "A Parade of Horribles",
+        "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026",
+        "provider": "hardcover",
+        "market": null,
+        "retrievedAt": "2026-10-03T05:37:05.149Z",
+        "text": "Title: A Parade of Horribles. Author: Matt Dinniman. Position: 8. Raw format: Audible. Reading format: Listened. Format: audio. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: hardcover:edition:32769552."
+      },
+      {
+        "id": "hardcover:edition:32793139",
+        "title": "A Parade of Horribles",
+        "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026",
+        "provider": "hardcover",
+        "market": null,
+        "retrievedAt": "2026-10-03T05:37:05.149Z",
+        "text": "Title: A Parade of Horribles. Author: Matt Dinniman. Position: 8. Raw format: THE PATREON UNEDITED VERSION. Reading format: Ebook. Format: ebook. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: hardcover:edition:32793139."
+      },
+      {
+        "id": "hardcover:edition:32907257",
+        "title": "A Parade of Horribles",
+        "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026",
+        "provider": "hardcover",
+        "market": null,
+        "retrievedAt": "2026-10-03T05:37:05.149Z",
+        "text": "Title: A Parade of Horribles. Author: Matt Dinniman. Position: 8. Raw format: Hardcover. Reading format: Read. Format: print. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: isbn:9780241836880."
+      },
+      {
+        "id": "hardcover:edition:32908450",
+        "title": "A Parade of Horribles",
+        "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026",
+        "provider": "hardcover",
+        "market": null,
+        "retrievedAt": "2026-10-03T05:37:05.149Z",
+        "text": "Title: A Parade of Horribles. Author: Matt Dinniman. Position: 8. Raw format: Audible.com. Reading format: Listened. Format: audio. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: hardcover:edition:32908450."
+      },
+      {
+        "id": "hardcover:edition:32908529",
+        "title": "A Parade of Horribles",
+        "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026",
+        "provider": "hardcover",
+        "market": null,
+        "retrievedAt": "2026-10-03T05:37:05.149Z",
+        "text": "Title: A Parade of Horribles. Author: Matt Dinniman. Position: 8. Raw format: Hardcover. Reading format: Read. Format: print. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: hardcover:edition:32908529."
+      },
+      {
+        "id": "googlebooks:LZMUEgAAQBAJ",
+        "title": "A Parade Of Horribles",
+        "url": "https://books.google.com/books?id=LZMUEgAAQBAJ",
+        "provider": "googlebooks",
+        "market": null,
+        "retrievedAt": "2026-10-03T05:37:05.151Z",
+        "text": "Title: A Parade Of Horribles. Author: MATT DINNIMAN. Language: en. Format: ebook. Edition: googlebooks:LZMUEgAAQBAJ. Market: unknown. Date: unknown. Precision: none."
+      },
+      {
+        "id": "googlebooks:_8H10QEACAAJ",
+        "title": "A Parade of Horribles",
+        "url": "https://books.google.com/books?id=_8H10QEACAAJ",
+        "provider": "googlebooks",
+        "market": null,
+        "retrievedAt": "2026-10-03T05:37:05.151Z",
+        "text": "Title: A Parade of Horribles. Author: Matt Dinniman. Subtitle: Dungeon Crawler Carl, Book 8. Language: en. Format: unknown. Edition: isbn:9781965800829. Market: unknown. Date: unknown. Precision: none."
+      },
+      {
+        "id": "apple:6767724978:US:audio",
+        "title": "A Parade of Horribles: Dungeon Crawler Carl, Book 8 (Unabridged)",
+        "url": "https://books.apple.com/us/audiobook/a-parade-of-horribles-dungeon-crawler-carl-book/id6767724978?uo=4",
+        "provider": "apple",
+        "market": "US",
+        "retrievedAt": "2026-10-03T05:37:05.151Z",
+        "text": "Title: A Parade of Horribles: Dungeon Crawler Carl, Book 8 (Unabridged). Author: Matt Dinniman. Format: audio. Language: unknown. Market: US. Date: 2026-05-12. Precision: day. Edition: apple:6767724978."
+      },
+      {
+        "id": "apple:1836837807:US:audio",
+        "title": "How to Succeed in Monster Farming After Getting Rejected by the Hero Guild (Unabridged)",
+        "url": "https://books.apple.com/us/audiobook/how-to-succeed-in-monster-farming-after-getting-rejected/id1836837807?uo=4",
+        "provider": "apple",
+        "market": "US",
+        "retrievedAt": "2026-10-03T05:37:05.151Z",
+        "text": "Title: How to Succeed in Monster Farming After Getting Rejected by the Hero Guild (Unabridged). Author: Kenny King. Format: audio. Language: unknown. Market: US. Date: 2025-11-04. Precision: day. Edition: apple:1836837807."
+      },
+      {
+        "id": "apple-page:6767724978:US:audio",
+        "title": "A Parade of Horribles: Dungeon Crawler Carl, Book 8 (Unabridged)",
+        "url": "https://books.apple.com/us/audiobook/a-parade-of-horribles-dungeon-crawler-carl-book/id6767724978?uo=4",
+        "provider": "apple",
+        "market": "US",
+        "retrievedAt": "2026-10-03T05:37:05.151Z",
+        "text": "Title: A Parade of Horribles: Dungeon Crawler Carl, Book 8 (Unabridged). Author: Matt Dinniman. Format: audio. Language: en. Product LANGUAGE badge: English. Market: US. Date: 2026-05-12. Precision: day. Edition: apple:6767724978. Canonical title: A Parade of Horribles. Literal audio label: A Parade of Horribles: Dungeon Crawler Carl, Book 8 (Unabridged). Requested series: Dungeon Crawler Carl. Requested position: 8. Exact supported unabridged title relationship. Publication: published."
+      },
+      {
+        "id": "openlibrary:OL44344307W",
+        "title": "A Parade of Horribles",
+        "url": "https://openlibrary.org/works/OL44344307W",
+        "provider": "openlibrary",
+        "market": null,
+        "retrievedAt": "2026-10-03T05:37:05.151Z",
+        "text": "Title: A Parade of Horribles. Author: Matt Dinniman. Format: unknown. Language: unknown. Market: unknown. Date: unknown. Precision: none. Edition: unknown."
+      },
+      {
+        "id": "openlibrary:OL44984116W",
+        "title": "A Parade of Horribles (Duplicate of OL44344307W)",
+        "url": "https://openlibrary.org/works/OL44984116W",
+        "provider": "openlibrary",
+        "market": null,
+        "retrievedAt": "2026-10-03T05:37:05.151Z",
+        "text": "Title: A Parade of Horribles (Duplicate of OL44344307W). Author: Matt Dinniman. Format: unknown. Language: unknown. Market: unknown. Date: unknown. Precision: none. Edition: unknown."
+      }
+    ],
+    "identities": [
+      {
+        "title": "A Parade of Horribles",
+        "author": "Matt Dinniman",
+        "position": 8,
+        "citations": [
+          {
+            "sourceId": "hardcover:book:1817542",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Series: Dungeon Crawler Carl. Position: 8. Role: Author. English edition: 31939771. Language: en. Format: ebook."
+          }
+        ]
+      },
+      {
+        "title": "A Parade of Horribles",
+        "author": "Matt Dinniman",
+        "position": 8,
+        "citations": [
+          {
+            "sourceId": "googlebooks:_8H10QEACAAJ",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Subtitle: Dungeon Crawler Carl, Book 8. Language: en. Format: unknown. Edition: isbn:9781965800829. Market: unknown. Date: unknown. Precision: none."
+          }
+        ]
+      }
+    ],
+    "editions": [
+      {
+        "id": "hardcover:edition:31939771",
+        "title": "A Parade of Horribles",
+        "author": "Matt Dinniman",
+        "position": 8,
+        "editionKey": "hardcover:edition:31939771",
+        "format": "ebook",
+        "language": "en",
+        "market": null,
+        "date": null,
+        "precision": "none",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "hardcover:book:1817542",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Series: Dungeon Crawler Carl. Position: 8. Role: Author. English edition: 31939771. Language: en. Format: ebook."
+          },
+          {
+            "sourceId": "hardcover:edition:31939771",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Position: 8. Raw format: Kindle edition. Reading format: Ebook. Format: ebook. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: hardcover:edition:31939771."
+          }
+        ]
+      },
+      {
+        "id": "hardcover:edition:32462067",
+        "title": "A Parade of Horribles",
+        "author": "Matt Dinniman",
+        "position": 8,
+        "editionKey": "isbn:9798217190065",
+        "format": "print",
+        "language": "en",
+        "market": null,
+        "date": null,
+        "precision": "none",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "hardcover:book:1817542",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Series: Dungeon Crawler Carl. Position: 8. Role: Author. English edition: 31939771. Language: en. Format: ebook."
+          },
+          {
+            "sourceId": "hardcover:edition:32462067",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Position: 8. Raw format: Hardcover. Reading format: Read. Format: print. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: isbn:9798217190065."
+          }
+        ]
+      },
+      {
+        "id": "hardcover:edition:32763102",
+        "title": "A Parade of Horribles",
+        "author": "Matt Dinniman",
+        "position": 8,
+        "editionKey": "isbn:9798350448757",
+        "format": "audio",
+        "language": "en",
+        "market": null,
+        "date": null,
+        "precision": "none",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "hardcover:book:1817542",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Series: Dungeon Crawler Carl. Position: 8. Role: Author. English edition: 31939771. Language: en. Format: ebook."
+          },
+          {
+            "sourceId": "hardcover:edition:32763102",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Position: 8. Raw format: Audible. Reading format: Listened. Format: audio. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: isbn:9798350448757."
+          }
+        ]
+      },
+      {
+        "id": "hardcover:edition:32648677",
+        "title": "A Parade of Horribles",
+        "author": "Matt Dinniman",
+        "position": 8,
+        "editionKey": "hardcover:edition:32648677",
+        "format": "ebook",
+        "language": "en",
+        "market": null,
+        "date": null,
+        "precision": "none",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "hardcover:book:1817542",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Series: Dungeon Crawler Carl. Position: 8. Role: Author. English edition: 31939771. Language: en. Format: ebook."
+          },
+          {
+            "sourceId": "hardcover:edition:32648677",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Position: 8. Raw format: Kindle. Reading format: Ebook. Format: ebook. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: hardcover:edition:32648677."
+          }
+        ]
+      },
+      {
+        "id": "hardcover:edition:32769552",
+        "title": "A Parade of Horribles",
+        "author": "Matt Dinniman",
+        "position": 8,
+        "editionKey": "hardcover:edition:32769552",
+        "format": "audio",
+        "language": "en",
+        "market": null,
+        "date": null,
+        "precision": "none",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "hardcover:book:1817542",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Series: Dungeon Crawler Carl. Position: 8. Role: Author. English edition: 31939771. Language: en. Format: ebook."
+          },
+          {
+            "sourceId": "hardcover:edition:32769552",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Position: 8. Raw format: Audible. Reading format: Listened. Format: audio. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: hardcover:edition:32769552."
+          }
+        ]
+      },
+      {
+        "id": "hardcover:edition:32793139",
+        "title": "A Parade of Horribles",
+        "author": "Matt Dinniman",
+        "position": 8,
+        "editionKey": "hardcover:edition:32793139",
+        "format": "ebook",
+        "language": "en",
+        "market": null,
+        "date": null,
+        "precision": "none",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "hardcover:book:1817542",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Series: Dungeon Crawler Carl. Position: 8. Role: Author. English edition: 31939771. Language: en. Format: ebook."
+          },
+          {
+            "sourceId": "hardcover:edition:32793139",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Position: 8. Raw format: THE PATREON UNEDITED VERSION. Reading format: Ebook. Format: ebook. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: hardcover:edition:32793139."
+          }
+        ]
+      },
+      {
+        "id": "hardcover:edition:32907257",
+        "title": "A Parade of Horribles",
+        "author": "Matt Dinniman",
+        "position": 8,
+        "editionKey": "isbn:9780241836880",
+        "format": "print",
+        "language": "en",
+        "market": null,
+        "date": null,
+        "precision": "none",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "hardcover:book:1817542",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Series: Dungeon Crawler Carl. Position: 8. Role: Author. English edition: 31939771. Language: en. Format: ebook."
+          },
+          {
+            "sourceId": "hardcover:edition:32907257",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Position: 8. Raw format: Hardcover. Reading format: Read. Format: print. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: isbn:9780241836880."
+          }
+        ]
+      },
+      {
+        "id": "hardcover:edition:32908450",
+        "title": "A Parade of Horribles",
+        "author": "Matt Dinniman",
+        "position": 8,
+        "editionKey": "hardcover:edition:32908450",
+        "format": "audio",
+        "language": "en",
+        "market": null,
+        "date": null,
+        "precision": "none",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "hardcover:book:1817542",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Series: Dungeon Crawler Carl. Position: 8. Role: Author. English edition: 31939771. Language: en. Format: ebook."
+          },
+          {
+            "sourceId": "hardcover:edition:32908450",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Position: 8. Raw format: Audible.com. Reading format: Listened. Format: audio. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: hardcover:edition:32908450."
+          }
+        ]
+      },
+      {
+        "id": "hardcover:edition:32908529",
+        "title": "A Parade of Horribles",
+        "author": "Matt Dinniman",
+        "position": 8,
+        "editionKey": "hardcover:edition:32908529",
+        "format": "print",
+        "language": "en",
+        "market": null,
+        "date": null,
+        "precision": "none",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "hardcover:book:1817542",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Series: Dungeon Crawler Carl. Position: 8. Role: Author. English edition: 31939771. Language: en. Format: ebook."
+          },
+          {
+            "sourceId": "hardcover:edition:32908529",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Position: 8. Raw format: Hardcover. Reading format: Read. Format: print. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: hardcover:edition:32908529."
+          }
+        ]
+      },
+      {
+        "id": "googlebooks:LZMUEgAAQBAJ",
+        "title": "A Parade Of Horribles",
+        "author": "MATT DINNIMAN",
+        "position": null,
+        "editionKey": "googlebooks:LZMUEgAAQBAJ",
+        "format": "ebook",
+        "language": "en",
+        "market": null,
+        "date": null,
+        "precision": "none",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "googlebooks:LZMUEgAAQBAJ",
+            "quote": "Title: A Parade Of Horribles. Author: MATT DINNIMAN. Language: en. Format: ebook. Edition: googlebooks:LZMUEgAAQBAJ. Market: unknown. Date: unknown. Precision: none."
+          }
+        ]
+      },
+      {
+        "id": "apple:6767724978:US:audio",
+        "title": "A Parade of Horribles: Dungeon Crawler Carl, Book 8 (Unabridged)",
+        "author": "Matt Dinniman",
+        "position": null,
+        "editionKey": "apple:6767724978",
+        "format": "audio",
+        "language": null,
+        "market": "US",
+        "date": "2026-05-12",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:6767724978:US:audio",
+            "quote": "Title: A Parade of Horribles: Dungeon Crawler Carl, Book 8 (Unabridged). Author: Matt Dinniman. Format: audio. Language: unknown. Market: US. Date: 2026-05-12. Precision: day. Edition: apple:6767724978."
+          }
+        ]
+      },
+      {
+        "id": "apple:1836837807:US:audio",
+        "title": "How to Succeed in Monster Farming After Getting Rejected by the Hero Guild (Unabridged)",
+        "author": "Kenny King",
+        "position": null,
+        "editionKey": "apple:1836837807",
+        "format": "audio",
+        "language": null,
+        "market": "US",
+        "date": "2025-11-04",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1836837807:US:audio",
+            "quote": "Title: How to Succeed in Monster Farming After Getting Rejected by the Hero Guild (Unabridged). Author: Kenny King. Format: audio. Language: unknown. Market: US. Date: 2025-11-04. Precision: day. Edition: apple:1836837807."
+          }
+        ]
+      },
+      {
+        "id": "apple-page:6767724978:US:audio",
+        "title": "A Parade of Horribles",
+        "author": "Matt Dinniman",
+        "position": null,
+        "editionKey": "apple:6767724978",
+        "format": "audio",
+        "language": "en",
+        "market": "US",
+        "date": "2026-05-12",
+        "precision": "day",
+        "publication": "published",
+        "citations": [
+          {
+            "sourceId": "apple-page:6767724978:US:audio",
+            "quote": "Title: A Parade of Horribles: Dungeon Crawler Carl, Book 8 (Unabridged). Author: Matt Dinniman. Format: audio. Language: en. Product LANGUAGE badge: English. Market: US. Date: 2026-05-12. Precision: day. Edition: apple:6767724978. Canonical title: A Parade of Horribles. Literal audio label: A Parade of Horribles: Dungeon Crawler Carl, Book 8 (Unabridged). Requested series: Dungeon Crawler Carl. Requested position: 8. Exact supported unabridged title relationship. Publication: published."
+          }
+        ]
+      }
+    ]
+  },
+  "usage": {
+    "apple": 5,
+    "openlibrary": 3,
+    "googlebooks": 2,
+    "tavily": 0,
+    "hardcover": 1,
+    "deepseek": 0,
+    "inputTokens": 0,
+    "outputTokens": 0
+  },
+  "reasons": [
+    "invalid-evidence"
+  ],
+  "covers": [
+    {
+      "id": "hardcover:book:1817542",
+      "title": "A Parade of Horribles",
+      "author": "Matt Dinniman",
+      "role": "next",
+      "format": "print",
+      "provider": "hardcover",
+      "source": {
+        "id": "hardcover:book:1817542",
+        "title": "A Parade of Horribles",
+        "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026"
+      },
+      "imageUrl": "https://assets.hardcover.app/edition/32462067/40a20ed0-0786-4425-b775-0af66472e853.jpg",
+      "workKey": "a parade of horribles|matt dinniman",
+      "editionKey": null,
+      "width": 993,
+      "height": 1500
+    }
+  ]
+}

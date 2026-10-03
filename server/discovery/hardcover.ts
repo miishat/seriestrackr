@@ -25,8 +25,8 @@ const list = (value: unknown, max: number, onOverflow?: () => void): unknown[] =
 };
 export { hardcoverAliases };
 
-const query = `query DiscoveryHardcover($names: [String!]!, $author: String!, $position: float8!) {
-  series(where: {name: {_in: $names}, author: {name: {_eq: $author}}}, order_by: {id: asc}, limit: 6) {
+const query = `query DiscoveryHardcover($names: [String!]!, $position: float8!) {
+  series(where: {name: {_in: $names}}, order_by: {id: asc}, limit: 20) {
     id name author { name } book_series(where: {position: {_eq: $position}}, limit: 21) {
       id position featured compilation details
       book { id slug title compilation cached_image contributions(limit: 31) { author { name } contributor_role { name } }
@@ -75,8 +75,15 @@ export function normalizeHardcover(input: unknown, request: CheckRequest, checke
     ...(recordId === null ? {} : { recordRef: diagnosticRecordRef(`hardcover:${kind}:${recordId}`) }),
   });
   const overflow = () => reject('request-bound', null);
-  // Six series rows is the sentinel: a seventh plausible match is unknown, so identity stays unresolved.
-  const seriesRows = list(object(envelope.data).series, 5, overflow);
+  // The author is matched here, not in the query: Hardcover stores some author names with stray whitespace, which an exact server filter misses.
+  // Twenty series rows is the sentinel for the raw result; only series by the requested author then count toward the six-row ambiguity bound.
+  const rawSeries = list(object(envelope.data).series, 19, overflow);
+  const wantedAuthor = normalizeIdentity(request.target.author);
+  const seriesRows = list(rawSeries.filter(item => {
+    const author = text(object(object(item).author).name);
+    if (author === null || normalizeIdentity(author) === wantedAuthor) return true;
+    reject('author-mismatch', null); return false;
+  }), 5, overflow);
   const rows = seriesRows.flatMap(item => { const series = object(item); return list(series.book_series, 20, overflow).map(row => ({ ...object(row), series: { name: series.name, author: object(series.author).name } })); });
   const aliases = new Set(hardcoverAliases(request.target.series).map(normalizeIdentity));
   if (!rows.length) reject('no-match', null);
@@ -153,7 +160,7 @@ export async function collectHardcover(request: CheckRequest, token: string | nu
       usage.hardcover++;
       return fetchProviderJson('hardcover', '/v1/graphql', { method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: /^Bearer\s/i.test(key) ? key : `Bearer ${key}` },
-        body: JSON.stringify({ query, variables: { names: hardcoverAliases(request.target.series), position: request.target.position, author: request.target.author } }) }, signal, fetcher, onDiagnostic);
+        body: JSON.stringify({ query, variables: { names: hardcoverAliases(request.target.series), position: request.target.position } }) }, signal, fetcher, onDiagnostic);
     }, signal);
     const covers: CoverCandidate[] = [];
     return { evidence: normalizeHardcover(raw, request, new Date().toISOString(), onDiagnostic, covers), usage, reasons: [], ...(covers.length ? { covers } : {}) };

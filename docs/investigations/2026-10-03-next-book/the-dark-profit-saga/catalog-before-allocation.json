@@ -1,0 +1,1364 @@
+{
+  "evidence": {
+    "sources": [
+      {
+        "id": "googlebooks:EhReDwAAQBAJ",
+        "title": "Son of a Liche",
+        "url": "https://books.google.com/books?id=EhReDwAAQBAJ",
+        "provider": "googlebooks",
+        "market": null,
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Son of a Liche. Author: J. Zachary Pike. Language: en. Format: ebook. Edition: isbn:9780990859659. Market: unknown. Date: unknown. Precision: none."
+      },
+      {
+        "id": "googlebooks:TAJeDwAAQBAJ",
+        "title": "Orconomics",
+        "url": "https://books.google.com/books?id=TAJeDwAAQBAJ",
+        "provider": "googlebooks",
+        "market": null,
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Orconomics. Author: J. Zachary Pike. Subtitle: A Satire. Language: en. Format: ebook. Edition: isbn:9780990859604. Market: unknown. Date: unknown. Precision: none."
+      },
+      {
+        "id": "googlebooks:rIbrEAAAQBAJ",
+        "title": "Dragonfired",
+        "url": "https://books.google.com/books?id=rIbrEAAAQBAJ",
+        "provider": "googlebooks",
+        "market": null,
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Dragonfired. Author: J. Zachary Pike. Language: en. Format: ebook. Edition: isbn:9781963158007. Market: unknown. Date: unknown. Precision: none."
+      },
+      {
+        "id": "apple:923885528:US:ebook",
+        "title": "Orconomics",
+        "url": "https://books.apple.com/us/book/orconomics/id923885528?uo=4",
+        "provider": "apple",
+        "market": "US",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Orconomics. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: US. Date: 2014-10-01. Precision: day. Edition: apple:923885528."
+      },
+      {
+        "id": "apple:1377324982:US:ebook",
+        "title": "Son of a Liche",
+        "url": "https://books.apple.com/us/book/son-of-a-liche/id1377324982?uo=4",
+        "provider": "apple",
+        "market": "US",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Son of a Liche. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: US. Date: 2018-05-22. Precision: day. Edition: apple:1377324982."
+      },
+      {
+        "id": "apple:6475168368:US:ebook",
+        "title": "Dragonfired",
+        "url": "https://books.apple.com/us/book/dragonfired/id6475168368?uo=4",
+        "provider": "apple",
+        "market": "US",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Dragonfired. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: US. Date: 2023-08-01. Precision: day. Edition: apple:6475168368."
+      },
+      {
+        "id": "apple:1103542970:US:ebook",
+        "title": "The Cabal of Thotash",
+        "url": "https://books.apple.com/us/book/the-cabal-of-thotash/id1103542970?uo=4",
+        "provider": "apple",
+        "market": "US",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: The Cabal of Thotash. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: US. Date: 2014-05-08. Precision: day. Edition: apple:1103542970."
+      },
+      {
+        "id": "apple:1103558206:US:ebook",
+        "title": "Death and Taxes",
+        "url": "https://books.apple.com/us/book/death-and-taxes/id1103558206?uo=4",
+        "provider": "apple",
+        "market": "US",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Death and Taxes. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: US. Date: 2015-10-06. Precision: day. Edition: apple:1103558206."
+      },
+      {
+        "id": "apple:1444490698:US:ebook",
+        "title": "A Song of Three Spirits",
+        "url": "https://books.apple.com/us/book/a-song-of-three-spirits/id1444490698?uo=4",
+        "provider": "apple",
+        "market": "US",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: A Song of Three Spirits. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: US. Date: 2018-12-01. Precision: day. Edition: apple:1444490698."
+      },
+      {
+        "id": "apple:1171711081:US:ebook",
+        "title": "The Ebook Machine",
+        "url": "https://books.apple.com/us/book/the-ebook-machine/id1171711081?uo=4",
+        "provider": "apple",
+        "market": "US",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: The Ebook Machine. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: US. Date: 2016-11-02. Precision: day. Edition: apple:1171711081."
+      },
+      {
+        "id": "apple:701054638:US:ebook",
+        "title": "The American Generals",
+        "url": "https://books.apple.com/us/book/the-american-generals/id701054638?uo=4",
+        "provider": "apple",
+        "market": "US",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: The American Generals. Author: John Frost. Format: ebook. Language: unknown. Market: US. Date: 2012-12-13. Precision: day. Edition: apple:701054638."
+      },
+      {
+        "id": "apple:627417034:US:ebook",
+        "title": "Heroes & Villains; The Science Fiction Caricature Art of Kevin Greene",
+        "url": "https://books.apple.com/us/book/heroes-villains-the-science-fiction-caricature-art/id627417034?uo=4",
+        "provider": "apple",
+        "market": "US",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Heroes & Villains; The Science Fiction Caricature Art of Kevin Greene. Author: Kevin Greene. Format: ebook. Language: unknown. Market: US. Date: 2013-03-02. Precision: day. Edition: apple:627417034."
+      },
+      {
+        "id": "apple:1735545125:US:audio",
+        "title": "Dragonfired: The Dark Profit Saga, Book 3 (Unabridged)",
+        "url": "https://books.apple.com/us/audiobook/dragonfired-the-dark-profit-saga-book-3-unabridged/id1735545125?uo=4",
+        "provider": "apple",
+        "market": "US",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Dragonfired: The Dark Profit Saga, Book 3 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: US. Date: 2024-03-19. Precision: day. Edition: apple:1735545125."
+      },
+      {
+        "id": "apple:1735537866:US:audio",
+        "title": "Orconomics: A Satire: The Dark Profit Saga, Book 1 (Unabridged)",
+        "url": "https://books.apple.com/us/audiobook/orconomics-a-satire-the-dark-profit-saga-book-1-unabridged/id1735537866?uo=4",
+        "provider": "apple",
+        "market": "US",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Orconomics: A Satire: The Dark Profit Saga, Book 1 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: US. Date: 2024-03-19. Precision: day. Edition: apple:1735537866."
+      },
+      {
+        "id": "apple:1735543380:US:audio",
+        "title": "Son of a Liche: The Dark Profit Saga, Book 2 (Unabridged)",
+        "url": "https://books.apple.com/us/audiobook/son-of-a-liche-the-dark-profit-saga-book-2-unabridged/id1735543380?uo=4",
+        "provider": "apple",
+        "market": "US",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Son of a Liche: The Dark Profit Saga, Book 2 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: US. Date: 2025-05-05. Precision: day. Edition: apple:1735543380."
+      },
+      {
+        "id": "apple:1894367111:US:audio",
+        "title": "Crypt Currency: The Dark Profit Saga, Book 4 (Unabridged)",
+        "url": "https://books.apple.com/us/audiobook/crypt-currency-the-dark-profit-saga-book-4-unabridged/id1894367111?uo=4",
+        "provider": "apple",
+        "market": "US",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Crypt Currency: The Dark Profit Saga, Book 4 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: US. Date: 2026-05-19. Precision: day. Edition: apple:1894367111."
+      },
+      {
+        "id": "apple:1474389114:US:audio",
+        "title": "A Song of Three Spirits",
+        "url": "https://books.apple.com/us/audiobook/a-song-of-three-spirits/id1474389114?uo=4",
+        "provider": "apple",
+        "market": "US",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: A Song of Three Spirits. Author: J. Zachary Pike. Format: audio. Language: unknown. Market: US. Date: 2019-09-01. Precision: day. Edition: apple:1474389114."
+      },
+      {
+        "id": "apple:1852277957:US:audio",
+        "title": "Jester (Unabridged)",
+        "url": "https://books.apple.com/us/audiobook/jester-unabridged/id1852277957?uo=4",
+        "provider": "apple",
+        "market": "US",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Jester (Unabridged). Author: Tim Carter. Format: audio. Language: unknown. Market: US. Date: 2026-07-16. Precision: day. Edition: apple:1852277957."
+      },
+      {
+        "id": "apple:923885528:GB:ebook",
+        "title": "Orconomics",
+        "url": "https://books.apple.com/gb/book/orconomics/id923885528?uo=4",
+        "provider": "apple",
+        "market": "GB",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Orconomics. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: GB. Date: 2014-10-01. Precision: day. Edition: apple:923885528."
+      },
+      {
+        "id": "apple:1377324982:GB:ebook",
+        "title": "Son of a Liche",
+        "url": "https://books.apple.com/gb/book/son-of-a-liche/id1377324982?uo=4",
+        "provider": "apple",
+        "market": "GB",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Son of a Liche. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: GB. Date: 2018-05-22. Precision: day. Edition: apple:1377324982."
+      },
+      {
+        "id": "apple:6475168368:GB:ebook",
+        "title": "Dragonfired",
+        "url": "https://books.apple.com/gb/book/dragonfired/id6475168368?uo=4",
+        "provider": "apple",
+        "market": "GB",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Dragonfired. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: GB. Date: 2023-08-01. Precision: day. Edition: apple:6475168368."
+      },
+      {
+        "id": "apple:1103542970:GB:ebook",
+        "title": "The Cabal of Thotash",
+        "url": "https://books.apple.com/gb/book/the-cabal-of-thotash/id1103542970?uo=4",
+        "provider": "apple",
+        "market": "GB",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: The Cabal of Thotash. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: GB. Date: 2014-05-08. Precision: day. Edition: apple:1103542970."
+      },
+      {
+        "id": "apple:1103558206:GB:ebook",
+        "title": "Death and Taxes",
+        "url": "https://books.apple.com/gb/book/death-and-taxes/id1103558206?uo=4",
+        "provider": "apple",
+        "market": "GB",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Death and Taxes. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: GB. Date: 2015-10-06. Precision: day. Edition: apple:1103558206."
+      },
+      {
+        "id": "apple:1171711081:GB:ebook",
+        "title": "The Ebook Machine",
+        "url": "https://books.apple.com/gb/book/the-ebook-machine/id1171711081?uo=4",
+        "provider": "apple",
+        "market": "GB",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: The Ebook Machine. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: GB. Date: 2016-11-02. Precision: day. Edition: apple:1171711081."
+      },
+      {
+        "id": "apple:1444490698:GB:ebook",
+        "title": "A Song of Three Spirits",
+        "url": "https://books.apple.com/gb/book/a-song-of-three-spirits/id1444490698?uo=4",
+        "provider": "apple",
+        "market": "GB",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: A Song of Three Spirits. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: GB. Date: 2018-12-01. Precision: day. Edition: apple:1444490698."
+      },
+      {
+        "id": "apple:701054638:GB:ebook",
+        "title": "The American Generals",
+        "url": "https://books.apple.com/gb/book/the-american-generals/id701054638?uo=4",
+        "provider": "apple",
+        "market": "GB",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: The American Generals. Author: John Frost. Format: ebook. Language: unknown. Market: GB. Date: 2012-12-13. Precision: day. Edition: apple:701054638."
+      },
+      {
+        "id": "apple:627417034:GB:ebook",
+        "title": "Heroes & Villains; The Science Fiction Caricature Art of Kevin Greene",
+        "url": "https://books.apple.com/gb/book/heroes-villains-the-science-fiction-caricature-art/id627417034?uo=4",
+        "provider": "apple",
+        "market": "GB",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Heroes & Villains; The Science Fiction Caricature Art of Kevin Greene. Author: Kevin Greene. Format: ebook. Language: unknown. Market: GB. Date: 2013-03-02. Precision: day. Edition: apple:627417034."
+      },
+      {
+        "id": "apple:1735545125:GB:audio",
+        "title": "Dragonfired: The Dark Profit Saga, Book 3 (Unabridged)",
+        "url": "https://books.apple.com/gb/audiobook/dragonfired-the-dark-profit-saga-book-3-unabridged/id1735545125?uo=4",
+        "provider": "apple",
+        "market": "GB",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Dragonfired: The Dark Profit Saga, Book 3 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: GB. Date: 2024-03-19. Precision: day. Edition: apple:1735545125."
+      },
+      {
+        "id": "apple:1735537866:GB:audio",
+        "title": "Orconomics: A Satire: The Dark Profit Saga, Book 1 (Unabridged)",
+        "url": "https://books.apple.com/gb/audiobook/orconomics-a-satire-the-dark-profit-saga-book-1-unabridged/id1735537866?uo=4",
+        "provider": "apple",
+        "market": "GB",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Orconomics: A Satire: The Dark Profit Saga, Book 1 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: GB. Date: 2024-03-19. Precision: day. Edition: apple:1735537866."
+      },
+      {
+        "id": "apple:1735543380:GB:audio",
+        "title": "Son of a Liche: The Dark Profit Saga, Book 2 (Unabridged)",
+        "url": "https://books.apple.com/gb/audiobook/son-of-a-liche-the-dark-profit-saga-book-2-unabridged/id1735543380?uo=4",
+        "provider": "apple",
+        "market": "GB",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Son of a Liche: The Dark Profit Saga, Book 2 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: GB. Date: 2025-05-05. Precision: day. Edition: apple:1735543380."
+      },
+      {
+        "id": "apple:1894367111:GB:audio",
+        "title": "Crypt Currency: The Dark Profit Saga, Book 4 (Unabridged)",
+        "url": "https://books.apple.com/gb/audiobook/crypt-currency-the-dark-profit-saga-book-4-unabridged/id1894367111?uo=4",
+        "provider": "apple",
+        "market": "GB",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Crypt Currency: The Dark Profit Saga, Book 4 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: GB. Date: 2026-05-19. Precision: day. Edition: apple:1894367111."
+      },
+      {
+        "id": "apple:1474389114:GB:audio",
+        "title": "A Song of Three Spirits",
+        "url": "https://books.apple.com/gb/audiobook/a-song-of-three-spirits/id1474389114?uo=4",
+        "provider": "apple",
+        "market": "GB",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: A Song of Three Spirits. Author: J. Zachary Pike. Format: audio. Language: unknown. Market: GB. Date: 2019-09-01. Precision: day. Edition: apple:1474389114."
+      },
+      {
+        "id": "apple:1852277957:GB:audio",
+        "title": "Jester (Unabridged)",
+        "url": "https://books.apple.com/gb/audiobook/jester-unabridged/id1852277957?uo=4",
+        "provider": "apple",
+        "market": "GB",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Jester (Unabridged). Author: Tim Carter. Format: audio. Language: unknown. Market: GB. Date: 2026-07-16. Precision: day. Edition: apple:1852277957."
+      },
+      {
+        "id": "apple:923885528:CA:ebook",
+        "title": "Orconomics",
+        "url": "https://books.apple.com/ca/book/orconomics/id923885528?uo=4",
+        "provider": "apple",
+        "market": "CA",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Orconomics. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: CA. Date: 2014-10-01. Precision: day. Edition: apple:923885528."
+      },
+      {
+        "id": "apple:1377324982:CA:ebook",
+        "title": "Son of a Liche",
+        "url": "https://books.apple.com/ca/book/son-of-a-liche/id1377324982?uo=4",
+        "provider": "apple",
+        "market": "CA",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Son of a Liche. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: CA. Date: 2018-05-22. Precision: day. Edition: apple:1377324982."
+      },
+      {
+        "id": "apple:6475168368:CA:ebook",
+        "title": "Dragonfired",
+        "url": "https://books.apple.com/ca/book/dragonfired/id6475168368?uo=4",
+        "provider": "apple",
+        "market": "CA",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Dragonfired. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: CA. Date: 2023-08-01. Precision: day. Edition: apple:6475168368."
+      },
+      {
+        "id": "apple:1103542970:CA:ebook",
+        "title": "The Cabal of Thotash",
+        "url": "https://books.apple.com/ca/book/the-cabal-of-thotash/id1103542970?uo=4",
+        "provider": "apple",
+        "market": "CA",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: The Cabal of Thotash. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: CA. Date: 2014-05-08. Precision: day. Edition: apple:1103542970."
+      },
+      {
+        "id": "apple:1103558206:CA:ebook",
+        "title": "Death and Taxes",
+        "url": "https://books.apple.com/ca/book/death-and-taxes/id1103558206?uo=4",
+        "provider": "apple",
+        "market": "CA",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Death and Taxes. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: CA. Date: 2015-10-06. Precision: day. Edition: apple:1103558206."
+      },
+      {
+        "id": "apple:1171711081:CA:ebook",
+        "title": "The Ebook Machine",
+        "url": "https://books.apple.com/ca/book/the-ebook-machine/id1171711081?uo=4",
+        "provider": "apple",
+        "market": "CA",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: The Ebook Machine. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: CA. Date: 2016-11-02. Precision: day. Edition: apple:1171711081."
+      },
+      {
+        "id": "apple:1444490698:CA:ebook",
+        "title": "A Song of Three Spirits",
+        "url": "https://books.apple.com/ca/book/a-song-of-three-spirits/id1444490698?uo=4",
+        "provider": "apple",
+        "market": "CA",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: A Song of Three Spirits. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: CA. Date: 2018-12-01. Precision: day. Edition: apple:1444490698."
+      },
+      {
+        "id": "apple:701054638:CA:ebook",
+        "title": "The American Generals",
+        "url": "https://books.apple.com/ca/book/the-american-generals/id701054638?uo=4",
+        "provider": "apple",
+        "market": "CA",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: The American Generals. Author: John Frost. Format: ebook. Language: unknown. Market: CA. Date: 2012-12-13. Precision: day. Edition: apple:701054638."
+      },
+      {
+        "id": "apple:627417034:CA:ebook",
+        "title": "Heroes & Villains; The Science Fiction Caricature Art of Kevin Greene",
+        "url": "https://books.apple.com/ca/book/heroes-villains-the-science-fiction-caricature-art/id627417034?uo=4",
+        "provider": "apple",
+        "market": "CA",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Heroes & Villains; The Science Fiction Caricature Art of Kevin Greene. Author: Kevin Greene. Format: ebook. Language: unknown. Market: CA. Date: 2013-03-02. Precision: day. Edition: apple:627417034."
+      },
+      {
+        "id": "apple:1735537866:CA:audio",
+        "title": "Orconomics: A Satire: The Dark Profit Saga, Book 1 (Unabridged)",
+        "url": "https://books.apple.com/ca/audiobook/orconomics-a-satire-the-dark-profit-saga-book-1-unabridged/id1735537866?uo=4",
+        "provider": "apple",
+        "market": "CA",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Orconomics: A Satire: The Dark Profit Saga, Book 1 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: CA. Date: 2024-03-19. Precision: day. Edition: apple:1735537866."
+      },
+      {
+        "id": "apple:1735545125:CA:audio",
+        "title": "Dragonfired: The Dark Profit Saga, Book 3 (Unabridged)",
+        "url": "https://books.apple.com/ca/audiobook/dragonfired-the-dark-profit-saga-book-3-unabridged/id1735545125?uo=4",
+        "provider": "apple",
+        "market": "CA",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Dragonfired: The Dark Profit Saga, Book 3 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: CA. Date: 2024-03-19. Precision: day. Edition: apple:1735545125."
+      },
+      {
+        "id": "apple:1735543380:CA:audio",
+        "title": "Son of a Liche: The Dark Profit Saga, Book 2 (Unabridged)",
+        "url": "https://books.apple.com/ca/audiobook/son-of-a-liche-the-dark-profit-saga-book-2-unabridged/id1735543380?uo=4",
+        "provider": "apple",
+        "market": "CA",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Son of a Liche: The Dark Profit Saga, Book 2 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: CA. Date: 2025-05-05. Precision: day. Edition: apple:1735543380."
+      },
+      {
+        "id": "apple:1894367111:CA:audio",
+        "title": "Crypt Currency: The Dark Profit Saga, Book 4 (Unabridged)",
+        "url": "https://books.apple.com/ca/audiobook/crypt-currency-the-dark-profit-saga-book-4-unabridged/id1894367111?uo=4",
+        "provider": "apple",
+        "market": "CA",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Crypt Currency: The Dark Profit Saga, Book 4 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: CA. Date: 2026-05-19. Precision: day. Edition: apple:1894367111."
+      },
+      {
+        "id": "apple:1474389114:CA:audio",
+        "title": "A Song of Three Spirits",
+        "url": "https://books.apple.com/ca/audiobook/a-song-of-three-spirits/id1474389114?uo=4",
+        "provider": "apple",
+        "market": "CA",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: A Song of Three Spirits. Author: J. Zachary Pike. Format: audio. Language: unknown. Market: CA. Date: 2019-09-01. Precision: day. Edition: apple:1474389114."
+      },
+      {
+        "id": "apple:1852277957:CA:audio",
+        "title": "Jester (Unabridged)",
+        "url": "https://books.apple.com/ca/audiobook/jester-unabridged/id1852277957?uo=4",
+        "provider": "apple",
+        "market": "CA",
+        "retrievedAt": "2026-10-03T05:37:35.091Z",
+        "text": "Title: Jester (Unabridged). Author: Tim Carter. Format: audio. Language: unknown. Market: CA. Date: 2026-07-16. Precision: day. Edition: apple:1852277957."
+      }
+    ],
+    "identities": [],
+    "editions": [
+      {
+        "id": "googlebooks:EhReDwAAQBAJ",
+        "title": "Son of a Liche",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "isbn:9780990859659",
+        "format": "ebook",
+        "language": "en",
+        "market": null,
+        "date": null,
+        "precision": "none",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "googlebooks:EhReDwAAQBAJ",
+            "quote": "Title: Son of a Liche. Author: J. Zachary Pike. Language: en. Format: ebook. Edition: isbn:9780990859659. Market: unknown. Date: unknown. Precision: none."
+          }
+        ]
+      },
+      {
+        "id": "googlebooks:TAJeDwAAQBAJ",
+        "title": "Orconomics",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "isbn:9780990859604",
+        "format": "ebook",
+        "language": "en",
+        "market": null,
+        "date": null,
+        "precision": "none",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "googlebooks:TAJeDwAAQBAJ",
+            "quote": "Title: Orconomics. Author: J. Zachary Pike. Subtitle: A Satire. Language: en. Format: ebook. Edition: isbn:9780990859604. Market: unknown. Date: unknown. Precision: none."
+          }
+        ]
+      },
+      {
+        "id": "googlebooks:rIbrEAAAQBAJ",
+        "title": "Dragonfired",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "isbn:9781963158007",
+        "format": "ebook",
+        "language": "en",
+        "market": null,
+        "date": null,
+        "precision": "none",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "googlebooks:rIbrEAAAQBAJ",
+            "quote": "Title: Dragonfired. Author: J. Zachary Pike. Language: en. Format: ebook. Edition: isbn:9781963158007. Market: unknown. Date: unknown. Precision: none."
+          }
+        ]
+      },
+      {
+        "id": "apple:923885528:US:ebook",
+        "title": "Orconomics",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:923885528",
+        "format": "ebook",
+        "language": null,
+        "market": "US",
+        "date": "2014-10-01",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:923885528:US:ebook",
+            "quote": "Title: Orconomics. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: US. Date: 2014-10-01. Precision: day. Edition: apple:923885528."
+          }
+        ]
+      },
+      {
+        "id": "apple:1377324982:US:ebook",
+        "title": "Son of a Liche",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1377324982",
+        "format": "ebook",
+        "language": null,
+        "market": "US",
+        "date": "2018-05-22",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1377324982:US:ebook",
+            "quote": "Title: Son of a Liche. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: US. Date: 2018-05-22. Precision: day. Edition: apple:1377324982."
+          }
+        ]
+      },
+      {
+        "id": "apple:6475168368:US:ebook",
+        "title": "Dragonfired",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:6475168368",
+        "format": "ebook",
+        "language": null,
+        "market": "US",
+        "date": "2023-08-01",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:6475168368:US:ebook",
+            "quote": "Title: Dragonfired. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: US. Date: 2023-08-01. Precision: day. Edition: apple:6475168368."
+          }
+        ]
+      },
+      {
+        "id": "apple:1103542970:US:ebook",
+        "title": "The Cabal of Thotash",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1103542970",
+        "format": "ebook",
+        "language": null,
+        "market": "US",
+        "date": "2014-05-08",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1103542970:US:ebook",
+            "quote": "Title: The Cabal of Thotash. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: US. Date: 2014-05-08. Precision: day. Edition: apple:1103542970."
+          }
+        ]
+      },
+      {
+        "id": "apple:1103558206:US:ebook",
+        "title": "Death and Taxes",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1103558206",
+        "format": "ebook",
+        "language": null,
+        "market": "US",
+        "date": "2015-10-06",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1103558206:US:ebook",
+            "quote": "Title: Death and Taxes. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: US. Date: 2015-10-06. Precision: day. Edition: apple:1103558206."
+          }
+        ]
+      },
+      {
+        "id": "apple:1444490698:US:ebook",
+        "title": "A Song of Three Spirits",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1444490698",
+        "format": "ebook",
+        "language": null,
+        "market": "US",
+        "date": "2018-12-01",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1444490698:US:ebook",
+            "quote": "Title: A Song of Three Spirits. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: US. Date: 2018-12-01. Precision: day. Edition: apple:1444490698."
+          }
+        ]
+      },
+      {
+        "id": "apple:1171711081:US:ebook",
+        "title": "The Ebook Machine",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1171711081",
+        "format": "ebook",
+        "language": null,
+        "market": "US",
+        "date": "2016-11-02",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1171711081:US:ebook",
+            "quote": "Title: The Ebook Machine. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: US. Date: 2016-11-02. Precision: day. Edition: apple:1171711081."
+          }
+        ]
+      },
+      {
+        "id": "apple:701054638:US:ebook",
+        "title": "The American Generals",
+        "author": "John Frost",
+        "position": null,
+        "editionKey": "apple:701054638",
+        "format": "ebook",
+        "language": null,
+        "market": "US",
+        "date": "2012-12-13",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:701054638:US:ebook",
+            "quote": "Title: The American Generals. Author: John Frost. Format: ebook. Language: unknown. Market: US. Date: 2012-12-13. Precision: day. Edition: apple:701054638."
+          }
+        ]
+      },
+      {
+        "id": "apple:627417034:US:ebook",
+        "title": "Heroes & Villains; The Science Fiction Caricature Art of Kevin Greene",
+        "author": "Kevin Greene",
+        "position": null,
+        "editionKey": "apple:627417034",
+        "format": "ebook",
+        "language": null,
+        "market": "US",
+        "date": "2013-03-02",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:627417034:US:ebook",
+            "quote": "Title: Heroes & Villains; The Science Fiction Caricature Art of Kevin Greene. Author: Kevin Greene. Format: ebook. Language: unknown. Market: US. Date: 2013-03-02. Precision: day. Edition: apple:627417034."
+          }
+        ]
+      },
+      {
+        "id": "apple:1735545125:US:audio",
+        "title": "Dragonfired: The Dark Profit Saga, Book 3 (Unabridged)",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1735545125",
+        "format": "audio",
+        "language": null,
+        "market": "US",
+        "date": "2024-03-19",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1735545125:US:audio",
+            "quote": "Title: Dragonfired: The Dark Profit Saga, Book 3 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: US. Date: 2024-03-19. Precision: day. Edition: apple:1735545125."
+          }
+        ]
+      },
+      {
+        "id": "apple:1735537866:US:audio",
+        "title": "Orconomics: A Satire: The Dark Profit Saga, Book 1 (Unabridged)",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1735537866",
+        "format": "audio",
+        "language": null,
+        "market": "US",
+        "date": "2024-03-19",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1735537866:US:audio",
+            "quote": "Title: Orconomics: A Satire: The Dark Profit Saga, Book 1 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: US. Date: 2024-03-19. Precision: day. Edition: apple:1735537866."
+          }
+        ]
+      },
+      {
+        "id": "apple:1735543380:US:audio",
+        "title": "Son of a Liche: The Dark Profit Saga, Book 2 (Unabridged)",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1735543380",
+        "format": "audio",
+        "language": null,
+        "market": "US",
+        "date": "2025-05-05",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1735543380:US:audio",
+            "quote": "Title: Son of a Liche: The Dark Profit Saga, Book 2 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: US. Date: 2025-05-05. Precision: day. Edition: apple:1735543380."
+          }
+        ]
+      },
+      {
+        "id": "apple:1894367111:US:audio",
+        "title": "Crypt Currency: The Dark Profit Saga, Book 4 (Unabridged)",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1894367111",
+        "format": "audio",
+        "language": null,
+        "market": "US",
+        "date": "2026-05-19",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1894367111:US:audio",
+            "quote": "Title: Crypt Currency: The Dark Profit Saga, Book 4 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: US. Date: 2026-05-19. Precision: day. Edition: apple:1894367111."
+          }
+        ]
+      },
+      {
+        "id": "apple:1474389114:US:audio",
+        "title": "A Song of Three Spirits",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1474389114",
+        "format": "audio",
+        "language": null,
+        "market": "US",
+        "date": "2019-09-01",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1474389114:US:audio",
+            "quote": "Title: A Song of Three Spirits. Author: J. Zachary Pike. Format: audio. Language: unknown. Market: US. Date: 2019-09-01. Precision: day. Edition: apple:1474389114."
+          }
+        ]
+      },
+      {
+        "id": "apple:1852277957:US:audio",
+        "title": "Jester (Unabridged)",
+        "author": "Tim Carter",
+        "position": null,
+        "editionKey": "apple:1852277957",
+        "format": "audio",
+        "language": null,
+        "market": "US",
+        "date": "2026-07-16",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1852277957:US:audio",
+            "quote": "Title: Jester (Unabridged). Author: Tim Carter. Format: audio. Language: unknown. Market: US. Date: 2026-07-16. Precision: day. Edition: apple:1852277957."
+          }
+        ]
+      },
+      {
+        "id": "apple:923885528:GB:ebook",
+        "title": "Orconomics",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:923885528",
+        "format": "ebook",
+        "language": null,
+        "market": "GB",
+        "date": "2014-10-01",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:923885528:GB:ebook",
+            "quote": "Title: Orconomics. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: GB. Date: 2014-10-01. Precision: day. Edition: apple:923885528."
+          }
+        ]
+      },
+      {
+        "id": "apple:1377324982:GB:ebook",
+        "title": "Son of a Liche",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1377324982",
+        "format": "ebook",
+        "language": null,
+        "market": "GB",
+        "date": "2018-05-22",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1377324982:GB:ebook",
+            "quote": "Title: Son of a Liche. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: GB. Date: 2018-05-22. Precision: day. Edition: apple:1377324982."
+          }
+        ]
+      },
+      {
+        "id": "apple:6475168368:GB:ebook",
+        "title": "Dragonfired",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:6475168368",
+        "format": "ebook",
+        "language": null,
+        "market": "GB",
+        "date": "2023-08-01",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:6475168368:GB:ebook",
+            "quote": "Title: Dragonfired. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: GB. Date: 2023-08-01. Precision: day. Edition: apple:6475168368."
+          }
+        ]
+      },
+      {
+        "id": "apple:1103542970:GB:ebook",
+        "title": "The Cabal of Thotash",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1103542970",
+        "format": "ebook",
+        "language": null,
+        "market": "GB",
+        "date": "2014-05-08",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1103542970:GB:ebook",
+            "quote": "Title: The Cabal of Thotash. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: GB. Date: 2014-05-08. Precision: day. Edition: apple:1103542970."
+          }
+        ]
+      },
+      {
+        "id": "apple:1103558206:GB:ebook",
+        "title": "Death and Taxes",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1103558206",
+        "format": "ebook",
+        "language": null,
+        "market": "GB",
+        "date": "2015-10-06",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1103558206:GB:ebook",
+            "quote": "Title: Death and Taxes. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: GB. Date: 2015-10-06. Precision: day. Edition: apple:1103558206."
+          }
+        ]
+      },
+      {
+        "id": "apple:1171711081:GB:ebook",
+        "title": "The Ebook Machine",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1171711081",
+        "format": "ebook",
+        "language": null,
+        "market": "GB",
+        "date": "2016-11-02",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1171711081:GB:ebook",
+            "quote": "Title: The Ebook Machine. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: GB. Date: 2016-11-02. Precision: day. Edition: apple:1171711081."
+          }
+        ]
+      },
+      {
+        "id": "apple:1444490698:GB:ebook",
+        "title": "A Song of Three Spirits",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1444490698",
+        "format": "ebook",
+        "language": null,
+        "market": "GB",
+        "date": "2018-12-01",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1444490698:GB:ebook",
+            "quote": "Title: A Song of Three Spirits. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: GB. Date: 2018-12-01. Precision: day. Edition: apple:1444490698."
+          }
+        ]
+      },
+      {
+        "id": "apple:701054638:GB:ebook",
+        "title": "The American Generals",
+        "author": "John Frost",
+        "position": null,
+        "editionKey": "apple:701054638",
+        "format": "ebook",
+        "language": null,
+        "market": "GB",
+        "date": "2012-12-13",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:701054638:GB:ebook",
+            "quote": "Title: The American Generals. Author: John Frost. Format: ebook. Language: unknown. Market: GB. Date: 2012-12-13. Precision: day. Edition: apple:701054638."
+          }
+        ]
+      },
+      {
+        "id": "apple:627417034:GB:ebook",
+        "title": "Heroes & Villains; The Science Fiction Caricature Art of Kevin Greene",
+        "author": "Kevin Greene",
+        "position": null,
+        "editionKey": "apple:627417034",
+        "format": "ebook",
+        "language": null,
+        "market": "GB",
+        "date": "2013-03-02",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:627417034:GB:ebook",
+            "quote": "Title: Heroes & Villains; The Science Fiction Caricature Art of Kevin Greene. Author: Kevin Greene. Format: ebook. Language: unknown. Market: GB. Date: 2013-03-02. Precision: day. Edition: apple:627417034."
+          }
+        ]
+      },
+      {
+        "id": "apple:1735545125:GB:audio",
+        "title": "Dragonfired: The Dark Profit Saga, Book 3 (Unabridged)",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1735545125",
+        "format": "audio",
+        "language": null,
+        "market": "GB",
+        "date": "2024-03-19",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1735545125:GB:audio",
+            "quote": "Title: Dragonfired: The Dark Profit Saga, Book 3 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: GB. Date: 2024-03-19. Precision: day. Edition: apple:1735545125."
+          }
+        ]
+      },
+      {
+        "id": "apple:1735537866:GB:audio",
+        "title": "Orconomics: A Satire: The Dark Profit Saga, Book 1 (Unabridged)",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1735537866",
+        "format": "audio",
+        "language": null,
+        "market": "GB",
+        "date": "2024-03-19",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1735537866:GB:audio",
+            "quote": "Title: Orconomics: A Satire: The Dark Profit Saga, Book 1 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: GB. Date: 2024-03-19. Precision: day. Edition: apple:1735537866."
+          }
+        ]
+      },
+      {
+        "id": "apple:1735543380:GB:audio",
+        "title": "Son of a Liche: The Dark Profit Saga, Book 2 (Unabridged)",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1735543380",
+        "format": "audio",
+        "language": null,
+        "market": "GB",
+        "date": "2025-05-05",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1735543380:GB:audio",
+            "quote": "Title: Son of a Liche: The Dark Profit Saga, Book 2 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: GB. Date: 2025-05-05. Precision: day. Edition: apple:1735543380."
+          }
+        ]
+      },
+      {
+        "id": "apple:1894367111:GB:audio",
+        "title": "Crypt Currency: The Dark Profit Saga, Book 4 (Unabridged)",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1894367111",
+        "format": "audio",
+        "language": null,
+        "market": "GB",
+        "date": "2026-05-19",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1894367111:GB:audio",
+            "quote": "Title: Crypt Currency: The Dark Profit Saga, Book 4 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: GB. Date: 2026-05-19. Precision: day. Edition: apple:1894367111."
+          }
+        ]
+      },
+      {
+        "id": "apple:1474389114:GB:audio",
+        "title": "A Song of Three Spirits",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1474389114",
+        "format": "audio",
+        "language": null,
+        "market": "GB",
+        "date": "2019-09-01",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1474389114:GB:audio",
+            "quote": "Title: A Song of Three Spirits. Author: J. Zachary Pike. Format: audio. Language: unknown. Market: GB. Date: 2019-09-01. Precision: day. Edition: apple:1474389114."
+          }
+        ]
+      },
+      {
+        "id": "apple:1852277957:GB:audio",
+        "title": "Jester (Unabridged)",
+        "author": "Tim Carter",
+        "position": null,
+        "editionKey": "apple:1852277957",
+        "format": "audio",
+        "language": null,
+        "market": "GB",
+        "date": "2026-07-16",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1852277957:GB:audio",
+            "quote": "Title: Jester (Unabridged). Author: Tim Carter. Format: audio. Language: unknown. Market: GB. Date: 2026-07-16. Precision: day. Edition: apple:1852277957."
+          }
+        ]
+      },
+      {
+        "id": "apple:923885528:CA:ebook",
+        "title": "Orconomics",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:923885528",
+        "format": "ebook",
+        "language": null,
+        "market": "CA",
+        "date": "2014-10-01",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:923885528:CA:ebook",
+            "quote": "Title: Orconomics. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: CA. Date: 2014-10-01. Precision: day. Edition: apple:923885528."
+          }
+        ]
+      },
+      {
+        "id": "apple:1377324982:CA:ebook",
+        "title": "Son of a Liche",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1377324982",
+        "format": "ebook",
+        "language": null,
+        "market": "CA",
+        "date": "2018-05-22",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1377324982:CA:ebook",
+            "quote": "Title: Son of a Liche. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: CA. Date: 2018-05-22. Precision: day. Edition: apple:1377324982."
+          }
+        ]
+      },
+      {
+        "id": "apple:6475168368:CA:ebook",
+        "title": "Dragonfired",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:6475168368",
+        "format": "ebook",
+        "language": null,
+        "market": "CA",
+        "date": "2023-08-01",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:6475168368:CA:ebook",
+            "quote": "Title: Dragonfired. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: CA. Date: 2023-08-01. Precision: day. Edition: apple:6475168368."
+          }
+        ]
+      },
+      {
+        "id": "apple:1103542970:CA:ebook",
+        "title": "The Cabal of Thotash",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1103542970",
+        "format": "ebook",
+        "language": null,
+        "market": "CA",
+        "date": "2014-05-08",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1103542970:CA:ebook",
+            "quote": "Title: The Cabal of Thotash. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: CA. Date: 2014-05-08. Precision: day. Edition: apple:1103542970."
+          }
+        ]
+      },
+      {
+        "id": "apple:1103558206:CA:ebook",
+        "title": "Death and Taxes",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1103558206",
+        "format": "ebook",
+        "language": null,
+        "market": "CA",
+        "date": "2015-10-06",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1103558206:CA:ebook",
+            "quote": "Title: Death and Taxes. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: CA. Date: 2015-10-06. Precision: day. Edition: apple:1103558206."
+          }
+        ]
+      },
+      {
+        "id": "apple:1171711081:CA:ebook",
+        "title": "The Ebook Machine",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1171711081",
+        "format": "ebook",
+        "language": null,
+        "market": "CA",
+        "date": "2016-11-02",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1171711081:CA:ebook",
+            "quote": "Title: The Ebook Machine. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: CA. Date: 2016-11-02. Precision: day. Edition: apple:1171711081."
+          }
+        ]
+      },
+      {
+        "id": "apple:1444490698:CA:ebook",
+        "title": "A Song of Three Spirits",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1444490698",
+        "format": "ebook",
+        "language": null,
+        "market": "CA",
+        "date": "2018-12-01",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1444490698:CA:ebook",
+            "quote": "Title: A Song of Three Spirits. Author: J. Zachary Pike. Format: ebook. Language: unknown. Market: CA. Date: 2018-12-01. Precision: day. Edition: apple:1444490698."
+          }
+        ]
+      },
+      {
+        "id": "apple:701054638:CA:ebook",
+        "title": "The American Generals",
+        "author": "John Frost",
+        "position": null,
+        "editionKey": "apple:701054638",
+        "format": "ebook",
+        "language": null,
+        "market": "CA",
+        "date": "2012-12-13",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:701054638:CA:ebook",
+            "quote": "Title: The American Generals. Author: John Frost. Format: ebook. Language: unknown. Market: CA. Date: 2012-12-13. Precision: day. Edition: apple:701054638."
+          }
+        ]
+      },
+      {
+        "id": "apple:627417034:CA:ebook",
+        "title": "Heroes & Villains; The Science Fiction Caricature Art of Kevin Greene",
+        "author": "Kevin Greene",
+        "position": null,
+        "editionKey": "apple:627417034",
+        "format": "ebook",
+        "language": null,
+        "market": "CA",
+        "date": "2013-03-02",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:627417034:CA:ebook",
+            "quote": "Title: Heroes & Villains; The Science Fiction Caricature Art of Kevin Greene. Author: Kevin Greene. Format: ebook. Language: unknown. Market: CA. Date: 2013-03-02. Precision: day. Edition: apple:627417034."
+          }
+        ]
+      },
+      {
+        "id": "apple:1735537866:CA:audio",
+        "title": "Orconomics: A Satire: The Dark Profit Saga, Book 1 (Unabridged)",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1735537866",
+        "format": "audio",
+        "language": null,
+        "market": "CA",
+        "date": "2024-03-19",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1735537866:CA:audio",
+            "quote": "Title: Orconomics: A Satire: The Dark Profit Saga, Book 1 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: CA. Date: 2024-03-19. Precision: day. Edition: apple:1735537866."
+          }
+        ]
+      },
+      {
+        "id": "apple:1735545125:CA:audio",
+        "title": "Dragonfired: The Dark Profit Saga, Book 3 (Unabridged)",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1735545125",
+        "format": "audio",
+        "language": null,
+        "market": "CA",
+        "date": "2024-03-19",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1735545125:CA:audio",
+            "quote": "Title: Dragonfired: The Dark Profit Saga, Book 3 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: CA. Date: 2024-03-19. Precision: day. Edition: apple:1735545125."
+          }
+        ]
+      },
+      {
+        "id": "apple:1735543380:CA:audio",
+        "title": "Son of a Liche: The Dark Profit Saga, Book 2 (Unabridged)",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1735543380",
+        "format": "audio",
+        "language": null,
+        "market": "CA",
+        "date": "2025-05-05",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1735543380:CA:audio",
+            "quote": "Title: Son of a Liche: The Dark Profit Saga, Book 2 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: CA. Date: 2025-05-05. Precision: day. Edition: apple:1735543380."
+          }
+        ]
+      },
+      {
+        "id": "apple:1894367111:CA:audio",
+        "title": "Crypt Currency: The Dark Profit Saga, Book 4 (Unabridged)",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1894367111",
+        "format": "audio",
+        "language": null,
+        "market": "CA",
+        "date": "2026-05-19",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1894367111:CA:audio",
+            "quote": "Title: Crypt Currency: The Dark Profit Saga, Book 4 (Unabridged). Author: J. Zachary Pike. Format: audio. Language: unknown. Market: CA. Date: 2026-05-19. Precision: day. Edition: apple:1894367111."
+          }
+        ]
+      },
+      {
+        "id": "apple:1474389114:CA:audio",
+        "title": "A Song of Three Spirits",
+        "author": "J. Zachary Pike",
+        "position": null,
+        "editionKey": "apple:1474389114",
+        "format": "audio",
+        "language": null,
+        "market": "CA",
+        "date": "2019-09-01",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1474389114:CA:audio",
+            "quote": "Title: A Song of Three Spirits. Author: J. Zachary Pike. Format: audio. Language: unknown. Market: CA. Date: 2019-09-01. Precision: day. Edition: apple:1474389114."
+          }
+        ]
+      },
+      {
+        "id": "apple:1852277957:CA:audio",
+        "title": "Jester (Unabridged)",
+        "author": "Tim Carter",
+        "position": null,
+        "editionKey": "apple:1852277957",
+        "format": "audio",
+        "language": null,
+        "market": "CA",
+        "date": "2026-07-16",
+        "precision": "day",
+        "publication": "catalogued",
+        "citations": [
+          {
+            "sourceId": "apple:1852277957:CA:audio",
+            "quote": "Title: Jester (Unabridged). Author: Tim Carter. Format: audio. Language: unknown. Market: CA. Date: 2026-07-16. Precision: day. Edition: apple:1852277957."
+          }
+        ]
+      }
+    ]
+  },
+  "usage": {
+    "apple": 6,
+    "openlibrary": 1,
+    "googlebooks": 1,
+    "tavily": 0,
+    "hardcover": 1,
+    "deepseek": 0,
+    "inputTokens": 0,
+    "outputTokens": 0
+  },
+  "reasons": []
+}

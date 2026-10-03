@@ -5,10 +5,11 @@ import { nextPosition } from '../library/progress';
 import type { useLibrary } from '../library/useLibrary';
 import { checkDiscovery, getDiscoveryCapabilities } from '../../services/discovery';
 import type { DiscoverySession } from './discoverySession';
+import { safeSelection } from './autoTrack';
 
 const staleMessage = 'The series changed. Check again before saving.';
 export function useDiscovery(library: ReturnType<typeof useLibrary>) {
-  const [batch, setBatch] = useState<{ running: boolean; total: number; done: number; results: DiscoverySession[] }>({ running: false, total: 0, done: 0, results: [] });
+  const [batch, setBatch] = useState<{ running: boolean; automatic: boolean; total: number; done: number; results: DiscoverySession[] }>({ running: false, automatic: false, total: 0, done: 0, results: [] });
   const batchToken = useRef(0);
   const batchRunning = useRef(false);
   const retainedReviews = useRef(new Set<string>());
@@ -118,14 +119,29 @@ export function useDiscovery(library: ReturnType<typeof useLibrary>) {
     if (accepted.ok) close();
     return accepted;
   };
-  const runBatch = async (seriesIds: string[]) => {
-    if (batch.running) return;
+  // In an automatic run a safe result is saved at once and an unsupported or failed one is dropped,
+  // so only results that need a decision reach the review list.
+  const keepForReview = (result: DiscoverySession, automatic: boolean): boolean => {
+    if (!automatic) return true;
+    if (result.phase !== 'review' || !result.snapshot || !result.response) return false;
+    const series = libraryRef.current.doc.series.find(item => item.id === result.seriesId);
+    const safe = series ? safeSelection(series, result.response) : null;
+    if (safe && libraryRef.current.acceptDiscovery(result.snapshot, result.response, safe, true).ok) return false;
+    const { identity, releases } = result.response.proposals;
+    return !!(identity || releases.book || releases.audio);
+  };
+  const runBatch = async (seriesIds: string[], automatic = false) => {
+    if (batchRunning.current) return;
+    // An automatic run never takes over a check the user has already opened.
+    if (automatic && sessionRef.current) return;
     close();
     const token = ++batchToken.current;
     const ids = [...new Set(seriesIds)].filter(id => libraryRef.current.doc.series.some(s => s.id === id && s.readingStatus === 'active'));
+    if (!ids.length) return;
     batchRunning.current = true;
-    setBatch({ running: true, total: ids.length, done: 0, results: [] });
+    setBatch({ running: true, automatic, total: ids.length, done: 0, results: [] });
     const results: DiscoverySession[] = [];
+    let done = 0;
     for (const seriesId of ids) {
       if (token !== batchToken.current || !mounted.current) break;
       // Preserve completed snapshots for review instead of cancelling them.
@@ -133,18 +149,20 @@ export function useDiscovery(library: ReturnType<typeof useLibrary>) {
       await run(false);
       if (token !== batchToken.current || !mounted.current) break;
       const result = sessionRef.current;
-      if (result) {
+      done += 1;
+      const quota = !!(result?.error?.includes('unavailable') || result?.error?.includes('quota') || result?.response?.summary.reasons.includes('quota'));
+      if (result && keepForReview(result, automatic)) {
         results.push(result);
         if (result.snapshot && result.response) retainedReviews.current.add(result.snapshot.requestId);
       }
       publish(null);
-      setBatch({ running: true, total: ids.length, done: results.length, results: [...results] });
-      if (result?.error?.includes('unavailable') || result?.error?.includes('quota') || result?.response?.summary.reasons.includes('quota')) break;
+      setBatch({ running: true, automatic, total: ids.length, done, results: [...results] });
+      if (quota) break;
     }
     if (token === batchToken.current && mounted.current) {
       publish(null);
       batchRunning.current = false;
-      setBatch({ running: false, total: ids.length, done: results.length, results: [...results] });
+      setBatch({ running: false, automatic, total: ids.length, done, results: [...results] });
     }
   };
   const cancelBatch = () => {

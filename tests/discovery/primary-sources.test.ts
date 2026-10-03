@@ -82,8 +82,9 @@ test('author site announcement supplies a continuation relation only', () => {
   expect(evidence.related).toHaveLength(1);
   expect(evidence.identities).toHaveLength(0);
   expect(parseExtraction(evidence, evidence.sources).ok).toBe(true);
-  expect(selectProposals(pikeReq(), evidence, checkedAt).related).toHaveLength(1);
-  expect(selectProposals(pikeReq(), evidence, checkedAt).identity).toBeNull();
+  // Policy promotes a lone author-site continuation to the next book (Task 5).
+  expect(selectProposals(pikeReq(), evidence, checkedAt).related).toHaveLength(0);
+  expect(selectProposals(pikeReq(), evidence, checkedAt).identity).toMatchObject({ title: 'Crypt Currency', position: 4 });
 });
 
 test('related continuation rejects a foreign masthead, other host and unlinked sentence', () => {

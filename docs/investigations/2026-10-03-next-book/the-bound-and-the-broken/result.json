@@ -1,0 +1,172 @@
+{
+  "requestId": "audit-the-bound-and-the-broken",
+  "seriesId": "6a4b8bb6-c037-4119-aa4f-8b1be4c1736a",
+  "summary": {
+    "requestId": "audit-the-bound-and-the-broken",
+    "checkedAt": "2026-10-03T05:41:37.236Z",
+    "status": "complete",
+    "reasons": [],
+    "formats": {
+      "book": "supported",
+      "audio": "unknown"
+    },
+    "usage": {
+      "apple": 6,
+      "openlibrary": 1,
+      "googlebooks": 1,
+      "hardcover": 1,
+      "tavily": 2,
+      "deepseek": 0,
+      "inputTokens": 0,
+      "outputTokens": 0
+    }
+  },
+  "proposals": {
+    "identity": {
+      "title": "Of Gods and Ashes",
+      "author": "Ryan Cahill",
+      "position": 5,
+      "citations": [
+        {
+          "sourceId": "catalog:fc74ad55a582bada9a319ae7b11127fd",
+          "quote": "Title: Of Gods and Ashes. Author: Ryan Cahill. Series: The Bound and the Broken. Position: 5. Role: Author. English edition: 31239924. Language: en. Format: print."
+        }
+      ]
+    },
+    "identityAttribution": {
+      "checkedAt": "2026-10-03T05:41:37.236Z",
+      "sources": [
+        {
+          "id": "catalog:fc74ad55a582bada9a319ae7b11127fd",
+          "title": "Of Gods and Ashes",
+          "url": "https://hardcover.app/books/of-gods-and-ashes"
+        }
+      ]
+    },
+    "releases": {
+      "book": {
+        "title": "Of Gods and Ashes",
+        "position": 5,
+        "state": "catalogued",
+        "date": null,
+        "provenance": {
+          "checkedAt": "2026-10-03T05:41:37.236Z",
+          "sources": [
+            {
+              "id": "catalog:fc74ad55a582bada9a319ae7b11127fd",
+              "title": "Of Gods and Ashes",
+              "url": "https://hardcover.app/books/of-gods-and-ashes"
+            },
+            {
+              "id": "catalog:8033598824a4f41b38d5e0a07287e522",
+              "title": "Of Gods and Ashes",
+              "url": "https://hardcover.app/books/of-gods-and-ashes"
+            }
+          ],
+          "preferredMarket": "US",
+          "sourceMarket": null,
+          "language": "en",
+          "editionFormat": "print",
+          "editionKey": "hardcover:edition:31239924",
+          "datePrecision": "none",
+          "interpreted": false
+        },
+        "citations": [
+          {
+            "sourceId": "catalog:fc74ad55a582bada9a319ae7b11127fd",
+            "quote": "Title: Of Gods and Ashes. Author: Ryan Cahill. Series: The Bound and the Broken. Position: 5. Role: Author. English edition: 31239924. Language: en. Format: print."
+          },
+          {
+            "sourceId": "catalog:8033598824a4f41b38d5e0a07287e522",
+            "quote": "Title: Of Gods and Ashes. Author: Ryan Cahill. Position: 5. Raw format: Paperback. Reading format: Read. Format: print. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: hardcover:edition:31239924."
+          }
+        ]
+      },
+      "audio": null
+    },
+    "conflicts": [],
+    "related": []
+  },
+  "sources": [
+    {
+      "id": "catalog:fc74ad55a582bada9a319ae7b11127fd",
+      "title": "Of Gods and Ashes",
+      "url": "https://hardcover.app/books/of-gods-and-ashes"
+    },
+    {
+      "id": "catalog:8033598824a4f41b38d5e0a07287e522",
+      "title": "Of Gods and Ashes",
+      "url": "https://hardcover.app/books/of-gods-and-ashes"
+    },
+    {
+      "id": "search1:71430184e16f36706827d3875940e1ac",
+      "title": "The Bound and the Broken: Of Gods and Ashes - Ryan Brandt Cahill Jp - Google Books",
+      "url": "https://books.google.com/books/about/The_Bound_and_the_Broken.html?id=zUpz0gEACAAJ"
+    },
+    {
+      "id": "search1:bc4e82c9ac7e350634ac465553fb63ea",
+      "title": "Instagram",
+      "url": "https://www.instagram.com/p/DVL2YrvIHa0?hl=en"
+    },
+    {
+      "id": "search1:410d5af530ec06e539c0d479b8adc9dd",
+      "title": "Of Gods and Ashes (The Bound and the Broken #5) by Ryan Cahill",
+      "url": "https://www.risingshadow.net/book/78737-of-gods-and-ashes"
+    },
+    {
+      "id": "search1:a67e242aafbf0429596b500b0621b97d",
+      "title": "Chronicles of Cahill 2025",
+      "url": "https://www.ryancahillauthor.com/post/chronicles-of-cahill-2025"
+    },
+    {
+      "id": "search1:62aed252276a41dd7b44af6aba5406f5",
+      "title": "Books | Ryan Cahill Author",
+      "url": "https://www.ryancahillauthor.com/books"
+    },
+    {
+      "id": "search2:410d5af530ec06e539c0d479b8adc9dd",
+      "title": "Of Gods and Ashes (The Bound and the Broken #5) by Ryan Cahill",
+      "url": "https://www.risingshadow.net/book/78737-of-gods-and-ashes"
+    },
+    {
+      "id": "search2:bc4e82c9ac7e350634ac465553fb63ea",
+      "title": "Instagram",
+      "url": "https://www.instagram.com/p/DVL2YrvIHa0?hl=en"
+    },
+    {
+      "id": "search2:a67e242aafbf0429596b500b0621b97d",
+      "title": "Chronicles of Cahill 2025",
+      "url": "https://www.ryancahillauthor.com/post/chronicles-of-cahill-2025"
+    },
+    {
+      "id": "search2:62aed252276a41dd7b44af6aba5406f5",
+      "title": "Books | Ryan Cahill Author",
+      "url": "https://www.ryancahillauthor.com/books"
+    },
+    {
+      "id": "search2:0f7fe0e15aef1cea220762692486a66a",
+      "title": "Of Gods and Ashes (The Bound and The Broken, #5) by Ryan  Cahill | Goodreads",
+      "url": "https://www.goodreads.com/en/book/show/204254857-of-gods-and-ashes"
+    }
+  ],
+  "coverCandidates": [
+    {
+      "id": "hardcover:book:1214844",
+      "title": "Of Gods and Ashes",
+      "author": "Ryan Cahill",
+      "role": "next",
+      "format": "print",
+      "provider": "hardcover",
+      "source": {
+        "id": "hardcover:book:1214844",
+        "title": "Of Gods and Ashes",
+        "url": "https://hardcover.app/books/of-gods-and-ashes"
+      },
+      "imageUrl": "https://assets.hardcover.app/edition/31239924/6e71d618-c982-4a8a-b400-8289e6efa574.jpg",
+      "workKey": "of gods and ashes|ryan cahill",
+      "editionKey": null,
+      "width": 652,
+      "height": 1034
+    }
+  ]
+}

@@ -670,7 +670,7 @@ test.each(['identity', 'conflict'] as const)('Google %s evidence over factual ca
   expect(evidence).toEqual(before);
 });
 
-test('a primary-source search result yields related works and never numbered identity, within three searches', async () => {
+test('a primary-source search result yields the next book from the author site, within three searches', async () => {
   const req = request({ formats: ['book'], target: { series: 'The Dark Profit Saga', author: 'J. Zachary Pike', position: 4, title: '', orderNote: '' } });
   const text = 'J. Zachary Pike\nHome Books Blog\nCrypt Currency is Coming\nCrypt Currency is the next book in The Dark Profit Saga, arriving soon as an ebook.';
   const deps = dependencies();
@@ -678,8 +678,8 @@ test('a primary-source search result yields related works and never numbered ide
     url: 'https://jzacharypike.com/blogs/highlights/crypt-currency-is-coming', provider: 'tavily' as const, market: null,
     retrievedAt: '2026-09-29T12:00:00Z', text }] }));
   const result = await runDiscovery(req, deps, new AbortController().signal);
-  expect(result.proposals.related).toMatchObject([{ title: 'Crypt Currency', relationship: 'continuation', position: null }]);
-  expect(result.proposals.identity).toBeNull();
+  expect(result.proposals.related).toEqual([]);
+  expect(result.proposals.identity).toMatchObject({ title: 'Crypt Currency', position: 4 });
   expect(result.summary.usage.tavily).toBeLessThanOrEqual(3);
   expect(parseCheckResponse(result).ok).toBe(true);
 });

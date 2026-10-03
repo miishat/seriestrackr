@@ -18,7 +18,7 @@ beforeEach(() => {
 afterEach(() => { cleanup(); localStorage.clear(); });
 
 test('a failed undo is announced instead of being ignored', async () => {
-  const user = userEvent.setup(); render(<App />);
+  const user = userEvent.setup(); render(<App autoTrack={false} />);
   await user.click(screen.getByRole('button', { name: 'Mark finished' }));
   await user.click(screen.getByRole('button', { name: 'Undo finish' }));
   expect(screen.getByRole('alert')).toHaveTextContent('Could not undo. Series not found.');

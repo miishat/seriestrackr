@@ -5,6 +5,7 @@ import { emptyDocument, emptyRelease } from '../src/features/library/model';
 import type { LibraryDocument, Series } from '../src/features/library/model';
 import { useLibrary } from '../src/features/library/useLibrary';
 import { seriesFixture } from './fixtures';
+import { response } from './discovery/fixtures';
 
 const key = 'seriestrackr:v1';
 const dated = () => ({
@@ -266,4 +267,70 @@ test('a saved identity change clears an attributed cover that targets another ti
   act(() => { expect(result.current.updateSeries({ ...original, author: 'Someone Else',
     coverUrl: 'https://example.com/z.jpg', coverAttribution: stale }, true).ok).toBe(true); });
   expect(result.current.doc.series[0]).toMatchObject({ coverUrl: null, coverAttribution: null });
+});
+
+test('setAutomaticCover fills an empty cover only while the identity is unchanged', () => {
+  const { result } = mount(seeded([]));
+  let created!: Series;
+  act(() => { const added = result.current.addSeries(newSeries()); if (added.ok) created = added.value; });
+  const attribution = { title: created.next.title, author: created.author, role: 'next' as const, source: { id: 'h', title: 'Hardcover', url: 'https://hardcover.app/books/x' }, editionKey: null };
+  act(() => { expect(result.current.setAutomaticCover(created, 'https://assets.hardcover.app/x.jpg', attribution).ok).toBe(true); });
+  expect(result.current.doc.series.find(s => s.id === created.id)?.coverUrl).toBe('https://assets.hardcover.app/x.jpg');
+  act(() => { expect(result.current.setAutomaticCover(created, 'https://assets.hardcover.app/y.jpg', attribution).ok).toBe(false); });
+});
+
+function acceptAutomatically() {
+  const hook = mount();
+  const started = hook.result.current.beginDiscovery('s1', 'r1');
+  if (started.ok === false) throw new Error(started.error);
+  act(() => {
+    expect(hook.result.current.acceptDiscovery(started.value, response({ seriesId: 's1' }), { title: false, book: true, audio: false }, true).ok).toBe(true);
+  });
+  return hook;
+}
+
+test('an automatic accept records the previous state and undo restores it', () => {
+  const { result } = acceptAutomatically();
+  const accepted = result.current.doc.series[0];
+  expect(accepted.releases.book.origin).toBe('discovery');
+  expect(accepted.autoUpdate?.previous.releases.book.state).toBe('not-checked');
+  expect(accepted.autoUpdate?.previous.next.title).toBe('Second');
+  act(() => { expect(result.current.undoAutoUpdate('s1').ok).toBe(true); });
+  const restored = result.current.doc.series[0];
+  expect(restored.releases.book.state).toBe('not-checked');
+  expect(restored.releases.book.origin).toBe('manual');
+  expect(restored.autoUpdate).toBeNull();
+});
+
+test('clearing the automatic update keeps the accepted release', () => {
+  const { result } = acceptAutomatically();
+  act(() => { result.current.clearAutoUpdate('s1'); });
+  const kept = result.current.doc.series[0];
+  expect(kept.autoUpdate).toBeNull();
+  expect(kept.releases.book.origin).toBe('discovery');
+  expect(kept.releases.book.date).toBe('2027-03-01');
+});
+
+test('an edit that changes reading status clears the automatic update', () => {
+  const { result } = acceptAutomatically();
+  expect(result.current.doc.series[0].autoUpdate).not.toBeNull();
+  act(() => { expect(result.current.updateSeries({ ...result.current.doc.series[0], readingStatus: 'paused' }, false).ok).toBe(true); });
+  expect(result.current.doc.series[0].readingStatus).toBe('paused');
+  expect(result.current.doc.series[0].autoUpdate).toBeNull();
+});
+
+test('changing the default market clears automatic updates on reset series and keeps overridden ones', () => {
+  const { result } = acceptAutomatically();
+  expect(result.current.doc.series[0].autoUpdate).not.toBeNull();
+  act(() => { expect(result.current.updateSettings({ ...result.current.doc.settings, market: 'US' }, true).ok).toBe(true); });
+  expect(result.current.doc.series[0].autoUpdate).toBeNull();
+  expect(result.current.doc.series[0].releases.book.state).toBe('not-checked');
+
+  const overridden = mount(seeded([seriesFixture({ id: 's1', marketOverride: 'CA' })]));
+  const started = overridden.result.current.beginDiscovery('s1', 'r1');
+  if (started.ok === false) throw new Error(started.error);
+  act(() => { overridden.result.current.acceptDiscovery(started.value, response({ seriesId: 's1' }), { title: false, book: true, audio: false }, true); });
+  const before = overridden.result.current.doc.series[0].autoUpdate;
+  act(() => { expect(overridden.result.current.updateSettings({ ...overridden.result.current.doc.settings, market: 'US' }, true).ok).toBe(true); });
+  expect(overridden.result.current.doc.series[0].autoUpdate).toEqual(before);
 });

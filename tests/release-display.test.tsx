@@ -26,7 +26,7 @@ test('compact card removes duplicate title and keeps individual action visible w
 });
 
 test('lifecycle labels are exact', () => {
-  expect(releaseLabels).toMatchObject({ catalogued: 'Edition found; release unverified', announced: 'Announced',
+  expect(releaseLabels).toMatchObject({ catalogued: 'Listed', announced: 'Announced',
     scheduled: 'Scheduled', released: 'Available' });
 });
 test('catalogued stays catalogued and scheduled becomes available by local today', () => {
@@ -35,8 +35,9 @@ test('catalogued stays catalogued and scheduled becomes available by local today
   expect(displayRelease(scheduled, '2026-09-30')).toBe('scheduled');
   expect(displayRelease(scheduled, '2026-10-01')).toBe('released');
 });
-test('card shows the catalogued label', () => {
+test('card shows Listed with Date Unknown on the date line', () => {
   const series = seriesFixture(); series.releases.book.state = 'catalogued';
   render(<SeriesCard series={series} today="2026-10-01" market="US" showCovers={false} onEdit={vi.fn()} onFinish={vi.fn()} onCheck={vi.fn()} />);
-  expect(screen.getByText('Edition found; release unverified')).toBeVisible();
+  expect(screen.getByText('Listed')).toBeVisible();
+  expect(screen.getByText('Date Unknown')).toBeVisible();
 });

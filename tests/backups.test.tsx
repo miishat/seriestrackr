@@ -66,7 +66,7 @@ test('decoder limits UTF-8 byte size and validates the whole document', () => {
 test('export downloads the complete current library without changing it', async () => {
   const user = userEvent.setup(); const doc = documentWithSeries(); seed(doc);
   vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
-  render(<App />);
+  render(<App autoTrack={false} />);
   await user.click(screen.getByRole('button', { name: 'Backups' }));
   await user.click(screen.getByRole('button', { name: 'Export' }));
   expect(await readBlob(vi.mocked(URL.createObjectURL).mock.calls[0][0] as Blob)).toBe(encodeBackup(doc));
@@ -76,7 +76,7 @@ test('export downloads the complete current library without changing it', async 
 
 test('import previews a complete replacement and cancel preserves the stored document', async () => {
   const user = userEvent.setup();
-  const original = documentWithSeries(); seed(original); render(<App />);
+  const original = documentWithSeries(); seed(original); render(<App autoTrack={false} />);
   await user.click(screen.getByRole('button', { name: 'Backups' }));
   const replacement = { ...emptyDocument(), settings: { ...emptyDocument().settings, market: 'GB' as const, theme: 'dark' as const }, series: [seriesFixture({ id: 'new', name: '<New series>' })] };
   chooseFile(JSON.stringify(replacement));
@@ -89,7 +89,7 @@ test('import previews a complete replacement and cancel preserves the stored doc
 });
 
 test('confirmed import replaces series and settings together', async () => {
-  const user = userEvent.setup(); seed(); render(<App />);
+  const user = userEvent.setup(); seed(); render(<App autoTrack={false} />);
   await user.click(screen.getByRole('button', { name: 'Backups' }));
   const replacement = { ...emptyDocument(), settings: { ...emptyDocument().settings, market: 'US' as const, theme: 'dark' as const, view: 'compact' as const }, series: [seriesFixture({ id: 'new', name: '<New series>' })] };
   chooseFile(JSON.stringify(replacement));
@@ -100,7 +100,7 @@ test('confirmed import replaces series and settings together', async () => {
 });
 
 test('invalid and oversized files never replace the stored document', async () => {
-  const user = userEvent.setup(); const original = documentWithSeries(); seed(original); render(<App />);
+  const user = userEvent.setup(); const original = documentWithSeries(); seed(original); render(<App autoTrack={false} />);
   await user.click(screen.getByRole('button', { name: 'Backups' }));
   chooseFile('{bad');
   expect(await screen.findByRole('alert')).toHaveTextContent(/invalid.*json/i);
@@ -111,7 +111,7 @@ test('invalid and oversized files never replace the stored document', async () =
 });
 
 test('import rejects a completed series with unread published books', async () => {
-  const user = userEvent.setup(); const original = documentWithSeries(); seed(original); render(<App />);
+  const user = userEvent.setup(); const original = documentWithSeries(); seed(original); render(<App autoTrack={false} />);
   await user.click(screen.getByRole('button', { name: 'Backups' }));
   const invalid = { ...original, series: [seriesFixture({ readingStatus: 'completed', publicationRunComplete: true, latestPublishedPosition: 2 })] };
   chooseFile(JSON.stringify(invalid));
@@ -132,7 +132,7 @@ test('the most recently selected file remains the preview when reads finish out 
     constructor() { readers.push(this); }
   }
   vi.stubGlobal('FileReader', DeferredReader);
-  render(<App />);
+  render(<App autoTrack={false} />);
   await user.click(screen.getByRole('button', { name: 'Backups' }));
   const older = { ...documentWithSeries(), settings: { ...documentWithSeries().settings, market: 'US' as const }, series: [seriesFixture({ id: 'older', name: 'Older file' })] };
   const newer = { ...documentWithSeries(), settings: { ...documentWithSeries().settings, market: 'GB' as const }, series: [seriesFixture({ id: 'newer', name: 'Newer file' })] };
@@ -149,7 +149,7 @@ test('the most recently selected file remains the preview when reads finish out 
 test('recovery downloads original malformed text and requires reset confirmation', async () => {
   const user = userEvent.setup(); localStorage.setItem(key, '{broken');
   const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
-  render(<App />);
+  render(<App autoTrack={false} />);
   await user.click(screen.getByRole('button', { name: 'Backups' }));
   const dialog = screen.getByRole('dialog', { name: 'Backups' });
   expect(within(dialog).getByRole('button', { name: 'Export' })).toBeDisabled();
@@ -168,7 +168,7 @@ test('recovery downloads original malformed text and requires reset confirmation
 });
 
 test('failed recovery reset still exposes original raw data for download', async () => {
-  const user = userEvent.setup(); localStorage.setItem(key, '{broken'); render(<App />);
+  const user = userEvent.setup(); localStorage.setItem(key, '{broken'); render(<App autoTrack={false} />);
   await user.click(screen.getByRole('button', { name: 'Backups' }));
   vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('quota exceeded'); });
   await user.click(screen.getByRole('button', { name: 'Reset library' }));
@@ -182,7 +182,7 @@ test('failed recovery reset still exposes original raw data for download', async
 });
 
 test('failed storage write retains imported data in memory and shows an export warning', async () => {
-  const user = userEvent.setup(); seed(); render(<App />);
+  const user = userEvent.setup(); seed(); render(<App autoTrack={false} />);
   await user.click(screen.getByRole('button', { name: 'Backups' }));
   const replacement = { ...documentWithSeries(), settings: { ...documentWithSeries().settings, market: 'GB' as const }, series: [seriesFixture({ id: 'new', name: 'Imported' })] };
   chooseFile(JSON.stringify(replacement));
@@ -204,7 +204,7 @@ test('version 1 recovery download retains the exact original bytes', async () =>
   localStorage.setItem(key, raw);
   vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
   const user = userEvent.setup();
-  render(<App />);
+  render(<App autoTrack={false} />);
   await user.click(screen.getByRole('button', { name: 'Backups' }));
   await user.click(screen.getByRole('button', { name: 'Download stored data' }));
   const blob = vi.mocked(URL.createObjectURL).mock.calls[0][0] as Blob;
@@ -232,7 +232,7 @@ test('encodeBackup refuses to serialize a document that fails validation', () =>
 });
 
 test('Export now shows a visible error instead of throwing when the document cannot be encoded', async () => {
-  const user = userEvent.setup(); seed(); render(<App />);
+  const user = userEvent.setup(); seed(); render(<App autoTrack={false} />);
   await user.click(screen.getByRole('button', { name: 'Backups' }));
   const replacement = { ...documentWithSeries(), series: [seriesFixture({ id: 'new', name: 'Imported' })] };
   chooseFile(JSON.stringify(replacement));
@@ -247,7 +247,7 @@ test('Export now shows a visible error instead of throwing when the document can
 });
 
 test('a stale export error is cleared once the library leaves unsaved mode', async () => {
-  const user = userEvent.setup(); seed(); render(<App />);
+  const user = userEvent.setup(); seed(); render(<App autoTrack={false} />);
   const save = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('quota exceeded'); });
   await user.click(screen.getByRole('button', { name: /^(Dark|Light)$/ }));
   encoder.fail = true;
@@ -262,4 +262,16 @@ test('a stale export error is cleared once the library leaves unsaved mode', asy
     await screen.findByRole('button', { name: 'Export now' });
     expect(screen.queryByText(/Could not export/)).toBeNull();
   } finally { encoder.fail = false; }
+});
+
+test('import preview puts download, cancel and confirm in one action row', async () => {
+  seed();
+  render(<App autoTrack={false} />);
+  await userEvent.click(screen.getByRole('button', { name: 'Backups' }));
+  chooseFile(encodeBackup(documentWithSeries()));
+  const preview = await screen.findByRole('region', { name: 'Import preview' });
+  const row = within(preview).getByRole('button', { name: 'Confirm replacement' }).parentElement!;
+  expect(row).toHaveClass('actions');
+  expect(within(row).getAllByRole('button').map(button => button.textContent)).toEqual(['Download current backup', 'Cancel replacement', 'Confirm replacement']);
+  expect(within(row).getByRole('button', { name: 'Download current backup' })).toHaveClass('actions-start');
 });

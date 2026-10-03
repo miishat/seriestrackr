@@ -96,3 +96,19 @@ test('summary shortcuts apply availability filters and tracked-series resets the
   view.rerender(<LibraryView {...props} summaryFilter={{kind:'all',sequence:2}} />);
   expect(screen.getByRole('heading',{name:'Unknown series'})).toBeInTheDocument();
 });
+
+test('an automatic run saves safe results without AI or cover changes and drops them from review', async () => {
+  const { result } = mount();
+  vi.mocked(checkDiscovery).mockImplementation(async request => {
+    const reply = response({ requestId: request.requestId, seriesId: request.seriesId });
+    reply.summary.requestId = request.requestId;
+    return reply;
+  });
+  const covers = result.current.library.doc.series.map(s => [s.coverUrl, s.coverAttribution]);
+  await act(async () => { await result.current.discovery.runBatch(['s1', 's2'], true); });
+  expect(vi.mocked(checkDiscovery).mock.calls.every(([r]) => r.useAi === false)).toBe(true);
+  expect(result.current.discovery.batch.results).toEqual([]);
+  expect(result.current.discovery.batch.done).toBe(2);
+  expect(result.current.library.doc.series.filter(s => s.autoUpdate).map(s => s.id)).toEqual(['s1', 's2']);
+  expect(result.current.library.doc.series.map(s => [s.coverUrl, s.coverAttribution])).toEqual(covers);
+});

@@ -1,0 +1,17 @@
+{
+  "requestId": "audit-dungeon-crawler-carl",
+  "seriesId": "dbd37dc6-5e8c-444c-b165-f71928deb72f",
+  "target": {
+    "series": "Dungeon Crawler Carl",
+    "author": "Matt Dinniman",
+    "position": 8,
+    "title": "A Parade of Horribles",
+    "orderNote": ""
+  },
+  "preferredMarket": "US",
+  "formats": [
+    "book",
+    "audio"
+  ],
+  "useAi": false
+}

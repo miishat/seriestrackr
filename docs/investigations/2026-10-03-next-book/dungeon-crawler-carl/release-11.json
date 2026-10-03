@@ -1,0 +1,1618 @@
+{
+  "kind": "books#volumes",
+  "totalItems": 5,
+  "items": [
+    {
+      "kind": "books#volume",
+      "id": "506EEQAAQBAJ",
+      "etag": "+2Ak47jTQ5o",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/506EEQAAQBAJ",
+      "volumeInfo": {
+        "title": "Dungeon Crawler Carl",
+        "authors": [
+          "Matt Dinniman"
+        ],
+        "publisher": "Penguin Group",
+        "publishedDate": "2025-12-30",
+        "description": "NEW YORK TIMES BESTSELLER • The apocalypse will be televised! Welcome to the first book in the wildly popular and addictive Dungeon Crawler Carl series—now with bonus material exclusive to this print edition. You know what’s worse than breaking up with your girlfriend? Being stuck with her prize-winning show cat. And you know what’s worse than that? An alien invasion, the destruction of all man-made structures on Earth, and the systematic exploitation of all the survivors for a sadistic intergalactic game show. That’s what. Join Coast Guard vet Carl and his ex-girlfriend’s cat, Princess Donut, as they try to survive the end of the world—or just get to the next level—in a video game–like, trap-filled fantasy dungeon. A dungeon that’s actually the set of a reality television show with countless viewers across the galaxy. Exploding goblins. Magical potions. Deadly, drug-dealing llamas. This ain’t your ordinary game show. Welcome, Crawler. Welcome to the Dungeon. Survival is optional. Keeping the viewers entertained is not. Includes part one of the exclusive bonus story “Backstage at the Pineapple Cabaret.”",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9780593820254"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "0593820258"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": true
+        },
+        "pageCount": 481,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "1.1.1.0.preview.1",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=506EEQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=506EEQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=506EEQAAQBAJ&printsec=frontcover&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&cd=1&source=gbs_api",
+        "infoLink": "http://books.google.ca/books?id=506EEQAAQBAJ&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/Dungeon_Crawler_Carl.html?hl=&id=506EEQAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/Dungeon_Crawler_Carl-sample-pdf.acsm?id=506EEQAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=506EEQAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "NEW YORK TIMES BESTSELLER • The apocalypse will be televised! Welcome to the first book in the wildly popular and addictive Dungeon Crawler Carl series—now with bonus material exclusive to this print edition."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "KsUB0gEACAAJ",
+      "etag": "kopN0owqyYw",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/KsUB0gEACAAJ",
+      "volumeInfo": {
+        "title": "Dungeon Crawler Carl, Vol. 2 (Graphic Novel)",
+        "authors": [
+          "Matt Dinniman",
+          "Rhett C. Bruno",
+          "Jaime Castle"
+        ],
+        "publisher": "Vault Comics",
+        "publishedDate": "2026-10-06",
+        "description": "The wildly popular and addictive New York Times bestselling LitRPG series, DUNGEON CRAWLER CARL, continues as a graphic novel in DUNGEON CRAWLER CARL, Vol. 2. The Apocalypse will be televised! The world may be over, but Carl and Princess Donut have a motorcycle and a mission: Make it to the second floor. What could possibly stand in their way? For starters, a horde of goblins, homicidal fellow crawlers, a sadistic AI, and a meddling alien talk show host. Stick with Carl and Princess Donut as they battle to survive the latest season of Dungeon Crawler World! Matt Dinniman was consulted every step of the way in the creation of this graphic novel, featuring vibrant art by Laurel Pursuit that brings the action and humor to life. Welcome, Crawler. Welcome to the Dungeon. Survival is optional. Keeping the viewers entertained is not. This volume collects episodes 14-30 of the WEBTOON edition! Praise for DUNGEON CRAWLER CARL (WEBTOON Graphic Novel): \"...incredibly entertaining\" -- Screenrant \"...one of the most unique new stories on Webtoon\" -- Screenrant Dungeon Crawler Carl ranked #1 best new series on WEBTOON by Screenrant Praise for DUNGEON CRAWLER CARL (eBook/Print): “Fresh. Creative. Hilarious. I'm obsessed…Princess Donut is my queen.” – Actor, producer and New York Times bestselling author Felicia Day \"I don't always say nice things about a book just because the writer has compromising pictures of me engaging in some very complicated international crimes, but when I do, I say them about Matt Dinniman's Dungeon Crawler Carl! Also, this series has no goddamn business burying so much depth and emotion and complexity under its bawdy, gory surface, but it does so anyway. What a wild-ass and unexpected delight.\" – New York Times bestselling author Scott Lynch “[A] comically cosmic adventure series…often laugh-out-loud funny…Grind your way to dungeon mastery alongside Carl and Princess Donut.” – The Wall Street Journal \"This is the book for anyone who ever wondered what it would be like to be a role player in a game with the best game master ever. Also for anyone who wants to read a good book. Or maybe anyone who has been outside at night—in their underwear—looking for their cat and wondering 'What's the worst thing that could happen?' Once you start, you won't put it down.\" - Patricia Briggs, #1 New York Times bestselling author of the Mercy Thompson series “One of the most bananapants, funny, inventive books I have read in a while.\" - Book Riot \"If there's a better LitRPG than Dungeon Crawler Carl, I haven't read it.\" - Travis Deverell a.k.a. Shirtaloon, author of He Who Fights With Monsters “Dungeon Crawler Carl is just one big smile all the way through. Put on your best pair of boxer shorts and sit back for a truly fun and enjoyable read.”—New York Times bestselling author Kevin J. Anderson “Dungeon Crawler Carl is the best start to a series I’ve read this year. I wish I’d tried it sooner.” – Will Wight, author of the Cradle series “To describe the Dungeon Crawler Carl series, and the first book in particular, one must blend the darkest, grittiest science fiction with the humour of Hitchhiker's Guide to the Galaxy. It mixes fun, whimsical absurdity, and serious, dark themes with dire consequences…it is so spectacularly good that I cannot recommend it high enough.” - Grimdark Magazine “Dinniman’s Douglas-Adams-but-playing-D&D romp was so much fun that I immediately went out and got the next two books…genuinely joyful.” – LitHub.com",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_10",
+            "identifier": "1638494819"
+          },
+          {
+            "type": "ISBN_13",
+            "identifier": "9781638494812"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": false
+        },
+        "pageCount": 0,
+        "printType": "BOOK",
+        "categories": [
+          "Comics & Graphic Novels"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "preview-1.0.0",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "comicsContent": true,
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=KsUB0gEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=KsUB0gEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=KsUB0gEACAAJ&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&cd=2&source=gbs_api",
+        "infoLink": "http://books.google.ca/books?id=KsUB0gEACAAJ&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/Dungeon_Crawler_Carl_Vol_2_Graphic_Novel.html?hl=&id=KsUB0gEACAAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "NO_PAGES",
+        "embeddable": false,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": false
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=KsUB0gEACAAJ&hl=&source=gbs_api",
+        "accessViewStatus": "NONE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "Welcome, Crawler. Welcome to the Dungeon. Survival is optional. Keeping the viewers entertained is not. This volume collects episodes 14-30 of the WEBTOON edition!"
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "BLkP0AEACAAJ",
+      "etag": "wFIRlx4rywc",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/BLkP0AEACAAJ",
+      "volumeInfo": {
+        "title": "Dungeon Crawler Carl",
+        "subtitle": "A LitRPG Adventure",
+        "authors": [
+          "Matt Dinniman"
+        ],
+        "publishedDate": "2020-10",
+        "description": "The apocalypse will be televised!A man. His ex-girlfriend's cat. A sadistic game show unlike anything in the universe: a dungeon crawl where survival depends on killing your prey in the most entertaining way possible.",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9798988744405"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": false
+        },
+        "pageCount": 0,
+        "printType": "BOOK",
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "preview-1.0.0",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=BLkP0AEACAAJ&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&cd=3&source=gbs_api",
+        "infoLink": "http://books.google.ca/books?id=BLkP0AEACAAJ&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/Dungeon_Crawler_Carl.html?hl=&id=BLkP0AEACAAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "NO_PAGES",
+        "embeddable": false,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": false
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=BLkP0AEACAAJ&hl=&source=gbs_api",
+        "accessViewStatus": "NONE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "The apocalypse will be televised!A man. His ex-girlfriend&#39;s cat. A sadistic game show unlike anything in the universe: a dungeon crawl where survival depends on killing your prey in the most entertaining way possible."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "tuYrEQAAQBAJ",
+      "etag": "8O74leQedwc",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/tuYrEQAAQBAJ",
+      "volumeInfo": {
+        "title": "The Gate of the Feral Gods",
+        "authors": [
+          "Matt Dinniman"
+        ],
+        "publisher": "Penguin Group",
+        "publishedDate": "2025-03-11",
+        "description": "NEW YORK TIMES BESTSELLER • Follow Carl, Princess Donut, and Mongo as they fight their way to the next level in the fourth book in the Dungeon Crawler Carl series—now with bonus material exclusive to this print edition! New Achievement! Total, Utter Failure. You failed a quest less than five minutes after you received it. Now that’s talent. Surviving in a multilevel dungeon that also happens to be the set of the galaxy’s most watched game show has taught Coast Guard vet Carl and his ex-girlfriend’s cat, Princess Donut, that there’s only one thing they can count on apart from each other: they never know what’s coming next. And this floor is no exception. A floating fortress occupied by warrior gnomes. A castle made of sand. A derelict submarine guarded by malfunctioning machines. A haunted crypt surrounded by lethal traps. It was supposed to be easy. One bubble. Four castles. Fifteen days. Capture each one, and the stairwell is unlocked. Here's the thing. It's never easy. Going it alone is not an option this time, so Carl and his team must rely on the help of the low-level, I-can't-believe-these-idiots-are-still-alive crawlers trapped in the bubble with them. But can they be trusted? Welcome, Crawlers. Welcome to the fifth floor of the dungeon.",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9780593955970"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "0593955978"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": true
+        },
+        "pageCount": 609,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "1.2.1.0.preview.1",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=tuYrEQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=tuYrEQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=tuYrEQAAQBAJ&printsec=frontcover&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&cd=4&source=gbs_api",
+        "infoLink": "http://books.google.ca/books?id=tuYrEQAAQBAJ&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/The_Gate_of_the_Feral_Gods.html?hl=&id=tuYrEQAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/The_Gate_of_the_Feral_Gods-sample-pdf.acsm?id=tuYrEQAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=tuYrEQAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "NEW YORK TIMES BESTSELLER • Follow Carl, Princess Donut, and Mongo as they fight their way to the next level in the fourth book in the Dungeon Crawler Carl series—now with bonus material exclusive to this print edition!"
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "838V0gEACAAJ",
+      "etag": "rO8fnqdq6XE",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/838V0gEACAAJ",
+      "volumeInfo": {
+        "title": "Dungeon Crawler Carl, Vol. 3 (Graphic Novel)",
+        "authors": [
+          "Matt Dinniman",
+          "Aethon"
+        ],
+        "publisher": "Vault Comics",
+        "publishedDate": "2027-03-09",
+        "description": "The New York Times bestselling graphic novel adaption of the wildly popular and addictive #1 New York Times bestselling LitRPG series Dungeon Crawler Carl continues with its third volume. The Apocalypse will be televised! The New York Times bestselling graphic novel series continues. Carl won’t be broken. But that doesn’t mean he won’t have to work for it, as the sadistic A.I. running the Dungeon throws everything it can in his path, and nefarious-but-clownish agents battle to exploit him and his friends in every way imaginable. Stick with Carl and Princess Donut as they battle to survive the latest season of Dungeon Crawler World! Matt Dinniman was consulted every step of the way in the creation of this graphic novel, featuring vibrant art by Laurel Pursuit that brings the action and humor to life. Welcome, Crawler. Welcome to the Dungeon. Survival is optional. Keeping the viewers entertained is not. Dungeon Crawler Carl, Vol. 1 (Graphic Novel) was a: NEW YORK TIMES Top 2 Bestseller! USA TODAY Top 5 Overall Bestseller! PUBLISHERS WEEKLY Top 10 Overall Bestseller! PUBLISHERS WEEKLY Top 5 Trade Paperback Bestseller! Praise for DUNGEON CRAWLER CARL (WEBTOON Graphic Novel): \"...incredibly entertaining\" -- Screenrant \"...one of the most unique new stories on Webtoon\" -- Screenrant Dungeon Crawler Carl ranked #1 best new series on WEBTOON by Screenrant Praise for DUNGEON CRAWLER CARL (eBook/Print): “Fresh. Creative. Hilarious. I'm obsessed…Princess Donut is my queen.” – Actor, producer and New York Times bestselling author Felicia Day \"I don't always say nice things about a book just because the writer has compromising pictures of me engaging in some very complicated international crimes, but when I do, I say them about Matt Dinniman's Dungeon Crawler Carl! Also, this series has no goddamn business burying so much depth and emotion and complexity under its bawdy, gory surface, but it does so anyway. What a wild-ass and unexpected delight.\" – New York Times bestselling author Scott Lynch “[A] comically cosmic adventure series…often laugh-out-loud funny…Grind your way to dungeon mastery alongside Carl and Princess Donut.” – The Wall Street Journal \"This is the book for anyone who ever wondered what it would be like to be a role player in a game with the best game master ever. Also for anyone who wants to read a good book. Or maybe anyone who has been outside at night—in their underwear—looking for their cat and wondering 'What's the worst thing that could happen?' Once you start, you won't put it down.\" - Patricia Briggs, #1 New York Times bestselling author of the Mercy Thompson series “One of the most bananapants, funny, inventive books I have read in a while.\" - Book Riot \"If there's a better LitRPG than Dungeon Crawler Carl, I haven't read it.\" - Travis Deverell a.k.a. Shirtaloon, author of He Who Fights With Monsters “Dungeon Crawler Carl is just one big smile all the way through. Put on your best pair of boxer shorts and sit back for a truly fun and enjoyable read.”—New York Times bestselling author Kevin J. Anderson “Dungeon Crawler Carl is the best start to a series I’ve read this year. I wish I’d tried it sooner.” – Will Wight, author of the Cradle series “To describe the Dungeon Crawler Carl series, and the first book in particular, one must blend the darkest, grittiest science fiction with the humour of Hitchhiker's Guide to the Galaxy. It mixes fun, whimsical absurdity, and serious, dark themes with dire consequences…it is so spectacularly good that I cannot recommend it high enough.” - Grimdark Magazine “Dinniman’s Douglas-Adams-but-playing-D&D romp was so much fun that I immediately went out and got the next two books…genuinely joyful.” – LitHub.com",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_10",
+            "identifier": "1638495009"
+          },
+          {
+            "type": "ISBN_13",
+            "identifier": "9781638495000"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": false
+        },
+        "pageCount": 0,
+        "printType": "BOOK",
+        "categories": [
+          "Comics & Graphic Novels"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "preview-1.0.0",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "comicsContent": true,
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=838V0gEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=838V0gEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=838V0gEACAAJ&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&cd=5&source=gbs_api",
+        "infoLink": "http://books.google.ca/books?id=838V0gEACAAJ&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/Dungeon_Crawler_Carl_Vol_3_Graphic_Novel.html?hl=&id=838V0gEACAAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "NO_PAGES",
+        "embeddable": false,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": false
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=838V0gEACAAJ&hl=&source=gbs_api",
+        "accessViewStatus": "NONE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "Also, this series has no goddamn business burying so much depth and emotion and complexity under its bawdy, gory surface, but it does so anyway."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "yEem0QEACAAJ",
+      "etag": "NAlDL0HiQVo",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/yEem0QEACAAJ",
+      "volumeInfo": {
+        "title": "Dungeon Crawler Carl, Vol. 1 (Graphic Novel)",
+        "authors": [
+          "Matt Dinniman",
+          "Aethon",
+          "ACTUS"
+        ],
+        "publisher": "Vault Comics",
+        "publishedDate": "2026-05-19",
+        "description": "The LitRPG fantasy smash hit phenomenon and New York Times bestseller, DUNGEON CRAWLER CARL, is now a graphic novel for the very first time! The Apocalypse WILL be televised! You know what’s worse than breaking up with your girlfriend? Getting stuck on a sadistic alien game show with her cat. Join Carl and Princess Donut as they try to survive the end of the world — or just get to the next level of a trap-filled fantasy dungeon. With vibrant art done by Laurel Pursuit to bring action-packed battles to life, join as Carl fights his way through the dungeon in heart-speckled underwear. And of course, the grizzly scenes are only balanced with the incredibly fluffy, wide-eyed stare of its main character, Princess Donut. A ton of heart and effort was poured in creating a series with a script and style that would both appeal to WEBTOON readers and also lovers of DCC, all while consulting author Matt Dinniman the entire way about character designs, story, - EVERYTHING! We couldn’t resist taking the apocalyptic awesomeness of the DUNGEON CRAWLER CARL WEBTOON and adapting it into the FIRST EVER graphic novel series! Welcome, Crawler. Welcome to the Dungeon. Survival is optional. Keeping the viewers entertained is not. This volume collects episodes 1-14 of the WEBTOON edition. Praise for DUNGEON CRAWLER CARL (eBook/Print): “Fresh. Creative. Hilarious. I'm obsessed…Princess Donut is my queen.” – Actor, producer and New York Times bestselling author Felicia Day \"I don't always say nice things about a book just because the writer has compromising pictures of me engaging in some very complicated international crimes, but when I do, I say them about Matt Dinniman's Dungeon Crawler Carl! Also, this series has no goddamn business burying so much depth and emotion and complexity under its bawdy, gory surface, but it does so anyway. What a wild-ass and unexpected delight.\" – New York Times bestselling author Scott Lynch “[A] comically cosmic adventure series…often laugh-out-loud funny…Grind your way to dungeon mastery alongside Carl and Princess Donut.” – The Wall Street Journal \"This is the book for anyone who ever wondered what it would be like to be a role player in a game with the best game master ever. Also for anyone who wants to read a good book. Or maybe anyone who has been outside at night—in their underwear—looking for their cat and wondering 'What's the worst thing that could happen?' Once you start, you won't put it down.\" - Patricia Briggs, #1 New York Times bestselling author of the Mercy Thompson series “One of the most bananapants, funny, inventive books I have read in a while.\" - Book Riot \"If there's a better LitRPG than Dungeon Crawler Carl, I haven't read it.\" - Travis Deverell a.k.a. Shirtaloon, author of He Who Fights Monsters “Dungeon Crawler Carl is just one big smile all the way through. Put on your best pair of boxer shorts and sit back for a truly fun and enjoyable read.”—New York Times bestselling author Kevin J. Anderson “Dungeon Crawler Carl is the best start to a series I’ve read this year. I wish I’d tried it sooner.” – Will Wight, author of the Cradle series “To describe the Dungeon Crawler Carl series, and the first book in particular, one must blend the darkest, grittiest science fiction with the humour of Hitchhiker's Guide to the Galaxy. It mixes fun, whimsical absurdity, and serious, dark themes with dire consequences…it is so spectacularly good that I cannot recommend it high enough.” - Grimdark Magazine “Dinniman’s Douglas-Adams-but-playing-D&D romp was so much fun that I immediately went out and got the next two books…genuinely joyful.” – LitHub.com",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_10",
+            "identifier": "1638493650"
+          },
+          {
+            "type": "ISBN_13",
+            "identifier": "9781638493655"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": false
+        },
+        "pageCount": 0,
+        "printType": "BOOK",
+        "categories": [
+          "Comics & Graphic Novels"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "preview-1.0.0",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "comicsContent": true,
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=yEem0QEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=yEem0QEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=yEem0QEACAAJ&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&cd=6&source=gbs_api",
+        "infoLink": "http://books.google.ca/books?id=yEem0QEACAAJ&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/Dungeon_Crawler_Carl_Vol_1_Graphic_Novel.html?hl=&id=yEem0QEACAAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "NO_PAGES",
+        "embeddable": false,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": false
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=yEem0QEACAAJ&hl=&source=gbs_api",
+        "accessViewStatus": "NONE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "Welcome, Crawler. Welcome to the Dungeon. Survival is optional. Keeping the viewers entertained is not. This volume collects episodes 1-13 of the WEBTOON edition. NEW YORK TIMES Top 2 Bestseller! USA TODAY Top 5 Overall Bestseller!"
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "0mjKEQAAQBAJ",
+      "etag": "pHRFoY6DUvU",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/0mjKEQAAQBAJ",
+      "volumeInfo": {
+        "title": "Dungeon Crawler Carl: Deluxe Edition",
+        "authors": [
+          "Matt Dinniman"
+        ],
+        "publisher": "Penguin Group",
+        "publishedDate": "2026-11-17",
+        "description": "The first novel in Matt Dinniman's smash-hit Dungeon Crawler Carl series, now in a brand-new, deluxe hardcover collector's edition that includes: • A stunning cover and artwork by acclaimed artist Victo Ngai • Decorated endpapers • A fully illustrated hardcover case featuring a solvable maze • Illustrations on the inside of the jacket • Stenciled edges • A Q&A with author Matt Dinniman, conducted by GC, BWR, NW Princess Donut the Queen Anne Chonk herself The apocalypse will be televised! You know what’s worse than breaking up with your girlfriend? Being stuck with her prize-winning show cat. And you know what’s worse than that? An alien invasion, the destruction of all man-made structures on Earth, and the systematic exploitation of all the survivors for a sadistic intergalactic game show. That’s what. Join Coast Guard vet Carl and his ex-girlfriend’s cat, Princess Donut, as they try to survive the end of the world—or just get to the next level—in a video game–like, trap-filled fantasy dungeon. A dungeon that’s actually the set of a reality television show with countless viewers across the galaxy. Exploding goblins. Magical potions. Deadly, drug-dealing llamas. This ain’t your ordinary game show. Welcome, Crawler. Welcome to the Dungeon. Survival is optional. Keeping the viewers entertained is not. Includes part one of the exclusive bonus story “Backstage at the Pineapple Cabaret.”",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9798217192199"
+          }
+        ],
+        "readingModes": {
+          "text": true,
+          "image": false
+        },
+        "pageCount": 0,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "preview-1.0.0",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=0mjKEQAAQBAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=0mjKEQAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=0mjKEQAAQBAJ&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&cd=7&source=gbs_api",
+        "infoLink": "http://books.google.ca/books?id=0mjKEQAAQBAJ&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/Dungeon_Crawler_Carl_Deluxe_Edition.html?hl=&id=0mjKEQAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "NO_PAGES",
+        "embeddable": false,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": false
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=0mjKEQAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "NONE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "The first novel in Matt Dinniman&#39;s smash-hit Dungeon Crawler Carl series, now in a brand-new, deluxe hardcover collector&#39;s edition that includes: • A stunning cover and artwork by acclaimed artist Victo Ngai • Decorated endpapers • A ..."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "QqxlEQAAQBAJ",
+      "etag": "Mw9Lt23kSok",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/QqxlEQAAQBAJ",
+      "volumeInfo": {
+        "title": "Dungeon Crawler Carl : Le Portail des dieux infernaux - Tome 4 : une aventure de LitRPG. Saga de science-fiction et fantasy post apocalyptique aux millions de lecteurs, Livre nouveauté 2025",
+        "authors": [
+          "Matt Dinniman"
+        ],
+        "publisher": "Lorestone",
+        "publishedDate": "2025-12-04",
+        "description": "Le Dungeon n'en a pas encore fini avec Carl et Princesse Donut. Découvrez la suite des aventures du duo le plus suivi de l'univers dans ce tome 4 : \" Le portail des dieux infernaux \". RÉSUMÉ DU TOME 4 DE \"DUNGEON CRAWLER CARL : LE PORTAIL DES DIEUX INFERNAUX\" : Une bulle. Cent cinquante crawlers. Quatre châteaux. Quinze jours. * * * * Que devient le duo de choc le plus suivi de l'univers ? Projetés dans l'une des 1 172 bulles qui composent le niveau 5, Carl, Donut et Katia n'ont que deux semaines pour conquérir les quatre bastions qu'elle contient et, ainsi, débloquer l'accès aux escaliers. Comme si cela ne suffisait pas, la plupart des crawlers avec lesquels ils sont forcés de collaborer sont soit des boulets incompétents, soit de niveaux trop faibles pour véritablement les aider. Heureusement, Carl bénéficie toujours d'un atout de taille, bien caché dans son inventaire. Il doit cependant rester sur ses gardes : les maîtres du jeu – ainsi que Loita, la nouvelle agente de l'équipe – l'ont à l'œil, tolérant de moins en moins ses provocations. Au moindre soupçon, le Livre lui sera retiré ; au moindre écart, c'est l'accélération assurée. Rien, pourtant, ne le fera dévier de sa nouvelle résolution. Ils ne le briseront pas. Jamais. C'est lui qui les brisera. Tous. Ils l'appellent Dungeon Crawler World. Mais pour Carl et Donut, c'est tout sauf un jeu. ENTREZ DANS L'UNIVERS LITRPG : Au croisement de la science-fiction, la fantasy et le jeu vidéo, découvrez un nouveau genre inédit en France. Le terme LitRPG est une contraction de \" Littérature \" et de \" Role Playing Game \". Il désigne un genre littéraire qui mélange les codes de la littérature de l'imaginaire (science-fiction et fantasy) et ceux du jeu vidéo. Imaginez tout ce que vous aimez dans vos jeux préférés et vous le retrouverez dans ces romans : de grandes aventures épiques, des personnages qui suivent des quêtes, prennent des niveaux, gagnent de l'expérience, affrontent des boss, etc. UNE SAGA AUX DEUX MILLIONS DE LECTEURS : La série LitRPG culte de Matt Dinniman, enfin en France ! Mélange détonant d'action, d'humour et de points d'expérience, les déboires de Carl et Princesse Donut sauront ravir les fans de fantasy et de gaming. Dungeon Crawler Carl : Le Portail des dieux infernaux - Tome 4 : Livre Fantasy et Science-fiction.",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9782487700734"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "2487700734"
+          }
+        ],
+        "readingModes": {
+          "text": true,
+          "image": true
+        },
+        "pageCount": 605,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": true,
+        "contentVersion": "1.2.2.0.preview.3",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=QqxlEQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=QqxlEQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "fr",
+        "previewLink": "http://books.google.ca/books?id=QqxlEQAAQBAJ&printsec=frontcover&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&cd=8&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=QqxlEQAAQBAJ&source=gbs_api",
+        "canonicalVolumeLink": "https://play.google.com/store/books/details?id=QqxlEQAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FOR_SALE",
+        "isEbook": true,
+        "listPrice": {
+          "amount": 16.99,
+          "currencyCode": "CAD"
+        },
+        "retailPrice": {
+          "amount": 9.99,
+          "currencyCode": "CAD"
+        },
+        "buyLink": "https://play.google.com/store/books/details?id=QqxlEQAAQBAJ&rdid=book-QqxlEQAAQBAJ&rdot=1&source=gbs_api",
+        "offers": [
+          {
+            "finskyOfferType": 1,
+            "listPrice": {
+              "amountInMicros": 16990000,
+              "currencyCode": "CAD"
+            },
+            "retailPrice": {
+              "amountInMicros": 9990000,
+              "currencyCode": "CAD"
+            },
+            "giftable": true
+          }
+        ]
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/Dungeon_Crawler_Carl_Le_Portail_des_dieu-sample-epub.acsm?id=QqxlEQAAQBAJ&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "pdf": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/Dungeon_Crawler_Carl_Le_Portail_des_dieu-sample-pdf.acsm?id=QqxlEQAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=QqxlEQAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "UNE SAGA AUX DEUX MILLIONS DE LECTEURS : La série LitRPG culte de Matt Dinniman, enfin en France !"
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "BG3VEQAAQBAJ",
+      "etag": "AuPHo9WsDhA",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/BG3VEQAAQBAJ",
+      "volumeInfo": {
+        "title": "The Eye of the Bedlam Bride",
+        "authors": [
+          "Matt Dinniman"
+        ],
+        "publisher": "Random House",
+        "publishedDate": "2026-07-28",
+        "description": "Carl and Princess Donut journey into insanity in the wildly entertaining sixth book in the USA Today bestselling Dungeon Crawler Carl series by Matt Dinniman—now with bonus material exclusive to this print edition! Coast Guard vet Carl and his ex-girlfriend’s cat, Princess Donut, have survived longer and leveled up higher than anyone ever thought they could in the galaxy’s most popular reality show, but after the shocking conclusion of the seventh level, it’s now anyone’s game. A pantheon of forgotten gods. An old grudge between a talk show host, an heiress, and the man they shattered along the way. A rapidly deteriorating AI system. An inconvenient tiara upon the head of a friend. It is bedlam on the eighth floor. The crawlers are given a new task: Find and capture six monsters, each of which will be turned into a card. The stronger, the deadlier, the better. At the end of the floor, the bad guys will also have decks, made of some of the most powerful cards available. So it’s crucial for crawlers to assemble the toughest squad possible. But, like always, there is a catch. There’s always a catch. If Carl and Donut want a winning hand, they’ll have to capture the most lethal and terrifying monster of them all: Shi Maria. She was once married to a now-missing god. Her special attack is known to drive one insane. They call her the Bedlam Bride. But even if Carl and Donut can capture her, they know all too well that just because someone has been captured, it doesn’t mean they have been tamed. Welcome, Crawlers. Welcome to the eighth floor of the dungeon.",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9798217511976"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": true
+        },
+        "pageCount": 1249,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "1.1.1.0.preview.1",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=BG3VEQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=BG3VEQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=BG3VEQAAQBAJ&printsec=frontcover&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&cd=9&source=gbs_api",
+        "infoLink": "http://books.google.ca/books?id=BG3VEQAAQBAJ&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/The_Eye_of_the_Bedlam_Bride.html?hl=&id=BG3VEQAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/The_Eye_of_the_Bedlam_Bride-sample-pdf.acsm?id=BG3VEQAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=BG3VEQAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "Carl and Princess Donut journey into insanity in the wildly entertaining sixth book in the USA Today bestselling Dungeon Crawler Carl series by Matt Dinniman—now with bonus material exclusive to this print edition!"
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "AP4gEQAAQBAJ",
+      "etag": "NFm6CNoxmbk",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/AP4gEQAAQBAJ",
+      "volumeInfo": {
+        "title": "Dungeon Crawler Carl - Tome 1 : une aventure de LitRPG. Saga de science-fiction et fantasy post apocalyptique aux millions de lecteurs, Livre nouveauté 2024 (version française)",
+        "authors": [
+          "Matt Dinniman"
+        ],
+        "publisher": "Lorestone",
+        "publishedDate": "2024-11-07",
+        "description": "RÉSUMÉ DU TOME 1 DE \"DUNGEON CRAWLER CARL\" : Bienvenue, chers crawlers. Bienvenue dans le donjon. Survivre est une option ; offrir un show d'enfer aux spectateurs, une nécessité. Un homme. Le chat de son ex. Un jeu télévisé sadique où leur survie dépend de leur capacité à tuer avec style. En un éclair, chaque construction humaine érigée sur Terre s'effondre, créant un gigantesque donjon : un labyrinthe infernal de 18 niveaux remplis de pièges, de monstres et de butins. Seulement quelques survivants osent s'aventurer à l'intérieur, mais une fois que vous y pénétrez, impossible d'en ressortir. Vous n'avez que quelques jours pour trouver l'escalier vers le niveau suivant ou c'est game over. Dans ce jeu, ce n'est ni votre force ni votre dextérité qui vous aidera à survivre, mais votre popularité et votre nombre de vues. Ils l'appellent Dungeon Crawler World. Mais pour Carl, c'est tout sauf un jeu. *Découvrez le premier tome de la saga culte aux US.* ENTREZ DANS L'UNIVERS LITRPG : Au croisement de la science-fiction, la fantasy et le jeu vidéo, découvrez un nouveau genre inédit en France. Le terme LitRPG est une contraction de \" Littérature \" et de \" Role Playing Game \". Il désigne un genre littéraire qui mélange les codes de la littérature de l'imaginaire (science-fiction et fantasy) et ceux du jeu vidéo. Imaginez tout ce que vous aimez dans vos jeux préférés et vous le retrouverez dans ces romans : de grandes aventures épiques, des personnages qui suivent des quêtes, prennent des niveaux, gagnent de l'expérience, affrontent des boss, etc. UNE SAGA AUX DEUX MILLIONS DE LECTEURS : La série LitRPG culte de Matt Dinniman, enfin en France ! Mélange détonant d'action, d'humour et de points d'expérience, les déboires de Carl et Princesse Donut sauront ravir les fans de fantasy et de gaming. Dungeon Crawler Carl Tome 1 : Livre Fantasy et Science-fiction.",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9782487700048"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "2487700041"
+          }
+        ],
+        "readingModes": {
+          "text": true,
+          "image": true
+        },
+        "pageCount": 479,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": true,
+        "contentVersion": "1.4.3.0.preview.3",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=AP4gEQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=AP4gEQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "fr",
+        "previewLink": "http://books.google.ca/books?id=AP4gEQAAQBAJ&printsec=frontcover&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&cd=10&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=AP4gEQAAQBAJ&source=gbs_api",
+        "canonicalVolumeLink": "https://play.google.com/store/books/details?id=AP4gEQAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FOR_SALE",
+        "isEbook": true,
+        "listPrice": {
+          "amount": 13.99,
+          "currencyCode": "CAD"
+        },
+        "retailPrice": {
+          "amount": 9.99,
+          "currencyCode": "CAD"
+        },
+        "buyLink": "https://play.google.com/store/books/details?id=AP4gEQAAQBAJ&rdid=book-AP4gEQAAQBAJ&rdot=1&source=gbs_api",
+        "offers": [
+          {
+            "finskyOfferType": 1,
+            "listPrice": {
+              "amountInMicros": 13990000,
+              "currencyCode": "CAD"
+            },
+            "retailPrice": {
+              "amountInMicros": 9990000,
+              "currencyCode": "CAD"
+            },
+            "giftable": true
+          }
+        ]
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/Dungeon_Crawler_Carl_Tome_1_une_aventure-sample-epub.acsm?id=AP4gEQAAQBAJ&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "pdf": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/Dungeon_Crawler_Carl_Tome_1_une_aventure-sample-pdf.acsm?id=AP4gEQAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=AP4gEQAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "UNE SAGA AUX DEUX MILLIONS DE LECTEURS : La série LitRPG culte de Matt Dinniman, enfin en France !"
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "r-cwEQAAQBAJ",
+      "etag": "TDJFPUgy3Jk",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/r-cwEQAAQBAJ",
+      "volumeInfo": {
+        "title": "Dungeon Crawler Carl : Le Livre de recettes de l'Anarchiste - Tome 3 : une aventure de LitRPG. Saga de science-fiction et fantasy post apocalyptique aux millions de lecteurs, Livre nouveauté 2025",
+        "authors": [
+          "Matt Dinniman"
+        ],
+        "publisher": "Lorestone",
+        "publishedDate": "2025-07-10",
+        "description": "RÉSUMÉ DU TOME 3 DE \"DUNGEON CRAWLER CARL\" : Bienvenue, chers crawlers, au niveau 4 : le Noeud de fer. Que devient le duo de choc le plus suivi de l'univers ? Les efforts de Carl et Donut ont payé : non seulement ils ont survécu aux trois premiers niveaux, mais leur équipe est l'une des plus célèbres et des plus appréciées du jeu ! Cette popularité qui les a propulsés dans le prestigieux top 10 n'est pas sans revers, une prime en pièces d'or est désormais promise à quiconque les éliminera. Pour venir à bout du niveau 4, véritable labyrinthe ferroviaire, les crawlers vont devoir unir leurs forces, mais à qui se fier quand votre tête est mise à prix ? Cerise sur le gâteau : le soutien des mécènes présage de nouveaux conflits tant à l'intérieur qu'à l'extérieur du donjon. Carl fait alors l'acquisition d'un objet en apparence insignifiant qui pourrait pourtant faire basculer le cours de la saison... et même de l'univers. Ils l'appellent Dungeon Crawler World. Mais pour Carl et Donut, c'est tout sauf un jeu. *Découvrez le troisième tome de la saga culte aux US.* ENTREZ DANS L'UNIVERS LITRPG : Au croisement de la science-fiction, la fantasy et le jeu vidéo, découvrez un nouveau genre inédit en France. Le terme LitRPG est une contraction de \" Littérature \" et de \" Role Playing Game \". Il désigne un genre littéraire qui mélange les codes de la littérature de l'imaginaire (science-fiction et fantasy) et ceux du jeu vidéo. Imaginez tout ce que vous aimez dans vos jeux préférés et vous le retrouverez dans ces romans : de grandes aventures épiques, des personnages qui suivent des quêtes, prennent des niveaux, gagnent de l'expérience, affrontent des boss, etc. UNE SAGA AUX DEUX MILLIONS DE LECTEURS : La série LitRPG culte de Matt Dinniman, enfin en France ! Mélange détonant d'action, d'humour et de points d'expérience, les déboires de Carl et Princesse Donut sauront ravir les fans de fantasy et de gaming. Dungeon Crawler Carl Tome 3 : Livre Fantasy et Science-fiction.",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9782487700185"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "2487700181"
+          }
+        ],
+        "readingModes": {
+          "text": true,
+          "image": true
+        },
+        "pageCount": 563,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": true,
+        "contentVersion": "1.2.2.0.preview.3",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=r-cwEQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=r-cwEQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "fr",
+        "previewLink": "http://books.google.ca/books?id=r-cwEQAAQBAJ&printsec=frontcover&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&cd=11&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=r-cwEQAAQBAJ&source=gbs_api",
+        "canonicalVolumeLink": "https://play.google.com/store/books/details?id=r-cwEQAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FOR_SALE",
+        "isEbook": true,
+        "listPrice": {
+          "amount": 16.99,
+          "currencyCode": "CAD"
+        },
+        "retailPrice": {
+          "amount": 9.99,
+          "currencyCode": "CAD"
+        },
+        "buyLink": "https://play.google.com/store/books/details?id=r-cwEQAAQBAJ&rdid=book-r-cwEQAAQBAJ&rdot=1&source=gbs_api",
+        "offers": [
+          {
+            "finskyOfferType": 1,
+            "listPrice": {
+              "amountInMicros": 16990000,
+              "currencyCode": "CAD"
+            },
+            "retailPrice": {
+              "amountInMicros": 9990000,
+              "currencyCode": "CAD"
+            },
+            "giftable": true
+          }
+        ]
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/Dungeon_Crawler_Carl_Le_Livre_de_recette-sample-epub.acsm?id=r-cwEQAAQBAJ&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "pdf": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/Dungeon_Crawler_Carl_Le_Livre_de_recette-sample-pdf.acsm?id=r-cwEQAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=r-cwEQAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "UNE SAGA AUX DEUX MILLIONS DE LECTEURS : La série LitRPG culte de Matt Dinniman, enfin en France !"
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "tb0JEgAAQBAJ",
+      "etag": "aSPSLS7q++Y",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/tb0JEgAAQBAJ",
+      "volumeInfo": {
+        "title": "Dungeon Crawler Carl",
+        "subtitle": "Book 1 Dungeon Crawler Carl",
+        "authors": [
+          "Matt Diniman"
+        ],
+        "publisher": "Matt Diniman",
+        "publishedDate": "2026-09-06",
+        "description": "The apocalypse will be televised! You know what’s worse than breaking up with your girlfriend? Being stuck with her prize-winning show cat. And you know what’s worse than that? An alien invasion, the destruction of all man-made structures on Earth, and the systematic exploitation of all the survivors for a sadistic intergalactic game show. That’s what. Join Coast Guard vet Carl and his ex-girlfriend’s cat, Princess Donut, as they try to survive the end of the world—or just get to the next level—in a video game–like, trap-filled fantasy dungeon. A dungeon that’s actually the set of a reality television show with countless viewers across the galaxy. Exploding goblins. Magical potions. Deadly, drug-dealing llamas. This ain’t your ordinary game show. Welcome, Crawler. Welcome to the Dungeon. Survival is optional. Keeping the viewers entertained is not.",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9798880004980"
+          }
+        ],
+        "readingModes": {
+          "text": true,
+          "image": true
+        },
+        "pageCount": 600,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": true,
+        "contentVersion": "preview-1.0.0",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=tb0JEgAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=tb0JEgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=tb0JEgAAQBAJ&pg=PT596&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&cd=12&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=tb0JEgAAQBAJ&source=gbs_api",
+        "canonicalVolumeLink": "https://play.google.com/store/books/details?id=tb0JEgAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FOR_SALE",
+        "isEbook": true,
+        "listPrice": {
+          "amount": 16.99,
+          "currencyCode": "CAD"
+        },
+        "retailPrice": {
+          "amount": 16.99,
+          "currencyCode": "CAD"
+        },
+        "buyLink": "https://play.google.com/store/books/details?id=tb0JEgAAQBAJ&rdid=book-tb0JEgAAQBAJ&rdot=1&source=gbs_api",
+        "offers": [
+          {
+            "finskyOfferType": 1,
+            "listPrice": {
+              "amountInMicros": 16990000,
+              "currencyCode": "CAD"
+            },
+            "retailPrice": {
+              "amountInMicros": 16990000,
+              "currencyCode": "CAD"
+            },
+            "giftable": true
+          }
+        ]
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/Dungeon_Crawler_Carl-sample-epub.acsm?id=tb0JEgAAQBAJ&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "pdf": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/Dungeon_Crawler_Carl-sample-pdf.acsm?id=tb0JEgAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=tb0JEgAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "Book 1 \u003cb\u003eDungeon Crawler Carl\u003c/b\u003e Matt Diniman. MAILING LIST ! PATREON ! Join the Matt \u003cb\u003eDinniman\u003c/b\u003e mailing list and get the dope on new releases and more ! Join up here ! If you&#39;re feeling especially saucy , you can join the Matt \u003cb\u003eDinniman\u003c/b\u003e Patreon&nbsp;..."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "XSGaEQAAQBAJ",
+      "etag": "Hh9Vc+cJgL4",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/XSGaEQAAQBAJ",
+      "volumeInfo": {
+        "title": "Dungeon Crawler Carl : La Mascarade du boucher - Tome 5 : une aventure de LitRPG. Saga de science-fiction et fantasy post apocalyptique aux millions de lecteurs, Livre nouveauté 2026",
+        "authors": [
+          "Matt Dinniman"
+        ],
+        "publisher": "Lorestone",
+        "publishedDate": "2026-04-30",
+        "description": "Le Dungeon n'en a pas encore fini avec Carl et Princesse Donut. Découvrez la suite des aventures du duo le plus suivi de l'univers dans ce tome 5 : \" La Mascarade du boucher \". RÉSUMÉ DU TOME 5 DE \" DUNGEON CRAWLER CARL : LA MASCARADE DU BOUCHER \" : Message système. Oyez, oyez. Les portes sont ouvertes. Les chasseurs sont en liberté. Fuyez, fuyez, fuyez. * * * * Que devient le duo de choc le plus suivi de l'univers ? La jungle tropicale du Terrain de chasse regorge de dangers – prédateurs préhistoriques, armées de vampires, concours de beauté ultra-sélect pour familiers, princesses mi-naïades avides de vengeance –, mais aucun n'égale la réelle menace de ce niveau 6 : les touristes extraterrestres venus traquer du crawler. Carl refuse ce rôle de proie, et compte bien tenir la promesse qu'il leur a adressée : avant la fin du compte à rebours, tous ces chasseurs seront morts. Une annonce vient cependant rebattre les cartes : celle d'une grande fête organisée à la fin du niveau, la Mascarade du boucher, qui réunira les 50 crawlers les plus populaires du jeu et les fameux touristes en quête de trophées. Pour ne rien arranger, Odette transmet à Carl et à Donut un avertissement très inquiétant : l'organisatrice de la soirée, la puissante reine des hauts-elfes, pourrait être incarnée par une Terrienne recouvrée... et pas n'importe laquelle... Ils l'appellent Dungeon Crawler World. Mais pour Carl et Donut, c'est tout sauf un jeu. *Découvrez le cinquième tome de la saga culte aux US.* ENTREZ DANS L'UNIVERS LITRPG : Au croisement de la science-fiction, la fantasy et le jeu vidéo, découvrez un nouveau genre inédit en France. Le terme LitRPG est une contraction de \" Littérature \" et de \" Role Playing Game \". Il désigne un genre littéraire qui mélange les codes de la littérature de l'imaginaire (science-fiction et fantasy) et ceux du jeu vidéo. Imaginez tout ce que vous aimez dans vos jeux préférés et vous le retrouverez dans ces romans : de grandes aventures épiques, des personnages qui suivent des quêtes, prennent des niveaux, gagnent de l'expérience, affrontent des boss, etc. UNE SAGA AUX DEUX MILLIONS DE LECTEURS : La série LitRPG culte de Matt Dinniman, enfin en France ! Mélange détonant d'action, d'humour et de points d'expérience, les déboires de Carl et Princesse Donut sauront ravir les fans de fantasy et de gaming. Dungeon Crawler Carl : La Mascarade du boucher - Tome 5 : Livre Fantasy et Science-fiction.",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9782487700789"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "2487700785"
+          }
+        ],
+        "readingModes": {
+          "text": true,
+          "image": true
+        },
+        "pageCount": 787,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": true,
+        "contentVersion": "1.2.2.0.preview.3",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=XSGaEQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=XSGaEQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "fr",
+        "previewLink": "http://books.google.ca/books?id=XSGaEQAAQBAJ&printsec=frontcover&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&cd=13&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=XSGaEQAAQBAJ&source=gbs_api",
+        "canonicalVolumeLink": "https://play.google.com/store/books/details?id=XSGaEQAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FOR_SALE",
+        "isEbook": true,
+        "listPrice": {
+          "amount": 19.99,
+          "currencyCode": "CAD"
+        },
+        "retailPrice": {
+          "amount": 10.99,
+          "currencyCode": "CAD"
+        },
+        "buyLink": "https://play.google.com/store/books/details?id=XSGaEQAAQBAJ&rdid=book-XSGaEQAAQBAJ&rdot=1&source=gbs_api",
+        "offers": [
+          {
+            "finskyOfferType": 1,
+            "listPrice": {
+              "amountInMicros": 19990000,
+              "currencyCode": "CAD"
+            },
+            "retailPrice": {
+              "amountInMicros": 10990000,
+              "currencyCode": "CAD"
+            },
+            "giftable": true
+          }
+        ]
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/Dungeon_Crawler_Carl_La_Mascarade_du_bou-sample-epub.acsm?id=XSGaEQAAQBAJ&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "pdf": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/Dungeon_Crawler_Carl_La_Mascarade_du_bou-sample-pdf.acsm?id=XSGaEQAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=XSGaEQAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "UNE SAGA AUX DEUX MILLIONS DE LECTEURS : La série LitRPG culte de Matt Dinniman, enfin en France !"
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "9GzH0QEACAAJ",
+      "etag": "wDbDGRTWUs8",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/9GzH0QEACAAJ",
+      "volumeInfo": {
+        "title": "This Inevitable Ruin",
+        "authors": [
+          "Matt Dinniman"
+        ],
+        "publishedDate": "2026-03-12",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_10",
+            "identifier": "0241829933"
+          },
+          {
+            "type": "ISBN_13",
+            "identifier": "9780241829936"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": false
+        },
+        "pageCount": 0,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "preview-1.0.0",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=9GzH0QEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=9GzH0QEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=9GzH0QEACAAJ&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&cd=14&source=gbs_api",
+        "infoLink": "http://books.google.ca/books?id=9GzH0QEACAAJ&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/This_Inevitable_Ruin.html?hl=&id=9GzH0QEACAAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "NO_PAGES",
+        "embeddable": false,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": false
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=9GzH0QEACAAJ&hl=&source=gbs_api",
+        "accessViewStatus": "NONE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "No matter who wins the war, only one of them will be allowed to leave this level. If they all want to survive, they&#39;re going to need a littlehelp. This is it. This is what they&#39;ve been fighting toward. This is war."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "AP4gEQAAQBAJ",
+      "etag": "RGWSdbeQwmw",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/AP4gEQAAQBAJ",
+      "volumeInfo": {
+        "title": "Dungeon Crawler Carl - Tome 1 : une aventure de LitRPG. Saga de science-fiction et fantasy post apocalyptique aux millions de lecteurs, Livre nouveauté 2024 (version française)",
+        "authors": [
+          "Matt Dinniman"
+        ],
+        "publisher": "Lorestone",
+        "publishedDate": "2024-11-07",
+        "description": "RÉSUMÉ DU TOME 1 DE \"DUNGEON CRAWLER CARL\" : Bienvenue, chers crawlers. Bienvenue dans le donjon. Survivre est une option ; offrir un show d'enfer aux spectateurs, une nécessité. Un homme. Le chat de son ex. Un jeu télévisé sadique où leur survie dépend de leur capacité à tuer avec style. En un éclair, chaque construction humaine érigée sur Terre s'effondre, créant un gigantesque donjon : un labyrinthe infernal de 18 niveaux remplis de pièges, de monstres et de butins. Seulement quelques survivants osent s'aventurer à l'intérieur, mais une fois que vous y pénétrez, impossible d'en ressortir. Vous n'avez que quelques jours pour trouver l'escalier vers le niveau suivant ou c'est game over. Dans ce jeu, ce n'est ni votre force ni votre dextérité qui vous aidera à survivre, mais votre popularité et votre nombre de vues. Ils l'appellent Dungeon Crawler World. Mais pour Carl, c'est tout sauf un jeu. *Découvrez le premier tome de la saga culte aux US.* ENTREZ DANS L'UNIVERS LITRPG : Au croisement de la science-fiction, la fantasy et le jeu vidéo, découvrez un nouveau genre inédit en France. Le terme LitRPG est une contraction de \" Littérature \" et de \" Role Playing Game \". Il désigne un genre littéraire qui mélange les codes de la littérature de l'imaginaire (science-fiction et fantasy) et ceux du jeu vidéo. Imaginez tout ce que vous aimez dans vos jeux préférés et vous le retrouverez dans ces romans : de grandes aventures épiques, des personnages qui suivent des quêtes, prennent des niveaux, gagnent de l'expérience, affrontent des boss, etc. UNE SAGA AUX DEUX MILLIONS DE LECTEURS : La série LitRPG culte de Matt Dinniman, enfin en France ! Mélange détonant d'action, d'humour et de points d'expérience, les déboires de Carl et Princesse Donut sauront ravir les fans de fantasy et de gaming. Dungeon Crawler Carl Tome 1 : Livre Fantasy et Science-fiction.",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9782487700048"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "2487700041"
+          }
+        ],
+        "readingModes": {
+          "text": true,
+          "image": true
+        },
+        "pageCount": 479,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": true,
+        "contentVersion": "1.4.3.0.preview.3",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=AP4gEQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=AP4gEQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "fr",
+        "previewLink": "http://books.google.ca/books?id=AP4gEQAAQBAJ&pg=PT476&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&cd=15&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=AP4gEQAAQBAJ&source=gbs_api",
+        "canonicalVolumeLink": "https://play.google.com/store/books/details?id=AP4gEQAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FOR_SALE",
+        "isEbook": true,
+        "listPrice": {
+          "amount": 13.99,
+          "currencyCode": "CAD"
+        },
+        "retailPrice": {
+          "amount": 9.99,
+          "currencyCode": "CAD"
+        },
+        "buyLink": "https://play.google.com/store/books/details?id=AP4gEQAAQBAJ&rdid=book-AP4gEQAAQBAJ&rdot=1&source=gbs_api",
+        "offers": [
+          {
+            "finskyOfferType": 1,
+            "listPrice": {
+              "amountInMicros": 13990000,
+              "currencyCode": "CAD"
+            },
+            "retailPrice": {
+              "amountInMicros": 9990000,
+              "currencyCode": "CAD"
+            },
+            "giftable": true
+          }
+        ]
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/Dungeon_Crawler_Carl_Tome_1_une_aventure-sample-epub.acsm?id=AP4gEQAAQBAJ&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "pdf": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/Dungeon_Crawler_Carl_Tome_1_une_aventure-sample-pdf.acsm?id=AP4gEQAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=AP4gEQAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "Matt \u003cb\u003eDinniman\u003c/b\u003e. [ Remerciements ] W AOUH . QUAND J&#39;AI COMMENCÉ à écrire ce livre , je n&#39;avais aucune idée du succès qu&#39;il allait avoir . Je suis passé du gars qui s&#39;en est pris plein les dents durant la pandémie à quelqu&#39;un qui a la&nbsp;..."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "SF_NEQAAQBAJ",
+      "etag": "mBoySZgDFoQ",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/SF_NEQAAQBAJ",
+      "volumeInfo": {
+        "title": "Dungeon Crawler Carl (svensk utgåva)",
+        "authors": [
+          "Matt Dinniman"
+        ],
+        "publisher": "Bokförlaget Forum",
+        "publishedDate": "2026-09-23",
+        "description": "Äntligen på svenska! Dungeon Crawler Carl är första delen i Matt Dinnimans fenomenserie som toppar bästsäljarlistorna världen över.”Välkommen, Crawler. Att överleva är valfritt. Att underhålla publiken är det inte.”En man. Hans ex-flickväns prisbelönta utställningskatt. En sadistisk intergalaktisk gameshow där din överlevnad hänger på att du kan döda ditt byte på ett så underhållande sätt som möjligt.Följ före detta kustbevakaren Carl och katten Princess Donut när de försöker överleva jordens undergång – eller åtminstone ta sig vidare till nästa nivå – i en fantasydungeon full av fällor. En dungeon som i själva verket är inramningen till en realityserie med otaliga tittare runt om i galaxen. Exploderande troll. Magiska brygder. Dödligt farliga, knarklangande lamor. Det här är inget vanligt TV-program.",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9789137166773"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "9137166778"
+          }
+        ],
+        "readingModes": {
+          "text": true,
+          "image": true
+        },
+        "pageCount": 415,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "1.3.3.0.preview.3",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=SF_NEQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=SF_NEQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "sv",
+        "previewLink": "http://books.google.ca/books?id=SF_NEQAAQBAJ&pg=PT414&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&cd=16&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=SF_NEQAAQBAJ&source=gbs_api",
+        "canonicalVolumeLink": "https://play.google.com/store/books/details?id=SF_NEQAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FOR_SALE",
+        "isEbook": true,
+        "listPrice": {
+          "amount": 27.22,
+          "currencyCode": "CAD"
+        },
+        "retailPrice": {
+          "amount": 16.05,
+          "currencyCode": "CAD"
+        },
+        "buyLink": "https://play.google.com/store/books/details?id=SF_NEQAAQBAJ&rdid=book-SF_NEQAAQBAJ&rdot=1&source=gbs_api",
+        "offers": [
+          {
+            "finskyOfferType": 1,
+            "listPrice": {
+              "amountInMicros": 27220000,
+              "currencyCode": "CAD"
+            },
+            "retailPrice": {
+              "amountInMicros": 16050000,
+              "currencyCode": "CAD"
+            },
+            "giftable": true
+          }
+        ]
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": true
+        },
+        "pdf": {
+          "isAvailable": true
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=SF_NEQAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "Matt \u003cb\u003eDinniman\u003c/b\u003e. Författarens. tack. Wow. När jag började skriva den här serien hade jag ingen aning om att den skulle slå så stort. Jag gick från att vara en kille som fått en käftsmäll av pandemin till att bli någon som jobbar med att&nbsp;..."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "tAXTEQAAQBAJ",
+      "etag": "TH2pCSZW6Yw",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/tAXTEQAAQBAJ",
+      "volumeInfo": {
+        "title": "The Gate of the Feral Gods",
+        "subtitle": "Auf allen vieren | Band 4 der Spiegel-Bestsellerserie",
+        "authors": [
+          "Matt Dinniman"
+        ],
+        "publisher": "S. Fischer Verlag",
+        "publishedDate": "2027-02-24",
+        "description": "Neues Achievement! Totalversager. Fünf Minuten nach Erhalt der Quest hast du sie schon versemmelt. Du Genie. Belohnung: Ein Schloss aus Sand. Ein ausgemustertes U-Boot. Eine Krypta voller tödlicher Fallen und eine fliegende Festung mit Kriegergnomen. Und fünfzehn Tage Zeit, um die vier Zonen zu erobern. Dieses Mal sind Carl und Donut allerdings nicht allein, sondern haben ein Team um sich versammelt, mit dem sie das nächste Level erreichen wollen. Chaotisch, kompetenzfrei und kurz vor dem Durchdrehen versuchen sie, der KI stets einen Schritt voraus zu sein. Wie immer mit gemischten Ergebnissen. »The Gate of the Feral Gods« ist der vierte Teil der legendären Lit-RPG-Serie \"Dungeon Crawler Carl\". Band 1: Dungeon Crawler Carl Band 2: Carl's Doomsday Scenario Band 3: The Anarchist's Cookbook Band 4: The Gate of the Feral Gods Band 5: The Butcher's Masquerade",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9783104925783"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "310492578X"
+          }
+        ],
+        "readingModes": {
+          "text": true,
+          "image": false
+        },
+        "pageCount": 0,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "preview-1.0.0",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=tAXTEQAAQBAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=tAXTEQAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+        },
+        "language": "de",
+        "previewLink": "http://books.google.ca/books?id=tAXTEQAAQBAJ&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&cd=17&source=gbs_api",
+        "infoLink": "http://books.google.ca/books?id=tAXTEQAAQBAJ&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/The_Gate_of_the_Feral_Gods.html?hl=&id=tAXTEQAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "NO_PAGES",
+        "embeddable": false,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": false
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=tAXTEQAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "NONE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "Band 1: Dungeon Crawler Carl Band 2: Carl&#39;s Doomsday Scenario Band 3: The Anarchist&#39;s Cookbook Band 4: The Gate of the Feral Gods Band 5: The Butcher&#39;s Masquerade"
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "fVlZEQAAQBAJ",
+      "etag": "4wjBUpobcYg",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/fVlZEQAAQBAJ",
+      "volumeInfo": {
+        "title": "Carl's Doomsday Scenario",
+        "authors": [
+          "Matt Dinniman"
+        ],
+        "publisher": "Random House",
+        "publishedDate": "2025-07-29",
+        "description": "NEW YORK TIMES BESTSELLER • Join Carl and his ex-girlfriend’s cat, Princess Donut, as they fight fantastical creatures and deadly mobs to make it to the next level and build the kind of fan following the dungeon masters can’t ignore in the second book in the smash-hit Dungeon Crawler Carl series—now with bonus material exclusive to this print edition. “Greetings, Crawlers! The training levels have concluded. Now the games may truly begin.” The aliens have come, and they’ve transformed Earth into a multilevel, video game–like dungeon. It’s the newest season of the galaxy’s most watched game show, Dungeon Crawler World. Now on the third floor, Carl and Donut have to fight harder than ever. They’ve already proven that a Coast Guard vet and once-and-forever feline royalty are an almost unstoppable team. Their ratings are off the charts. Viewers can’t get enough. But the dungeon gets more dangerous each day, and now there’s a whole new problem to deal with: Quests. They call it the Over City. A sprawling, once-thriving metropolis devastated by a mysterious calamity. But these streets are far from abandoned. An undead circus trawls the ruins. Murdered women rain from the sky. An ancient spell is finally ready to reveal its dark purpose. Can Carl and Donut solve the mystery in time? And can Carl finally find some pants? Includes part two of the exclusive bonus story “Backstage at the Pineapple Cabaret.”",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9798217287178"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": true
+        },
+        "pageCount": 529,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "1.3.1.0.preview.1",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=fVlZEQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=fVlZEQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=fVlZEQAAQBAJ&printsec=frontcover&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&cd=18&source=gbs_api",
+        "infoLink": "http://books.google.ca/books?id=fVlZEQAAQBAJ&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/Carl_s_Doomsday_Scenario.html?hl=&id=fVlZEQAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/Carl_s_Doomsday_Scenario-sample-pdf.acsm?id=fVlZEQAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=fVlZEQAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "LARGE PRINT EDITION NEW YORK TIMES BESTSELLER • Join Carl and his ex-girlfriend’s cat, Princess Donut, as they fight fantastical creatures and deadly mobs to make it to the next level and build the kind of fan following the dungeon ..."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "0rhmEQAAQBAJ",
+      "etag": "/aLyh2vffeI",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/0rhmEQAAQBAJ",
+      "volumeInfo": {
+        "title": "The Dungeon Anarchist's Cookbook",
+        "authors": [
+          "Matt Dinniman"
+        ],
+        "publisher": "Random House",
+        "publishedDate": "2025-08-12",
+        "description": "NEW YORK TIMES BESTSELLER • Welcome to the Iron Tangle! Carl and his ex-girlfriend’s cat, Princess Donut, have to team up with other contestants not just to survive, but to solve a deadly puzzle in this third, mind-twisting novel in the Dungeon Crawler Carl series—now with bonus material exclusive to this print edition. Earth has been transformed into the set of the galaxy’s most watched game show: Dungeon Crawler World, a nightmarish, multilevel, video game–like dungeon filled with traps, monsters, and mind-bending puzzles. Carl and Donut have survived so far, but this fourth level is unlike anything they could imagine. The Iron Tangle: an impossibly complicated subway system tied together into a knot of trains of all kinds, from classic steam engines to sleek modern cars. Up is down. Down is up. Close is far. The cars are filled with monsters, the railway stations aren’t always what they seem, and the exit is perpetually just a few stops away. The top ten list is populated, and Carl and Donut have made it. But that popularity comes with a price. They each now have a bounty on their head. They must work with other crawlers to solve the puzzle of the floor, but how can they do that when they don’t know who to trust? The secret to unraveling it all may be hidden in the pages of a seemingly useless book. Welcome, Crawlers. Welcome to the fourth floor of the dungeon. Includes part three of the exclusive bonus story “Backstage at the Pineapple Cabaret.”",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9798217287185"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": true
+        },
+        "pageCount": 785,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "1.2.1.0.preview.1",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=0rhmEQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=0rhmEQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=0rhmEQAAQBAJ&printsec=frontcover&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&cd=19&source=gbs_api",
+        "infoLink": "http://books.google.ca/books?id=0rhmEQAAQBAJ&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/The_Dungeon_Anarchist_s_Cookbook.html?hl=&id=0rhmEQAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/The_Dungeon_Anarchist_s_Cookbook-sample-pdf.acsm?id=0rhmEQAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=0rhmEQAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "Carl and his ex-girlfriend’s cat, Princess Donut, have to team up with other contestants not just to survive, but to solve a deadly puzzle in this third, mind-twisting novel in the Dungeon Crawler Carl series—now with bonus material ..."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "0rhmEQAAQBAJ",
+      "etag": "nGcVSCm0Yl0",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/0rhmEQAAQBAJ",
+      "volumeInfo": {
+        "title": "The Dungeon Anarchist's Cookbook",
+        "authors": [
+          "Matt Dinniman"
+        ],
+        "publisher": "Random House",
+        "publishedDate": "2025-08-12",
+        "description": "NEW YORK TIMES BESTSELLER • Welcome to the Iron Tangle! Carl and his ex-girlfriend’s cat, Princess Donut, have to team up with other contestants not just to survive, but to solve a deadly puzzle in this third, mind-twisting novel in the Dungeon Crawler Carl series—now with bonus material exclusive to this print edition. Earth has been transformed into the set of the galaxy’s most watched game show: Dungeon Crawler World, a nightmarish, multilevel, video game–like dungeon filled with traps, monsters, and mind-bending puzzles. Carl and Donut have survived so far, but this fourth level is unlike anything they could imagine. The Iron Tangle: an impossibly complicated subway system tied together into a knot of trains of all kinds, from classic steam engines to sleek modern cars. Up is down. Down is up. Close is far. The cars are filled with monsters, the railway stations aren’t always what they seem, and the exit is perpetually just a few stops away. The top ten list is populated, and Carl and Donut have made it. But that popularity comes with a price. They each now have a bounty on their head. They must work with other crawlers to solve the puzzle of the floor, but how can they do that when they don’t know who to trust? The secret to unraveling it all may be hidden in the pages of a seemingly useless book. Welcome, Crawlers. Welcome to the fourth floor of the dungeon. Includes part three of the exclusive bonus story “Backstage at the Pineapple Cabaret.”",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9798217287185"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": true
+        },
+        "pageCount": 785,
+        "printType": "BOOK",
+        "categories": [
+          "Fiction"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "1.2.1.0.preview.1",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=0rhmEQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=0rhmEQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=0rhmEQAAQBAJ&pg=PA765&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&cd=20&source=gbs_api",
+        "infoLink": "http://books.google.ca/books?id=0rhmEQAAQBAJ&dq=Dungeon+Crawler+Carl+inauthor:Matt+Dinniman&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/The_Dungeon_Anarchist_s_Cookbook.html?hl=&id=0rhmEQAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/The_Dungeon_Anarchist_s_Cookbook-sample-pdf.acsm?id=0rhmEQAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=0rhmEQAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "... ) from Gig Harbor , Washington . He is the author of several books , including the best- selling \u003cb\u003eDungeon Crawler Carl\u003c/b\u003e series . Matt \u003cb\u003eDinniman\u003c/b\u003e.com Facebook Matt \u003cb\u003eDinnimanAuthor\u003c/b\u003e X Matt \u003cb\u003eDinniman\u003c/b\u003e Instagram Matt \u003cb\u003eDinniman\u003c/b\u003e ABOUT THE AUTHOR ..."
+      }
+    }
+  ]
+}

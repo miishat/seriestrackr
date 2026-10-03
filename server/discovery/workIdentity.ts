@@ -22,8 +22,11 @@ export function bindWorkTitle(actual: string, request: CheckRequest): string | n
   if (ordinal && normalizeIdentity(ordinal.title) === normalizeIdentity(canonical)) return canonical;
   const labels = [canonical, `${canonical} (Unabridged)`];
   if (Number.isInteger(request.target.position)) for (const series of hardcoverAliases(request.target.series)) {
-    labels.push(`${canonical}: ${series}, Book ${request.target.position} (Unabridged)`);
-    labels.push(`${canonical}: A LitRPG Adventure (${series} ${request.target.position}) (Unabridged)`);
+    const n = request.target.position;
+    for (const label of [`${canonical}: ${series}, Book ${n}`, `${canonical}: A LitRPG Adventure (${series} ${n})`,
+      `${canonical} (${series} Book ${n})`, `${canonical} (${series}, Book ${n})`]) {
+      labels.push(label, `${label} (Unabridged)`);
+    }
   }
   return labels.some(label => normalizeIdentity(label) === normalized) ? canonical : null;
 }

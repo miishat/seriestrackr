@@ -1,0 +1,242 @@
+{
+  "requestId": "audit-dungeon-crawler-carl",
+  "seriesId": "dbd37dc6-5e8c-444c-b165-f71928deb72f",
+  "summary": {
+    "requestId": "audit-dungeon-crawler-carl",
+    "checkedAt": "2026-10-03T05:37:04.964Z",
+    "status": "partial",
+    "reasons": [
+      "invalid-evidence"
+    ],
+    "formats": {
+      "book": "supported",
+      "audio": "supported"
+    },
+    "usage": {
+      "apple": 5,
+      "openlibrary": 3,
+      "googlebooks": 2,
+      "hardcover": 1,
+      "tavily": 1,
+      "deepseek": 0,
+      "inputTokens": 0,
+      "outputTokens": 0
+    }
+  },
+  "proposals": {
+    "identity": {
+      "title": "A Parade of Horribles",
+      "author": "Matt Dinniman",
+      "position": 8,
+      "citations": [
+        {
+          "sourceId": "catalog:65c08ca48a369358e4629a0ede69ade2",
+          "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Series: Dungeon Crawler Carl. Position: 8. Role: Author. English edition: 31939771. Language: en. Format: ebook."
+        }
+      ]
+    },
+    "identityAttribution": {
+      "checkedAt": "2026-10-03T05:37:04.964Z",
+      "sources": [
+        {
+          "id": "catalog:65c08ca48a369358e4629a0ede69ade2",
+          "title": "A Parade of Horribles",
+          "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026"
+        }
+      ]
+    },
+    "releases": {
+      "book": {
+        "title": "A Parade of Horribles",
+        "position": 8,
+        "state": "catalogued",
+        "date": null,
+        "provenance": {
+          "checkedAt": "2026-10-03T05:37:04.964Z",
+          "sources": [
+            {
+              "id": "catalog:65c08ca48a369358e4629a0ede69ade2",
+              "title": "A Parade of Horribles",
+              "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026"
+            },
+            {
+              "id": "catalog:e66a5fed4b4e618f83a036229cbc155f",
+              "title": "A Parade of Horribles",
+              "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026"
+            }
+          ],
+          "preferredMarket": "US",
+          "sourceMarket": null,
+          "language": "en",
+          "editionFormat": "print",
+          "editionKey": "hardcover:edition:32908529",
+          "datePrecision": "none",
+          "interpreted": false
+        },
+        "citations": [
+          {
+            "sourceId": "catalog:65c08ca48a369358e4629a0ede69ade2",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Series: Dungeon Crawler Carl. Position: 8. Role: Author. English edition: 31939771. Language: en. Format: ebook."
+          },
+          {
+            "sourceId": "catalog:e66a5fed4b4e618f83a036229cbc155f",
+            "quote": "Title: A Parade of Horribles. Author: Matt Dinniman. Position: 8. Raw format: Hardcover. Reading format: Read. Format: print. Language: en. Market: unknown. Date: unknown. Precision: none. Edition: hardcover:edition:32908529."
+          }
+        ]
+      },
+      "audio": {
+        "title": "A Parade of Horribles",
+        "position": 8,
+        "state": "scheduled",
+        "date": "2026-05-12",
+        "provenance": {
+          "checkedAt": "2026-10-03T05:37:04.964Z",
+          "sources": [
+            {
+              "id": "catalog:d14a72fa513b60a87dbebe7536388b49",
+              "title": "A Parade of Horribles: Dungeon Crawler Carl, Book 8 (Unabridged)",
+              "url": "https://books.apple.com/us/audiobook/a-parade-of-horribles-dungeon-crawler-carl-book/id6767724978?uo=4"
+            }
+          ],
+          "preferredMarket": "US",
+          "sourceMarket": "US",
+          "language": "en",
+          "editionFormat": "audio",
+          "editionKey": "apple:6767724978",
+          "datePrecision": "day",
+          "interpreted": false
+        },
+        "citations": [
+          {
+            "sourceId": "catalog:d14a72fa513b60a87dbebe7536388b49",
+            "quote": "Title: A Parade of Horribles: Dungeon Crawler Carl, Book 8 (Unabridged). Author: Matt Dinniman. Format: audio. Language: en. Product LANGUAGE badge: English. Market: US. Date: 2026-05-12. Precision: day. Edition: apple:6767724978. Canonical title: A Parade of Horribles. Literal audio label: A Parade of Horribles: Dungeon Crawler Carl, Book 8 (Unabridged). Requested series: Dungeon Crawler Carl. Requested position: 8. Exact supported unabridged title relationship. Publication: published."
+          }
+        ]
+      }
+    },
+    "conflicts": [],
+    "related": []
+  },
+  "sources": [
+    {
+      "id": "catalog:65c08ca48a369358e4629a0ede69ade2",
+      "title": "A Parade of Horribles",
+      "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026"
+    },
+    {
+      "id": "catalog:a88c2b453f51101571723684a26a6088",
+      "title": "A Parade of Horribles",
+      "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026"
+    },
+    {
+      "id": "catalog:484edb4f6ce60162a3be64a0731777f6",
+      "title": "A Parade of Horribles",
+      "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026"
+    },
+    {
+      "id": "catalog:50054303ca7309f4c4505c4e06f295ed",
+      "title": "A Parade of Horribles",
+      "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026"
+    },
+    {
+      "id": "catalog:182d1c58278c45b9f9ea3afd29e2b9a0",
+      "title": "A Parade of Horribles",
+      "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026"
+    },
+    {
+      "id": "catalog:42152515caa0c7f5b300a83127f73df5",
+      "title": "A Parade of Horribles",
+      "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026"
+    },
+    {
+      "id": "catalog:94ce60da4200f13fc4003f3268f71ff1",
+      "title": "A Parade of Horribles",
+      "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026"
+    },
+    {
+      "id": "catalog:cca3d43fd7a1d22956b4a9362fe7dd45",
+      "title": "A Parade of Horribles",
+      "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026"
+    },
+    {
+      "id": "catalog:bbfe685401f36d5bac5e62c77bdb6ffa",
+      "title": "A Parade of Horribles",
+      "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026"
+    },
+    {
+      "id": "catalog:e66a5fed4b4e618f83a036229cbc155f",
+      "title": "A Parade of Horribles",
+      "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026"
+    },
+    {
+      "id": "catalog:7ce19422cb66f93941107bffecb41ad6",
+      "title": "A Parade Of Horribles",
+      "url": "https://books.google.com/books?id=LZMUEgAAQBAJ"
+    },
+    {
+      "id": "catalog:fb0cd7e7e55afcbc4dd9db7fba0dc5ff",
+      "title": "A Parade of Horribles",
+      "url": "https://books.google.com/books?id=_8H10QEACAAJ"
+    },
+    {
+      "id": "catalog:d14a72fa513b60a87dbebe7536388b49",
+      "title": "A Parade of Horribles: Dungeon Crawler Carl, Book 8 (Unabridged)",
+      "url": "https://books.apple.com/us/audiobook/a-parade-of-horribles-dungeon-crawler-carl-book/id6767724978?uo=4"
+    },
+    {
+      "id": "catalog:0373da051599d13d5c4bf321c47633ea",
+      "title": "A Parade of Horribles",
+      "url": "https://openlibrary.org/works/OL44344307W"
+    },
+    {
+      "id": "catalog:e17587c9cba3e5a6d74baae0b3f96028",
+      "title": "A Parade of Horribles (Duplicate of OL44344307W)",
+      "url": "https://openlibrary.org/works/OL44984116W"
+    },
+    {
+      "id": "search1:f1d42147f0a9ffbded0edb0362956048",
+      "title": "A Parade of Horribles release update! - Matt Dinniman",
+      "url": "https://mattdinniman.com/a-parade-of-horribles-release-dates"
+    },
+    {
+      "id": "search1:854a380d21193178307ca9c2995c4c97",
+      "title": "Book 8, Chapters 21 and 22.  Title Announcement. NYCC info.  | Matt Dinniman on Patreon",
+      "url": "https://www.patreon.com/dinniman/posts/book-8-chapters-140473100"
+    },
+    {
+      "id": "search1:75a7a06112fdb313e59039284b88ffe1",
+      "title": "DCC Book 8 - A Parade of Horribles - Matt Dinniman",
+      "url": "https://mattdinniman.com/books/a-parade-of-horribles"
+    },
+    {
+      "id": "search1:6ad17a7e672e1bbc4b22b481361f46b7",
+      "title": "A Parade of Horribles Release Date and Where to Buy",
+      "url": "https://www.ign.com/articles/dungeon-crawler-carl-a-parade-of-horribles-release-date-where-to-buy"
+    },
+    {
+      "id": "search1:6977f45274701d3d744e29aead50d2c3",
+      "title": "Amazon.com: A Parade of Horribles: Dungeon Crawler Carl, Book 8 eBook : Dinniman, Matt: Kindle Store",
+      "url": "https://www.amazon.com/Parade-Horribles-Dungeon-Crawler-Carl-ebook/dp/B0GJJDXG4L"
+    }
+  ],
+  "coverCandidates": [
+    {
+      "id": "hardcover:book:1817542",
+      "title": "A Parade of Horribles",
+      "author": "Matt Dinniman",
+      "role": "next",
+      "format": "print",
+      "provider": "hardcover",
+      "source": {
+        "id": "hardcover:book:1817542",
+        "title": "A Parade of Horribles",
+        "url": "https://hardcover.app/books/a-parade-of-horribles-dungeon-crawler-carl-book-8-2026"
+      },
+      "imageUrl": "https://assets.hardcover.app/edition/32462067/40a20ed0-0786-4425-b775-0af66472e853.jpg",
+      "workKey": "a parade of horribles|matt dinniman",
+      "editionKey": null,
+      "width": 993,
+      "height": 1500
+    }
+  ]
+}

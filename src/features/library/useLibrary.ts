@@ -78,14 +78,30 @@ export function useLibrary() {
 
   const validated = (candidate: LibraryDocument): Result<LibraryDocument> => parseDocument(candidate);
 
-  const addSeries = (input: Omit<Series, 'id'>): Result<void> => {
+  const addSeries = (input: Omit<Series, 'id'>): Result<Series> => {
     const allowed = requireReady();
-    if (allowed.ok === false) return allowed;
+    if (allowed.ok === false) return { ok: false, error: allowed.error };
     const candidate = { ...current.current, series: [...current.current.series, { ...input, id: crypto.randomUUID() }] };
     const checked = validated(candidate);
-    if (checked.ok === false) return invalid(checked.error);
+    if (checked.ok === false) return { ok: false, error: checked.error };
+    const created = checked.value.series[checked.value.series.length - 1];
     undoSnapshot.current = null;
-    discoveryGuard.current.touch(checked.value.series[checked.value.series.length - 1].id);
+    discoveryGuard.current.touch(created.id);
+    commit(checked.value);
+    return { ok: true, value: created };
+  };
+
+  // Fills an empty cover found after adding a series, only while its identity is unchanged.
+  const setAutomaticCover = (expected: Series, url: string, attribution: NonNullable<Series['coverAttribution']>): Result<void> => {
+    const allowed = requireReady();
+    if (allowed.ok === false) return allowed;
+    const before = current.current.series.find(item => item.id === expected.id);
+    if (!before) return invalid('Series not found.');
+    if (before.coverUrl !== null || identityChanged(expected, before)) return invalid('The series changed before its cover was found.');
+    const updated = { ...before, coverUrl: url, coverAttribution: attribution };
+    if (!coverTargets(updated)) return invalid('The cover does not match this series.');
+    const checked = validated({ ...current.current, series: current.current.series.map(item => item.id === before.id ? updated : item) });
+    if (checked.ok === false) return invalid(checked.error);
     commit(checked.value);
     return { ok: true, value: undefined };
   };
@@ -97,7 +113,7 @@ export function useLibrary() {
     if (!before) return invalid('Series not found.');
     const changedIdentityInput = identityChanged(before, changed);
     const changedMarketInput = (before.marketOverride ?? current.current.settings.market) !== (changed.marketOverride ?? current.current.settings.market);
-    const sanitized: Series = { ...changed,
+    const sanitized: Series = { ...changed, autoUpdate: null,
       next: { ...changed.next, attribution: changedIdentityInput ? null : changed.next.attribution },
       lastCheck: changedIdentityInput || changedMarketInput ? null : changed.lastCheck,
       releases: changedIdentityInput || changedMarketInput ? { book: emptyRelease(), audio: emptyRelease() }
@@ -153,7 +169,7 @@ export function useLibrary() {
     const finishing = suppliedTitle === undefined ? before : { ...before, next: { ...before.next, title: suppliedTitle } };
     const finished = finishNext(finishing);
     if (finished.ok === false) return invalid(finished.error);
-    const candidate = validated({ ...current.current, series: current.current.series.map((item) => item.id === id ? finished.value : item) });
+    const candidate = validated({ ...current.current, series: current.current.series.map((item) => item.id === id ? { ...finished.value, autoUpdate: null } : item) });
     if (candidate.ok === false) return invalid(candidate.error);
     undoSnapshot.current = { kind: 'finish', doc: current.current };
     discoveryGuard.current.touch(id);
@@ -191,7 +207,7 @@ export function useLibrary() {
     if (allowed.ok === false) return allowed;
     const marketChanged = settings.market !== current.current.settings.market;
     const checkedSettings = validated({ ...current.current, settings, series: current.current.series.map(item => marketChanged && item.marketOverride === null
-      ? { ...item, lastCheck: null, releases: { book: emptyRelease(), audio: emptyRelease() } } : item) });
+      ? { ...item, lastCheck: null, autoUpdate: null, releases: { book: emptyRelease(), audio: emptyRelease() } } : item) });
     if (checkedSettings.ok === false) return invalid(checkedSettings.error);
     const affected = marketChanged ? current.current.series.filter((item) => item.marketOverride === null) : [];
     if (affected.length > 0 && !confirmReset) {
@@ -200,7 +216,7 @@ export function useLibrary() {
     const next: LibraryDocument = {
       ...checkedSettings.value,
       series: checkedSettings.value.series.map((item) => marketChanged && item.marketOverride === null
-        ? { ...item, lastCheck: null, releases: { book: emptyRelease(), audio: emptyRelease() } }
+        ? { ...item, lastCheck: null, autoUpdate: null, releases: { book: emptyRelease(), audio: emptyRelease() } }
         : item),
     };
     undoSnapshot.current = null;
@@ -252,7 +268,7 @@ export function useLibrary() {
     return { ok: true, value: undefined };
   };
 
-  const acceptDiscovery = (snapshot: DiscoverySnapshot, response: CheckResponse, selection: Selection): Result<void> => {
+  const acceptDiscovery = (snapshot: DiscoverySnapshot, response: CheckResponse, selection: Selection, automatic = false): Result<void> => {
     const allowed = requireReady();
     if (allowed.ok === false) return allowed;
     if (!isDiscoveryCurrent(snapshot)) return invalid('Discovery result is stale. Check again.');
@@ -269,7 +285,10 @@ export function useLibrary() {
     const accepted = applyDiscovery(before, parsed.value, selection);
     if (accepted.ok === false) return accepted;
     if (accepted.value === before) return { ok: true, value: undefined };
-    const checked = validated({ ...current.current, series: current.current.series.map(item => item.id === before.id ? accepted.value : item) });
+    const stamped: Series = { ...accepted.value, autoUpdate: automatic
+      ? { at: new Date().toISOString(), previous: { next: before.next, releases: before.releases, coverUrl: before.coverUrl, coverAttribution: before.coverAttribution } }
+      : null };
+    const checked = validated({ ...current.current, series: current.current.series.map(item => item.id === before.id ? stamped : item) });
     if (checked.ok === false) return invalid(checked.error);
     const coverChanged = !!selection.coverId && (accepted.value.coverUrl !== before.coverUrl || accepted.value.coverAttribution !== before.coverAttribution);
     undoSnapshot.current = coverChanged ? { kind: 'cover', seriesId: before.id, coverUrl: before.coverUrl, coverAttribution: before.coverAttribution } : null;
@@ -278,7 +297,28 @@ export function useLibrary() {
     return { ok: true, value: undefined };
   };
 
+  const undoAutoUpdate = (id: string): Result<void> => {
+    const allowed = requireReady();
+    if (allowed.ok === false) return allowed;
+    const before = current.current.series.find(item => item.id === id);
+    if (!before?.autoUpdate) return invalid('There is no automatic update to undo.');
+    const restored: Series = { ...before, ...before.autoUpdate.previous, autoUpdate: null };
+    const safe = coverTargets(restored) ? restored : { ...restored, coverUrl: null, coverAttribution: null };
+    const checked = validated({ ...current.current, series: current.current.series.map(item => item.id === id ? safe : item) });
+    if (checked.ok === false) return invalid(checked.error);
+    undoSnapshot.current = null;
+    discoveryGuard.current.touch(id);
+    commit(checked.value);
+    return { ok: true, value: undefined };
+  };
+
+  const clearAutoUpdate = (id: string): void => {
+    const before = current.current.series.find(item => item.id === id);
+    if (!before?.autoUpdate || currentMode.current === 'recovery') return;
+    commit({ ...current.current, series: current.current.series.map(item => item.id === id ? { ...item, autoUpdate: null } : item) });
+  };
+
   return { doc, mode, error, recoveryRaw, canUndo: undoSnapshot.current !== null, undoKind: undoSnapshot.current?.kind ?? null,
-    beginDiscovery, isDiscoveryCurrent, cancelDiscovery, recordDiscoveryCheck, acceptDiscovery,
-    addSeries, updateSeries, deleteSeries, markFinished, undo, updateSettings, replaceLibrary, resetLibrary };
+    beginDiscovery, isDiscoveryCurrent, cancelDiscovery, recordDiscoveryCheck, acceptDiscovery, undoAutoUpdate, clearAutoUpdate,
+    addSeries, setAutomaticCover, updateSeries, deleteSeries, markFinished, undo, updateSettings, replaceLibrary, resetLibrary };
 }

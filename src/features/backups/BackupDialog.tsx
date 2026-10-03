@@ -80,8 +80,11 @@ export function BackupDialog({ doc, mode, recoveryRaw, onReplace, onReset, onClo
     {preview && <section aria-label="Import preview">
       <p>{preview.series.length} series in backup. Default market: {preview.settings.market ?? 'not chosen'}.</p>
       <p>Confirming will replace the current library and settings, including all series and preferences.</p>
-      {mode !== 'recovery' && <button type="button" onClick={() => download(() => encodeBackup(doc), 'seriestrackr-before-import.json')}>Download current backup</button>}
-      <div className="actions"><button type="button" onClick={() => { selectionId.current++; setPreview(null); }}>Cancel replacement</button><button className="danger" type="button" onClick={replace}>Confirm replacement</button></div>
+      <div className="actions">
+        {mode !== 'recovery' && <button type="button" className="actions-start" onClick={() => download(() => encodeBackup(doc), 'seriestrackr-before-import.json')}>Download current backup</button>}
+        <button type="button" onClick={() => { selectionId.current++; setPreview(null); }}>Cancel replacement</button>
+        <button className="danger" type="button" onClick={replace}>Confirm replacement</button>
+      </div>
     </section>}
     </section>
     </div>

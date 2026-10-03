@@ -1,0 +1,17 @@
+{
+  "requestId": "audit-book-of-the-dead",
+  "seriesId": "81a5e8f3-fdb3-4c7b-bb39-3ae3c2eb085b",
+  "target": {
+    "series": "Book of the Dead",
+    "author": "RinoZ",
+    "position": 5,
+    "title": "Ascension",
+    "orderNote": ""
+  },
+  "preferredMarket": "US",
+  "formats": [
+    "book",
+    "audio"
+  ],
+  "useAi": false
+}

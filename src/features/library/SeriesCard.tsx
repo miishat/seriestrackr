@@ -16,7 +16,7 @@ export function ReleaseSummary({ format, release, today, compact = false, bookTi
   const oldEvidence = hasOldAnnouncementEvidence(release, today);
   return <div className="release-summary"><span className="small label-upper">{format === 'book' ? 'Book' : 'Audiobook'}</span>
     <span className={`badge ${state}`}>{releaseLabels[state]}</span>
-    {(release.date || state !== 'catalogued') && <span className="sub">{release.date ? release.date : state === 'not-checked' ? 'No check recorded' : state === 'announced' ? 'Date Unknown' : state === 'not-found' ? 'No supported result' : 'Manual entry'}</span>}
+    <span className="sub">{release.date ? release.date : state === 'not-checked' ? 'No check recorded' : state === 'announced' || state === 'catalogued' ? 'Date Unknown' : state === 'not-found' ? 'No supported result' : 'Manual entry'}</span>
     {oldEvidence && <span className="sub evidence-old">Evidence is old{onReview && !compact && <> <button type="button" onClick={onReview} disabled={reviewDisabled} aria-label={`Review ${format === 'book' ? 'book' : 'audiobook'} announcement again${series ? ` for ${series.name}` : ''}`}>Review again</button></>}</span>}
     {compact && bookTitle?.trim() && !release.source && <span className="sub release-title">{bookTitle}</span>}
     {release.source && /^https?:\/\//i.test(release.source.url) && <a href={release.source.url} title={release.source.title} target="_blank" rel="noreferrer">{compact && bookTitle?.trim() ? bookTitle : release.source.title}</a>}
@@ -26,8 +26,8 @@ export function ReleaseSummary({ format, release, today, compact = false, bookTi
     </div>}
   </div>;
 }
-export function SeriesCard({ series, today, market, showCovers, compact = false, onEdit, onFinish, onCheck, checking = false, checkDisabled = false }: {
-  series: Series; today: string; market: string; showCovers: boolean; compact?: boolean; onEdit: () => void; onFinish: () => void; onCheck?: () => void; checking?: boolean; checkDisabled?: boolean;
+export function SeriesCard({ series, today, market, showCovers, compact = false, onEdit, onFinish, onCheck, onUndoAuto, checking = false, checkDisabled = false }: {
+  series: Series; today: string; market: string; showCovers: boolean; compact?: boolean; onEdit: () => void; onFinish: () => void; onCheck?: () => void; onUndoAuto?: () => void; checking?: boolean; checkDisabled?: boolean;
 }) {
   const finished = series.lastFinished ? `Book ${series.lastFinished.position}: ${series.lastFinished.title}` : 'None yet';
   if (compact) return <article className="series-card compact">
@@ -35,7 +35,7 @@ export function SeriesCard({ series, today, market, showCovers, compact = false,
       {showCovers && series.readingStatus !== 'completed' && <div className="cover-frame"><Cover key={series.coverUrl ?? ''} url={series.coverUrl} title={series.next.title} /></div>}
       <div><h2 title={series.name}>{series.name}</h2>
         <div className="sub" title={series.author}>{series.author}</div>
-        {unverifiedCover(series, showCovers) && <div className="sub cover-unverified">Cover unverified</div>}
+        {unverifiedCover(series, showCovers) && <div className="sub cover-unverified">Cover unverified</div>}{series.autoUpdate && <div className="sub auto-updated">Updated automatically{onUndoAuto && <> <button type="button" onClick={onUndoAuto} aria-label={`Undo automatic update for ${series.name}`}>Undo</button></>}</div>}
         <div className="position">{series.readingStatus === 'completed' ? 'Series completed' : `Next unread · Book ${nextPosition(series)}`}</div>
       </div>
     </div>
@@ -62,7 +62,7 @@ export function SeriesCard({ series, today, market, showCovers, compact = false,
   return <article className={`series-card ${compact ? 'compact' : ''}`}>
     <div className="card-header">
       {showCovers && series.readingStatus !== 'completed' && <div className="cover-frame"><Cover key={series.coverUrl ?? ''} url={series.coverUrl} title={series.next.title} /></div>}
-      <div><h2>{series.name}</h2><div className="sub">{series.author}</div>{unverifiedCover(series, showCovers) && <div className="sub cover-unverified">Cover unverified</div>}<div className="sub">{series.readingStatus[0].toUpperCase() + series.readingStatus.slice(1)} · {series.marketOverride ?? market}</div>
+      <div><h2>{series.name}</h2><div className="sub">{series.author}</div>{unverifiedCover(series, showCovers) && <div className="sub cover-unverified">Cover unverified</div>}{series.autoUpdate && <div className="sub auto-updated">Updated automatically{onUndoAuto && <> <button type="button" onClick={onUndoAuto} aria-label={`Undo automatic update for ${series.name}`}>Undo</button></>}</div>}<div className="sub">{series.readingStatus[0].toUpperCase() + series.readingStatus.slice(1)} · {series.marketOverride ?? market}</div>
       </div>
     </div>
     <div className="card-progress"><span className="small">Last finished: {finished}</span></div>

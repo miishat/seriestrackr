@@ -49,14 +49,33 @@ export function selectRelatedWorks(request: CheckRequest, evidence: EvidenceBund
   return relatedCandidates(request, evidence).slice(0, 6);
 }
 
+const authorHost = (url: string, author: string): boolean => {
+  const compact = author.toLowerCase().replace(/[^a-z0-9]/g, '');
+  try { return !!compact && new RegExp(`^(?:www\\.)?${compact}\\.[a-z]{2,24}$`).test(new URL(url).hostname.toLowerCase()); } catch { return false; }
+};
+
+// The author's own announcement of the next book in this series stands in for a missing
+// numbered row. Only for a blank saved title, one continuation and author-site citations.
+function promotedContinuation(request: CheckRequest, evidence: EvidenceBundle, numbered: IdentityEvidence[]): IdentityEvidence | null {
+  if (numbered.length || request.target.title.trim() || !Number.isInteger(request.target.position)) return null;
+  const continuations = relatedCandidates(request, evidence).filter(item => item.relationship === 'continuation');
+  if (continuations.length !== 1) return null;
+  const [item] = continuations;
+  const urls = new Map(evidence.sources.map(source => [source.id, source.url]));
+  if (!item.citations.every(citation => authorHost(urls.get(citation.sourceId) ?? '', request.target.author))) return null;
+  return { title: item.title, author: item.author, position: request.target.position, citations: item.citations };
+}
+
 export function selectProposals(request: CheckRequest, evidence: EvidenceBundle, checkedAt: string, interpreted = false): Proposals {
   const empty: Proposals = { identity: null, identityAttribution: null, releases: { book: null, audio: null }, conflicts: [], related: [] };
   if (!request.target.orderNote.trim()) empty.related = selectRelatedWorks(request, evidence);
   // Current evidence cannot attest arbitrary custom ordering instructions.
   // Keep retrieved links available without offering dependent facts to accept.
   if (request.target.orderNote.trim()) return empty;
-  const citedIdentities = evidence.identities.filter(identity =>
+  const numbered = evidence.identities.filter(identity =>
     identity.position === request.target.position && identity.citations.length > 0);
+  const promoted = promotedContinuation(request, evidence, numbered);
+  const citedIdentities = promoted ? [promoted] : numbered;
   const identities = new Set(citedIdentities.map(identity =>
     `${normalizeIdentity(identity.title)}\u0000${normalizeIdentity(identity.author)}`));
   if (identities.size > 1) return empty;
@@ -72,7 +91,8 @@ export function selectProposals(request: CheckRequest, evidence: EvidenceBundle,
 
   const identityAttribution: Attribution | null = identity
     ? { checkedAt, sources: citedSources(identity.citations, evidence) } : null;
-  const result: Proposals = { identity, identityAttribution, releases: { book: null, audio: null }, conflicts: [], related: empty.related };
+  const related = promoted ? empty.related.filter(item => normalizeIdentity(item.title) !== normalizeIdentity(promoted.title)) : empty.related;
+  const result: Proposals = { identity, identityAttribution, releases: { book: null, audio: null }, conflicts: [], related };
   const target = { title };
   const matching = evidence.editions.filter(e =>
     normalizeIdentity(e.title) === normalizeIdentity(target.title) &&

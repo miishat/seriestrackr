@@ -10,6 +10,8 @@ const capabilities = {
   limits: { search: 3, ai: 1, googleBooks: 2, hardcover: 1, outputTokens: 2048, inputBytes: 20000 },
   pricingAsOf: '2026-09-29', estimatedMaxAiUsd: 0.02,
 };
+// Recently checked, so the automatic check on open leaves these manual-flow specs alone.
+const checkedSeries = () => seriesFixture({ lastCheck: { ...response().summary, checkedAt: new Date().toISOString() } });
 const output = 'node_modules/.cache/playwright-visual';
 async function capture(page: Page, name: string) {
   await page.evaluate(() => document.fonts.ready.then(() => undefined));
@@ -25,7 +27,7 @@ async function capture(page: Page, name: string) {
 
 test('D and T2 keep discovery review usable at narrow widths', async ({ page }) => {
   let checkCount = 0;
-  await seedIdentity(page, 'dark', [seriesFixture()]);
+  await seedIdentity(page, 'dark', [checkedSeries()]);
   await page.route('**/api/discovery/capabilities', route => route.fulfill({ json: capabilities }));
   await page.route('**/api/discovery/check', route => {
     checkCount++;
@@ -66,7 +68,7 @@ test('D and T2 keep discovery review usable at narrow widths', async ({ page }) 
 
 for (const theme of ['light', 'dark'] as const) for (const width of [390, 1024]) {
   test(`discovery inventory ${theme} ${width}`, async ({ page }) => {
-    await seedIdentity(page, theme, [seriesFixture()]);
+    await seedIdentity(page, theme, [checkedSeries()]);
     await page.setViewportSize({ width, height: 900 });
     await page.route('**/api/discovery/capabilities', route => route.fulfill({ json: capabilities }));
     let release!: () => void;
@@ -107,7 +109,7 @@ for (const theme of ['light', 'dark'] as const) for (const width of [390, 1024])
 }
 
 test('stale fake response remains visibly unsaveable', async ({ page }) => {
-  await seedIdentity(page, 'dark', [seriesFixture()]);
+  await seedIdentity(page, 'dark', [checkedSeries()]);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.route('**/api/discovery/capabilities', route => route.fulfill({ json: capabilities }));
   let release!: () => void;
