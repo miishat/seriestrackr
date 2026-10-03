@@ -182,3 +182,24 @@ test.each([
 ] as const)('no promotion with %s', (_name, req, evidence) => {
   expect(selectProposals(req(), evidence, '2026-10-01T00:00:00Z').identity).toBeNull();
 });
+
+test('a numbered identity at the position wins over an author-site continuation', () => {
+  const evidence = pikeBundle();
+  evidence.identities = [{ title: 'Numbered Four', author: 'J. Zachary Pike', position: 4, citations: [{ sourceId: 'pike', quote: pikeHeading }] }];
+  const result = selectProposals(pikeReq(), evidence, '2026-10-01T00:00:00Z');
+  expect(result.identity).toMatchObject({ title: 'Numbered Four', position: 4 });
+});
+
+test('two distinct continuations never promote', () => {
+  const evidence = pikeBundle();
+  evidence.related!.push({ title: 'Another Book', author: 'J. Zachary Pike', relationship: 'continuation', position: null,
+    citations: [{ sourceId: 'pike', quote: pikeHeading }] });
+  expect(selectProposals(pikeReq(), evidence, '2026-10-01T00:00:00Z').identity).toBeNull();
+});
+
+test('a continuation with one foreign-host citation never promotes', () => {
+  const evidence = pikeBundle();
+  evidence.sources.push({ ...evidence.sources[0], id: 'fan', url: 'https://fansite.example/crypt-currency' });
+  evidence.related![0].citations.push({ sourceId: 'fan', quote: pikeHeading });
+  expect(selectProposals(pikeReq(), evidence, '2026-10-01T00:00:00Z').identity).toBeNull();
+});

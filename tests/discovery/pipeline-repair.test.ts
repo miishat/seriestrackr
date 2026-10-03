@@ -88,11 +88,9 @@ test('prequels never become numbered identity; an author-site continuation does'
   expect(darkProfit.proposals.identity).toMatchObject({ title: 'Crypt Currency', position: 4 });
   expect(darkProfit.proposals.related).toEqual([]);
   expect(darkProfit.summary.reasons).not.toContain('unknown-identity');
-  for (const result of [blacktongue]) {
-    expect(result.summary).toMatchObject({ status: 'partial', reasons: ['budget', 'unknown-identity'] });
-    expect(result.summary.formats).toEqual({ book: 'unknown', audio: 'unknown' });
-    expect(result.proposals.releases).toEqual({ book: null, audio: null });
-  }
+  expect(blacktongue.summary).toMatchObject({ status: 'partial', reasons: ['budget', 'unknown-identity'] });
+  expect(blacktongue.summary.formats).toEqual({ book: 'unknown', audio: 'unknown' });
+  expect(blacktongue.proposals.releases).toEqual({ book: null, audio: null });
 });
 
 test('lifecycle: catalogue presence is not an announcement, and a dated audiobook keeps its own date', async () => {
