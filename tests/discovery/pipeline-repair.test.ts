@@ -67,8 +67,7 @@ test('repairs numbered work, relation, lifecycle and clean receipt cases', async
   const band = await replay('the-band');
   expect(blacktongue.proposals.identity).toBeNull();
   expect(blacktongue.proposals.related.map(r => r.relationship)).toContain('prequel');
-  expect(darkProfit.proposals.identity).toBeNull();
-  expect(darkProfit.proposals.related.map(r => r.title)).toContain('Crypt Currency');
+  expect(darkProfit.proposals.identity).toMatchObject({ title: 'Crypt Currency', position: 4 });
   expect(malazan.proposals.identity).toMatchObject({ title: 'Blood and Bone', position: 5 });
   expect(ascension.proposals.releases.audio).toMatchObject({ date: '2026-08-19' });
   expect(ascension.proposals.releases.book?.state).not.toBe('announced');
@@ -81,13 +80,15 @@ test('repairs numbered work, relation, lifecycle and clean receipt cases', async
   expect(global).not.toHaveBeenCalled();
 });
 
-test('related works never become numbered identity, and unresolved identity stays visible', async () => {
+test('prequels never become numbered identity; an author-site continuation does', async () => {
   vi.useFakeTimers();
   const blacktongue = await replay('the-blacktongue-thief');
   const darkProfit = await replay('the-dark-profit-saga');
   expect(blacktongue.proposals.related.map(r => [r.title, r.position])).toEqual([["The Daughters' War", null]]);
-  expect(darkProfit.proposals.related.map(r => [r.title, r.relationship, r.position])).toEqual([['Crypt Currency', 'continuation', null]]);
-  for (const result of [blacktongue, darkProfit]) {
+  expect(darkProfit.proposals.identity).toMatchObject({ title: 'Crypt Currency', position: 4 });
+  expect(darkProfit.proposals.related).toEqual([]);
+  expect(darkProfit.summary.reasons).not.toContain('unknown-identity');
+  for (const result of [blacktongue]) {
     expect(result.summary).toMatchObject({ status: 'partial', reasons: ['budget', 'unknown-identity'] });
     expect(result.summary.formats).toEqual({ book: 'unknown', audio: 'unknown' });
     expect(result.proposals.releases).toEqual({ book: null, audio: null });
