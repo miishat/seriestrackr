@@ -5,6 +5,7 @@ import type { CheckRequest } from '../../shared/discovery';
 import type { CoverRequest } from '../../shared/covers';
 import { createDiscoveryRuntime } from '../../server/discovery/runtime';
 import { runDiscovery } from '../../server/discovery/runDiscovery';
+import { takeCombinedApple } from './replayApple';
 
 // Expected answers live only in this file. The recorded request builders never see them.
 interface Row { url: string; query: unknown; status: number; contentType: string; body: string }
@@ -22,6 +23,8 @@ function replayFetcher(saved: ReplayFixture<unknown>) {
     url.searchParams.delete('key');
     const body = typeof init?.body === 'string' ? JSON.parse(init.body) : null;
     const query = body?.variables ?? body?.query ?? null;
+    const combined = takeCombinedApple(remaining, url);
+    if (combined) return combined;
     const index = remaining.findIndex(row => row.url === url.href && JSON.stringify(row.query) === JSON.stringify(query));
     if (index < 0) { unexpected.push(url.hostname); throw Error('unexpected-fixture-request'); }
     const [row] = remaining.splice(index, 1);

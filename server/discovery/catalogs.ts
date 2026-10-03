@@ -312,23 +312,34 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
     // Query narrowing must not erase alternatives for an originally unknown title.
     merge(evidence, normalizeGoogleBooks(raw, request, checkedAt));
   }
-  async function appleSearch(market: string, format: 'book' | 'audio'): Promise<void> {
+  // Apple spaces calls 3.1 s apart, so every format of a market is asked in one search. Its records say what
+  // they are (`kind: ebook`, `wrapperType: audiobook`); a single-entity response is one format by construction.
+  const appleRowFormat = (row: Record<string, unknown>): 'ebook' | 'audio' | null =>
+    row.kind === 'ebook' ? 'ebook' : row.wrapperType === 'audiobook' ? 'audio' : null;
+  async function appleSearch(market: string, wanted: Array<'book' | 'audio'>): Promise<void> {
     const target = effectiveRequest().target;
     const term = `${target.title || target.series} ${target.author}`;
-    const params = new URLSearchParams({ term, country: market.toLowerCase(), entity: format === 'book' ? 'ebook' : 'audiobook', limit: '20' });
+    const combined = wanted.length > 1;
+    // Apple may return more than the limit, and a combined response shares it, so ask for room for both formats.
+    const params = new URLSearchParams({ term, country: market.toLowerCase(), entity: wanted.map(format => format === 'book' ? 'ebook' : 'audiobook').join(','), limit: combined ? '40' : '20' });
     const raw = await retrieve('apple', `/search?${params}`);
     if (raw === unavailable) return;
     const results = object(raw).results;
     if (!Array.isArray(results)) { reason('invalid-evidence'); return; }
-    if (results.length > 20) reason('budget');
-    const languageStates = new Map<string, LanguageMetadata>();
-    const incomplete = { value: false };
-    const normalized = normalizeAppleRecords(raw, market, format === 'book' ? 'ebook' : 'audio', checkedAt, languageStates,
-      { title: target.title, author: request.target.author, request: { ...request, target } }, incomplete);
-    if (incomplete.value) overflow.add(format);
-    if (results.length && !normalized.sources.length) reason('invalid-evidence');
-    for (const [incomingId, actualId] of merge(evidence, normalized)) {
-      if (!originalLanguages.has(actualId) && languageStates.has(incomingId)) originalLanguages.set(actualId, languageStates.get(incomingId)!);
+    if (combined && results.length && !results.some(row => appleRowFormat(object(row)) !== null)) reason('invalid-evidence');
+    for (const format of wanted) {
+      const kind = format === 'book' ? 'ebook' : 'audio';
+      const rows = combined ? results.filter(row => appleRowFormat(object(row)) === kind) : results;
+      if (rows.length > 20) reason('budget');
+      const languageStates = new Map<string, LanguageMetadata>();
+      const incomplete = { value: false };
+      const normalized = normalizeAppleRecords({ results: rows }, market, kind, checkedAt, languageStates,
+        { title: target.title, author: request.target.author, request: { ...request, target } }, incomplete);
+      if (incomplete.value) overflow.add(format);
+      if (rows.length && !normalized.sources.length) reason('invalid-evidence');
+      for (const [incomingId, actualId] of merge(evidence, normalized)) {
+        if (!originalLanguages.has(actualId) && languageStates.has(incomingId)) originalLanguages.set(actualId, languageStates.get(incomingId)!);
+      }
     }
     joinAppleLanguages(evidence, originalLanguages);
   }
@@ -429,7 +440,7 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
   };
 
   const applePreferred = async (): Promise<void> => {
-    for (const format of formats) if (countries[0] && !signal.aborted) await appleSearch(countries[0], format);
+    if (countries[0] && !signal.aborted) await appleSearch(countries[0], formats);
     if (countries[0] && !signal.aborted) await hydrateApple(countries[0]);
   };
 
@@ -480,12 +491,11 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
     await openLibraryPhase();
   }
   for (const market of countries.slice(1)) {
-    for (const format of formats) {
-      if (signal.aborted) break;
-      const proposal = selectProposals(request, evidence, checkedAt).releases[format];
-      if (proposal?.date && proposal.provenance.sourceMarket === preferred) continue;
-      await appleSearch(market, format);
-    }
+    if (signal.aborted) break;
+    // One search covers every format that still has no preferred-market date.
+    const releases = selectProposals(request, evidence, checkedAt).releases;
+    const missing = formats.filter(format => !(releases[format]?.date && releases[format]!.provenance.sourceMarket === preferred));
+    if (missing.length) await appleSearch(market, missing);
     if (!signal.aborted) await hydrateApple(market);
   }
   if (googleBooksKey && !signal.aborted) {

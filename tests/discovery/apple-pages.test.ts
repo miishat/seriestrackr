@@ -90,7 +90,7 @@ test('keyless catalog pipeline hydrates preferred formats before fallback APIs',
   const fetcher: typeof fetch = async input => {
     const url = new URL(String(input)); urls.push(url);
     if (url.hostname === 'books.apple.com') return new Response(page(url.pathname.includes('audiobook') ? { '@type': 'Audiobook', name: 'Second: Example, Book 2 (Unabridged)', bookFormat: undefined, inLanguage: undefined } : {}, badge()), { headers: { 'content-type': 'text/html' } });
-    return new Response(JSON.stringify(url.hostname === 'openlibrary.org' ? { docs: [] } : { results: [{ trackId: 123, collectionId: 124, trackName: 'Second', collectionName: 'Second: Example, Book 2 (Unabridged)', artistName: 'Example Author', trackViewUrl: productUrl, collectionViewUrl: productUrl.replace('/book/', '/audiobook/').replace('id123', 'id124'), releaseDate: '2027-03-01T00:00:00Z' }] }), { headers: { 'content-type': 'application/json' } });
+    return new Response(JSON.stringify(url.hostname === 'openlibrary.org' ? { docs: [] } : { results: [{ trackId: 123, collectionId: 124, trackName: 'Second', collectionName: 'Second: Example, Book 2 (Unabridged)', artistName: 'Example Author', trackViewUrl: productUrl, collectionViewUrl: productUrl.replace('/book/', '/audiobook/').replace('id123', 'id124'), releaseDate: '2027-03-01T00:00:00Z' }].flatMap(row => [{ ...row, kind: 'ebook' }, { ...row, wrapperType: 'audiobook' }]) }), { headers: { 'content-type': 'application/json' } });
   };
   const pending = collectCatalogs(request(), ['CA', 'US', 'GB'], new AbortController().signal, fetcher, { appleProductPages: true });
   await vi.runAllTimersAsync();
@@ -98,7 +98,7 @@ test('keyless catalog pipeline hydrates preferred formats before fallback APIs',
   const proposals = selectProposals(request(), result.evidence, checkedAt);
   expect(proposals.releases.book?.date).toBe('2027-03-01');
   expect(proposals.releases.audio?.date).toBe('2027-03-01');
-  expect(result.usage.apple).toBe(4);
+  expect(result.usage.apple).toBe(3);
   expect(urls.filter(url => url.searchParams.has('country')).every(url => url.searchParams.get('country') === 'ca')).toBe(true);
 });
 
@@ -161,7 +161,7 @@ test('earlier API day is prioritized before later rows for requested book-only h
   expect(selectProposals(request({ formats: ['book'] }), (await pending).evidence, checkedAt).releases.book?.date).toBe('2027-03-01');
   expect(htmlIds).toEqual(['/ca/book/second/id123']);
 });
-test('combined API and HTML attempts never exceed twelve and HTML has its own six-page bound', async () => {
+test('combined API and HTML attempts stay within twelve and HTML has its own six-page bound', async () => {
   vi.useFakeTimers();
   let htmlCalls = 0;
   let appleCalls = 0;
@@ -175,12 +175,14 @@ test('combined API and HTML attempts never exceed twelve and HTML has its own si
     return new Response(JSON.stringify({ results: Array.from({ length: 6 }, (_, index) => ({ trackId: 100 + index, collectionId: 200 + index,
       trackName: 'Second', collectionName: 'Second', artistName: 'Example Author',
       trackViewUrl: `https://books.apple.com/${market}/book/second/id${100 + index}`,
-      collectionViewUrl: `https://books.apple.com/${market}/audiobook/second/id${200 + index}`, releaseDate: '2027-03-01T00:00:00Z' })) }), { headers: { 'content-type': 'application/json' } });
+      collectionViewUrl: `https://books.apple.com/${market}/audiobook/second/id${200 + index}`, releaseDate: '2027-03-01T00:00:00Z' }))
+      .flatMap(row => [{ ...row, kind: 'ebook' }, { ...row, wrapperType: 'audiobook' }]) }), { headers: { 'content-type': 'application/json' } });
   };
   const pending = collectCatalogs(request(), ['CA', 'US', 'GB'], new AbortController().signal, fetcher, { appleProductPages: true });
   await vi.runAllTimersAsync();
   const result = await pending;
-  expect(appleCalls).toBe(12); expect(result.usage.apple).toBe(12); expect(htmlCalls).toBe(6);
+  // Three combined searches plus the six-page HTML ceiling.
+  expect(appleCalls).toBe(9); expect(result.usage.apple).toBe(9); expect(htmlCalls).toBe(6);
   expect(result.reasons).toContain('budget');
 });
 

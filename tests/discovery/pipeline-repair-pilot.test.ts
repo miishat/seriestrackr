@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { afterEach, expect, test, vi } from 'vitest';
 import { caseIds, ceilings, runRepairPilot, summarizeEvents, titleModes } from '../../scripts/discovery-pipeline-repair-pilot';
+import { takeCombinedApple } from './replayApple';
 
 const dataDir = new URL('./data/pipeline-repair/', import.meta.url);
 const roots: string[] = [];
@@ -25,6 +26,8 @@ function recorded(caseId: string) {
   const rows = [...saved.responses];
   return vi.fn<typeof fetch>(async input => {
     const url = new URL(String(input)); url.searchParams.delete('key');
+    const combined = takeCombinedApple(rows, url);
+    if (combined) return combined;
     const index = rows.findIndex(row => row.url === url.href);
     if (index < 0) throw new Error('unrecorded');
     const [row] = rows.splice(index, 1);

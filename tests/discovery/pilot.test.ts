@@ -102,7 +102,7 @@ test('production transport uses only one input case and never loads the oracle o
   expect(bodies).toContain('Mistborn Brandon Sanderson book 2');
   expect(bodies).not.toContain('ORACLE_ONLY'); expect(bodies).not.toContain('fake-tavily-secret'); expect(bodies).not.toContain('fake-deepseek-secret');
   expect(bodies).not.toContain('The Well of Ascension');
-  const report = JSON.parse(print.mock.calls[0][0]); expect(report.summary.usage).toMatchObject({ apple: 6, openlibrary: 1, googlebooks: 1, tavily: 3, deepseek: 0 });
+  const report = JSON.parse(print.mock.calls[0][0]); expect(report.summary.usage).toMatchObject({ apple: 3, openlibrary: 1, googlebooks: 1, tavily: 3, deepseek: 0 });
   expect(print.mock.calls[0][0]).not.toContain('fake-google-secret');
 });
 test('withheld CA control selects independent US factual editions without relabeling', async () => {
