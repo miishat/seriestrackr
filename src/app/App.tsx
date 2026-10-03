@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Dialog } from '../components/Dialog';
 import { BrandMark } from '../components/BrandMark';
 import { BrandTagline } from '../components/BrandTagline';
@@ -9,6 +9,7 @@ import type { LibraryDocument, Series } from '../features/library/model';
 import { displayRelease, localToday } from '../features/library/releases';
 import { findAutomaticCover } from '../features/library/autoCover';
 import { useLibrary } from '../features/library/useLibrary';
+import { staleSeriesIds } from '../features/discovery/autoTrack';
 import { useDiscovery } from '../features/discovery/useDiscovery';
 import { DiscoveryDialog } from '../features/discovery/DiscoveryDialog';
 import { MarketSelect, SettingsDialog } from '../features/settings/SettingsDialog';
@@ -34,11 +35,23 @@ function useToday() {
 }
 
 type Pending = { kind: 'series'; value: Series; message: string } | { kind: 'settings'; value: LibraryDocument['settings']; message: string };
-export function App() {
+export function App({ autoTrack = true }: { autoTrack?: boolean } = {}) {
   const library = useLibrary();
   const discovery = useDiscovery(library);
   const discoverySeries = library.doc.series.find(series => series.id === discovery.session?.seriesId);
   const today = useToday();
+  // Once per app open: quietly check series not checked in the last week. The delay lets
+  // StrictMode's mount, unmount, mount cycle settle before a run starts.
+  const autoStarted = useRef(false);
+  useEffect(() => {
+    if (!autoTrack || autoStarted.current || library.mode !== 'ready' || !library.doc.settings.market) return;
+    const timer = window.setTimeout(() => {
+      autoStarted.current = true;
+      const ids = staleSeriesIds(library.doc, new Date());
+      if (ids.length) void discovery.runBatch(ids, true);
+    }, 1000);
+    return () => window.clearTimeout(timer);
+  }, [autoTrack, library.mode, library.doc.settings.market]);
   const [summaryFilter, setSummaryFilter] = useState<{ kind: 'all' | 'book' | 'audio'; sequence: number } | null>(null);
   const filterSummary = (kind: 'all' | 'book' | 'audio') => setSummaryFilter(previous => ({ kind, sequence: (previous?.sequence ?? 0) + 1 }));
   const [editor, setEditor] = useState<Series | 'new' | null>(null);
@@ -120,10 +133,10 @@ export function App() {
     {library.mode === 'unsaved' && <div className="warning" role="alert"><strong>Changes are in memory and may be lost.</strong> {library.error} <button onClick={exportUnsaved}>Export now</button>{exportError && <span className="form-error" role="alert"> {exportError}</span>}{library.recoveryRaw !== null && <button onClick={() => setBackupsOpen(true)}>Open backups</button>}</div>}
     <section className="intro"><div><div className="eyebrow">Your library</div><h1>What comes next?</h1><p>A bookshelf for the stories you are following. Your next read stays in focus.</p></div>
       {library.doc.series.length > 0 && <div className="summary"><button onClick={() => filterSummary('all')}><b>{library.doc.series.length}</b><span>Tracked series</span></button><button onClick={() => filterSummary('book')}><b>{availableCount}</b><span>Next book available</span></button><button onClick={() => filterSummary('audio')}><b>{availableAudioCount}</b><span>Next audiobook available</span></button></div>}</section>
-    {library.doc.settings.market && library.mode !== 'recovery' && <LibraryView summaryFilter={summaryFilter} doc={library.doc} today={today} onEdit={(s) => { setDialogError(null); setEditor(s); }} onFinish={finish} onCheck={(series) => discovery.open(series.id)} onCheckAll={discovery.runBatch} batchRunning={discovery.batch.running} checkingSeriesId={discovery.session?.phase === 'checking' ? discovery.session.seriesId : null} onAdd={() => { setDialogError(null); setEditor('new'); }} onView={(view) => library.updateSettings({ ...library.doc.settings, view }, false)} />}
+    {library.doc.settings.market && library.mode !== 'recovery' && <LibraryView summaryFilter={summaryFilter} doc={library.doc} today={today} onEdit={(s) => { setDialogError(null); library.clearAutoUpdate(s.id); setEditor(s); }} onFinish={finish} onCheck={(series) => { library.clearAutoUpdate(series.id); discovery.open(series.id); }} onUndoAuto={(series) => { const result = library.undoAutoUpdate(series.id); if (result.ok === false) notify(result.error); }} onCheckAll={discovery.runBatch} batchRunning={discovery.batch.running} checkingSeriesId={discovery.session?.phase === 'checking' ? discovery.session.seriesId : null} onAdd={() => { setDialogError(null); setEditor('new'); }} onView={(view) => library.updateSettings({ ...library.doc.settings, view }, false)} />}
     {(discovery.batch.running || discovery.batch.results.length > 0) && <section className="batch-results" aria-label="Release check results">
       <div className="batch-results-header"><div>
-        <h2>{discovery.batch.running ? 'Checking releases' : 'Release check results'}</h2>
+        <h2>{discovery.batch.running ? (discovery.batch.automatic ? 'Checking releases automatically' : 'Checking releases') : 'Release check results'}</h2>
         <p role="status">{discovery.batch.done} of {discovery.batch.total} checked | Review results before saving.</p>
       </div>{discovery.batch.running && <button onClick={discovery.cancelBatch}>Cancel checks</button>}</div>
       {discovery.batch.running && <progress value={discovery.batch.done} max={discovery.batch.total} aria-label="Release check progress" />}
@@ -145,7 +158,7 @@ export function App() {
         </li>;
       })}</ul>
     </section>}
-    <aside className="discovery-footer"><strong>Check releases. Review sources. Choose what to save.</strong><p>Manual tracking is always available.</p></aside>
+    <aside className="discovery-footer"><strong>Releases are checked automatically when you open SeriesTrackr.</strong><p>Series not checked in the last 7 days are checked. Safe updates are saved and marked; anything else waits for your review. You can still check or edit any series yourself.</p></aside>
     {library.canUndo && (library.undoKind === 'cover'
       ? <div className="undo" role="status">Most recent cover choice can be undone until another change or reload. <button onClick={undoLast}>Undo cover</button></div>
       : <div className="undo" role="status">Most recent finish can be undone until another change or reload. <button onClick={undoLast}>Undo finish</button></div>)}

@@ -42,7 +42,7 @@ test('an old Hardcover announcement shows a notice, and Review again opens the c
   const doc = { ...emptyDocument(), settings: { ...emptyDocument().settings, market: 'CA' }, series: [seriesFixture({ releases: { book: hardcoverAnnounced(daysAgo(200)), audio: emptyRelease() } })] };
   localStorage.setItem(key, JSON.stringify(doc));
   const before = localStorage.getItem(key);
-  render(<App />);
+  render(<App autoTrack={false} />);
   expect(screen.getByText(/Evidence is old/)).toBeVisible();
   expect(getDiscoveryCapabilities).not.toHaveBeenCalled(); expect(checkDiscovery).not.toHaveBeenCalled();
   expect(localStorage.getItem(key)).toBe(before);
@@ -78,7 +78,7 @@ test.each([['regular', false], ['compact', true]])('%s card labels a legacy manu
 test('the series editor labels a manual cover URL unverified until a named cover replaces it', async () => {
   const user = userEvent.setup();
   localStorage.setItem(key, JSON.stringify({ ...emptyDocument(), settings: { ...emptyDocument().settings, market: 'CA' }, series: [seriesFixture({ coverUrl: 'https://example.com/c.jpg' })] }));
-  render(<App />);
+  render(<App autoTrack={false} />);
   await user.click(screen.getByRole('button', { name: 'Edit details' }));
   expect(screen.getByText(/Current cover is unverified/)).toBeVisible();
   await user.clear(screen.getByLabelText('Cover URL'));
