@@ -245,12 +245,12 @@ test('compact poster leads with series name and shows next book separately', asy
   expect(within(card).getByRole('button', { name: 'Check releases' })).toBeEnabled();
 });
 
-test('announced release badge does not repeat its unknown date', async () => {
+test('announced release shows Announced with Date Unknown where the date appears', async () => {
   seed([seriesFixture({ releases: { book: { ...emptyRelease(), state: 'announced' }, audio: emptyRelease() } })]);
   render(<App />);
   const card = screen.getByRole('article');
-  expect(within(card).getByText('Announced; date unknown')).toBeVisible();
-  expect(within(card).queryByText('Date Unknown')).toBeNull();
+  expect(within(card).getByText('Announced')).toBeVisible();
+  expect(within(card).getByText('Date Unknown')).toBeVisible();
 });
 
 test('compact source link uses the saved book title and preserves source details', async () => {

@@ -2,7 +2,7 @@ import type { Format, Release, ReleaseState } from './model';
 
 const states: [ReleaseState, string][] = [
   ['not-checked', 'Not checked'], ['not-found', 'No announcement found'],
-  ['catalogued', 'Edition found; release unverified'], ['announced', 'Announced; date unknown'],
+  ['catalogued', 'Edition found; release unverified'], ['announced', 'Announced'],
   ['scheduled', 'Scheduled'], ['released', 'Available'],
 ];
 

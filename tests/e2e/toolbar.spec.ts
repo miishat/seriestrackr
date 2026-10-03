@@ -51,7 +51,7 @@ test('organized library tools fit desktop and phone and retain filtering', async
   for (const width of [1091, 390]) {
     await page.setViewportSize({ width, height: 900 });
     for (const theme of ['light', 'dark'] as const) {
-      const toggle = page.getByRole('button', { name: theme === 'light' ? 'Light Theme' : 'Dark Theme', exact: true });
+      const toggle = page.getByRole('button', { name: theme === 'light' ? 'Light' : 'Dark', exact: true });
       if (await toggle.count()) await toggle.click();
       await expect(page.getByRole('group', { name: 'Filters', exact: true })).toBeVisible();
       await expect(page.getByRole('group', { name: 'View', exact: true })).toBeVisible();

@@ -4,7 +4,7 @@ import { displaySeriesRelease } from './releases';
 import { SeriesCard } from './SeriesCard';
 import { SeriesTable } from './SeriesTable';
 
-const states: [ReleaseState, string][] = [['not-checked','Not checked'],['not-found','Not Found'],['catalogued','Edition found; release unverified'],['announced','Announced; date unknown'],['scheduled','Scheduled'],['released','Available']];
+const states: [ReleaseState, string][] = [['not-checked','Not checked'],['not-found','Not Found'],['catalogued','Edition found; release unverified'],['announced','Announced'],['scheduled','Scheduled'],['released','Available']];
 function FilterMenu<T extends string>({ label, allLabel, options, selected, onChange }: {
   label: string; allLabel: string; options: readonly (readonly [T, string])[]; selected: T[]; onChange: (values: T[]) => void;
 }) {
@@ -29,7 +29,8 @@ function FilterMenu<T extends string>({ label, allLabel, options, selected, onCh
     <div className="filter-panel" role="group" aria-label={label}>{options.map(([value, text]) => <label key={value}><input type="checkbox" aria-label={`${label}: ${text}`} checked={selected.includes(value)} onChange={(event) => toggle(value, event.target.checked)} />{text}</label>)}</div>
   </details>;
 }
-export function LibraryView({ doc, today, onEdit, onFinish, onCheck, checkingSeriesId = null, onAdd, onView, onCheckAll, batchRunning = false }: {
+export function LibraryView({ doc, today, onEdit, onFinish, onCheck, checkingSeriesId = null, onAdd, onView, onCheckAll, batchRunning = false, summaryFilter }: {
+  summaryFilter?: { kind: 'all' | 'book' | 'audio'; sequence: number } | null;
   onCheckAll?: (seriesIds: string[]) => void; batchRunning?: boolean;
   doc: LibraryDocument; today: string; onEdit: (series: Series) => void; onFinish: (series: Series) => void; onCheck?: (series: Series) => void; checkingSeriesId?: string | null; onAdd: () => void; onView: (view: LibraryDocument['settings']['view']) => void;
 }) {
@@ -37,6 +38,12 @@ export function LibraryView({ doc, today, onEdit, onFinish, onCheck, checkingSer
   const [reading, setReading] = useState<ReadingStatus[]>([]);
   const [book, setBook] = useState<ReleaseState[]>([]);
   const [audio, setAudio] = useState<ReleaseState[]>([]);
+  useEffect(() => {
+    if (!summaryFilter) return;
+    setQuery(''); setReading([]);
+    setBook(summaryFilter.kind === 'book' ? ['released'] : []);
+    setAudio(summaryFilter.kind === 'audio' ? ['released'] : []);
+  }, [summaryFilter]);
   const filtered = doc.series.filter((s) => {
     if ((book.length > 0 || audio.length > 0) && s.readingStatus === 'completed') return false;
     const matchQuery = `${s.name} ${s.author}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase());
@@ -69,8 +76,8 @@ export function LibraryView({ doc, today, onEdit, onFinish, onCheck, checkingSer
     </div>
     {doc.series.length === 0 ? <div className="empty"><div className="eyebrow">A fresh start</div><h2>Your bookshelf is empty</h2><p>Add a series, then keep its next book and audiobook releases in one place.</p><button className="primary" onClick={onAdd}>Add your first series</button></div>
       : filtered.length === 0 ? <div className="empty"><h2>No matching series</h2><p>Try another search or filter.</p></div>
-      : doc.settings.view === 'list' ? <SeriesTable series={filtered} today={today} market={doc.settings.market ?? ''} onEdit={onEdit} onFinish={onFinish} onCheck={onCheck} checkingSeriesId={checkingSeriesId} checkDisabled={batchRunning} />
+      : doc.settings.view === 'list' ? <SeriesTable series={filtered} today={today} market={doc.settings.market ?? ''} onEdit={onEdit} onFinish={onFinish} onCheck={onCheck} checkingSeriesId={checkingSeriesId} checkDisabled={batchRunning} showCovers={doc.settings.showCovers} />
       : <div className={`cards ${doc.settings.view === 'compact' ? 'compact-cards' : ''}`}>{filtered.map((s) => <SeriesCard key={s.id} series={s} today={today} market={doc.settings.market ?? ''} showCovers={doc.settings.showCovers} compact={doc.settings.view === 'compact'} onEdit={() => onEdit(s)} onFinish={() => onFinish(s)} onCheck={onCheck ? () => onCheck(s) : undefined} checking={checkingSeriesId === s.id} checkDisabled={batchRunning} />)}</div>}
-    <p className="library-note">English releases · Preferred country: {doc.settings.market ?? 'Market not selected'} unless overridden · Source countries shown with supported details</p>
+    <p className="library-note"><span>English releases</span><span>Preferred country: {doc.settings.market ?? 'Market not selected'} unless overridden</span><span>Source countries shown with supported details</span></p>
   </main>;
 }

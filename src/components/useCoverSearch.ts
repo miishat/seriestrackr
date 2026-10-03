@@ -46,9 +46,14 @@ export function useCoverSearch(series: Series, market: string) {
     const active = new AbortController();
     controller.current = active;
     const live = () => mounted.current && token === generation.current && !active.signal.aborted;
+    // The service rejects blank fields, so name the missing one here instead of surfacing a generic failure.
+    const missing = !series.name.trim() ? 'series name' : !series.author.trim() ? 'author' : null;
+    if (missing) { publish({ ...idle, phase: 'error', error: `Add the ${missing} before searching for a cover.` }); return; }
+    // A blank next title is fine while a last finished title exists: the search then offers the last read book's cover.
+    if (!series.next.title.trim() && !series.lastFinished?.title.trim()) { publish({ ...idle, phase: 'error', error: "Add the next book's title or a last finished title before searching for a cover." }); return; }
     publish({ ...idle, phase: 'searching' });
     const request: CoverRequest = { requestId: crypto.randomUUID(), seriesId: series.id || 'new', series: series.name, author: series.author,
-      nextTitle: series.next.title, position: nextPosition(series), previousTitle: series.lastFinished?.title ?? null, preferredMarket: market };
+      nextTitle: series.next.title, position: nextPosition(series), previousTitle: series.lastFinished?.title.trim() || null, preferredMarket: market };
     try {
       const found = await fetchCoverCandidates(request, active.signal);
       if (!live()) return;

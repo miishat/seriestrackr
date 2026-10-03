@@ -2,7 +2,7 @@ import type { Format, Release, ReleaseState, Series } from './model';
 
 export const releaseLabels: Record<ReleaseState, string> = {
   'not-checked': 'Not checked', 'not-found': 'Not Found',
-  catalogued: 'Edition found; release unverified', announced: 'Announced; date unknown',
+  catalogued: 'Edition found; release unverified', announced: 'Announced',
   scheduled: 'Scheduled', released: 'Available',
 };
 

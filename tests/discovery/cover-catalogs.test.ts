@@ -231,3 +231,32 @@ test('suggestions are deduplicated by author and title and capped at three', () 
   const batch = normalizeOpenLibraryCovers({ docs: rows }, cover());
   expect(batch.authorSuggestions.map(item => item.author)).toEqual(['Aa One', 'Bb Two', 'Cc Three']);
 });
+
+test('the request parser accepts a blank next title only with a last finished title', () => {
+  expect(parseCoverRequest(cover({ nextTitle: '' })).ok).toBe(true);
+  expect(parseCoverRequest(cover({ nextTitle: '  ' })).ok).toBe(true);
+  expect(parseCoverRequest(cover({ nextTitle: '', previousTitle: null })).ok).toBe(false);
+  expect(parseCoverRequest(cover({ nextTitle: '', previousTitle: ' ' })).ok).toBe(false);
+  expect(parseCoverRequest(cover({ nextTitle: '', author: '' })).ok).toBe(false);
+});
+
+test('a blank next title searches by the last finished title and yields only previous candidates', async () => {
+  const terms: string[] = [];
+  const row = (id: number, name: string, author: string) => ({ trackId: id, trackName: name, artistName: author, trackViewUrl: `https://books.apple.com/ca/book/x/id${id}`,
+    artworkUrl100: `https://is3-ssl.mzstatic.com/image/thumb/Publication/${id}/100x100bb.jpg` });
+  const fetcher = vi.fn<typeof fetch>(async input => {
+    const url = new URL(String(input));
+    if (url.hostname === 'itunes.apple.com') {
+      terms.push(url.searchParams.get('term') ?? '');
+      return Response.json({ results: [row(5, 'PreviousBook', 'Example Author'), row(6, 'PreviousBook', 'Other Writer'), row(7, 'Unrelated', 'Example Author')] });
+    }
+    return Response.json({ items: [], docs: [] });
+  });
+  const result = await collectCoverCandidates(cover({ nextTitle: '' }), { tavilyKey: null, deepseekKey: null, hardcoverToken: null, googleBooksKey: null, model: 'deepseek-flash' },
+    new AbortController().signal, fetcher);
+  expect(terms.length).toBeGreaterThan(0);
+  expect(terms.every(term => term === 'PreviousBook Example Author')).toBe(true);
+  expect(result.candidates.length).toBeGreaterThan(0);
+  expect(result.candidates.every(item => item.role === 'previous' && item.title === 'PreviousBook' && item.author === 'Example Author')).toBe(true);
+  expect(result.candidates.some(item => item.source.url.endsWith('id6') || item.source.url.endsWith('id7'))).toBe(false);
+}, 20000);

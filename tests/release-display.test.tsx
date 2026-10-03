@@ -26,7 +26,7 @@ test('compact card removes duplicate title and keeps individual action visible w
 });
 
 test('lifecycle labels are exact', () => {
-  expect(releaseLabels).toMatchObject({ catalogued: 'Edition found; release unverified', announced: 'Announced; date unknown',
+  expect(releaseLabels).toMatchObject({ catalogued: 'Edition found; release unverified', announced: 'Announced',
     scheduled: 'Scheduled', released: 'Available' });
 });
 test('catalogued stays catalogued and scheduled becomes available by local today', () => {

@@ -36,9 +36,10 @@ test('checks only supplied active series sequentially, disables AI and retains g
   act(()=>result.current.discovery.open('s2'));
   expect(result.current.discovery.session?.response).toBe(cached.response);
   act(()=>result.current.discovery.close());
-  act(()=>result.current.discovery.open('s2'));
-  expect(result.current.discovery.session?.response).toBe(cached.response);
-  expect(result.current.library.isDiscoveryCurrent(cached.snapshot!)).toBe(true);
+  expect(result.current.discovery.batch.results.map(item => item.seriesId)).toEqual(['s1']);
+  act(()=>result.current.discovery.open('s1'));
+  act(()=>result.current.discovery.close());
+  expect(result.current.discovery.batch.results).toEqual([]);
   expect(checkDiscovery).toHaveBeenCalledTimes(2);
 });
 test('cancellation stops the remaining queue and preserves completed results', async()=> {
@@ -66,4 +67,32 @@ test('global button queues only active series matching current search', () => {
   fireEvent.change(screen.getByRole('searchbox'),{target:{value:'Visible'}});
   fireEvent.click(screen.getByRole('button',{name:'Check visible releases'}));
   expect(onCheckAll).toHaveBeenCalledWith(['shown']);
+});
+
+test('dismisses one result without accepting changes and keeps the remaining reviews', async () => {
+  const { result } = mount();
+  vi.mocked(checkDiscovery).mockImplementation(async request => {
+    const reply = response({ requestId: request.requestId, seriesId: request.seriesId });
+    reply.summary.requestId = request.requestId;
+    return reply;
+  });
+  await act(async () => { await result.current.discovery.runBatch(['s1', 's2']); });
+  const releases = result.current.library.doc.series.map(s => s.releases);
+  act(() => result.current.discovery.dismissResult('s1'));
+  expect(result.current.discovery.batch.results.map(item => item.seriesId)).toEqual(['s2']);
+  expect(result.current.library.doc.series.map(s => s.releases)).toEqual(releases);
+  act(() => result.current.discovery.dismissResult('s2'));
+  expect(result.current.discovery.batch.results).toEqual([]);
+});
+test('summary shortcuts apply availability filters and tracked-series resets them', () => {
+  const doc = emptyDocument(); doc.settings.market = 'CA';
+  const available = seriesFixture({id:'available',name:'Available series'});
+  available.releases.book.state='released';
+  doc.series=[available,seriesFixture({id:'unknown',name:'Unknown series'})];
+  const props={doc,today:'2026-10-01',onEdit:()=>{},onFinish:()=>{},onAdd:()=>{},onView:()=>{}};
+  const view=render(<LibraryView {...props} summaryFilter={{kind:'book',sequence:1}} />);
+  expect(screen.getByRole('heading',{name:'Available series'})).toBeInTheDocument();
+  expect(screen.queryByRole('heading',{name:'Unknown series'})).toBeNull();
+  view.rerender(<LibraryView {...props} summaryFilter={{kind:'all',sequence:2}} />);
+  expect(screen.getByRole('heading',{name:'Unknown series'})).toBeInTheDocument();
 });

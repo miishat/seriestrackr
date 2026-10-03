@@ -60,14 +60,14 @@
    "body": "{\"numFound\":0,\"start\":0,\"numFoundExact\":true,\"num_found\":0,\"documentation_url\":\"https://openlibrary.org/dev/docs/api/search\",\"q\":\"\",\"offset\":null,\"docs\":[]}"
   },
   {
-   "url": "https://itunes.apple.com/search?term=+Will+Wight&country=us&entity=ebook&limit=20",
+   "url": "https://itunes.apple.com/search?term=The+Pilot+Will+Wight&country=us&entity=ebook&limit=20",
    "query": null,
    "status": 200,
    "contentType": "text/javascript; charset=utf-8",
    "body": "{\"resultCount\":0,\"results\":[]}"
   },
   {
-   "url": "https://itunes.apple.com/search?term=+Will+Wight&country=us&entity=audiobook&limit=20",
+   "url": "https://itunes.apple.com/search?term=The+Pilot+Will+Wight&country=us&entity=audiobook&limit=20",
    "query": null,
    "status": 200,
    "contentType": "text/javascript; charset=utf-8",

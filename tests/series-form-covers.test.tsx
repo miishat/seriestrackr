@@ -117,3 +117,14 @@ test('undo restores the cover that was set before an accepted automatic cover', 
   fireEvent.click(screen.getByRole('button', { name: 'Save series' }));
   expect(onUpdate.mock.calls[0][0]).toMatchObject({ coverUrl: 'https://example.com/manual.jpg', coverAttribution: null });
 });
+
+test('a previous-role cover for a series with a blank next title survives saving', async () => {
+  services.fetchCoverCandidates.mockResolvedValue({ ...result(), candidates: [{ ...candidate, id: 'p1', title: 'First', role: 'previous' }] });
+  const user = userEvent.setup();
+  const onUpdate = mount(vi.fn(), seriesFixture({ next: { positionOverride: null, title: '', orderNote: '', attribution: null } }));
+  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  await user.click(await screen.findByRole('button', { name: /Select cover: First.*Previous book/ }));
+  fireEvent.click(screen.getByRole('button', { name: 'Save series' }));
+  expect(onUpdate).toHaveBeenCalledTimes(1);
+  expect(onUpdate.mock.calls[0][0]).toMatchObject({ coverUrl: candidate.imageUrl, coverAttribution: { role: 'previous', title: 'First' } });
+});
