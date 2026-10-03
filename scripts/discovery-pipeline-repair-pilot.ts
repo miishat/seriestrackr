@@ -26,7 +26,7 @@ export function readCase(root: string, caseId: string, mode: TitleMode): CheckRe
   const target = saved.target;
   const parsed = parseCheckRequest({ requestId: `pilot-${caseId}`, seriesId: `pilot-${caseId}`,
     target: { series: target.series, author: target.author, position: target.position, title: mode === 'blank-title' ? '' : target.title, orderNote: '' },
-    preferredMarket: saved.preferredMarket, formats: saved.formats, useAi: false });
+    preferredMarket: saved.preferredMarket, formats: saved.formats, useAi: false, useSearch: true, fallbackMarkets: true });
   if (!parsed.ok) throw new Error('invalid-cases');
   return parsed.value;
 }
@@ -100,7 +100,7 @@ export async function runRepairPilot(args: string[], options: {
     const config = { ...loadDiscoveryConfig(root), deepseekKey: null };
     const runtime = createDiscoveryRuntime(config, createDiagnosticFetch(options.fetcher ?? fetch, counts, saveCounts), { onDiagnostic: sink.observe });
     if (options.now) runtime.now = options.now;
-    const response = await runDiscovery({ ...request, useAi: false }, runtime, new AbortController().signal);
+    const response = await runDiscovery({ ...request, useAi: false, useSearch: true, fallbackMarkets: true }, runtime, new AbortController().signal);
     result = sanitizeResult(response);
     writeFileSync(resolve(output, 'result.json'), JSON.stringify({ caseId, titleMode, ...result }, null, 2), { flag: 'wx' });
     complete = true;

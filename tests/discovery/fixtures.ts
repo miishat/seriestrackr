@@ -8,7 +8,7 @@ export function request(overrides: Partial<CheckRequest> = {}): CheckRequest {
   return {
     requestId: 'r1', seriesId: 'series-1',
     target: { series: 'Example', author: 'Example Author', position: 2, title: 'Second', orderNote: '' },
-    preferredMarket: 'CA', formats: ['book', 'audio'], useAi: false,
+    preferredMarket: 'CA', formats: ['book', 'audio'], useAi: false, useSearch: true, fallbackMarkets: true,
     ...overrides,
   };
 }

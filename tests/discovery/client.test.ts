@@ -119,3 +119,17 @@ test('cancellation while decoding JSON remains cancellation', async () => {
   vi.stubGlobal('fetch', vi.fn(async () => reply));
   await expect(getDiscoveryCapabilities(controller.signal)).rejects.toMatchObject({ name: 'AbortError' });
 });
+
+test('a key header is sent only for a provider the request opts into', async () => {
+  const fetcher = vi.fn<typeof fetch>(async () => Response.json(response()));
+  vi.stubGlobal('fetch', fetcher);
+  const keys = { tavily: 'tavily-key-123', deepseek: 'deepseek-key-123' };
+  await checkDiscovery(request({ useSearch: true, useAi: false }), signal(), keys);
+  expect(fetcher.mock.calls[0][1]?.headers).toEqual({ Accept: 'application/json', 'Content-Type': 'application/json', 'X-Tavily-Key': 'tavily-key-123' });
+  await checkDiscovery(request({ useSearch: false, useAi: true }), signal(), keys);
+  expect(fetcher.mock.calls[1][1]?.headers).toEqual({ Accept: 'application/json', 'Content-Type': 'application/json', 'X-Deepseek-Key': 'deepseek-key-123' });
+  await checkDiscovery(request({ useSearch: false, useAi: false }), signal(), keys);
+  expect(fetcher.mock.calls[2][1]?.headers).toEqual({ Accept: 'application/json', 'Content-Type': 'application/json' });
+  await checkDiscovery(request({ useSearch: true, useAi: true }), signal(), { tavily: null, deepseek: null });
+  expect(fetcher.mock.calls[3][1]?.headers).toEqual({ Accept: 'application/json', 'Content-Type': 'application/json' });
+});

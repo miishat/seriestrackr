@@ -9,6 +9,7 @@ import { createRateQueue } from './rateQueue';
 import { normalizeGoogleBooks } from './googleBooks';
 import { diagnosticCounts, emitDiagnostic, type DiagnosticObserver } from './diagnostics';
 import type { CoverCandidate } from '../../shared/covers';
+import { responseKey, type ResponseCache } from './responseCache';
 import { createRetrievalContext, type RetrievalContext, type RetrievalPhase } from './retrievalContext';
 
 // overflow names the formats whose exact Apple record set could not be proven complete within the record limit.
@@ -238,7 +239,7 @@ function joinAppleLanguages(evidence: EvidenceBundle, originalLanguages: Map<str
 
 export async function collectCatalogs(request: CheckRequest, markets: string[], signal: AbortSignal, fetcher: typeof fetch = fetch,
   options: { googleBooksKey?: string | null; onDiagnostic?: DiagnosticObserver; appleIsbnJoin?: boolean; appleProductPages?: boolean; seedEvidence?: EvidenceBundle;
-  context?: RetrievalContext; phase?: RetrievalPhase } = {}): Promise<CatalogResult> {
+  context?: RetrievalContext; phase?: RetrievalPhase; responseCache?: ResponseCache } = {}): Promise<CatalogResult> {
   const evidence = empty();
   const context = options.context ?? createRetrievalContext();
   const seeded = { sources: new Set<string>(), identities: new Set<string>() };
@@ -282,13 +283,16 @@ export async function collectCatalogs(request: CheckRequest, markets: string[], 
     const key = `${provider}:${path}`;
     const cached = queries.get(key);
     if (cached) return cached;
-    const queue = { apple: appleQueue, openlibrary: openLibraryQueue, googlebooks: googleBooksQueue }[provider];
+    // A recent identical response needs no request, so it takes no queue slot and counts as no attempt.
+    const shared = options.responseCache?.get(responseKey(provider, path));
+    if (shared) return Promise.resolve(shared.value);
+    const queue ={ apple: appleQueue, openlibrary: openLibraryQueue, googlebooks: googleBooksQueue }[provider];
     if (signal.aborted) { reason('cancelled'); return Promise.resolve(unavailable); }
     if (!context.canClaim(provider)) { emitDiagnostic(options.onDiagnostic, { stage: 'catalog', category: 'bounds', ...diagnosticCounts(evidence), provider, rule: 'request-bound' }); reason('budget'); return Promise.resolve(unavailable); }
     const operation = queue.run(async () => {
       if (!context.claim(provider)) throw new ProviderError(provider, 'budget');
       return fetchProviderJson(provider, path, {}, signal, fetcher, options.onDiagnostic);
-    }, signal).catch(error => {
+    }, signal).then(value => { options.responseCache?.set(responseKey(provider, path), value); return value; }).catch(error => {
       reason(signal.aborted ? 'cancelled' : error instanceof ProviderError ? error.reason : 'provider-error');
       return unavailable;
     });

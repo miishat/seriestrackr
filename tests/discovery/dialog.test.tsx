@@ -9,7 +9,7 @@ import { seriesFixture } from '../fixtures';
 import { response } from './fixtures';
 
 const capabilities: Capabilities = {
-  search: false, ai: true, googleBooks: false, hardcover: false, model: 'deepseek-flash',
+  search: true, ai: true, googleBooks: false, hardcover: false, model: 'deepseek-flash',
   limits: { search: 3, ai: 1, googleBooks: 2, hardcover: 1, outputTokens: 2048, inputBytes: 20000 },
   pricingAsOf: '2026-09-29', estimatedMaxAiUsd: 0.02,
 };
@@ -17,7 +17,7 @@ function session(phase: DiscoverySession['phase'] = 'review', result: CheckRespo
   return { seriesId: 's1', phase, capabilities, snapshot: null, response: result, error: null };
 }
 function show(active = session(), overrides: Partial<Parameters<typeof DiscoveryDialog>[0]> = {}) {
-  const props = { session: active, series: seriesFixture(), preferredMarket: 'CA', stale: false,
+  const props = { session: active, series: seriesFixture(), preferredMarket: 'CA', stale: false, apiKeys: { tavily: null, deepseek: 'deepseek-key-123' },
     onRun: vi.fn(), onClose: vi.fn(), onAccept: vi.fn(() => ({ ok: true as const, value: undefined })), ...overrides };
   return { ...render(<DiscoveryDialog {...props} />), props };
 }
@@ -35,24 +35,26 @@ test('ready is source-only by default and render makes no request', async () => 
   expect(screen.getByText('DeepSeek API usage is billed. At most one extraction request.')).toBeVisible();
   expect(screen.getByText(/2026-09-29/)).toBeVisible();
   await userEvent.click(screen.getByRole('button', { name: 'Check release' }));
-  expect(view.props.onRun).toHaveBeenCalledWith(false);
+  expect(view.props.onRun).toHaveBeenCalledWith({ useAi: false, useSearch: false, fallbackMarkets: true });
   expect(fetcher).not.toHaveBeenCalled();
 });
 test('missing AI and search keys leave source-only checking usable', async () => {
-  const view = show({ ...session('ready', null), capabilities: { ...capabilities, ai: false } });
-  expect(screen.getByRole('checkbox')).toBeDisabled();
+  const view = show(session('ready', null), { apiKeys: { tavily: null, deepseek: null } });
+  expect(screen.getByRole('checkbox', { name: 'Use DeepSeek for this check' })).toBeDisabled();
+  expect(screen.getByRole('checkbox', { name: 'Use Tavily web search for this check' })).toBeDisabled();
+  expect(screen.getByText(/Add your own DeepSeek key in Settings/)).toBeVisible();
   await userEvent.click(screen.getByRole('button', { name: 'Check release' }));
-  expect(view.props.onRun).toHaveBeenCalledWith(false);
+  expect(view.props.onRun).toHaveBeenCalledWith({ useAi: false, useSearch: false, fallbackMarkets: true });
 });
 test('AI resets after each check and when another session opens', async () => {
   const view = show(session('ready', null));
-  await userEvent.click(screen.getByRole('checkbox'));
+  await userEvent.click(screen.getByRole('checkbox', { name: 'Use DeepSeek for this check' }));
   await userEvent.click(screen.getByRole('button', { name: 'Check release' }));
-  expect(view.props.onRun).toHaveBeenCalledWith(true);
-  expect(screen.getByRole('checkbox')).not.toBeChecked();
-  await userEvent.click(screen.getByRole('checkbox'));
+  expect(view.props.onRun).toHaveBeenCalledWith({ useAi: true, useSearch: false, fallbackMarkets: true });
+  expect(screen.getByRole('checkbox', { name: 'Use DeepSeek for this check' })).not.toBeChecked();
+  await userEvent.click(screen.getByRole('checkbox', { name: 'Use DeepSeek for this check' }));
   view.rerender(<DiscoveryDialog {...view.props} session={{ ...session('ready', null), seriesId: 's2' }} />);
-  expect(screen.getByRole('checkbox')).not.toBeChecked();
+  expect(screen.getByRole('checkbox', { name: 'Use DeepSeek for this check' })).not.toBeChecked();
 });
 test('review starts empty and accepts whole format bundles only by selection', async () => {
   const view = show();
@@ -123,7 +125,7 @@ test('stale review disables saving and requires explicit refresh', async () => {
   expect(screen.getByRole('button', { name: 'Save selected changes' })).toBeDisabled();
   expect(view.props.onRun).not.toHaveBeenCalled();
   await userEvent.click(screen.getByRole('button', { name: 'Check again' }));
-  expect(view.props.onRun).toHaveBeenCalledWith(false);
+  expect(view.props.onRun).toHaveBeenCalledWith({ useAi: false, useSearch: false, fallbackMarkets: true });
 });
 test('recoverable save error preserves selection and current manual details', async () => {
   const saved = seriesFixture(); saved.releases.book = { ...saved.releases.book, state: 'scheduled', date: '2027-01-02' };
@@ -138,7 +140,7 @@ test('recoverable save error preserves selection and current manual details', as
 });
 test('loading offers cancellation and disables paid choice', async () => {
   const view = show(session('checking', null));
-  expect(screen.getByRole('checkbox')).toBeDisabled();
+  for (const box of screen.getAllByRole('checkbox')) expect(box).toBeDisabled();
   await userEvent.click(screen.getByRole('button', { name: 'Cancel check' }));
   expect(view.props.onClose).toHaveBeenCalledOnce();
 });
@@ -172,12 +174,12 @@ test('failed check summary stays separate from accepted release values and unkno
 test('preparing cannot run and operational errors retry only on user click', async () => {
   const view = show({ ...session('preparing', null), capabilities: null });
   expect(screen.getByRole('button', { name: 'Preparing…' })).toBeDisabled();
-  expect(screen.getByRole('checkbox')).toBeDisabled();
+  for (const box of screen.getAllByRole('checkbox')) expect(box).toBeDisabled();
   view.rerender(<DiscoveryDialog {...view.props} session={{ ...session('error', null), error: 'Sources are unavailable.' }} />);
   expect(screen.getByRole('alert')).toHaveTextContent('Sources are unavailable.');
   expect(view.props.onRun).not.toHaveBeenCalled();
   await userEvent.click(screen.getByRole('button', { name: 'Check again' }));
-  expect(view.props.onRun).toHaveBeenCalledWith(false);
+  expect(view.props.onRun).toHaveBeenCalledWith({ useAi: false, useSearch: false, fallbackMarkets: true });
 });
 
 test('new check results clear selections and partial results keep supported fields reviewable', async () => {
@@ -240,4 +242,26 @@ test('the outline tablist holds only tabs and every tabpanel is focusable', () =
   const list = screen.getByRole('tablist', { name: 'Review outline' });
   expect(Array.from(list.children).every(child => child.getAttribute('role') === 'tab')).toBe(true);
   for (const panel of document.querySelectorAll('[role=tabpanel]')) expect(panel).toHaveAttribute('tabindex', '0');
+});
+
+test('web search is opt in, needs your own Tavily key and resets after each check', async () => {
+  const view = show(session('ready', null), { apiKeys: { tavily: 'tavily-key-123', deepseek: null } });
+  const box = screen.getByRole('checkbox', { name: 'Use Tavily web search for this check' });
+  expect(box).toBeEnabled(); expect(box).not.toBeChecked();
+  await userEvent.click(box);
+  await userEvent.click(screen.getByRole('button', { name: 'Check release' }));
+  expect(view.props.onRun).toHaveBeenCalledWith({ useAi: false, useSearch: true, fallbackMarkets: true });
+  expect(screen.getByRole('checkbox', { name: 'Use Tavily web search for this check' })).not.toBeChecked();
+});
+test('other storefronts are searched by default in a manual check and can be turned off for speed', async () => {
+  const view = show(session('ready', null));
+  const box = screen.getByRole('checkbox', { name: /Also search other storefronts/ });
+  expect(box).toBeChecked();
+  await userEvent.click(box);
+  await userEvent.click(screen.getByRole('button', { name: 'Check release' }));
+  expect(view.props.onRun).toHaveBeenCalledWith({ useAi: false, useSearch: false, fallbackMarkets: false });
+});
+test('the dialog never prints a stored key', () => {
+  const view = show(session('ready', null), { apiKeys: { tavily: 'tavily-key-123', deepseek: 'deepseek-key-123' } });
+  expect(view.container.textContent).not.toContain('tavily-key-123'); expect(view.container.textContent).not.toContain('deepseek-key-123');
 });

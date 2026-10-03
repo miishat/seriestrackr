@@ -30,7 +30,7 @@ async function startCheck(hook: ReturnType<typeof mount>) {
   act(() => hook.result.current.discovery.open('s1'));
   await waitFor(() => expect(hook.result.current.discovery.session?.phase).toBe('ready'));
   let run!: Promise<void>;
-  act(() => { run = hook.result.current.discovery.run(false); });
+  act(() => { run = hook.result.current.discovery.run({ useAi: false, useSearch: false, fallbackMarkets: false }); });
   await waitFor(() => expect(services.checkDiscovery).toHaveBeenCalled());
   return { pending, run, request: () => request };
 }

@@ -4,7 +4,8 @@ import type { Result } from '../library/model';
 import { nextPosition } from '../library/progress';
 import type { useLibrary } from '../library/useLibrary';
 import { checkDiscovery, getDiscoveryCapabilities } from '../../services/discovery';
-import type { DiscoverySession } from './discoverySession';
+import { sourceOnly, type DiscoverySession, type RunOptions } from './discoverySession';
+import { loadBrowserApiKeys } from '../../storage/apiKeys';
 import { safeSelection } from './autoTrack';
 
 const staleMessage = 'The series changed. Check again before saving.';
@@ -76,7 +77,7 @@ export function useDiscovery(library: ReturnType<typeof useLibrary>) {
       if (currentGeneration(token)) publish({ ...preparing, phase: 'error', error: error instanceof Error ? error.message : 'Could not prepare this check.' });
     });
   };
-  const run = async (useAi: boolean): Promise<void> => {
+  const run = async (options: RunOptions): Promise<void> => {
     const previous = sessionRef.current;
     if (!previous || previous.phase === 'preparing' || previous.phase === 'checking') return;
     invalidate();
@@ -91,13 +92,16 @@ export function useDiscovery(library: ReturnType<typeof useLibrary>) {
       const series = latest.doc.series.find(item => item.id === previous.seriesId);
       const preferredMarket = series?.marketOverride ?? latest.doc.settings.market;
       if (!series || series.readingStatus === 'completed' || !preferredMarket) throw new Error('Choose an active series and preferred country before checking.');
+      const keys = loadBrowserApiKeys();
       const request: CheckRequest = { requestId: crypto.randomUUID(), seriesId: series.id,
         target: { series: series.name, author: series.author, position: nextPosition(series), title: series.next.title, orderNote: series.next.orderNote },
-        preferredMarket, formats: (['book', 'audio'] as const).filter(format => series.formats[format]), useAi: useAi && capabilities.ai };
+        preferredMarket, formats: (['book', 'audio'] as const).filter(format => series.formats[format]),
+        useAi: options.useAi && capabilities.ai && keys.deepseek !== null, useSearch: options.useSearch && capabilities.search && keys.tavily !== null,
+        fallbackMarkets: options.fallbackMarkets };
       const started = latest.beginDiscovery(series.id, request.requestId);
       if (started.ok === false) throw new Error(started.error);
       checking = { ...checking, capabilities, snapshot: started.value }; publish(checking);
-      const response = await checkDiscovery(request, activeController.signal);
+      const response = await checkDiscovery(request, activeController.signal, keys);
       if (!currentGeneration(token)) return;
       if (!libraryRef.current.isDiscoveryCurrent(started.value)) throw new Error(staleMessage);
       if (response.requestId !== request.requestId || response.seriesId !== request.seriesId) throw new Error('The check response did not match this request. Check again.');
@@ -146,7 +150,7 @@ export function useDiscovery(library: ReturnType<typeof useLibrary>) {
       if (token !== batchToken.current || !mounted.current) break;
       // Preserve completed snapshots for review instead of cancelling them.
       publish({ seriesId, phase: 'ready', capabilities: null, snapshot: null, response: null, error: null });
-      await run(false);
+      await run(sourceOnly);
       if (token !== batchToken.current || !mounted.current) break;
       const result = sessionRef.current;
       done += 1;

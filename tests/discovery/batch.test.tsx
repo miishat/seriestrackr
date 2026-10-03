@@ -112,3 +112,23 @@ test('an automatic run saves safe results without AI or cover changes and drops 
   expect(result.current.library.doc.series.filter(s => s.autoUpdate).map(s => s.id)).toEqual(['s1', 's2']);
   expect(result.current.library.doc.series.map(s => [s.coverUrl, s.coverAttribution])).toEqual(covers);
 });
+test('a batch never searches the web, uses AI or searches other storefronts', async () => {
+  const {result} = mount();
+  localStorage.setItem('seriestrackr:apiKeys', JSON.stringify({ tavily: 'tavily-key-123', deepseek: 'deepseek-key-123' }));
+  vi.mocked(checkDiscovery).mockImplementation(async request => response({requestId:request.requestId,seriesId:request.seriesId}));
+  await act(async()=> {await result.current.discovery.runBatch(['s1']);});
+  expect(vi.mocked(checkDiscovery).mock.calls[0][0]).toMatchObject({ useAi: false, useSearch: false, fallbackMarkets: false });
+});
+test('a manual check sends the chosen options and the stored keys, and only when the keys exist', async () => {
+  const {result} = mount();
+  vi.mocked(getDiscoveryCapabilities).mockResolvedValue({ai:true, search:true} as never);
+  vi.mocked(checkDiscovery).mockImplementation(async request => response({requestId:request.requestId,seriesId:request.seriesId}));
+  act(()=>result.current.discovery.open('s1'));
+  await vi.waitFor(() => expect(result.current.discovery.session?.phase).toBe('ready'));
+  await act(async()=> {await result.current.discovery.run({ useAi: true, useSearch: true, fallbackMarkets: true });});
+  expect(vi.mocked(checkDiscovery).mock.calls[0][0]).toMatchObject({ useAi: false, useSearch: false, fallbackMarkets: true });
+  localStorage.setItem('seriestrackr:apiKeys', JSON.stringify({ tavily: 'tavily-key-123', deepseek: 'deepseek-key-123' }));
+  await act(async()=> {await result.current.discovery.run({ useAi: true, useSearch: true, fallbackMarkets: false });});
+  expect(vi.mocked(checkDiscovery).mock.calls[1][0]).toMatchObject({ useAi: true, useSearch: true, fallbackMarkets: false });
+  expect(vi.mocked(checkDiscovery).mock.calls[1][2]).toEqual({ tavily: 'tavily-key-123', deepseek: 'deepseek-key-123' });
+});

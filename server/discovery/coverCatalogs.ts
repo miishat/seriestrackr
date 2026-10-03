@@ -25,7 +25,7 @@ type Bound = { role: 'next' | 'previous'; title: string } | { mismatch: AuthorSu
 export function checkRequestFor(request: CoverRequest, role: 'next' | 'previous'): CheckRequest | null {
   const title = role === 'next' ? request.nextTitle : request.previousTitle;
   if (!title) return null;
-  return { requestId: request.requestId, seriesId: request.seriesId, preferredMarket: request.preferredMarket, formats: ['book'], useAi: false,
+  return { requestId: request.requestId, seriesId: request.seriesId, preferredMarket: request.preferredMarket, formats: ['book'], useAi: false, useSearch: false, fallbackMarkets: false,
     target: { series: request.series, author: request.author, position: role === 'next' ? request.position : Math.max(1, request.position - 1), title, orderNote: '' } };
 }
 export function bindWork(request: CoverRequest, actualTitle: string, actualAuthors: string[], source: SourceLink): Bound {

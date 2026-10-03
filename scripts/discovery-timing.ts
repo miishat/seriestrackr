@@ -30,7 +30,8 @@ async function check(series: LibraryDocument['series'][number]): Promise<void> {
   const request: CheckRequest = { requestId: `timing-${series.id}`, seriesId: series.id,
     target: { series: series.name, author: series.author, position: nextPosition(series), title: series.next.title, orderNote: series.next.orderNote },
     preferredMarket: series.marketOverride ?? library.settings.market ?? 'US',
-    formats: (['book', 'audio'] as const).filter(format => series.formats[format]), useAi: false };
+    formats: (['book', 'audio'] as const).filter(format => series.formats[format]), useAi: false,
+    useSearch: false, fallbackMarkets: process.env.TIMING_FALLBACK === '1' };
   const began = performance.now();
   const result = await runDiscovery(request, createDiscoveryRuntime(config, timed), new AbortController().signal);
   rows.push({ name: series.name, ms: performance.now() - began, status: result.summary.status, calls });

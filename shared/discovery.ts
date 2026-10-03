@@ -9,7 +9,9 @@ export type Parsed<T> = { ok: true; value: T } | { ok: false; error: string };
 export interface Target { series: string; author: string; position: number;
   title: string; orderNote: string }
 export interface CheckRequest { requestId: string; seriesId: string; target: Target;
-  preferredMarket: string; formats: Format[]; useAi: boolean }
+  preferredMarket: string; formats: Format[]; useAi: boolean;
+  // Opt-ins. Web search spends the user's own Tavily key; fallback storefronts add slow Apple lookups.
+  useSearch: boolean; fallbackMarkets: boolean }
 export interface SourceLink { id: string; title: string; url: string }
 export interface Source extends SourceLink { provider: Provider; market: string | null;
   retrievedAt: string; text: string }

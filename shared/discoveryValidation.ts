@@ -139,13 +139,15 @@ function target(input: unknown, path: string): Target {
     orderNote: string(value.orderNote, `${path}.orderNote`, 500, 0) };
 }
 function request(input: unknown): CheckRequest {
-  const value = object(input, 'request', ['requestId', 'seriesId', 'target', 'preferredMarket', 'formats', 'useAi']);
+  const value = object(input, 'request', ['requestId', 'seriesId', 'target', 'preferredMarket', 'formats', 'useAi'], ['useSearch', 'fallbackMarkets']);
   const formats = array<Format>(value.formats, 'request.formats', 2, (item, path) => oneOf(item, path, ['book', 'audio']));
   if (!formats.length) fail('request.formats', 'at least one format required');
   unique(formats, 'request.formats');
   return { requestId: string(value.requestId, 'request.requestId', 100), seriesId: string(value.seriesId, 'request.seriesId', 100),
     target: target(value.target, 'request.target'), preferredMarket: country(value.preferredMarket, 'request.preferredMarket'),
-    formats, useAi: boolean(value.useAi, 'request.useAi') };
+    formats, useAi: boolean(value.useAi, 'request.useAi'),
+    useSearch: value.useSearch === undefined ? false : boolean(value.useSearch, 'request.useSearch'),
+    fallbackMarkets: value.fallbackMarkets === undefined ? false : boolean(value.fallbackMarkets, 'request.fallbackMarkets') };
 }
 function extraction(input: unknown, suppliedSources: Source[]): EvidenceBundle {
   const value = object(input, 'evidence', ['identities', 'editions'], ['sources', 'related']);

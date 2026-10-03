@@ -34,7 +34,7 @@ async function replay(caseId: string) {
   const { fetcher, remaining, unexpected } = replayFetcher(saved);
   const runtime = createDiscoveryRuntime(config, fetcher);
   runtime.now = () => '2026-10-02T00:00:00Z';
-  const pending = runDiscovery({ ...saved.request, useAi: false }, runtime, new AbortController().signal);
+  const pending = runDiscovery({ ...saved.request, useAi: false, useSearch: true, fallbackMarkets: true }, runtime, new AbortController().signal);
   await vi.runAllTimersAsync();
   const result = await pending;
   expect(unexpected).toEqual([]);
@@ -216,7 +216,7 @@ test('requests with no recorded row fail closed instead of reaching the network'
   const saved = load<CheckRequest>('the-sun-eater-replay.json');
   const { fetcher, unexpected } = replayFetcher({ ...saved, responses: saved.responses.slice(1) });
   const runtime = createDiscoveryRuntime(config, fetcher);
-  const pending = runDiscovery({ ...saved.request, useAi: false }, runtime, new AbortController().signal);
+  const pending = runDiscovery({ ...saved.request, useAi: false, useSearch: true, fallbackMarkets: true }, runtime, new AbortController().signal);
   await vi.runAllTimersAsync();
   await pending;
   expect(unexpected).toEqual(['api.hardcover.app']);
