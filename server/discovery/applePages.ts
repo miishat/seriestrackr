@@ -25,8 +25,7 @@ export function appleCanonicalTitle(edition: EditionEvidence, request: CheckRequ
   if (edition.format === 'audio') return bindWorkTitle(edition.title, request);
   if (edition.format !== 'ebook') return null;
   if (normalizeIdentity(edition.title) === normalizeIdentity(canonical)) return canonical;
-  const explicit = orderedTitle(edition.title, request);
-  return explicit && normalizeIdentity(explicit.title) === normalizeIdentity(canonical) ? canonical : null;
+  return bindWorkTitle(edition.title, request);
 }
 
 function exactDate(value: unknown): string | null {

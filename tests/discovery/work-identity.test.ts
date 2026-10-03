@@ -19,3 +19,17 @@ test('placeholder detection and placeholder canonical targets', () => {
   const placeholder = request({ target: { ...req.target, title: 'TBA' } });
   expect(bindWorkTitle('TBA', placeholder)).toBeNull();
 });
+test.each([
+  ['A Parade of Horribles: Dungeon Crawler Carl, Book 8', 'Dungeon Crawler Carl', 8, 'A Parade of Horribles'],
+  ['Ascension: A LitRPG Adventure (Book of the Dead 5)', 'Book of the Dead', 5, 'Ascension'],
+  ['Ascension (Book of the Dead Book 5)', 'Book of the Dead', 5, 'Ascension'],
+  ['Ascension (Book of the Dead, Book 5)', 'Book of the Dead', 5, 'Ascension'],
+])('ebook label %s binds to the canonical title', (actual, series, position, title) => {
+  const req = request({ target: { series, author: 'Someone', position, title, orderNote: '' } });
+  expect(bindWorkTitle(actual, req)).toBe(title);
+});
+
+test('a decorated label for another position does not bind', () => {
+  const req = request({ target: { series: 'Dungeon Crawler Carl', author: 'Matt Dinniman', position: 8, title: 'A Parade of Horribles', orderNote: '' } });
+  expect(bindWorkTitle('A Parade of Horribles: Dungeon Crawler Carl, Book 9', req)).toBeNull();
+});

@@ -1,10 +1,11 @@
 // @vitest-environment node
 import { afterEach, expect, test, vi } from 'vitest';
-import { normalizeAppleProductPage, appleProductUrl } from '../../server/discovery/applePages';
+import { normalizeAppleProductPage, appleProductUrl, appleCanonicalTitle } from '../../server/discovery/applePages';
 import { fetchAppleProductText } from '../../server/discovery/http';
 import { collectCatalogs, normalizeApple } from '../../server/discovery/catalogs';
 import { selectProposals } from '../../shared/discoveryPolicy';
 import { parseExtraction } from '../../shared/discoveryValidation';
+import type { EditionEvidence } from '../../shared/discovery';
 import { request } from './fixtures';
 
 const checkedAt = '2026-09-30T00:00:00Z';
@@ -224,4 +225,11 @@ test('ambiguous or duplicate publication badges stay catalogued', () => {
   const api = ascensionApi();
   const html = ascensionPage().replace('</section></article>', `${eyebrow('RELEASED')}${eyebrow('PREORDER')}</section></article>`);
   expect(normalizeAppleProductPage(html, api.sources[0], api.editions[0], ascensionReq, checkedAt).editions[0].publication).toBe('catalogued');
+});
+
+test('a decorated ebook title binds through the same grammar as audio', () => {
+  const req = request({ target: { series: 'Dungeon Crawler Carl', author: 'Matt Dinniman', position: 8, title: 'A Parade of Horribles', orderNote: '' } });
+  const item = { title: 'A Parade of Horribles: Dungeon Crawler Carl, Book 8', author: 'Matt Dinniman', format: 'ebook' } as EditionEvidence;
+  expect(appleCanonicalTitle(item, req)).toBe('A Parade of Horribles');
+  expect(appleCanonicalTitle({ ...item, format: 'print' } as EditionEvidence, req)).toBeNull();
 });
