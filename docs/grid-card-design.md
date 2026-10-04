@@ -3,6 +3,7 @@
 
 The user selected the reading-trail card layout and the Release Details disclosure with Book/Audiobook tabs. Dates remain visible, and Mark Finished, Check Releases, and Edit Details share the full card width with matching styles.
 
-The visual exploration is preserved on branch codex/grid-card-prototypes, final prototype commit 4846a66. Production implementation is rewritten against real library data. Compact and table layouts retain their existing rendering.
+The visual exploration is preserved on branch codex/grid-card-prototypes, final prototype commit 4846a66. Production implementation is rewritten against real library data. Compact retains its card layout and shares the format tabs in Release Details. Table rendering is unchanged. Grid dates sit above format labels; format labels and status badges link to the saved release source when available.
 
 Validation includes release-display and action tests, the full unit suite, production build, and browser checks at 1440px, 390px, and 320px.
+

@@ -58,11 +58,7 @@ export function SeriesCard({ series, today, market, showCovers, compact = false,
         {series.formats.audio && <ReleaseSummary series={series} format="audio" release={series.releases.audio} today={today} compact bookTitle={series.next.title} />}
       </>}
     </div>
-    <details className="compact-details"><summary>Release details{series.lastCheck && series.lastCheck.status !== 'complete' ? ' · Check needs attention' : ''}</summary>
-      {series.next.orderNote && <p className="small">{series.next.orderNote}</p>}
-      {isCaughtUp(series) && <p className="small">Caught up with known published books</p>}
-      <ReleaseEvidence series={series} /><DiscoverySummary summary={series.lastCheck} />
-    </details>
+    <GridReleaseDetails series={series} compact />
     <div className="card-footer"><button onClick={onEdit}>Edit Details</button>{series.readingStatus !== 'completed' && <><button onClick={onFinish}>Mark Finished</button>{onCheck && <button onClick={onCheck} disabled={checking || checkDisabled}>{checking ? 'Checking…' : 'Check Releases'}</button>}</>}</div>
   </article>;
   return <article className="series-card grid-series-card">
@@ -88,12 +84,18 @@ export function SeriesCard({ series, today, market, showCovers, compact = false,
       {(['book', 'audio'] as const).filter(format => series.formats[format]).map(format => {
         const release = series.releases[format];
         const state = displaySeriesRelease(series, format, today);
+        const source = release.source && /^https?:\/\//i.test(release.source.url) ? release.source : null;
+        const formatLabel = format === 'book' ? 'Book' : 'Audiobook';
         return <div className="grid-release-signal" key={format}>
           <span className="grid-release-date">{release.date ? <time dateTime={release.date}>{new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(release.date + 'T00:00:00Z'))}</time> : state === 'not-checked' ? 'No check recorded' : state === 'not-found' ? 'No supported result' : 'Date Unknown'}</span>
-          <span className="grid-format-label">{format === 'book' ? 'Book' : 'Audiobook'}</span>
-          <span className={`badge ${state}`}>{releaseLabels[state]}</span>
+          {source ? <>
+            <a className="grid-format-label" href={source.url} title={source.title} target="_blank" rel="noreferrer">{formatLabel}</a>
+            <a className={`badge ${state}`} href={source.url} title={source.title} aria-label={`${formatLabel}: ${releaseLabels[state]}`} target="_blank" rel="noreferrer">{releaseLabels[state]}</a>
+          </> : <>
+            <span className="grid-format-label">{formatLabel}</span>
+            <span className={`badge ${state}`}>{releaseLabels[state]}</span>
+          </>}
           {hasOldAnnouncementEvidence(release, today) && <span className="grid-old-evidence">Evidence is old{onCheck && <> <button type="button" onClick={onCheck} disabled={checking || checkDisabled} aria-label={`Review ${format === 'book' ? 'book' : 'audiobook'} announcement again for ${series.name}`}>Review again</button></>}</span>}
-          {release.source && /^https?:\/\//i.test(release.source.url) && <a className="grid-release-source" href={release.source.url} title={release.source.title} target="_blank" rel="noreferrer">{series.next.title.trim() || release.source.title}</a>}
         </div>;
       })}
     </div>}

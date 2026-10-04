@@ -53,7 +53,8 @@ test('source metadata stays behind Release Details and format tabs and links use
       datePrecision: 'day', interpreted: false },
   };
   render(<SeriesCard series={series} today="2026-10-01" market="US" showCovers={false} onEdit={vi.fn()} onFinish={vi.fn()} />);
-  expect(screen.getByRole('link', { name: 'Second' })).toHaveAttribute('title', 'Second: A Tale of Example');
+  expect(screen.getByRole('link', { name: 'Audiobook' })).toHaveAttribute('title', 'Second: A Tale of Example');
+  expect(screen.getByRole('link', { name: 'Audiobook: Scheduled' })).toHaveAttribute('href', 'https://example.com/audio');
   expect(screen.queryByText(/English audiobook/)).toBeNull();
   fireEvent.click(screen.getByText('Release Details'));
   fireEvent.click(screen.getByRole('tab', { name: 'Audiobook' }));
@@ -82,4 +83,28 @@ test('grid format tabs follow enabled formats and preserve safe actions', () => 
   expect(screen.getByRole('tab', { name: 'Book' })).toHaveAttribute('aria-selected', 'true');
   expect(screen.queryByRole('tab', { name: 'Audiobook' })).toBeNull();
   expect(screen.getByRole('button', { name: 'Checking…' })).toBeDisabled();
+});
+
+
+test.each([false, true])('release details show only selected format metadata in compact=%s', compact => {
+  const series = seriesFixture();
+  series.releases.book.provenance = { checkedAt: '2026-10-01T00:00:00Z', sources: [], preferredMarket: 'US', sourceMarket: 'US', language: 'en', editionFormat: 'print', editionKey: null, datePrecision: 'day', interpreted: false };
+  series.releases.audio.provenance = { ...series.releases.book.provenance, editionFormat: 'audio', sourceMarket: 'CA' };
+  render(<SeriesCard series={series} today="2026-10-04" market="US" showCovers={false} compact={compact} onEdit={vi.fn()} onFinish={vi.fn()} />);
+  fireEvent.click(screen.getByText(compact ? 'Release details' : 'Release Details'));
+  expect(screen.getByText(/English print/)).toBeVisible();
+  expect(screen.queryByText(/English audiobook/)).toBeNull();
+  fireEvent.click(screen.getByRole('tab', { name: 'Audiobook' }));
+  expect(screen.getByText(/English audiobook/)).toBeVisible();
+  expect(screen.queryByText(/English print/)).toBeNull();
+  fireEvent.keyDown(screen.getByRole('tab', { name: 'Audiobook' }), { key: 'Home' });
+  expect(screen.getByRole('tab', { name: 'Book' })).toHaveFocus();
+});
+
+test('grid source links are omitted for unsupported URLs', () => {
+  const series = seriesFixture();
+  series.releases.book.source = { title: 'Unsafe', url: 'javascript:alert(1)' };
+  render(<SeriesCard series={series} today="2026-10-04" market="US" showCovers={false} onEdit={vi.fn()} onFinish={vi.fn()} />);
+  expect(screen.queryByRole('link', { name: 'Book' })).toBeNull();
+  expect(screen.getByText('Book', { selector: '.grid-format-label' })).toBeVisible();
 });

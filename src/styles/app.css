@@ -1336,3 +1336,12 @@ dialog:has(.series-editor) .dialog-head h2 { margin: 0; line-height: 1.25; }
   .grid-release-details { padding:14px 18px 18px }
   .grid-series-card > .card-footer button { font-size:10px }
 }
+/* Release dates lead each format; source links live on the format and status. */
+.grid-release-signal .grid-release-date { display:block }
+.grid-release-signal a.grid-format-label { text-decoration:underline;text-underline-offset:3px }
+.grid-release-signal a.badge { text-decoration:none;display:inline-block }
+.grid-release-signal a.badge:hover { text-decoration:underline;text-underline-offset:3px }
+.compact > .grid-release-details { padding:5px 0 10px;min-width:0 }
+.compact > .grid-release-details > summary > span { display:none }
+.compact .grid-release-tabs { margin-top:8px }
+.compact .grid-release-tabs button { padding:7px;font-size:11px }
