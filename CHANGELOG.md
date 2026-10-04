@@ -26,6 +26,12 @@ Entries use development dates because no versioned releases have been tagged.
 
 ### Changed
 
+- Grid cards now show a reading trail from the last finished book to the next unread title, with a larger cover, smaller next-title text, and tighter author/status spacing.
+- Release dates appear above Book and Audiobook labels in Grid. Format labels and status badges link to saved sources without underlined format labels.
+- Grid card actions share the full card width with matching Mark Finished, Check Releases, and Edit Details buttons.
+- Release Details in Grid and Compact has keyboard-accessible Book and Audiobook tabs with format-specific sources and check information. Opening or closing details applies to all visible cards.
+- Expanded details align at the top across cards. Compact cards keep their upper and lower dividers aligned, with balanced disclosure spacing.
+
 - Reorganized the series editor into Series & Progress, Next Book & Releases, and Cover & Notes tabs, with a compact tinted header and fixed save actions.
 - Simplified editor labels, grouped tracking choices, and reduced Optional Progress to the current book number and title. Selecting Completed confirms publication completion while retaining existing progress validation.
 - Selected library filters use short labels and counts to fit narrower layouts.
