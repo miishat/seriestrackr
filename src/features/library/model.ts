@@ -20,6 +20,7 @@ export interface AutoUpdate {
   previous: Pick<Series, 'next' | 'releases' | 'coverUrl' | 'coverAttribution'>;
 }
 export interface Series {
+  notes?: string;
   id: string;
   name: string;
   author: string;

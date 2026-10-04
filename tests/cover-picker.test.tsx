@@ -37,7 +37,7 @@ test('named choices select a decoded portrait cover with attribution', async () 
   const onSelect = vi.fn();
   const user = userEvent.setup();
   render(<CoverPicker series={seriesFixture()} market="CA" onSelect={onSelect} />);
-  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  await user.click(screen.getByRole('button', { name: 'Find Cover' }));
   const choice = await screen.findByRole('button', { name: /Second by Example Author, Open Library, Book, Next book/ });
   expect(screen.queryByRole('button', { name: /Square/ })).toBeNull();
   await user.click(choice);
@@ -124,7 +124,7 @@ test('undo after repeated picks returns to the cover from before the first pick'
   twoCovers();
   const user = userEvent.setup();
   render(<Harness initial={seriesFixture({ coverUrl: 'https://example.com/start.jpg' })} />);
-  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  await user.click(screen.getByRole('button', { name: 'Find Cover' }));
   const choices = await screen.findAllByRole('button', { name: /Second by Example Author/ });
   await user.click(choices[0]); await user.click(choices[1]);
   expect(screen.getByLabelText('cover')).toHaveTextContent('2-L.jpg');
@@ -137,7 +137,7 @@ test.each(['edit author', 'edit url'])('undo is withdrawn after %s so it cannot 
   twoCovers();
   const user = userEvent.setup();
   render(<Harness />);
-  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  await user.click(screen.getByRole('button', { name: 'Find Cover' }));
   await user.click((await screen.findAllByRole('button', { name: /Second by Example Author/ }))[0]);
   expect(screen.getByRole('button', { name: 'Undo cover choice' })).toBeVisible();
   await user.click(screen.getByRole('button', { name }));
@@ -172,7 +172,7 @@ test('a blank next title still searches for the last read book and offers a sele
   const user = userEvent.setup();
   render(<CoverPicker series={noNext()} market="CA" onSelect={onSelect} />);
   expect(screen.getByText('No next title yet. Covers for the last book you read are offered.')).toBeTruthy();
-  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  await user.click(screen.getByRole('button', { name: 'Find Cover' }));
   expect(services.fetchCoverCandidates).toHaveBeenCalledTimes(1);
   expect(services.fetchCoverCandidates.mock.calls[0][0]).toMatchObject({ nextTitle: '', previousTitle: 'First' });
   await user.click(await screen.findByRole('button', { name: /Select cover: First by Example Author, Open Library, Book, Previous book/ }));
@@ -183,7 +183,7 @@ test('a blank next title still searches for the last read book and offers a sele
 test('with neither a next title nor a last finished title the search names both and sends nothing', async () => {
   const user = userEvent.setup();
   render(<CoverPicker series={seriesFixture({ next: { positionOverride: null, title: ' ', orderNote: '', attribution: null }, lastFinished: null })} market="CA" onSelect={vi.fn()} />);
-  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  await user.click(screen.getByRole('button', { name: 'Find Cover' }));
   expect((await screen.findByRole('alert')).textContent).toMatch(/next book's title or a last finished title/);
   expect(services.fetchCoverCandidates).not.toHaveBeenCalled();
 });

@@ -79,7 +79,8 @@ test('the series editor labels a manual cover URL unverified until a named cover
   const user = userEvent.setup();
   localStorage.setItem(key, JSON.stringify({ ...emptyDocument(), settings: { ...emptyDocument().settings, market: 'CA' }, series: [seriesFixture({ coverUrl: 'https://example.com/c.jpg' })] }));
   render(<App autoTrack={false} />);
-  await user.click(screen.getByRole('button', { name: 'Edit details' }));
+  await user.click(screen.getByRole('button', { name: 'Edit Details' }));
+  await user.click(screen.getByRole('tab', { name: 'Cover & Notes' }));
   expect(screen.getByText(/Current cover is unverified/)).toBeVisible();
   await user.clear(screen.getByLabelText('Cover URL'));
   expect(screen.queryByText(/Current cover is unverified/)).toBeNull();

@@ -7,6 +7,8 @@ Entries use development dates because no versioned releases have been tagged.
 
 ### Added
 
+- Personal series notes, saved with the library and included in backups.
+
 - **Your own Tavily and DeepSeek keys.** Settings now has fields for them. Keys stay in this browser, are left out of backups, and are sent only to the local discovery service on a check that turns that provider on. The service no longer uses Tavily or DeepSeek keys from its env files.
 - **Web search is opt in per check**, like DeepSeek, and is off in every batch.
 - **Other storefronts are opt in** for a check you start yourself (on by default there, with a box to turn them off). Automatic and batch checks look only at your preferred country.
@@ -23,6 +25,10 @@ Entries use development dates because no versioned releases have been tagged.
 - A bounded replay of the recorded failure matrix, and a dry-run pilot script (`scripts/discovery-pipeline-repair-pilot.ts`) that runs one case at a time with AI disabled.
 
 ### Changed
+
+- Reorganized the series editor into Series & Progress, Next Book & Releases, and Cover & Notes tabs, with a compact tinted header and fixed save actions.
+- Simplified editor labels, grouped tracking choices, and reduced Optional Progress to the current book number and title. Selecting Completed confirms publication completion while retaining existing progress validation.
+- Selected library filters use short labels and counts to fit narrower layouts.
 
 - Compact cards have centered, theme-tinted series headers, reading progress beside the cover, consistent release-title sizing, and denser aligned sections.
 - Add Series and Check Visible Releases share the top action row. Table check details appear beneath the next unread title and open in a themed popup without expanding the row.

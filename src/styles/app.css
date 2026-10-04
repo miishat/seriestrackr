@@ -1231,3 +1231,61 @@ dialog:has(.review-layout) { max-width: 1040px; }
 .compact-cards > .series-card.compact { grid-row: span 5; }
 .compact-series-heading { margin: -14px -14px 0; padding: 12px 14px; background: var(--soft); border-top: 0; border-bottom: 1px solid var(--line); border-radius: 12px 12px 0 0; display: flex; align-items: center; justify-content: center; }
 .compact-series-heading h2 { margin: 0; text-align: center; font-weight: 500; font-size: 19px; line-height: 1.25; color: var(--accent); overflow-wrap: anywhere; }
+
+/* Two focused editor panels with persistent actions. */
+dialog:has(.series-editor) { overflow: hidden; padding: 0; width: min(720px, calc(100vw - 32px)); }
+dialog:has(.series-editor) .dialog-head { padding: 20px 24px; margin: 0; }
+.series-editor { display: flex; flex-direction: column; max-height: calc(90dvh - 85px); }
+.editor-tabs { display: flex; gap: 24px; padding: 0 24px; border-bottom: 1px solid var(--line); }
+.editor-tabs button { border: 0; border-radius: 0; background: transparent; color: var(--muted); padding: 12px 0; }
+.editor-tabs button[aria-selected=true] { color: var(--accent); box-shadow: inset 0 -2px var(--accent); }
+.editor-scroll { overflow-y: auto; padding: 16px 24px; min-height: 0; }
+.editor-scroll h3 { margin: 0 0 12px; color: var(--accent); font-size: 14px; }
+.series-editor .actions { margin: 0; padding: 14px 24px; border-top: 1px solid var(--line); flex-shrink: 0; background: var(--panel); }
+.series-editor > .form-error { margin: 0; padding: 8px 24px; }
+.series-editor fieldset { margin: 16px 0; }
+.series-editor .editor-cover-url { grid-column: 1 / -1; }
+.editor-cover-url summary, .editor-source summary { font-size: 12px; color: var(--muted); cursor: pointer; padding: 8px 0; }
+.editor-market-note { background: var(--soft); padding: 12px; border-radius: 7px; }
+.series-editor [hidden] { display: none; }
+@media (max-width: 600px) { .editor-tabs { gap: 16px; } .editor-scroll { padding: 16px; } }
+
+.series-editor fieldset:has(input[min="1"][step="1"]) > .form-grid { grid-template-columns: 110px minmax(0, 1fr); }
+@media (max-width: 480px) { .series-editor fieldset:has(input[min="1"][step="1"]) > .form-grid { grid-template-columns: 1fr; } }
+
+/* Keep filter labels inside their controls, including selected counts. */
+.filter-menu { min-width: 0; }
+.filter-menu summary { white-space: normal; overflow-wrap: anywhere; }
+.series-editor .editor-next-title { display: grid; gap: 8px; }
+.series-editor .editor-cover-url { margin: 0; }
+.series-editor .cover-picker { margin: 8px 0 16px; }
+.series-editor .cover-picker-bar { align-items: center; flex-wrap: wrap; gap: 8px 12px; }
+.series-editor .checkbox-row { gap: 20px; padding: 12px 0; border-top: 1px solid var(--line); }
+
+.editor-tabs { gap: 0; }
+.editor-tabs button { flex: 1; text-align: center; padding: 12px 6px; }
+.series-editor .editor-next-book { grid-template-columns: 110px minmax(0, 1fr); }
+.series-editor .editor-formats .checkbox-row { border: 0; padding: 0; }
+.filter-menu summary { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 600px) { .editor-tabs { gap: 0; } }
+@media (max-width: 480px) { .series-editor .editor-next-book { grid-template-columns: 1fr; } }
+
+dialog:has(.series-editor) .dialog-head { justify-content: center; background: var(--soft); color: var(--accent); border-bottom: 1px solid var(--line); }
+dialog:has(.series-editor) .dialog-head h2 { text-align: center; }
+.editor-tracking { margin-top: 12px; }
+.series-editor .editor-cover-url { margin-top: 16px; }
+.editor-optional[open] > summary { margin-bottom: 12px; }
+
+dialog:has(.series-editor) .dialog-head { padding: 10px 24px; }
+dialog:has(.series-editor) .dialog-head h2 { margin: 0; line-height: 1.25; }
+.series-editor .cover-picker-bar { display: flex; align-items: flex-end; }
+.series-editor .cover-picker-bar .editor-cover-url { flex: 1; min-width: 180px; margin: 0; }
+.editor-cover-preview { margin: 0 0 16px; text-align: center; }
+.editor-cover-preview img { width: 96px; height: 144px; object-fit: contain; border-radius: 4px; }
+
+.series-editor .actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+.series-editor .cover-picker-bar { margin-top: 10px; }
+.series-editor textarea { resize: vertical; min-height: 100px; }
+
+.editor-finished-hint { text-align: center; }

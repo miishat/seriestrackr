@@ -1,5 +1,6 @@
 import { afterEach, expect, test, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { within } from '@testing-library/react';
 import { createElement } from 'react';
 import { SeriesForm } from '../../src/features/library/SeriesForm';
 import { loadLibrary } from '../../src/storage/libraryStorage';
@@ -105,7 +106,7 @@ test('opening and saving the manual form preserves attribution and provenance', 
   const original = acceptedDocument().series[0];
   const onUpdate = vi.fn();
   render(createElement(SeriesForm, { series: original, market: 'CA', onUpdate, onCreate: vi.fn(), onCancel: vi.fn() }));
-  fireEvent.click(screen.getByRole('button', { name: 'Save series' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Save' }));
   expect(onUpdate).toHaveBeenCalledExactlyOnceWith(original);
 });
 
@@ -115,9 +116,9 @@ test('manual title and book edits clear only their metadata while preserving aud
   original.releases.audio.provenance!.editionFormat = 'audio';
   const onUpdate = vi.fn();
   render(createElement(SeriesForm, { series: original, market: 'CA', onUpdate, onCreate: vi.fn(), onCancel: vi.fn() }));
-  fireEvent.change(screen.getByLabelText('Next book title'), { target: { value: 'Manual title' } });
-  fireEvent.change(screen.getByLabelText('Book release date'), { target: { value: '2027-04-01' } });
-  fireEvent.click(screen.getByRole('button', { name: 'Save series' }));
+  fireEvent.change(within(screen.getByText('Next Unread', { selector: 'legend' }).closest('fieldset')!).getByLabelText('Title'), { target: { value: 'Manual title' } });
+  fireEvent.change(within(screen.getByText('Book Release', { selector: 'legend' }).closest('fieldset')!).getByLabelText('Release Date'), { target: { value: '2027-04-01' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Save' }));
   const updated = onUpdate.mock.calls[0][0];
   expect(updated.next.attribution).toBeNull();
   expect(updated.releases.book).toMatchObject({ date: '2027-04-01', origin: 'manual', lastCheckedAt: null, provenance: null });

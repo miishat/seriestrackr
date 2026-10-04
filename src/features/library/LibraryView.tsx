@@ -25,7 +25,7 @@ function FilterMenu<T extends string>({ label, allLabel, options, selected, onCh
       menu.current.open = false;
       menu.current.querySelector('summary')?.focus();
     }
-  }}><summary>{selected.length ? `${label}: ${selected.length} selected` : allLabel}</summary>
+  }}><summary>{selected.length ? `${label.split(" ")[0]} (${selected.length})` : allLabel}</summary>
     <div className="filter-panel" role="group" aria-label={label}>{options.map(([value, text]) => <label key={value}><input type="checkbox" aria-label={`${label}: ${text}`} checked={selected.includes(value)} onChange={(event) => toggle(value, event.target.checked)} />{text}</label>)}</div>
   </details>;
 }

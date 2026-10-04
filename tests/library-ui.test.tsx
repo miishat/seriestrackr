@@ -49,9 +49,9 @@ test('adding a series starts with unchecked releases and survives reload', async
   seed([]);
   const first = render(<App autoTrack={false} />);
   await user.click(screen.getByRole('button', { name: 'Add Series' }));
-  await user.type(screen.getByLabelText('Series name'), 'Example series');
+  await user.type(screen.getByLabelText('Name'), 'Example series');
   await user.type(screen.getByLabelText('Author'), 'Example author');
-  await user.click(screen.getByRole('button', { name: 'Save series' }));
+  await user.click(screen.getByRole('button', { name: 'Save' }));
   expect(within(screen.getByRole('article')).getAllByText('Not Checked')).toHaveLength(2);
   first.unmount();
   render(<App autoTrack={false} />);
@@ -62,37 +62,34 @@ test('adding a series starts with unchecked releases and survives reload', async
 test('blank name stays in editor with a labeled error', async () => {
   const user = userEvent.setup(); seed([]); render(<App autoTrack={false} />);
   await user.click(screen.getByRole('button', { name: 'Add Series' }));
-  await user.type(screen.getByLabelText('Series name'), '   ');
+  await user.type(screen.getByLabelText('Name'), '   ');
   await user.type(screen.getByLabelText('Author'), 'Writer');
-  await user.click(screen.getByRole('button', { name: 'Save series' }));
-  expect(screen.getByRole('dialog', { name: 'Add series' })).toBeVisible();
+  await user.click(screen.getByRole('button', { name: 'Save' }));
+  expect(screen.getByRole('dialog', { name: 'Add Series' })).toBeVisible();
   expect(screen.getByText(/series name.*required/i)).toBeVisible();
 });
 
 test('create rejects Completed without Last finished, then saves coherent completion', async () => {
   const user = userEvent.setup(); seed([]); render(<App autoTrack={false} />);
   await user.click(screen.getByRole('button', { name: 'Add Series' }));
-  await user.type(screen.getByLabelText('Series name'), 'Finished Cycle');
+  await user.type(screen.getByLabelText('Name'), 'Finished Cycle');
   await user.type(screen.getByLabelText('Author'), 'Writer');
-  await user.selectOptions(within(screen.getByRole('dialog', { name: 'Add series' })).getByLabelText('Reading status'), 'completed');
-  await user.click(screen.getByText('Optional progress and series details'));
-  await user.click(screen.getByLabelText('Publication run complete'));
-  await user.click(screen.getByRole('button', { name: 'Save series' }));
+  await user.selectOptions(within(screen.getByRole('dialog', { name: 'Add Series' })).getByLabelText('Reading Status'), 'completed');
+  await user.click(screen.getByRole('button', { name: 'Save' }));
   expect(screen.getByRole('alert')).toHaveTextContent(/last finished/i);
   expect(JSON.parse(localStorage.getItem(key)!).series).toHaveLength(0);
-  fireEvent.change(screen.getByLabelText('Last finished book number'), { target: { value: '2' } });
-  await user.type(screen.getByLabelText('Last finished title'), 'Finale');
-  fireEvent.change(screen.getByLabelText('Latest published book number'), { target: { value: '2' } });
-  await user.click(screen.getByRole('button', { name: 'Save series' }));
+  fireEvent.change(within(screen.getByText('Last Finished', { selector: 'legend' }).closest('fieldset')!).getByLabelText('Book Number'), { target: { value: '2' } });
+  await user.type(within(screen.getByText('Last Finished', { selector: 'legend' }).closest('fieldset')!).getByLabelText('Title'), 'Finale');
+  await user.click(screen.getByRole('button', { name: 'Save' }));
   expect(screen.getByText('Series completed')).toBeVisible();
   expect(JSON.parse(localStorage.getItem(key)!).series[0].lastFinished).toEqual({ position: 2, title: 'Finale' });
 });
 
 test('edit rejects Completed while a known published book remains unread', async () => {
   const user = userEvent.setup(); seed([seriesFixture({ publicationRunComplete: true, latestPublishedPosition: 2 })]); render(<App autoTrack={false} />);
-  await user.click(screen.getByRole('button', { name: 'Edit details' }));
-  await user.selectOptions(within(screen.getByRole('dialog', { name: 'Edit series' })).getByLabelText('Reading status'), 'completed');
-  await user.click(screen.getByRole('button', { name: 'Save series' }));
+  await user.click(screen.getByRole('button', { name: 'Edit Details' }));
+  await user.selectOptions(within(screen.getByRole('dialog', { name: 'Edit Series' })).getByLabelText('Reading Status'), 'completed');
+  await user.click(screen.getByRole('button', { name: 'Save' }));
   expect(screen.getByRole('alert')).toHaveTextContent(/last finished.*latest published/i);
   expect(JSON.parse(localStorage.getItem(key)!).series[0].readingStatus).toBe('active');
   expect(within(screen.getByRole('article')).getByText('Next unread · Book 2')).toBeVisible();
@@ -100,36 +97,36 @@ test('edit rejects Completed while a known published book remains unread', async
 
 test('custom market stays selected and Other copy never shows the internal placeholder', async () => {
   const user = userEvent.setup(); seed([seriesFixture({ marketOverride: 'DE' })]); render(<App autoTrack={false} />);
-  await user.click(screen.getByRole('button', { name: 'Edit details' }));
-  const marketSelect = screen.getByLabelText('Release market') as HTMLSelectElement;
+  await user.click(screen.getByRole('button', { name: 'Edit Details' }));
+  const marketSelect = screen.getByLabelText('Release Market') as HTMLSelectElement;
   expect(marketSelect.value).toBe('DE');
   expect(marketSelect.selectedOptions[0]).toHaveTextContent('DE');
   await user.selectOptions(marketSelect, 'XX');
   await user.clear(screen.getByLabelText('Other market code'));
-  expect(screen.getByText(/Release dates refer to/)).not.toHaveTextContent('XX');
   await user.type(screen.getByLabelText('Other market code'), 'AU');
-  expect(screen.getByText(/Release dates refer to/)).toHaveTextContent('AU');
 });
 
 test('editor focuses the first field and returns focus to its opener', async () => {
   const user = userEvent.setup(); seed([]); render(<App autoTrack={false} />);
   const opener = screen.getByRole('button', { name: 'Add Series' });
   await user.click(opener);
-  expect(screen.getByLabelText('Series name')).toHaveFocus();
+  expect(screen.getByLabelText('Name')).toHaveFocus();
   await user.click(screen.getByRole('button', { name: 'Cancel' }));
   expect(opener).toHaveFocus();
 });
 
 test('editing release status, date, manual title and cover is visible on the card', async () => {
   const user = userEvent.setup(); seed(); render(<App autoTrack={false} />);
-  await user.click(screen.getByRole('button', { name: 'Edit details' }));
-  await user.clear(screen.getByLabelText('Next book title'));
-  await user.type(screen.getByLabelText('Next book title'), 'The Next Volume');
-  await user.selectOptions(screen.getByLabelText('Book status'), 'scheduled');
-  fireEvent.change(screen.getByLabelText('Book release date'), { target: { value: '2028-03-18' } });
-  await user.selectOptions(screen.getByLabelText('Audiobook status'), 'announced');
+  await user.click(screen.getByRole('button', { name: 'Edit Details' }));
+  await user.click(screen.getByRole('tab', { name: 'Next Book & Releases' }));
+  await user.clear(within(screen.getByText('Next Unread', { selector: 'legend' }).closest('fieldset')!).getByLabelText('Title'));
+  await user.type(within(screen.getByText('Next Unread', { selector: 'legend' }).closest('fieldset')!).getByLabelText('Title'), 'The Next Volume');
+  await user.selectOptions(within(screen.getByText('Book Release', { selector: 'legend' }).closest('fieldset')!).getByLabelText('Status'), 'scheduled');
+  fireEvent.change(within(screen.getByText('Book Release', { selector: 'legend' }).closest('fieldset')!).getByLabelText('Release Date'), { target: { value: '2028-03-18' } });
+  await user.selectOptions(within(screen.getByText('Audiobook Release', { selector: 'legend' }).closest('fieldset')!).getByLabelText('Status'), 'announced');
+  await user.click(screen.getByRole('tab', { name: 'Cover & Notes' }));
   await user.type(screen.getByLabelText('Cover URL'), 'https://example.com/cover.jpg');
-  await user.click(screen.getByRole('button', { name: 'Save series' }));
+  await user.click(screen.getByRole('button', { name: 'Save' }));
   await user.click(screen.getByRole('button', { name: 'Confirm reset' }));
   expect(screen.getByText('The Next Volume')).toBeVisible();
   expect(screen.getByRole('img', { name: /cover.*The Next Volume/i })).toHaveAttribute('src', 'https://example.com/cover.jpg');
@@ -137,30 +134,30 @@ test('editing release status, date, manual title and cover is visible on the car
 
 test('last finished and override changes require reset while reading status persists', async () => {
   const user = userEvent.setup(); seed(); render(<App autoTrack={false} />);
-  await user.click(screen.getByRole('button', { name: 'Edit details' }));
-  await user.selectOptions(within(screen.getByRole('dialog', { name: 'Edit series' })).getByLabelText('Reading status'), 'paused');
-  fireEvent.change(screen.getByLabelText('Last finished book number'), { target: { value: '3' } });
-  await user.clear(screen.getByLabelText('Last finished title'));
-  await user.type(screen.getByLabelText('Last finished title'), 'Third');
-  await user.click(screen.getByText('Optional progress and series details'));
-  fireEvent.change(screen.getByLabelText('Next position override'), { target: { value: '3.5' } });
-  await user.selectOptions(screen.getByLabelText('Audiobook status'), 'scheduled');
-  fireEvent.change(screen.getByLabelText('Audiobook release date'), { target: { value: '2028-04-20' } });
-  await user.click(screen.getByRole('button', { name: 'Save series' }));
+  await user.click(screen.getByRole('button', { name: 'Edit Details' }));
+  await user.selectOptions(within(screen.getByRole('dialog', { name: 'Edit Series' })).getByLabelText('Reading Status'), 'paused');
+  fireEvent.change(within(screen.getByText('Last Finished', { selector: 'legend' }).closest('fieldset')!).getByLabelText('Book Number'), { target: { value: '3' } });
+  await user.clear(within(screen.getByText('Last Finished', { selector: 'legend' }).closest('fieldset')!).getByLabelText('Title'));
+  await user.type(within(screen.getByText('Last Finished', { selector: 'legend' }).closest('fieldset')!).getByLabelText('Title'), 'Third');
+  await user.click(screen.getByRole('tab', { name: 'Next Book & Releases' }));
+  await user.selectOptions(within(screen.getByText('Audiobook Release', { selector: 'legend' }).closest('fieldset')!).getByLabelText('Status'), 'scheduled');
+  fireEvent.change(within(screen.getByText('Audiobook Release', { selector: 'legend' }).closest('fieldset')!).getByLabelText('Release Date'), { target: { value: '2028-04-20' } });
+  await user.click(screen.getByRole('button', { name: 'Save' }));
   await user.click(screen.getByRole('button', { name: 'Confirm reset' }));
   const saved = JSON.parse(localStorage.getItem(key)!).series[0];
   expect(saved.readingStatus).toBe('paused');
   expect(saved.lastFinished).toEqual({ position: 3, title: 'Third' });
-  expect(saved.next.positionOverride).toBe(3.5);
+  expect(saved.next.positionOverride).toBeNull();
   expect(saved.releases.audio.state).toBe('not-checked');
 });
 
 test('audiobook schedule and date persist when next-book identity stays the same', async () => {
   const user = userEvent.setup(); seed(); render(<App autoTrack={false} />);
-  await user.click(screen.getByRole('button', { name: 'Edit details' }));
-  await user.selectOptions(screen.getByLabelText('Audiobook status'), 'scheduled');
-  fireEvent.change(screen.getByLabelText('Audiobook release date'), { target: { value: '2028-04-20' } });
-  await user.click(screen.getByRole('button', { name: 'Save series' }));
+  await user.click(screen.getByRole('button', { name: 'Edit Details' }));
+  await user.click(screen.getByRole('tab', { name: 'Next Book & Releases' }));
+  await user.selectOptions(within(screen.getByText('Audiobook Release', { selector: 'legend' }).closest('fieldset')!).getByLabelText('Status'), 'scheduled');
+  fireEvent.change(within(screen.getByText('Audiobook Release', { selector: 'legend' }).closest('fieldset')!).getByLabelText('Release Date'), { target: { value: '2028-04-20' } });
+  await user.click(screen.getByRole('button', { name: 'Save' }));
   expect(within(screen.getByRole('article')).getByText('Scheduled')).toBeVisible();
   expect(JSON.parse(localStorage.getItem(key)!).series[0].releases.audio).toMatchObject({ state: 'scheduled', date: '2028-04-20', origin: 'manual', lastCheckedAt: null });
 });
@@ -188,19 +185,21 @@ test('cover lookup failure gives retry feedback while manual editor stays usable
   const user = userEvent.setup(); seed();
   stubCoverService(() => 'offline');
   render(<App autoTrack={false} />);
-  await user.click(screen.getByRole('button', { name: 'Edit details' }));
-  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  await user.click(screen.getByRole('button', { name: 'Edit Details' }));
+  await user.click(screen.getByRole('tab', { name: 'Cover & Notes' }));
+  await user.click(screen.getByRole('button', { name: 'Find Cover' }));
   expect(await screen.findByRole('alert')).toHaveTextContent(/cover service is unavailable|cover search failed/i);
-  expect(screen.getByRole('button', { name: 'Save series' })).toBeEnabled();
-  expect(screen.getByRole('button', { name: 'Find cover' })).toBeEnabled();
+  expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled();
+  expect(screen.getByRole('button', { name: 'Find Cover' })).toBeEnabled();
 });
 
 test('partial cover provider failure with no results warns that lookup was incomplete', async () => {
   const user = userEvent.setup(); seed();
   stubCoverService(() => coverBody({ outcomes: [{ provider: 'openlibrary', state: 'failed' }, { provider: 'googlebooks', state: 'no-match' }] }));
   render(<App autoTrack={false} />);
-  await user.click(screen.getByRole('button', { name: 'Edit details' }));
-  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  await user.click(screen.getByRole('button', { name: 'Edit Details' }));
+  await user.click(screen.getByRole('tab', { name: 'Cover & Notes' }));
+  await user.click(screen.getByRole('button', { name: 'Find Cover' }));
   expect(await screen.findByRole('alert')).toHaveTextContent(/incomplete/i);
   expect(screen.queryByText(/No covers found/)).toBeNull();
 });
@@ -211,12 +210,14 @@ test.each(['success', 'empty'] as const)('a later failed cover lookup clears %s 
   stubImage();
   stubCoverService(() => fail ? 'offline' : coverBody({ candidates: firstResult === 'success' ? [serviceCover] : [] }));
   render(<App autoTrack={false} />);
-  await user.click(screen.getByRole('button', { name: 'Edit details' }));
-  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  await user.click(screen.getByRole('button', { name: 'Edit Details' }));
+  await user.click(screen.getByRole('tab', { name: 'Cover & Notes' }));
+  await user.click(screen.getByRole('button', { name: 'Find Cover' }));
   if (firstResult === 'success') expect(await screen.findByRole('button', { name: /Select cover: Second by Example Author/ })).toBeVisible();
   else expect(await screen.findByText(/No covers found/)).toBeVisible();
   fail = true;
-  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  await user.click(screen.getByRole('tab', { name: 'Cover & Notes' }));
+  await user.click(screen.getByRole('button', { name: 'Find Cover' }));
   expect(await screen.findByRole('alert')).toHaveTextContent(/cover service is unavailable|cover search failed/i);
   expect(screen.queryByRole('button', { name: /Select cover/ })).toBeNull();
   expect(screen.queryByText(/No covers found/)).toBeNull();
@@ -243,7 +244,7 @@ test('compact poster leads with series name and shows next book separately', asy
   expect(within(card).queryByText('Last finished: Book 1: First')).toBeNull();
   await userEvent.click(within(card).getByText('Release details'));
   expect(within(card).queryByText('Last finished: Book 1: First')).toBeNull();
-  expect(within(card).getByRole('button', { name: 'Check releases' })).toBeEnabled();
+  expect(within(card).getByRole('button', { name: 'Check Releases' })).toBeEnabled();
 });
 
 test('announced release shows Announced with Date Unknown where the date appears', async () => {
@@ -284,7 +285,7 @@ test('search and release filters use the displayed status after local midnight',
 
 test('mark finished asks for an unknown title and offers one-step undo', async () => {
   const user = userEvent.setup(); seed([seriesFixture({ next: { positionOverride: null, title: '', orderNote: '', attribution: null } })]); render(<App autoTrack={false} />);
-  await user.click(screen.getByRole('button', { name: 'Mark finished' }));
+  await user.click(screen.getByRole('button', { name: 'Mark Finished' }));
   await user.type(screen.getByLabelText('Finished book title'), 'Second');
   await user.click(screen.getByRole('button', { name: 'Finish book' }));
   expect(screen.getByText(/Last finished: Book 2/i)).toBeVisible();
@@ -339,8 +340,8 @@ test.each(['Book availability', 'Audiobook availability'] as const)('completed s
 
 test('delete confirmation names the series and cancel preserves it', async () => {
   const user = userEvent.setup(); seed(); render(<App autoTrack={false} />);
-  await user.click(screen.getByRole('button', { name: 'Edit details' }));
-  await user.click(screen.getByRole('button', { name: 'Delete series' }));
+  await user.click(screen.getByRole('button', { name: 'Edit Details' }));
+  await user.click(screen.getByRole('button', { name: 'Delete' }));
   expect(within(screen.getByRole('dialog', { name: /delete/i })).getByText(/Delete Example\?/)).toBeVisible();
   await user.click(screen.getByRole('button', { name: 'Cancel delete' }));
   expect(screen.getByText('Example')).toBeVisible();

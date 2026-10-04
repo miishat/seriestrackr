@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { SeriesForm } from '../src/features/library/SeriesForm';
@@ -28,9 +28,8 @@ beforeEach(() => {
 afterEach(cleanup);
 
 const edits: [string, string, string][] = [
-  ['last finished number', 'Last finished book number', '2'],
-  ['last finished title', 'Last finished title', 'Renamed'],
-  ['next position override', 'Next position override', '5'],
+  ['last finished number', 'Book Number', '2'],
+  ['last finished title', 'Title', 'Renamed'],
 ];
 
 test.each(edits)('editing %s aborts a pending cover search', async (_name, label, next) => {
@@ -39,22 +38,24 @@ test.each(edits)('editing %s aborts a pending cover search', async (_name, label
   services.fetchCoverCandidates.mockImplementation((_request: unknown, s: AbortSignal) => { signal = s; return pending.promise; });
   const user = userEvent.setup();
   mount();
-  await user.click(screen.getByRole('button', { name: 'Find cover' }));
-  fireEvent.change(screen.getByLabelText(label), { target: { value: next } });
+  await user.click(screen.getByRole('tab', { name: 'Cover & Notes' }));
+  await user.click(screen.getByRole('button', { name: 'Find Cover' }));
+  fireEvent.change(within(screen.getByText('Last Finished', { selector: 'legend' }).closest('fieldset')!).getByLabelText(label), { target: { value: next } });
   await waitFor(() => expect(signal?.aborted).toBe(true));
   pending.resolve(result());
   await new Promise(r => setTimeout(r, 0));
   expect(screen.queryByRole('button', { name: /Select cover/ })).toBeNull();
-  expect(screen.getByRole('button', { name: 'Find cover' })).toBeEnabled();
+  expect(screen.getByRole('button', { name: 'Find Cover' })).toBeEnabled();
 });
 
 test.each(edits)('editing %s makes a ready cover result unselectable', async (_name, label, next) => {
   services.fetchCoverCandidates.mockResolvedValue(result());
   const user = userEvent.setup();
   mount();
-  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  await user.click(screen.getByRole('tab', { name: 'Cover & Notes' }));
+  await user.click(screen.getByRole('button', { name: 'Find Cover' }));
   expect(await screen.findByRole('button', { name: /Select cover/ })).toBeEnabled();
-  fireEvent.change(screen.getByLabelText(label), { target: { value: next } });
+  fireEvent.change(within(screen.getByText('Last Finished', { selector: 'legend' }).closest('fieldset')!).getByLabelText(label), { target: { value: next } });
   await waitFor(() => expect(screen.queryByRole('button', { name: /Select cover/ })).toBeNull());
 });
 
@@ -62,18 +63,19 @@ test.each(edits)('editing %s after picking a cover drops it and saves nothing st
   services.fetchCoverCandidates.mockResolvedValue(result());
   const user = userEvent.setup();
   const onUpdate = mount();
-  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  await user.click(screen.getByRole('tab', { name: 'Cover & Notes' }));
+  await user.click(screen.getByRole('button', { name: 'Find Cover' }));
   await user.click(await screen.findByRole('button', { name: /Select cover/ }));
-  fireEvent.change(screen.getByLabelText(label), { target: { value: next } });
-  fireEvent.click(screen.getByRole('button', { name: 'Save series' }));
+  fireEvent.change(within(screen.getByText('Last Finished', { selector: 'legend' }).closest('fieldset')!).getByLabelText(label), { target: { value: next } });
+  fireEvent.click(screen.getByRole('button', { name: 'Save' }));
   expect(onUpdate).toHaveBeenCalledTimes(1);
   expect(onUpdate.mock.calls[0][0]).toMatchObject({ coverUrl: null, coverAttribution: null });
 });
 
 test('a manual cover URL survives progress edits', () => {
   const onUpdate = mount(vi.fn(), seriesFixture({ coverUrl: 'https://example.com/manual.jpg' }));
-  fireEvent.change(screen.getByLabelText('Next position override'), { target: { value: '5' } });
-  fireEvent.click(screen.getByRole('button', { name: 'Save series' }));
+  fireEvent.change(within(screen.getByText('Last Finished', { selector: 'legend' }).closest('fieldset')!).getByLabelText('Book Number'), { target: { value: '5' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Save' }));
   expect(onUpdate.mock.calls[0][0].coverUrl).toBe('https://example.com/manual.jpg');
 });
 
@@ -81,9 +83,10 @@ test('the typed other market is used for cover searches', async () => {
   services.fetchCoverCandidates.mockResolvedValue(result());
   const user = userEvent.setup();
   mount();
-  fireEvent.change(screen.getByLabelText('Release market'), { target: { value: 'XX' } });
+  fireEvent.change(screen.getByLabelText('Release Market'), { target: { value: 'XX' } });
   fireEvent.change(screen.getByLabelText('Other market code'), { target: { value: 'de' } });
-  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  await user.click(screen.getByRole('tab', { name: 'Cover & Notes' }));
+  await user.click(screen.getByRole('button', { name: 'Find Cover' }));
   await waitFor(() => expect(services.fetchCoverCandidates).toHaveBeenCalled());
   expect(services.fetchCoverCandidates.mock.calls[0][0].preferredMarket).toBe('DE');
 });
@@ -92,14 +95,15 @@ test('an author suggestion only edits the form draft and saving uses the normal 
   services.fetchCoverCandidates.mockResolvedValue({ ...result(), authorSuggestions: [{ author: 'Robert Jackson Bennett', title: 'The Tainted Cup', source: { id: 'a', title: 'Catalogue', url: 'https://openlibrary.org/works/OL2W' } }] });
   const user = userEvent.setup();
   const onUpdate = mount(vi.fn(), seriesFixture({ author: 'Robert Jackson Benett' }));
-  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  await user.click(screen.getByRole('tab', { name: 'Cover & Notes' }));
+  await user.click(screen.getByRole('button', { name: 'Find Cover' }));
   const suggestion = await screen.findByRole('button', { name: 'Use Robert Jackson Bennett in the form' });
   expect(screen.getByLabelText('Author')).toHaveValue('Robert Jackson Benett');
   expect(onUpdate).not.toHaveBeenCalled();
   await user.click(suggestion);
   expect(screen.getByLabelText('Author')).toHaveValue('Robert Jackson Bennett');
   expect(onUpdate).not.toHaveBeenCalled();
-  fireEvent.click(screen.getByRole('button', { name: 'Save series' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Save' }));
   expect(onUpdate).toHaveBeenCalledTimes(1);
   expect(onUpdate.mock.calls[0][0].author).toBe('Robert Jackson Bennett');
 });
@@ -108,13 +112,14 @@ test('undo restores the cover that was set before an accepted automatic cover', 
   services.fetchCoverCandidates.mockResolvedValue(result());
   const user = userEvent.setup();
   const onUpdate = mount(vi.fn(), seriesFixture({ coverUrl: 'https://example.com/manual.jpg' }));
-  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  await user.click(screen.getByRole('tab', { name: 'Cover & Notes' }));
+  await user.click(screen.getByRole('button', { name: 'Find Cover' }));
   await user.click(await screen.findByRole('button', { name: /Select cover/ }));
   expect(screen.getByLabelText('Cover URL')).toHaveValue(candidate.imageUrl);
   await user.click(screen.getByRole('button', { name: 'Undo cover choice' }));
   expect(screen.getByLabelText('Cover URL')).toHaveValue('https://example.com/manual.jpg');
   expect(screen.queryByRole('button', { name: 'Undo cover choice' })).toBeNull();
-  fireEvent.click(screen.getByRole('button', { name: 'Save series' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Save' }));
   expect(onUpdate.mock.calls[0][0]).toMatchObject({ coverUrl: 'https://example.com/manual.jpg', coverAttribution: null });
 });
 
@@ -122,9 +127,10 @@ test('a previous-role cover for a series with a blank next title survives saving
   services.fetchCoverCandidates.mockResolvedValue({ ...result(), candidates: [{ ...candidate, id: 'p1', title: 'First', role: 'previous' }] });
   const user = userEvent.setup();
   const onUpdate = mount(vi.fn(), seriesFixture({ next: { positionOverride: null, title: '', orderNote: '', attribution: null } }));
-  await user.click(screen.getByRole('button', { name: 'Find cover' }));
+  await user.click(screen.getByRole('tab', { name: 'Cover & Notes' }));
+  await user.click(screen.getByRole('button', { name: 'Find Cover' }));
   await user.click(await screen.findByRole('button', { name: /Select cover: First.*Previous book/ }));
-  fireEvent.click(screen.getByRole('button', { name: 'Save series' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Save' }));
   expect(onUpdate).toHaveBeenCalledTimes(1);
   expect(onUpdate.mock.calls[0][0]).toMatchObject({ coverUrl: candidate.imageUrl, coverAttribution: { role: 'previous', title: 'First' } });
 });

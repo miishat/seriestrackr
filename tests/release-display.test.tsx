@@ -21,7 +21,7 @@ test('accepted release is preserved even if latest check has no result',()=> {
 test('compact card removes duplicate title and keeps individual action visible while batch is busy',()=> {
   render(<SeriesCard series={seriesFixture()} today="2026-10-01" market="US" showCovers={false} compact onEdit={vi.fn()} onFinish={vi.fn()} onCheck={vi.fn()} checkDisabled />);
   expect(screen.queryByText(/Next book:/)).toBeNull();
-  expect(screen.getByRole('button',{name:'Check releases'})).toBeDisabled();
+  expect(screen.getByRole('button',{name:'Check Releases'})).toBeDisabled();
   expect(screen.getAllByText('Second').length).toBeGreaterThan(0);
 });
 

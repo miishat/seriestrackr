@@ -62,7 +62,7 @@ export function SeriesCard({ series, today, market, showCovers, compact = false,
       {isCaughtUp(series) && <p className="small">Caught up with known published books</p>}
       <ReleaseEvidence series={series} /><DiscoverySummary summary={series.lastCheck} />
     </details>
-    <div className="card-footer"><button onClick={onEdit}>Edit details</button>{series.readingStatus !== 'completed' && <><button onClick={onFinish}>Mark finished</button>{onCheck && <button onClick={onCheck} disabled={checking || checkDisabled}>{checking ? 'Checking…' : 'Check releases'}</button>}</>}</div>
+    <div className="card-footer"><button onClick={onEdit}>Edit Details</button>{series.readingStatus !== 'completed' && <><button onClick={onFinish}>Mark Finished</button>{onCheck && <button onClick={onCheck} disabled={checking || checkDisabled}>{checking ? 'Checking…' : 'Check Releases'}</button>}</>}</div>
   </article>;
   return <article className={`series-card ${compact ? 'compact' : ''}`}>
     <div className="card-header">
@@ -80,6 +80,6 @@ export function SeriesCard({ series, today, market, showCovers, compact = false,
       {series.formats.audio && <ReleaseSummary series={series} format="audio" release={series.releases.audio} today={today} onReview={onCheck} reviewDisabled={checking || checkDisabled} />}
     </div>}
     {(series.lastCheck || Object.values(series.releases).some(release => release.provenance)) && <details className="compact-details"><summary>Check details</summary><ReleaseEvidence series={series} /><DiscoverySummary summary={series.lastCheck} /></details>}
-    <div className="card-footer"><button onClick={onEdit}>Edit details</button>{series.readingStatus !== 'completed' && <><button onClick={onFinish}>Mark finished</button>{onCheck && <button onClick={onCheck} disabled={checking || checkDisabled}>{checking ? 'Checking…' : 'Check releases'}</button>}</>}</div>
+    <div className="card-footer"><button onClick={onEdit}>Edit Details</button>{series.readingStatus !== 'completed' && <><button onClick={onFinish}>Mark Finished</button>{onCheck && <button onClick={onCheck} disabled={checking || checkDisabled}>{checking ? 'Checking…' : 'Check Releases'}</button>}</>}</div>
   </article>;
 }

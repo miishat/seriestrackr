@@ -39,6 +39,6 @@ test('manual card and editor remain available while cover providers are offline'
   vi.stubGlobal('fetch', vi.fn(() => Promise.reject(new Error('offline'))));
   render(<App autoTrack={false} />);
   expect(screen.getByText('Example')).toBeVisible();
-  expect(screen.getByRole('button', { name: 'Edit details' })).toBeEnabled();
-  expect(screen.getByRole('button', { name: 'Mark finished' })).toBeEnabled();
+  expect(screen.getByRole('button', { name: 'Edit Details' })).toBeEnabled();
+  expect(screen.getByRole('button', { name: 'Mark Finished' })).toBeEnabled();
 });

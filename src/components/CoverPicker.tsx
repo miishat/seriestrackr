@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { useCoverSearch } from './useCoverSearch';
 import { CoverChoice, providerNames } from './CoverChoice';
 import type { CoverAttribution, Series } from '../features/library/model';
@@ -8,8 +8,8 @@ interface Previous { url: string | null; attribution: CoverAttribution | null }
 // A pick session is only live while the form still holds the picked cover for the same series and author.
 interface Session { previous: Previous; chosenId: string; seriesId: string; author: string; url: string }
 
-export function CoverPicker({ series, market, onSelect, onUndo, onAuthorSuggestion }: {
-  series: Series; market: string;
+export function CoverPicker({ series, market, onSelect, onUndo, onAuthorSuggestion, urlField }: {
+  series: Series; market: string; urlField?: ReactNode;
   onSelect: (url: string, attribution: CoverAttribution) => void;
   onUndo?: (url: string | null, attribution: CoverAttribution | null) => void;
   onAuthorSuggestion?: (author: string) => void;
@@ -37,8 +37,9 @@ export function CoverPicker({ series, market, onSelect, onUndo, onAuthorSuggesti
   return <div className="cover-picker">
     {series.coverUrl && !series.coverAttribution && <p className="small cover-unverified">Current cover is unverified. It was entered as a URL and is not checked against this title and author. Choosing a named cover replaces it.</p>}
     <div className="cover-picker-bar">
-      <button type="button" onClick={() => { setStored(current => current && { ...current, chosenId: '' }); void search(); }} disabled={busy}>{busy ? 'Searching...' : 'Find cover'}</button>
-      <span className="small">Optional. Covers are only searched when you ask.</span>
+      {urlField}
+      <button type="button" onClick={() => { setStored(current => current && { ...current, chosenId: '' }); void search(); }} disabled={busy}>{busy ? 'Searching...' : 'Find Cover'}</button>
+
     </div>
     {!series.next.title.trim() && !!series.lastFinished?.title.trim() && <p className="small">No next title yet. Covers for the last book you read are offered.</p>}
     {state.error && <p className="form-error" role="alert">{state.error}</p>}

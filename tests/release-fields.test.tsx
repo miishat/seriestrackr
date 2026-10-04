@@ -8,7 +8,7 @@ afterEach(cleanup);
 test('manual status offers the exact labels and shows a catalogued state', () => {
   const onChange = vi.fn();
   render(<ReleaseFields format="book" value={{ ...emptyRelease(), state: 'catalogued' }} onChange={onChange} />);
-  const select = screen.getByLabelText('Book status') as HTMLSelectElement;
+  const select = screen.getByLabelText('Status') as HTMLSelectElement;
   expect(select.value).toBe('catalogued');
   expect(Array.from(select.options).map(option => option.text)).toEqual([
     'Not Checked', 'No announcement found', 'Listed', 'Announced', 'Scheduled', 'Available']);

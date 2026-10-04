@@ -152,6 +152,7 @@ function series(value: unknown, path: string, legacy: boolean, defaultMarket: st
     name: string(input.name, `${path}.name`, true),
     author: string(input.author, `${path}.author`, true),
     readingStatus,
+    ...(input.notes === undefined ? {} : { notes: string(input.notes, `${path}.notes`) }),
     lastFinished,
     currentBook: nullable(input.currentBook, (value) => bookRef(value, `${path}.currentBook`)),
     next: {
