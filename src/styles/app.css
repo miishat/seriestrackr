@@ -1350,3 +1350,18 @@ dialog:has(.series-editor) .dialog-head h2 { margin: 0; line-height: 1.25; }
 .grid-release-signal a.grid-format-label { text-decoration:none }
 .compact > .grid-release-details { padding-top:10px;padding-bottom:10px }
 .compact > .card-footer { padding-top:10px }
+/* Align expanded details at the start of their shared card row. */
+.cards:not(.compact-cards) > .grid-series-card {
+  display:grid;
+  grid-row:span 5;
+  grid-template-rows:subgrid;
+}
+.grid-series-card > .grid-release-details { margin-top:0;align-self:start }
+.compact > .grid-release-details {
+  margin-top:0;
+  align-self:start;
+  padding-top:12px;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--line);
+}
+.compact > .card-footer { border-top:0;padding-top:0 }
