@@ -36,14 +36,14 @@ export function SettingsDialog({ settings, onSave, onCancel, error }: { settings
     <label>{label} API key<input type="password" autoComplete="off" spellCheck={false} value={typed[name]} placeholder={saved[name] ? 'Saved. Type to replace.' : 'Optional'} onChange={event => setTyped({ ...typed, [name]: event.target.value })} /></label>
     {saved[name] && <p className="small">{label} key saved on this device. <button type="button" onClick={() => remove(name)}>Remove {label} key</button></p>}
   </div>;
-  return <form onSubmit={submit} noValidate><p>The selected country is preferred for English releases. Automatic checks look only at this country. A check you start yourself can also search the other storefronts. A series can override this preference. Releases are checked automatically every 7 days when you open the app; you can still check or edit any series yourself.</p>
+  return <form onSubmit={submit} noValidate><p>Prefer English releases from this country, with per-series overrides. On opening, active series are checked if due after 7 days. Manual checks can search other countries.</p>
     <div className="form-grid"><MarketSelect value={value.market ?? ''} onChange={(market) => setValue({ ...value, market: market || null })} />
       <label>Theme<select value={value.theme} onChange={(event) => setValue({ ...value, theme: event.target.value as Settings['theme'] })}><option value="light">Light</option><option value="dark">Dark</option></select></label>
       <label>Default view<select value={value.view} onChange={(event) => setValue({ ...value, view: event.target.value as Settings['view'] })}><option value="grid">Bookshelf cards</option><option value="compact">Compact cards</option><option value="list">Release table</option></select></label>
       <label>Covers<select value={value.showCovers ? 'show' : 'hide'} onChange={(event) => setValue({ ...value, showCovers: event.target.value === 'show' })}><option value="show">Show</option><option value="hide">Hide</option></select></label>
     </div>
     <h3>Your own API keys (optional)</h3>
-    <p className="small">Web search uses Tavily and AI uses DeepSeek. Both are billed to you, never to this app, and neither runs unless you turn it on for a check. Keys are stored only in this browser, are left out of backups, and are sent only to the discovery service on this computer.</p>
+    <p className="small">Optional Tavily search and DeepSeek AI use your paid accounts only when enabled. Keys stay in this browser, are excluded from backups, and go only to the local discovery service.</p>
     <div className="form-grid">{keyField('tavily', 'Tavily')}{keyField('deepseek', 'DeepSeek')}</div>
     <p className="small">Language: English. Book and audiobook tracking can be set for each series.</p>
     {(localError || error) && <p role="alert" className="form-error">{localError || error}</p>}

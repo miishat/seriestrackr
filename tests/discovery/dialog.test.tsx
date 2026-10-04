@@ -167,7 +167,7 @@ test('failed check summary stays separate from accepted release values and unkno
   expect(screen.getByText(/saved release details are unchanged/i)).toBeVisible();
   view.rerender(<DiscoverySummary summary={{ ...result.summary, status: 'complete', formats: { book: 'unknown', audio: 'unknown' } }} />);
   expect(within(screen.getByRole('status')).queryByText('Check failed')).toBeNull();
-  expect(screen.getByText(/no supported details in sources checked/i)).toBeVisible();
+  expect(screen.getByText(/no verified release details/i)).toBeVisible();
   view.rerender(<DiscoverySummary summary={null} />); expect(view.container).toBeEmptyDOMElement();
 });
 
@@ -190,7 +190,7 @@ test('new check results clear selections and partial results keep supported fiel
   view.rerender(<DiscoveryDialog {...view.props} session={session('review', result)} />);
   await open('Book');
   expect(screen.getByRole('checkbox', { name: 'Save Book' })).not.toBeChecked();
-  expect(screen.getByText(/this describes source coverage, not book or audiobook availability/i)).toBeVisible();
+  expect(screen.getByText(/Source coverage is incomplete/i)).toBeVisible();
   await userEvent.click(screen.getByRole('checkbox', { name: 'Save Book' }));
   expect(screen.getByRole('button', { name: 'Save selected changes' })).toBeEnabled();
 });
@@ -227,11 +227,11 @@ test('a budget-affected run with valid dates still shows partial', () => {
   render(<DiscoverySummary summary={receipt({ status: 'partial', reasons: ['budget'], formats: { book: 'supported', audio: 'supported' } })} />);
   expect(screen.getByText('Check partially completed')).toBeVisible();
   expect(screen.getByText(/exceeded this check's limits/)).toBeVisible();
-  expect(screen.getByText(/Supported dates and announcements are still usable/)).toBeVisible();
+  expect(screen.getByText(/Verified results are still usable/)).toBeVisible();
 });
 test('incomplete facts are a separate message from the coverage status', () => {
   render(<DiscoverySummary summary={receipt({ status: 'complete', reasons: [], formats: { book: 'unknown', audio: 'supported' } })} />);
-  const message = screen.getByText(/Incomplete details: some formats have no supported details/);
+  const message = screen.getByText(/Some formats have no verified release details/);
   expect(message).toBeVisible();
   expect(screen.getByRole('status')).toHaveTextContent('Check complete');
   expect(screen.queryByText(/partial/i)).toBeNull();

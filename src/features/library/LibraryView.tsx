@@ -4,7 +4,7 @@ import { displaySeriesRelease } from './releases';
 import { SeriesCard } from './SeriesCard';
 import { SeriesTable } from './SeriesTable';
 
-const states: [ReleaseState, string][] = [['not-checked','Not checked'],['not-found','Not Found'],['catalogued','Listed'],['announced','Announced'],['scheduled','Scheduled'],['released','Available']];
+const states: [ReleaseState, string][] = [['not-checked','Not Checked'],['not-found','Not Found'],['catalogued','Listed'],['announced','Announced'],['scheduled','Scheduled'],['released','Available']];
 function FilterMenu<T extends string>({ label, allLabel, options, selected, onChange }: {
   label: string; allLabel: string; options: readonly (readonly [T, string])[]; selected: T[]; onChange: (values: T[]) => void;
 }) {
@@ -56,7 +56,8 @@ export function LibraryView({ doc, today, onEdit, onFinish, onCheck, checkingSer
     <div className="library-tools">
       <div className="library-search-row">
         <label className="visually-hidden" htmlFor="library-search">Search series or author</label><input id="library-search" type="search" placeholder="Search series or author" value={query} onChange={(event) => setQuery(event.target.value)} />
-        <button className="primary" onClick={onAdd}>Add series</button>
+        {onCheckAll && <button className="primary" disabled={batchRunning || !filtered.some(s => s.readingStatus === 'active')} onClick={() => onCheckAll(filtered.filter(s => s.readingStatus === 'active').map(s => s.id))}>Check Visible Releases</button>}
+        <button className="primary" onClick={onAdd}>Add Series</button>
       </div>
       <div className="library-options-row">
         <div className="library-filter-group" role="group" aria-labelledby="library-filters-label">
@@ -68,7 +69,6 @@ export function LibraryView({ doc, today, onEdit, onFinish, onCheck, checkingSer
           </div>
         </div>
         <div className="library-view-group">
-        {onCheckAll && <button disabled={batchRunning || !filtered.some(s => s.readingStatus === 'active')} onClick={() => onCheckAll(filtered.filter(s => s.readingStatus === 'active').map(s => s.id))}>Check visible releases</button>}
           <span className="visually-hidden" id="library-view-label">View</span>
           <div className="view-switch" role="group" aria-labelledby="library-view-label">{(['grid','compact','list'] as const).map((view) => <button key={view} aria-pressed={doc.settings.view === view} onClick={() => onView(view)}>{view === 'list' ? 'Table' : view[0].toUpperCase() + view.slice(1)}</button>)}</div>
         </div>

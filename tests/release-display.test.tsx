@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, expect, test, vi } from 'vitest';
 import { SeriesCard } from '../src/features/library/SeriesCard';
 import { displaySeriesRelease, displayRelease, releaseLabels } from '../src/features/library/releases';
@@ -40,4 +40,22 @@ test('card shows Listed with Date Unknown on the date line', () => {
   render(<SeriesCard series={series} today="2026-10-01" market="US" showCovers={false} onEdit={vi.fn()} onFinish={vi.fn()} onCheck={vi.fn()} />);
   expect(screen.getByText('Listed')).toBeVisible();
   expect(screen.getByText('Date Unknown')).toBeVisible();
+});
+
+
+test('source metadata stays behind Check details and links use the saved book title', () => {
+  const series = seriesFixture();
+  series.releases.audio = {
+    ...emptyRelease(), state: 'scheduled', date: '2027-03-01',
+    source: { title: 'Second: A Tale of Example', url: 'https://example.com/audio' },
+    provenance: { checkedAt: '2026-10-01T00:00:00Z', sources: [], preferredMarket: 'US',
+      sourceMarket: 'CA', language: 'en', editionFormat: 'audio', editionKey: null,
+      datePrecision: 'day', interpreted: false },
+  };
+  render(<SeriesCard series={series} today="2026-10-01" market="US" showCovers={false} onEdit={vi.fn()} onFinish={vi.fn()} />);
+  expect(screen.getByRole('link', { name: 'Second' })).toHaveAttribute('title', 'Second: A Tale of Example');
+  const metadata = screen.getByText(/English audiobook/);
+  expect(metadata).not.toBeVisible();
+  fireEvent.click(screen.getByText('Check details'));
+  expect(metadata).toBeVisible();
 });

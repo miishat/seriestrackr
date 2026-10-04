@@ -204,7 +204,7 @@ p {
 
 .library-search-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
   gap: 14px;
 }
@@ -508,6 +508,8 @@ input[type='checkbox']:disabled {
   color: var(--amber);
 }
 
+.badge.catalogued { background: var(--listedbg); color: var(--listed); }
+
 .badge.not-checked,.badge.not-found {
   background: var(--bg);
   color: var(--muted);
@@ -534,7 +536,7 @@ input[type='checkbox']:disabled {
 
 .series-card.compact {
   display: grid;
-  grid-row: span 5;
+  grid-row: span 4;
   grid-template-rows: subgrid;
   padding: 14px;
   gap: 12px;
@@ -858,8 +860,9 @@ legend {
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--ink);
-  color: var(--panel);
+  background: var(--panel);
+  color: var(--ink);
+  border: 1px solid var(--control-line);
   border-radius: 9px;
   padding: 14px 22px;
   box-shadow: var(--shadow);
@@ -1186,3 +1189,45 @@ dialog:has(.review-layout) { max-width: 1040px; }
 
 .summary button { border: 1px solid transparent; background: transparent; text-align: left; padding: 8px; border-radius: 8px; }
 .summary button:hover { border-color: var(--control-line); background: var(--panel); }
+
+.cards:not(.compact-cards) > .series-card { display: grid; grid-row: span 6; grid-template-rows: subgrid; gap: 0; }
+.cards:not(.compact-cards) > .series-card > .card-header { grid-row: 1; }
+.cards:not(.compact-cards) > .series-card > .card-progress { grid-row: 2; }
+.cards:not(.compact-cards) > .series-card > .card-next { grid-row: 3; }
+.cards:not(.compact-cards) > .series-card > .release-pair { grid-row: 4; }
+.cards:not(.compact-cards) > .series-card > .compact-details { grid-row: 5; }
+.cards:not(.compact-cards) > .series-card > .card-footer { grid-row: 6; }
+.compact-last-read { display: flex; flex-direction: column; gap: 2px; white-space: normal; }
+.compact-last-read strong { color: var(--ink); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.compact .card-footer { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.compact .card-footer button:nth-child(3) { grid-column: 1 / -1; }
+.compact .card-footer button { white-space: nowrap; }
+.release-evidence { margin: 10px 0; }
+@media (max-width: 700px) { .library-search-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } .library-search-row input { grid-column: 1 / -1; } }
+
+/* Keep compact content dense while sharing row alignment. */
+.compact > .compact-release-pair { height: auto; min-height: 106px; }
+.compact-release-pair > .release-summary { height: auto; min-height: 106px; grid-template-rows: 14px 18px minmax(24px, 1fr) auto; }
+.compact > .compact-details { padding-top: 5px; }
+.compact > .compact-details > summary { min-height: 0; line-height: 20px; }
+.compact .card-footer { padding-top: 5px; }
+.table-check-details { display: block; margin-top: 8px; font-size: 12px; width: 100%; }
+
+.compact .card-header .compact-last-read { margin-top: 9px; font-size: 11px; display: block; }
+.compact .card-header .position { margin-top: 4px; }
+.release-summary .release-title { font-size: 14px; font-weight: 400; line-height: 1.5; }
+.compact .release-summary .release-title { font-size: 12px; font-weight: 400; line-height: 1.5; }
+
+.compact .card-header h2 { margin: 0 0 3px; }
+.compact .card-header .sub { margin-top: 3px; line-height: 1.4; }
+.compact .card-header .compact-last-read { margin-top: 5px; }
+.table-check-details { background: transparent; border: 0; border-radius: 0; padding: 5px 0; text-align: left; color: var(--muted); font-weight: 400; }
+.table-check-details:hover { background: transparent; color: var(--accent); text-decoration: underline; }
+
+.compact-details .discovery-summary { font-size: 12px; line-height: 1.5; }
+.compact-details .discovery-summary strong { font-size: 12px; }
+.compact-details .discovery-summary p, .compact-details .discovery-summary li, .compact-details .incomplete-facts { font-size: 12px; }
+
+.compact-cards > .series-card.compact { grid-row: span 5; }
+.compact-series-heading { margin: -14px -14px 0; padding: 12px 14px; background: var(--soft); border-top: 0; border-bottom: 1px solid var(--line); border-radius: 12px 12px 0 0; display: flex; align-items: center; justify-content: center; }
+.compact-series-heading h2 { margin: 0; text-align: center; font-weight: 500; font-size: 19px; line-height: 1.25; color: var(--accent); overflow-wrap: anywhere; }

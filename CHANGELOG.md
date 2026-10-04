@@ -24,6 +24,11 @@ Entries use development dates because no versioned releases have been tagged.
 
 ### Changed
 
+- Compact cards have centered, theme-tinted series headers, reading progress beside the cover, consistent release-title sizing, and denser aligned sections.
+- Add Series and Check Visible Releases share the top action row. Table check details appear beneath the next unread title and open in a themed popup without expanding the row.
+- Check details use shorter source explanations and readable local timestamps. Listed has its own color, Not Checked uses consistent capitalization, and cover undo matches the active theme.
+- Settings and automatic-check guidance are shorter and describe the seven-day schedule and retry behavior accurately.
+
 - **Release checks are much faster.** A full automatic pass over 14 series dropped from about 249 s to about 70 s (median per series from about 20 s to about 4 s). Apple ebook and audiobook searches now share one call per country, and Apple, Open Library and Google Books waits overlap when the title is known.
 - The library is saved as version 3 and records which title and author an automatic cover belongs to. Version 1 and 2 libraries and backups still import, keeping their covers, releases and sources.
 - Hardcover series matching now uses the series relationship (position, author role and aliases) instead of the old "featured" flag, and bounds its results so a provider that ignores its limit cannot hide a conflict.
@@ -34,6 +39,8 @@ Entries use development dates because no versioned releases have been tagged.
 - Announced releases show "Announced" with "Date Unknown" where the date would appear. The theme toggle reads "Dark" or "Light", and library table actions and the discovery footer were reorganized.
 
 ### Fixed
+
+- Removed duplicate compact reading history, broken separator characters, and footer overlap. Release links display the saved book title without repeating a source's series subtitle.
 
 - Hardcover position-5 entries that were not flagged as featured (such as Blood and Bone) are no longer skipped.
 - Audiobook titles with decorations such as "(Unabridged)" bind to the right work, and the wrong work is no longer accepted.

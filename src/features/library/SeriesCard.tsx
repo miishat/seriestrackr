@@ -19,27 +19,38 @@ export function ReleaseSummary({ format, release, today, compact = false, bookTi
     <span className="sub">{release.date ? release.date : state === 'not-checked' ? 'No check recorded' : state === 'announced' || state === 'catalogued' ? 'Date Unknown' : state === 'not-found' ? 'No supported result' : 'Manual entry'}</span>
     {oldEvidence && <span className="sub evidence-old">Evidence is old{onReview && !compact && <> <button type="button" onClick={onReview} disabled={reviewDisabled} aria-label={`Review ${format === 'book' ? 'book' : 'audiobook'} announcement again${series ? ` for ${series.name}` : ''}`}>Review again</button></>}</span>}
     {compact && bookTitle?.trim() && !release.source && <span className="sub release-title">{bookTitle}</span>}
-    {release.source && /^https?:\/\//i.test(release.source.url) && <a href={release.source.url} title={release.source.title} target="_blank" rel="noreferrer">{compact && bookTitle?.trim() ? bookTitle : release.source.title}</a>}
-    {!compact && release.provenance && <div className="small">English {release.provenance.editionFormat === 'audio' ? 'audiobook' : release.provenance.editionFormat} · {release.provenance.sourceMarket ? `Source country: ${release.provenance.sourceMarket}` : 'Source country unspecified'}
-      {release.date && <span className="sub">Earliest supported date in sources checked.</span>}
-      {release.date && release.provenance.sourceMarket !== release.provenance.preferredMarket && <span className="sub">Date from {release.provenance.sourceMarket ?? 'an unspecified country'}; no supported {release.provenance.preferredMarket} date found in sources checked.</span>}
-    </div>}
+    {release.source && /^https?:\/\//i.test(release.source.url) && <a className="release-title" href={release.source.url} title={release.source.title} target="_blank" rel="noreferrer">{bookTitle?.trim() || series?.next.title.trim() || release.source.title}</a>}
+
   </div>;
+}
+export function ReleaseEvidence({ series }: { series: Series }) {
+  return <>{(['book', 'audio'] as const).map(format => {
+    const release = series.releases[format];
+    const provenance = release.provenance;
+    if (!series.formats[format] || !provenance) return null;
+    return <div className="small release-evidence" key={format}>
+      <strong>{format === 'book' ? 'Book' : 'Audiobook'}</strong>
+      <div>English {provenance.editionFormat === 'audio' ? 'audiobook' : provenance.editionFormat} · Source country: {provenance.sourceMarket ?? 'unspecified'}</div>
+      {release.date && <div>Earliest date found in checked sources.</div>}
+      {release.date && provenance.sourceMarket !== provenance.preferredMarket && <div>No verified {provenance.preferredMarket} date found; using {provenance.sourceMarket ?? 'another country'}.</div>}
+    </div>;
+  })}</>;
 }
 export function SeriesCard({ series, today, market, showCovers, compact = false, onEdit, onFinish, onCheck, onUndoAuto, checking = false, checkDisabled = false }: {
   series: Series; today: string; market: string; showCovers: boolean; compact?: boolean; onEdit: () => void; onFinish: () => void; onCheck?: () => void; onUndoAuto?: () => void; checking?: boolean; checkDisabled?: boolean;
 }) {
   const finished = series.lastFinished ? `Book ${series.lastFinished.position}: ${series.lastFinished.title}` : 'None yet';
   if (compact) return <article className="series-card compact">
+    <div className="compact-series-heading"><h2 title={series.name}>{series.name}</h2></div>
     <div className="card-header">
       {showCovers && series.readingStatus !== 'completed' && <div className="cover-frame"><Cover key={series.coverUrl ?? ''} url={series.coverUrl} title={series.next.title} /></div>}
-      <div><h2 title={series.name}>{series.name}</h2>
+      <div>
         <div className="sub" title={series.author}>{series.author}</div>
         {unverifiedCover(series, showCovers) && <div className="sub cover-unverified">Cover unverified</div>}{series.autoUpdate && <div className="sub auto-updated">Updated automatically{onUndoAuto && <> <button type="button" onClick={onUndoAuto} aria-label={`Undo automatic update for ${series.name}`}>Undo</button></>}</div>}
+        <div className="sub compact-last-read" title={finished}>{series.lastFinished ? `Book ${series.lastFinished.position}: ${series.lastFinished.title}` : "No books finished"}</div>
         <div className="position">{series.readingStatus === 'completed' ? 'Series completed' : `Next unread · Book ${nextPosition(series)}`}</div>
       </div>
     </div>
-    <div className="sub compact-last-read" title={`Last read · ${finished}`}>Last read · {finished}</div>
     <div className="release-pair compact-release-pair">
       {series.readingStatus !== 'completed' && <>
         {series.formats.book && <ReleaseSummary series={series} format="book" release={series.releases.book} today={today} compact bookTitle={series.next.title} />}
@@ -47,15 +58,9 @@ export function SeriesCard({ series, today, market, showCovers, compact = false,
       </>}
     </div>
     <details className="compact-details"><summary>Release details{series.lastCheck && series.lastCheck.status !== 'complete' ? ' · Check needs attention' : ''}</summary>
-      <p className="small">Last finished: {finished}</p>
-      <p className="small">{series.readingStatus} · {series.marketOverride ?? market}</p>
       {series.next.orderNote && <p className="small">{series.next.orderNote}</p>}
       {isCaughtUp(series) && <p className="small">Caught up with known published books</p>}
-      {series.readingStatus !== 'completed' && <div className="release-pair">
-        {series.formats.book && <ReleaseSummary series={series} format="book" release={series.releases.book} today={today} onReview={onCheck} reviewDisabled={checking || checkDisabled} />}
-        {series.formats.audio && <ReleaseSummary series={series} format="audio" release={series.releases.audio} today={today} onReview={onCheck} reviewDisabled={checking || checkDisabled} />}
-      </div>}
-      <DiscoverySummary summary={series.lastCheck} />
+      <ReleaseEvidence series={series} /><DiscoverySummary summary={series.lastCheck} />
     </details>
     <div className="card-footer"><button onClick={onEdit}>Edit details</button>{series.readingStatus !== 'completed' && <><button onClick={onFinish}>Mark finished</button>{onCheck && <button onClick={onCheck} disabled={checking || checkDisabled}>{checking ? 'Checking…' : 'Check releases'}</button>}</>}</div>
   </article>;
@@ -74,7 +79,7 @@ export function SeriesCard({ series, today, market, showCovers, compact = false,
       {series.formats.book && <ReleaseSummary series={series} format="book" release={series.releases.book} today={today} onReview={onCheck} reviewDisabled={checking || checkDisabled} />}
       {series.formats.audio && <ReleaseSummary series={series} format="audio" release={series.releases.audio} today={today} onReview={onCheck} reviewDisabled={checking || checkDisabled} />}
     </div>}
-    {series.lastCheck && <details className="compact-details"><summary>Check details</summary><DiscoverySummary summary={series.lastCheck} /></details>}
+    {(series.lastCheck || Object.values(series.releases).some(release => release.provenance)) && <details className="compact-details"><summary>Check details</summary><ReleaseEvidence series={series} /><DiscoverySummary summary={series.lastCheck} /></details>}
     <div className="card-footer"><button onClick={onEdit}>Edit details</button>{series.readingStatus !== 'completed' && <><button onClick={onFinish}>Mark finished</button>{onCheck && <button onClick={onCheck} disabled={checking || checkDisabled}>{checking ? 'Checking…' : 'Check releases'}</button>}</>}</div>
   </article>;
 }

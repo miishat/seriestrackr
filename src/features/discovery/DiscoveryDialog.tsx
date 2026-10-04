@@ -5,7 +5,7 @@ import { Dialog } from '../../components/Dialog';
 import type { Release, Result, Series } from '../library/model';
 import { nextPosition } from '../library/progress';
 import { releaseLabels } from '../library/releases';
-import { DiscoverySummary } from './DiscoverySummary';
+import { DiscoverySummary, formatCheckTime } from './DiscoverySummary';
 import { ReviewCovers } from './ReviewCovers';
 import { selectableCover } from '../../services/coverImages';
 import type { CoverCandidate } from '../../../shared/covers';
@@ -26,7 +26,7 @@ function Sources({ sources, citations = [] }: { sources: SourceLink[]; citations
 }
 function currentRelease(release: Release): string {
   if (release.date) return release.date;
-  return { 'not-checked': 'Not checked', 'not-found': 'Date Unknown', catalogued: 'Listed', announced: 'Announced',
+  return { 'not-checked': 'Not Checked', 'not-found': 'Date Unknown', catalogued: 'Listed', announced: 'Announced',
     scheduled: 'Date Unknown', released: 'Available' }[release.state];
 }
 function ProposalDetails({ proposal, preferredMarket }: { proposal: ReleaseProposal; preferredMarket: string }) {
@@ -38,7 +38,7 @@ function ProposalDetails({ proposal, preferredMarket }: { proposal: ReleasePropo
     {proposal.date && <p className="small">Earliest supported date in sources checked.</p>}
     {proposal.date && market !== preferredMarket && <p className="small">Date from {market ?? 'an unspecified country'}; no supported {preferredMarket} date found in sources checked.</p>}
     {provenance.editionKey && <p className="small">Edition: {provenance.editionKey}</p>}
-    <p className="small">Checked <time dateTime={provenance.checkedAt}>{provenance.checkedAt}</time>.</p>
+    <p className="small">Checked <time dateTime={provenance.checkedAt}>{formatCheckTime(provenance.checkedAt)}</time>.</p>
     {provenance.interpreted && <p className="small">Interpreted from source text. Review the linked evidence before saving.</p>}
     <Sources sources={provenance.sources} citations={proposal.citations} />
   </>;

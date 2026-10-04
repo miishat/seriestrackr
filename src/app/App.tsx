@@ -159,7 +159,7 @@ export function App({ autoTrack = true }: { autoTrack?: boolean } = {}) {
         </li>;
       })}</ul>
     </section>}
-    <aside className="discovery-footer"><strong>Releases are checked automatically when you open SeriesTrackr.</strong><p>Series not checked in the last 7 days are checked. Safe updates are saved and marked; anything else waits for your review. You can still check or edit any series yourself.</p></aside>
+    <aside className="discovery-footer"><strong>Opening SeriesTrackr checks active series due for an update.</strong><p>Checks are due after 7 days; failed or cancelled checks retry on the next opening. Safe updates are saved and marked; anything else waits for your review. You can still check or edit any series yourself.</p></aside>
     {library.canUndo && (library.undoKind === 'cover'
       ? <div className="undo" role="status">Most recent cover choice can be undone until another change or reload. <button onClick={undoLast}>Undo cover</button></div>
       : <div className="undo" role="status">Most recent finish can be undone until another change or reload. <button onClick={undoLast}>Undo finish</button></div>)}

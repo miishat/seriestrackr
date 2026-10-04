@@ -48,5 +48,5 @@ test('a saved key can be removed', async () => {
 });
 test('the dialog explains that keys stay on this device and are billed to the owner', () => {
   show();
-  expect(screen.getByText(/stored only in this browser/i)).toBeVisible();
+  expect(screen.getByText(/Keys stay in this browser/i)).toBeVisible();
 });

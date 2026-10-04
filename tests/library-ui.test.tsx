@@ -48,11 +48,11 @@ test('adding a series starts with unchecked releases and survives reload', async
   const user = userEvent.setup();
   seed([]);
   const first = render(<App autoTrack={false} />);
-  await user.click(screen.getByRole('button', { name: 'Add series' }));
+  await user.click(screen.getByRole('button', { name: 'Add Series' }));
   await user.type(screen.getByLabelText('Series name'), 'Example series');
   await user.type(screen.getByLabelText('Author'), 'Example author');
   await user.click(screen.getByRole('button', { name: 'Save series' }));
-  expect(within(screen.getByRole('article')).getAllByText('Not checked')).toHaveLength(2);
+  expect(within(screen.getByRole('article')).getAllByText('Not Checked')).toHaveLength(2);
   first.unmount();
   render(<App autoTrack={false} />);
   expect(screen.getByText('Example series')).toBeVisible();
@@ -61,7 +61,7 @@ test('adding a series starts with unchecked releases and survives reload', async
 
 test('blank name stays in editor with a labeled error', async () => {
   const user = userEvent.setup(); seed([]); render(<App autoTrack={false} />);
-  await user.click(screen.getByRole('button', { name: 'Add series' }));
+  await user.click(screen.getByRole('button', { name: 'Add Series' }));
   await user.type(screen.getByLabelText('Series name'), '   ');
   await user.type(screen.getByLabelText('Author'), 'Writer');
   await user.click(screen.getByRole('button', { name: 'Save series' }));
@@ -71,7 +71,7 @@ test('blank name stays in editor with a labeled error', async () => {
 
 test('create rejects Completed without Last finished, then saves coherent completion', async () => {
   const user = userEvent.setup(); seed([]); render(<App autoTrack={false} />);
-  await user.click(screen.getByRole('button', { name: 'Add series' }));
+  await user.click(screen.getByRole('button', { name: 'Add Series' }));
   await user.type(screen.getByLabelText('Series name'), 'Finished Cycle');
   await user.type(screen.getByLabelText('Author'), 'Writer');
   await user.selectOptions(within(screen.getByRole('dialog', { name: 'Add series' })).getByLabelText('Reading status'), 'completed');
@@ -113,7 +113,7 @@ test('custom market stays selected and Other copy never shows the internal place
 
 test('editor focuses the first field and returns focus to its opener', async () => {
   const user = userEvent.setup(); seed([]); render(<App autoTrack={false} />);
-  const opener = screen.getByRole('button', { name: 'Add series' });
+  const opener = screen.getByRole('button', { name: 'Add Series' });
   await user.click(opener);
   expect(screen.getByLabelText('Series name')).toHaveFocus();
   await user.click(screen.getByRole('button', { name: 'Cancel' }));
@@ -234,14 +234,15 @@ test('compact poster leads with series name and shows next book separately', asy
   await userEvent.click(screen.getByRole('button', { name: 'Compact' }));
   const card = screen.getByRole('article');
   expect(within(card).getByRole('heading', { name: 'Example' })).toBeVisible();
-  expect(within(card).getByText('Next book: Second')).toBeVisible();
+  expect(within(card).getAllByText('Second').some(element => !element.closest('details'))).toBe(true);
   expect(within(card).getByText('Example Author')).toBeVisible();
-  expect(within(card).getByText('Last read · Book 1: First')).toBeVisible();
+  expect(within(card).getByText('Book 1: First')).toBeVisible();
+  expect(card.querySelectorAll('.compact-last-read')).toHaveLength(1);
+  expect(card.querySelector(':scope > .compact-last-read')).toBeNull();
   expect(within(card).getByText('Next unread · Book 2')).toBeVisible();
-  const history = within(card).getByText('Last finished: Book 1: First');
-  expect(history).not.toBeVisible();
+  expect(within(card).queryByText('Last finished: Book 1: First')).toBeNull();
   await userEvent.click(within(card).getByText('Release details'));
-  expect(history).toBeVisible();
+  expect(within(card).queryByText('Last finished: Book 1: First')).toBeNull();
   expect(within(card).getByRole('button', { name: 'Check releases' })).toBeEnabled();
 });
 
@@ -259,11 +260,11 @@ test('compact source link uses the saved book title and preserves source details
   render(<App autoTrack={false} />);
   await userEvent.click(screen.getByRole('button', { name: 'Compact' }));
   const card = screen.getByRole('article');
-  const link = within(card).getByRole('link', { name: 'Second' });
+  const link = within(card).getAllByRole('link', { name: 'Second' }).find(element => !element.closest('details'))!;
   expect(link).toHaveAttribute('href', source.url);
   expect(link).toHaveAttribute('title', source.title);
   await userEvent.click(within(card).getByText('Release details'));
-  expect(within(card).getByRole('link', { name: source.title })).toBeVisible();
+  expect(within(card).getAllByRole('link', { name: 'Second' }).every(element => element.title === source.title)).toBe(true);
 });
 
 test('search and release filters use the displayed status after local midnight', async () => {

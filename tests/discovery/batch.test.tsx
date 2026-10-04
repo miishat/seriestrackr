@@ -65,7 +65,7 @@ test('global button queues only active series matching current search', () => {
   const onCheckAll = vi.fn();
   render(<LibraryView doc={doc} today="2026-10-01" onEdit={()=>{}} onFinish={()=>{}} onAdd={()=>{}} onView={()=>{}} onCheckAll={onCheckAll}/>);
   fireEvent.change(screen.getByRole('searchbox'),{target:{value:'Visible'}});
-  fireEvent.click(screen.getByRole('button',{name:'Check visible releases'}));
+  fireEvent.click(screen.getByRole('button',{name:'Check Visible Releases'}));
   expect(onCheckAll).toHaveBeenCalledWith(['shown']);
 });
 
