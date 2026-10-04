@@ -48,7 +48,7 @@ test('an old Hardcover announcement shows a notice, and Review again opens the c
   expect(localStorage.getItem(key)).toBe(before);
   expect(within(screen.getByRole('article')).getByText('Announced')).toBeVisible();
   await user.click(screen.getByRole('button', { name: /Review book announcement again/ }));
-  expect(await screen.findByRole('heading', { name: /Check next release|Checking release details|Preparing release check/ })).toBeVisible();
+  expect(await screen.findByRole('heading', { name: /Check Release/ })).toBeVisible();
   expect(checkDiscovery).not.toHaveBeenCalled();
   expect(localStorage.getItem(key)).toBe(before);
 });

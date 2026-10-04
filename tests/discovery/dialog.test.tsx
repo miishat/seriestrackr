@@ -31,10 +31,12 @@ afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 test('ready is source-only by default and render makes no request', async () => {
   const fetcher = vi.fn(); vi.stubGlobal('fetch', fetcher);
   const view = show(session('ready', null));
+  expect(screen.getByRole('heading', { name: 'Check Release' })).toBeVisible();
+  expect(screen.getAllByRole('button', { name: 'Close', exact: true })).toHaveLength(1);
   expect(screen.getByRole('checkbox', { name: 'Use DeepSeek for this check' })).not.toBeChecked();
-  expect(screen.getByText('DeepSeek API usage is billed. At most one extraction request.')).toBeVisible();
+  expect(screen.getByText('AI reads retrieved sources. One billed request.')).toBeVisible();
   expect(screen.getByText(/2026-09-29/)).toBeVisible();
-  await userEvent.click(screen.getByRole('button', { name: 'Check release' }));
+  await userEvent.click(screen.getByRole('button', { name: 'Check' }));
   expect(view.props.onRun).toHaveBeenCalledWith({ useAi: false, useSearch: false, fallbackMarkets: true });
   expect(fetcher).not.toHaveBeenCalled();
 });
@@ -43,13 +45,13 @@ test('missing AI and search keys leave source-only checking usable', async () =>
   expect(screen.getByRole('checkbox', { name: 'Use DeepSeek for this check' })).toBeDisabled();
   expect(screen.getByRole('checkbox', { name: 'Use Tavily web search for this check' })).toBeDisabled();
   expect(screen.getByText(/Add your own DeepSeek key in Settings/)).toBeVisible();
-  await userEvent.click(screen.getByRole('button', { name: 'Check release' }));
+  await userEvent.click(screen.getByRole('button', { name: 'Check' }));
   expect(view.props.onRun).toHaveBeenCalledWith({ useAi: false, useSearch: false, fallbackMarkets: true });
 });
 test('AI resets after each check and when another session opens', async () => {
   const view = show(session('ready', null));
   await userEvent.click(screen.getByRole('checkbox', { name: 'Use DeepSeek for this check' }));
-  await userEvent.click(screen.getByRole('button', { name: 'Check release' }));
+  await userEvent.click(screen.getByRole('button', { name: 'Check' }));
   expect(view.props.onRun).toHaveBeenCalledWith({ useAi: true, useSearch: false, fallbackMarkets: true });
   expect(screen.getByRole('checkbox', { name: 'Use DeepSeek for this check' })).not.toBeChecked();
   await userEvent.click(screen.getByRole('checkbox', { name: 'Use DeepSeek for this check' }));
@@ -58,7 +60,7 @@ test('AI resets after each check and when another session opens', async () => {
 });
 test('review starts empty and accepts whole format bundles only by selection', async () => {
   const view = show();
-  const save = screen.getByRole('button', { name: 'Save selected changes' });
+  const save = screen.getByRole('button', { name: 'Save Selected Changes' });
   expect(save).toBeDisabled();
   await open('Book');
   expect(screen.getByRole('checkbox', { name: 'Save Book' })).not.toBeChecked();
@@ -74,7 +76,7 @@ test('changed title controls dependent selections and warns about clearing old v
   result.proposals.releases.book!.title = 'Third';
   show(session('review', result));
   const title = screen.getByRole('checkbox', { name: 'Save Next title' });
-  expect(screen.getByText(/clears both old release records.*Your selected cover is kept/)).toBeVisible();
+  expect(screen.getByText(/replaces old release details.*Your selected cover is kept/)).toBeVisible();
   await open('Book');
   const book = screen.getByRole('checkbox', { name: 'Save Book' });
   expect(book).toBeDisabled();
@@ -107,7 +109,7 @@ test('announced proposals retain unknown dates and unspecified source country', 
   expect(screen.getByText('Announced')).toBeVisible();
   expect(screen.getByText(/source country unspecified/)).toBeVisible();
   await userEvent.click(screen.getByRole('checkbox', { name: 'Save Book' }));
-  expect(screen.getByRole('button', { name: 'Save selected changes' })).toBeEnabled();
+  expect(screen.getByRole('button', { name: 'Save Selected Changes' })).toBeEnabled();
 });
 test('fallback shows actual country and supported-date qualification with cited links', async () => {
   const result = response(); result.proposals.releases.book!.provenance.sourceMarket = 'GB';
@@ -119,12 +121,12 @@ test('fallback shows actual country and supported-date qualification with cited 
 });
 test('stale review disables saving and requires explicit refresh', async () => {
   const view = show(session(), { stale: true });
-  expect(screen.getByText('The series changed. Check again before saving.')).toBeVisible();
+  expect(screen.getByText('The series changed. Check Again before saving.')).toBeVisible();
   await open('Book');
   await userEvent.click(screen.getByRole('checkbox', { name: 'Save Book' }));
-  expect(screen.getByRole('button', { name: 'Save selected changes' })).toBeDisabled();
+  expect(screen.getByRole('button', { name: 'Save Selected Changes' })).toBeDisabled();
   expect(view.props.onRun).not.toHaveBeenCalled();
-  await userEvent.click(screen.getByRole('button', { name: 'Check again' }));
+  await userEvent.click(screen.getByRole('button', { name: 'Check Again' }));
   expect(view.props.onRun).toHaveBeenCalledWith({ useAi: false, useSearch: false, fallbackMarkets: true });
 });
 test('recoverable save error preserves selection and current manual details', async () => {
@@ -132,7 +134,7 @@ test('recoverable save error preserves selection and current manual details', as
   const view = show(session(), { series: saved, onAccept: vi.fn(() => ({ ok: false as const, error: 'Storage is full.' })) });
   await open('Book');
   await userEvent.click(screen.getByRole('checkbox', { name: 'Save Book' }));
-  await userEvent.click(screen.getByRole('button', { name: 'Save selected changes' }));
+  await userEvent.click(screen.getByRole('button', { name: 'Save Selected Changes' }));
   expect(screen.getByRole('alert')).toHaveTextContent('Storage is full.');
   expect(screen.getByRole('checkbox', { name: 'Save Book' })).toBeChecked();
   expect(screen.getByText('2027-01-02')).toBeVisible();
@@ -141,7 +143,7 @@ test('recoverable save error preserves selection and current manual details', as
 test('loading offers cancellation and disables paid choice', async () => {
   const view = show(session('checking', null));
   for (const box of screen.getAllByRole('checkbox')) expect(box).toBeDisabled();
-  await userEvent.click(screen.getByRole('button', { name: 'Cancel check' }));
+  await userEvent.click(screen.getByRole('button', { name: 'Cancel Checking' }));
   expect(view.props.onClose).toHaveBeenCalledOnce();
 });
 test('native dialog focuses a control, handles Escape and returns focus on unmount', async () => {
@@ -178,7 +180,7 @@ test('preparing cannot run and operational errors retry only on user click', asy
   view.rerender(<DiscoveryDialog {...view.props} session={{ ...session('error', null), error: 'Sources are unavailable.' }} />);
   expect(screen.getByRole('alert')).toHaveTextContent('Sources are unavailable.');
   expect(view.props.onRun).not.toHaveBeenCalled();
-  await userEvent.click(screen.getByRole('button', { name: 'Check again' }));
+  await userEvent.click(screen.getByRole('button', { name: 'Check Again' }));
   expect(view.props.onRun).toHaveBeenCalledWith({ useAi: false, useSearch: false, fallbackMarkets: true });
 });
 
@@ -192,7 +194,7 @@ test('new check results clear selections and partial results keep supported fiel
   expect(screen.getByRole('checkbox', { name: 'Save Book' })).not.toBeChecked();
   expect(screen.getByText(/Source coverage is incomplete/i)).toBeVisible();
   await userEvent.click(screen.getByRole('checkbox', { name: 'Save Book' }));
-  expect(screen.getByRole('button', { name: 'Save selected changes' })).toBeEnabled();
+  expect(screen.getByRole('button', { name: 'Save Selected Changes' })).toBeEnabled();
 });
 
 test('unknown outcomes do not offer a not-found state or any selectable release', async () => {
@@ -210,7 +212,7 @@ test('unknown outcomes do not offer a not-found state or any selectable release'
 test.each(['preparing', 'checking'] as const)('%s focuses Close when the AI control is disabled', async phase => {
   show(session(phase, null));
   await Promise.resolve();
-  expect(screen.getByRole('button', { name: /^Close / })).toHaveFocus();
+  expect(screen.getByRole('button', { name: phase === 'checking' ? 'Cancel Checking' : 'Close' })).toHaveFocus();
 });
 
 const receipt = (overrides: Partial<ReturnType<typeof response>['summary']>) => ({ ...response().summary, ...overrides });
@@ -249,16 +251,16 @@ test('web search is opt in, needs your own Tavily key and resets after each chec
   const box = screen.getByRole('checkbox', { name: 'Use Tavily web search for this check' });
   expect(box).toBeEnabled(); expect(box).not.toBeChecked();
   await userEvent.click(box);
-  await userEvent.click(screen.getByRole('button', { name: 'Check release' }));
+  await userEvent.click(screen.getByRole('button', { name: 'Check' }));
   expect(view.props.onRun).toHaveBeenCalledWith({ useAi: false, useSearch: true, fallbackMarkets: true });
   expect(screen.getByRole('checkbox', { name: 'Use Tavily web search for this check' })).not.toBeChecked();
 });
 test('other storefronts are searched by default in a manual check and can be turned off for speed', async () => {
   const view = show(session('ready', null));
-  const box = screen.getByRole('checkbox', { name: /Also search other storefronts/ });
+  const box = screen.getByRole('checkbox', { name: /Include US, UK and Canada/ });
   expect(box).toBeChecked();
   await userEvent.click(box);
-  await userEvent.click(screen.getByRole('button', { name: 'Check release' }));
+  await userEvent.click(screen.getByRole('button', { name: 'Check' }));
   expect(view.props.onRun).toHaveBeenCalledWith({ useAi: false, useSearch: false, fallbackMarkets: false });
 });
 test('the dialog never prints a stored key', () => {

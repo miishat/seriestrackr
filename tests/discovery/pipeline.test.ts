@@ -51,7 +51,7 @@ test('rejected Google metadata never reaches extraction source text', async () =
   await vi.runAllTimersAsync(); const result = await pending;
   expect(deps.extract).toHaveBeenCalledOnce(); const supplied = vi.mocked(deps.extract).mock.calls[0][1];
   expect(supplied.sources).toHaveLength(1); expect(supplied.sources[0].provider).toBe('googlebooks');
-  for (const rejected of ['2028-05-06', '2030-02-30', '2029-06-07', 'description', 'Market: CA'])
+  for (const rejected of ['2028-05-06', '2030-02-30', '2029-06-07', 'description', 'Settings'])
     expect(JSON.stringify(supplied.sources)).not.toContain(rejected);
   expect(result.proposals.releases.book).toMatchObject({ date: null, provenance: { sourceMarket: null } });
   expect(result.summary.usage.googlebooks).toBe(2);

@@ -29,7 +29,7 @@ for (const view of ['grid', 'compact', 'list'] as const) {
     await page.reload();
     if (view !== 'list') await expect(page.getByText('Cover unverified')).toBeVisible();
     await expect(page.getByText(/Evidence is old/).first()).toBeVisible();
-    if (view === 'compact') await page.getByText(/Release details/).click();
+    if (view === 'compact') await page.getByText(/Release Details/).click();
     await expect(page.getByRole('button', { name: /Review book announcement again/ })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     await page.getByRole('button', { name: /Review book announcement again/ }).click();

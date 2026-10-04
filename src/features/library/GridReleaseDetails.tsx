@@ -14,7 +14,7 @@ export function GridReleaseDetails({ series, compact = false, open, onOpenChange
   const active = formats.includes(selected) ? selected : formats[0];
   if (!active) return null;
   return <details open={open} className={`grid-release-details ${compact ? 'compact-details' : ''}`}>
-    <summary onClick={event => { if (onOpenChange) { event.preventDefault(); onOpenChange(!open); } }}>{compact ? 'Release details' : 'Release Details'}{series.lastCheck && series.lastCheck.status !== 'complete' ? ' · Check needs attention' : ''}<span>{formats.map(format => format === 'book' ? 'Book' : 'Audiobook').join(' & ')}</span></summary>
+    <summary onClick={event => { if (onOpenChange) { event.preventDefault(); onOpenChange(!open); } }}>{'Release Details'}{series.lastCheck && series.lastCheck.status !== 'complete' ? ' · Needs Attention' : ''}<span>{formats.map(format => format === 'book' ? 'Book' : 'Audiobook').join(' & ')}</span></summary>
     <div role="tablist" aria-label={`Release formats for ${series.name}`} className="grid-release-tabs">
       {formats.map((format, index) => <button key={format} id={`${id}-${format}`} type="button" role="tab"
         aria-selected={active === format} aria-controls={`${id}-panel`} tabIndex={active === format ? 0 : -1}

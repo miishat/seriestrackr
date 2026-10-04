@@ -26,6 +26,12 @@ Entries use development dates because no versioned releases have been tagged.
 
 ### Changed
 
+- Standardized dialog actions, divider spacing and button label sizes. Check Release uses concise guidance, Close beside Check, Cancel Checking while running, and an organized selection count with Save Selected Changes and Check Again.
+- Settings uses shorter labels, Grid / Compact / Table view choices, API key removal beside each field, and smaller Type to Replace placeholders with clearer spacing.
+- Dropdowns use themed clean menus with checked selections and separated hover highlights. Desktop view controls align beneath the library actions; narrow layouts keep Check Visible Releases on one line.
+- Empty next-title fields display Next Title Unknown. Grid release tags have matching dimensions, and compact disclosures use Release Details consistently.
+
+
 - Grid cards now show a reading trail from the last finished book to the next unread title, with a larger cover, smaller next-title text, and tighter author/status spacing.
 - Release dates appear above Book and Audiobook labels in Grid. Format labels and status badges link to saved sources without underlined format labels.
 - Grid card actions share the full card width with matching Mark Finished, Check Releases, and Edit Details buttons.
@@ -51,6 +57,11 @@ Entries use development dates because no versioned releases have been tagged.
 - Announced releases show "Announced" with "Date Unknown" where the date would appear. The theme toggle reads "Dark" or "Light", and library table actions and the discovery footer were reorganized.
 
 ### Fixed
+
+- Discovery now combines catalogue and retrieved primary-source evidence before interpretation. Explicit author release dates and supported publisher product dates resolve missing Book dates for A Parade of Horribles and Ascension without inventing a country.
+- Long search pages preserve their beginning and end within the existing text limit. Verified author year-only publication schedules can offer Announced with Date Unknown, including Of Gods and Ashes, without inventing an exact release date.
+- Removed extra whitespace between the library release note and the automatic-check footer divider.
+
 
 - Removed duplicate compact reading history, broken separator characters, and footer overlap. Release links display the saved book title without repeating a source's series subtitle.
 

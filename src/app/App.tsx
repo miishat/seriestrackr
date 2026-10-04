@@ -128,7 +128,7 @@ export function App({ autoTrack = true }: { autoTrack?: boolean } = {}) {
 
   return <div className="app-shell">
     <header className="site-header"><div className="brand"><BrandMark /><div><strong>Series<span>Trackr</span></strong><BrandTagline /></div></div>
-      <nav aria-label="Library tools"><button onClick={() => setSettingsOpen(true)}>Market: {library.doc.settings.market ?? 'Choose'}</button><button onClick={() => library.updateSettings({ ...library.doc.settings, theme: library.doc.settings.theme === 'dark' ? 'light' : 'dark' }, false)}>{library.doc.settings.theme === 'dark' ? 'Light' : 'Dark'}</button><button onClick={() => setBackupsOpen(true)}>Backups</button></nav></header>
+      <nav aria-label="Library tools"><button onClick={() => setSettingsOpen(true)}>Settings</button><button onClick={() => library.updateSettings({ ...library.doc.settings, theme: library.doc.settings.theme === 'dark' ? 'light' : 'dark' }, false)}>{library.doc.settings.theme === 'dark' ? 'Light' : 'Dark'}</button><button onClick={() => setBackupsOpen(true)}>Backups</button></nav></header>
     {library.mode === 'recovery' && <div className="warning" role="alert"><strong>Stored library needs recovery.</strong> {library.error} Download the original data, restore a backup, or reset explicitly.
       <button onClick={() => setBackupsOpen(true)}>Open backups</button></div>}
     {library.mode === 'unsaved' && <div className="warning" role="alert"><strong>Changes are in memory and may be lost.</strong> {library.error} <button onClick={exportUnsaved}>Export now</button>{exportError && <span className="form-error" role="alert"> {exportError}</span>}{library.recoveryRaw !== null && <button onClick={() => setBackupsOpen(true)}>Open backups</button>}</div>}
@@ -139,7 +139,7 @@ export function App({ autoTrack = true }: { autoTrack?: boolean } = {}) {
       <div className="batch-results-header"><div>
         <h2>{discovery.batch.running ? (discovery.batch.automatic ? 'Checking releases automatically' : 'Checking releases') : 'Release check results'}</h2>
         <p role="status">{discovery.batch.done} of {discovery.batch.total} checked | Review results before saving.</p>
-      </div>{discovery.batch.running && <button onClick={discovery.cancelBatch}>Cancel checks</button>}</div>
+      </div>{discovery.batch.running && <button onClick={discovery.cancelBatch}>Cancel Checkings</button>}</div>
       {discovery.batch.running && <progress value={discovery.batch.done} max={discovery.batch.total} aria-label="Release check progress" />}
       <ul className="batch-results-list">{discovery.batch.results.map(result => {
         const proposals = result.response?.proposals;

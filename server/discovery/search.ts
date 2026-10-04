@@ -53,7 +53,11 @@ export function normalizeSearch(input: unknown, checkedAt: string): EvidenceBund
     const raw = object(item);
     const url = canonicalUrl(raw.url);
     const title = text(raw.title, 300);
-    const sourceText = text(raw.raw_content, 6000) ?? text(raw.content, 6000) ?? text(raw.snippet, 6000);
+    const rawText = typeof raw.raw_content === 'string' ? raw.raw_content : null;
+    // Keep the masthead and the end of long updates, where release schedules often appear.
+    const sourceText = rawText && rawText.length > 6000
+      ? `${rawText.slice(0, 2999)}\n${rawText.slice(-3000)}`
+      : text(raw.raw_content, 6000) ?? text(raw.content, 6000) ?? text(raw.snippet, 6000);
     if (!url || !title || !sourceText || seen.has(url)) continue;
     const source: Source = {
       id: `tavily:${createHash('sha256').update(url).digest('hex').slice(0, 24)}`,

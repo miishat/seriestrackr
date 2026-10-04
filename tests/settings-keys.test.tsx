@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { SettingsDialog } from '../src/features/settings/SettingsDialog';
@@ -12,7 +12,7 @@ const show = () => { const onSave = vi.fn(); render(<SettingsDialog settings={se
 
 test('keys are entered as hidden fields and nothing is stored until saved', async () => {
   show();
-  const tavily = screen.getByLabelText('Tavily API key');
+  const tavily = screen.getByLabelText('Tavily Key');
   expect(tavily).toHaveAttribute('type', 'password'); expect(tavily).toHaveAttribute('autocomplete', 'off');
   await userEvent.type(tavily, 'tavily-key-123');
   expect(loadApiKeys(localStorage)).toEqual({ tavily: null, deepseek: null });
@@ -20,8 +20,8 @@ test('keys are entered as hidden fields and nothing is stored until saved', asyn
 test('saving stores a typed key beside the settings and leaves the other key alone', async () => {
   saveApiKeys(localStorage, { tavily: null, deepseek: 'deepseek-key-123' });
   const onSave = show();
-  await userEvent.type(screen.getByLabelText('Tavily API key'), 'tavily-key-123');
-  await userEvent.click(screen.getByRole('button', { name: 'Save settings' }));
+  await userEvent.type(screen.getByLabelText('Tavily Key'), 'tavily-key-123');
+  await userEvent.click(screen.getByRole('button', { name: 'Save' }));
   expect(loadApiKeys(localStorage)).toEqual({ tavily: 'tavily-key-123', deepseek: 'deepseek-key-123' });
   expect(onSave).toHaveBeenCalledOnce();
 });
@@ -29,20 +29,20 @@ test('a saved key is never shown and is reported as saved', () => {
   saveApiKeys(localStorage, { tavily: 'tavily-key-123', deepseek: null });
   const { container } = render(<SettingsDialog settings={settings()} onSave={vi.fn()} onCancel={vi.fn()} />);
   expect(container.innerHTML).not.toContain('tavily-key-123');
-  expect(screen.getByText('Tavily key saved on this device.')).toBeVisible();
-  expect(screen.getByLabelText('Tavily API key')).toHaveValue('');
+  expect(screen.getByLabelText('Tavily Key')).toHaveAttribute('placeholder', 'Type to Replace');
+  expect(screen.getByLabelText('Tavily Key')).toHaveValue('');
 });
 test('a malformed key is refused with a message and nothing is saved', async () => {
   const onSave = show();
-  await userEvent.type(screen.getByLabelText('DeepSeek API key'), 'short');
-  await userEvent.click(screen.getByRole('button', { name: 'Save settings' }));
+  await userEvent.type(screen.getByLabelText('DeepSeek Key'), 'short');
+  await userEvent.click(screen.getByRole('button', { name: 'Save' }));
   expect(screen.getByRole('alert')).toHaveTextContent(/does not look right/);
   expect(onSave).not.toHaveBeenCalled(); expect(loadApiKeys(localStorage).deepseek).toBeNull();
 });
 test('a saved key can be removed', async () => {
   saveApiKeys(localStorage, { tavily: 'tavily-key-123', deepseek: 'deepseek-key-123' });
   show();
-  await userEvent.click(screen.getByRole('button', { name: 'Remove Tavily key' }));
+  await userEvent.click(within(screen.getByLabelText('Tavily Key').parentElement!).getByRole('button', { name: 'Remove' }));
   expect(loadApiKeys(localStorage)).toEqual({ tavily: null, deepseek: 'deepseek-key-123' });
   expect(screen.queryByText('Tavily key saved on this device.')).toBeNull();
 });

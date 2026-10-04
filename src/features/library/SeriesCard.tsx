@@ -74,7 +74,7 @@ export function SeriesCard({ series, today, market, showCovers, compact = false,
       </div></div>
       <div className="grid-next-read"><span className="grid-trail-marker" aria-hidden="true">{series.readingStatus === 'completed' ? '✓' : '→'}</span>
         <div className="grid-next-title">{series.readingStatus === 'completed' ? <strong>Series completed</strong> : <>
-          <div className="position">Next unread · Book {nextPosition(series)}</div><strong>{series.next.title || 'Title not entered'}</strong>
+          <div className="position">Next unread · Book {nextPosition(series)}</div><strong>{series.next.title || 'Next Title Unknown'}</strong>
           {series.next.orderNote && <div className="sub">{series.next.orderNote}</div>}
           {isCaughtUp(series) && <div className="sub">Caught up with known published books</div>}
         </>}</div>

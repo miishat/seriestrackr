@@ -30,7 +30,7 @@ test('setup selects a country before the library is usable', async () => {
   const user = userEvent.setup();
   render(<App autoTrack={false} />);
   expect(screen.getByRole('dialog', { name: /which releases/i })).toBeVisible();
-  await user.selectOptions(screen.getByLabelText('Default market'), 'GB');
+  await user.selectOptions(screen.getByLabelText('Default Market'), 'GB');
   await user.click(screen.getByRole('button', { name: 'Start tracking' }));
   expect(screen.getByRole('heading', { name: 'What comes next?' })).toBeVisible();
   expect(JSON.parse(localStorage.getItem(key)!).settings.market).toBe('GB');
@@ -38,7 +38,7 @@ test('setup selects a country before the library is usable', async () => {
 
 test('setup accepts a user-entered two-letter market', async () => {
   const user = userEvent.setup(); render(<App autoTrack={false} />);
-  await user.selectOptions(screen.getByLabelText('Default market'), 'OTHER');
+  await user.selectOptions(screen.getByLabelText('Default Market'), 'OTHER');
   await user.type(screen.getByLabelText('Two-letter country code'), 'AU');
   await user.click(screen.getByRole('button', { name: 'Start tracking' }));
   expect(JSON.parse(localStorage.getItem(key)!).settings.market).toBe('AU');
@@ -111,7 +111,7 @@ test('editor focuses the first field and returns focus to its opener', async () 
   const opener = screen.getByRole('button', { name: 'Add Series' });
   await user.click(opener);
   expect(screen.getByLabelText('Name')).toHaveFocus();
-  await user.click(screen.getByRole('button', { name: 'Cancel' }));
+  await user.click(screen.getByRole('button', { name: 'Close' }));
   expect(opener).toHaveFocus();
 });
 
@@ -242,7 +242,7 @@ test('compact poster leads with series name and shows next book separately', asy
   expect(card.querySelector(':scope > .compact-last-read')).toBeNull();
   expect(within(card).getByText('Next unread · Book 2')).toBeVisible();
   expect(within(card).queryByText('Last finished: Book 1: First')).toBeNull();
-  await userEvent.click(within(card).getByText('Release details'));
+  await userEvent.click(within(card).getByText('Release Details'));
   expect(within(card).queryByText('Last finished: Book 1: First')).toBeNull();
   expect(within(card).getByRole('button', { name: 'Check Releases' })).toBeEnabled();
 });
@@ -264,7 +264,7 @@ test('compact source link uses the saved book title and preserves source details
   const link = within(card).getAllByRole('link', { name: 'Second' }).find(element => !element.closest('details'))!;
   expect(link).toHaveAttribute('href', source.url);
   expect(link).toHaveAttribute('title', source.title);
-  await userEvent.click(within(card).getByText('Release details'));
+  await userEvent.click(within(card).getByText('Release Details'));
   expect(within(card).getAllByRole('link', { name: 'Second' }).every(element => element.title === source.title)).toBe(true);
 });
 
@@ -355,6 +355,6 @@ test('release details open and close together across grid and compact cards', as
   expect([...document.querySelectorAll<HTMLDetailsElement>('.grid-release-details')].every(details => details.open)).toBe(true);
   await user.click(screen.getByRole('button', { name: 'Compact' }));
   expect([...document.querySelectorAll<HTMLDetailsElement>('.grid-release-details')].every(details => details.open)).toBe(true);
-  await user.click(screen.getAllByText('Release details')[1]);
+  await user.click(screen.getAllByText('Release Details')[1]);
   expect([...document.querySelectorAll<HTMLDetailsElement>('.grid-release-details')].every(details => !details.open)).toBe(true);
 });

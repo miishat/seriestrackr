@@ -216,10 +216,10 @@ async function runDiscoveryInTrace(input: CheckRequest, dependencies: DiscoveryD
   const failure = (error: unknown) => reason(caller.aborted ? 'cancelled' : deadline.aborted ? 'timeout' : error instanceof ProviderError ? error.reason : 'provider-error');
   const merge = (incoming: EvidenceBundle) => {
     let allocationBudget = false;
-    evidence = bound(request, {
+    evidence = bound(request, interpretPrimarySources(request, {
     sources: [...evidence.sources, ...incoming.sources], identities: [...evidence.identities, ...incoming.identities], editions: [...evidence.editions, ...incoming.editions],
     related: [...(evidence.related ?? []), ...(incoming.related ?? [])],
-    }, checkedAt, suppressed, prunedWorkFormats, value => { reason(value); if (value === 'budget') allocationBudget = true; }, dependencies.onDiagnostic);
+    }), checkedAt, suppressed, prunedWorkFormats, value => { reason(value); if (value === 'budget') allocationBudget = true; }, dependencies.onDiagnostic);
     if (allocationBudget) emitDiagnostic(dependencies.onDiagnostic, { stage: 'allocation', category: 'bounds', ...diagnosticCounts(evidence) });
   };
   // Fallback storefronts are slow (Apple spaces calls 3.1 s apart), so they are opt-in.

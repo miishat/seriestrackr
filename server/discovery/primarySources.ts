@@ -1,4 +1,4 @@
-import type { CheckRequest, Citation, EvidenceBundle, IdentityEvidence, RelatedWorkEvidence, Source } from '../../shared/discovery';
+import type { CheckRequest, Citation, EditionEvidence, EvidenceBundle, IdentityEvidence, RelatedWorkEvidence, Source } from '../../shared/discovery';
 import { normalizeIdentity } from '../../shared/discoveryPolicy';
 import { parseExtraction } from '../../shared/discoveryValidation';
 import { isPlaceholderTitle } from './workIdentity';
@@ -122,6 +122,57 @@ export function parseRelatedPrimary(source: Source, request: CheckRequest): Rela
   return authorSiteContinuation(source, request) ?? macmillanPrequel(source, request);
 }
 
+function authorReleaseEditions(request: CheckRequest, source: Source, evidence: EvidenceBundle): EditionEvidence[] {
+  const authorHost = request.target.author.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const host = hostOf(source);
+  const title = request.target.title.trim();
+  if (!authorHost || !host || !new RegExp(`^(?:www\\.)?${authorHost}\\.[a-z]{2,24}$`).test(host) || !title ||
+    !titled(source, title) || !source.text.split('\n').slice(0, 10).some(line => normalizeIdentity(line) === normalizeIdentity(request.target.author))) return [];
+  const stop = source.text.search(/\n\s*(?:Comments|Leave a Reply|Related Posts|Recommended)\b/i);
+  const block = stop < 0 ? source.text : source.text.slice(0, stop);
+  if (!block.includes(title)) return [];
+  const announcements = [...block.matchAll(/(?:^|\n)[ \t]*(?:Update:[ \t]*)?All versions will release on ([A-Za-z]+) (\d{1,2}), (\d{4})\.[ \t]*(?=\n|$)/g)];
+  if (announcements.length !== 1) return [];
+  const found = announcements[0];
+  const month = ['january','february','march','april','may','june','july','august','september','october','november','december'].indexOf(found[1].toLowerCase()) + 1;
+  if (!month) return [];
+  const date = `${found[3]}-${String(month).padStart(2, '0')}-${found[2].padStart(2, '0')}`;
+  const result: EditionEvidence[] = [];
+  for (const format of ['ebook', 'print', 'audio'] as const) {
+    if (!request.formats.includes(format === 'audio' ? 'audio' : 'book')) continue;
+    const label = format === 'ebook' ? /\bebook\b/i : format === 'print' ? /\b(?:hardcover|paperback|print edition)\b/i : /\b(?:audiobook|audio edition)\b/i;
+    const formatLine = block.split('\n').find(line => label.test(line));
+    const catalog = evidence.editions.find(item => item.format === format && item.language === 'en' &&
+      normalizeIdentity(item.title) === normalizeIdentity(title) && normalizeIdentity(item.author) === normalizeIdentity(request.target.author));
+    if (!formatLine || !catalog) continue;
+    const item: EditionEvidence = { id: `${source.id}:release:${format}`, title, author: request.target.author,
+      position: request.target.position, editionKey: null, format, language: 'en', market: null, date, precision: 'day', publication: 'announced',
+      citations: [...catalog.citations, ...citationsFor(source, title), ...citationsFor(source, request.target.author),
+        ...citationsFor(source, found[0].trim()), ...citationsFor(source, formatLine)] };
+    if (parseExtraction({ identities: [], editions: [item] }, evidence.sources).ok) result.push(item);
+  }
+  return result;
+}
+
+function authorYearAnnouncements(request: CheckRequest, source: Source, evidence: EvidenceBundle): EditionEvidence[] {
+  if (!request.formats.includes('book') || !request.target.title.trim()) return [];
+  const host = hostOf(source);
+  const authorHost = request.target.author.toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (!host || !authorHost || !new RegExp(`^(?:www\\.)?${authorHost}(?:author)?\\.[a-z]{2,24}$`).test(host)) return [];
+  const lines = source.text.split('\n').map(line => line.trim()).filter(Boolean);
+  const masthead = lines.slice(0, 10).find(line => normalizeIdentity(line) === normalizeIdentity(request.target.author));
+  if (!masthead) return [];
+  // An explicit publication schedule is an announcement, never a January 1 date.
+  const schedules = lines.filter(line => new RegExp(`^(?:[\\u2022*\\-]\\s*)?20\\d{2}\\s*[\\u2013\\u2014-]\\s*Publication of ${flexible(request.target.title)}[.!]?$`, 'i').test(line));
+  if (schedules.length !== 1) return [];
+  return evidence.editions.filter(item => item.language === 'en' && item.format !== 'audio' && item.position === request.target.position &&
+    normalizeIdentity(item.title) === normalizeIdentity(request.target.title) && normalizeIdentity(item.author) === normalizeIdentity(request.target.author))
+    .map(catalog => ({ ...catalog, id: `${source.id}:announcement:${catalog.format}`, editionKey: null, market: null,
+      date: null, precision: 'none' as const, publication: 'announced' as const,
+      citations: [...catalog.citations, ...citationsFor(source, masthead), ...citationsFor(source, schedules[0])] }))
+    .filter(item => parseExtraction({ identities: [], editions: [item] }, evidence.sources).ok);
+}
+
 export function interpretPrimarySources(request: CheckRequest, evidence: EvidenceBundle): EvidenceBundle {
   const identities = [...evidence.identities];
   const related = [...(evidence.related ?? [])];
@@ -134,5 +185,33 @@ export function interpretPrimarySources(request: CheckRequest, evidence: Evidenc
     add(identities, parseNumberedPrimary(source, request), value => ({ identities: [value] }), source);
     add(related, parseRelatedPrimary(source, request), value => ({ related: [value] }), source);
   }
-  return { ...evidence, identities, related };
+  const editions = [...evidence.editions];
+  for (const source of evidence.sources) {
+    const identity = aethonNumbered(source, request);
+    if (!identity || !request.formats.includes('book')) continue;
+    const blocks = source.text.split(/\nBook Details\s*\n/);
+    if (blocks.length !== 2) continue;
+    const details = blocks[1].split(/\nAethon Books icon\b/)[0];
+    const dates = [...details.matchAll(/(?:^|\n)Publication Date\s*\n([A-Za-z]+) (\d{1,2}), (\d{4})(?=\n|$)/g)];
+    if (dates.length !== 1) continue;
+    const found = dates[0];
+    const month = ['january','february','march','april','may','june','july','august','september','october','november','december'].indexOf(found[1].toLowerCase()) + 1;
+    if (!month) continue;
+    for (const format of ['ebook', 'print'] as const) {
+      const field = format === 'ebook' ? /(?:^|\n)Price Ebook\s*\n\d+(?:\.\d+)?(?=\n|$)/ : /(?:^|\n)Price Paper\s*\n\d+(?:\.\d+)?(?=\n|$)/;
+      const formatProof = field.exec(details)?.[0].trim();
+      const catalog = evidence.editions.find(item => item.format === format && item.language === 'en' &&
+        normalizeIdentity(item.title) === normalizeIdentity(identity.title) && normalizeIdentity(item.author) === normalizeIdentity(identity.author));
+      if (!catalog || !formatProof) continue;
+      const item: EditionEvidence = { id: `${source.id}:publication:${format}`, title: identity.title, author: identity.author,
+        position: identity.position, editionKey: null, format, language: 'en', market: null,
+        date: `${found[3]}-${String(month).padStart(2,'0')}-${found[2].padStart(2,'0')}`, precision: 'day', publication: 'catalogued',
+        citations: [...identity.citations, ...catalog.citations, ...citationsFor(source, formatProof), ...citationsFor(source, found[0].trim())] };
+      if (!editions.some(existing => existing.id === item.id) && parseExtraction({ identities: [], editions: [item] }, evidence.sources).ok) editions.push(item);
+    }
+  }
+  for (const source of evidence.sources) for (const item of [...authorReleaseEditions(request, source, evidence), ...authorYearAnnouncements(request, source, evidence)]) {
+    if (!editions.some(existing => existing.id === item.id)) editions.push(item);
+  }
+  return { ...evidence, identities, related, editions };
 }

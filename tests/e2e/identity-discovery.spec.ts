@@ -41,19 +41,19 @@ test('D and T2 keep discovery review usable at narrow widths', async ({ page }) 
   });
   await page.goto('/'); expect(checkCount).toBe(0);
   await page.setViewportSize({ width: 390, height: 844 });
-  const opener = page.getByRole('button', { name: 'Check releases', exact: true });
+  const opener = page.getByRole('button', { name: 'Check Releases', exact: true });
   await opener.focus(); await page.keyboard.press('Enter');
-  const ready = page.getByRole('dialog', { name: 'Check next release' });
+  const ready = page.getByRole('dialog', { name: 'Check Release' });
   await expect(ready).toBeVisible();
   await expect(ready.getByLabel('Use DeepSeek for this check')).not.toBeChecked();
-  await ready.getByRole('button', { name: 'Check release', exact: true }).click();
-  const review = page.getByRole('dialog', { name: 'Review release details' });
+  await ready.getByRole('button', { name: 'Check', exact: true }).click();
+  const review = page.getByRole('dialog', { name: 'Check Release' });
   await expect(review).toBeVisible();
-  await expect(review.getByRole('heading', { name: 'Review release details' })).toHaveCSS('font-family', /Newsreader/);
+  await expect(review.getByRole('heading', { name: 'Check Release' })).toHaveCSS('font-family', /Newsreader/);
   await expect(review.getByText('Check partially completed', { exact: true })).toBeVisible();
   await review.getByRole('tab', { name: /^Book/ }).click();
   await expect(review.getByText('Date from GB; no supported CA date found in sources checked.')).toBeVisible();
-  const save = review.getByRole('button', { name: 'Save selected changes', exact: true });
+  const save = review.getByRole('button', { name: 'Save Selected Changes', exact: true });
   await expect(save).toBeDisabled();
   await review.getByRole('tab', { name: /^Book/ }).click();
   const book = review.getByRole('checkbox', { name: 'Save Book', exact: true });
@@ -83,17 +83,17 @@ for (const theme of ['light', 'dark'] as const) for (const width of [390, 1024])
       await route.fulfill({ json: result });
     });
     await page.goto('/');
-    await page.getByRole('button', { name: 'Check releases', exact: true }).click();
-    await expect(page.getByRole('dialog', { name: 'Check next release' })).toBeVisible();
+    await page.getByRole('button', { name: 'Check Releases', exact: true }).click();
+    await expect(page.getByRole('dialog', { name: 'Check Release' })).toBeVisible();
     await capture(page, `discovery-ready-${theme}-${width}`);
-    await page.getByRole('button', { name: 'Check release', exact: true }).click();
-    await expect(page.getByRole('dialog', { name: 'Checking release details' })).toBeVisible();
+    await page.getByRole('button', { name: 'Check', exact: true }).click();
+    await expect(page.getByRole('dialog', { name: 'Check Release' })).toBeVisible();
     await capture(page, `discovery-checking-${theme}-${width}`);
     release();
-    await expect(page.getByRole('dialog', { name: 'Review release details' })).toBeVisible();
+    await expect(page.getByRole('dialog', { name: 'Check Release' })).toBeVisible();
     await capture(page, `discovery-review-${theme}-${width}`);
     conflict = true;
-    await page.getByRole('button', { name: 'Check again', exact: true }).click();
+    await page.getByRole('button', { name: 'Check Again', exact: true }).click();
     await page.getByRole('tab', { name: /^Book/ }).click();
     await expect(page.getByText('Sources disagree about the release date.')).toBeVisible();
     await expect(page.getByRole('checkbox', { name: 'Save Book', exact: true })).toBeDisabled();
@@ -102,8 +102,8 @@ for (const theme of ['light', 'dark'] as const) for (const width of [390, 1024])
     await page.screenshot({ path: `${output}/discovery-conflict-${theme}-${width}-warning.png`, fullPage: true });
     await page.keyboard.press('Escape');
     await page.route('**/api/discovery/capabilities', route => route.abort());
-    await page.getByRole('button', { name: 'Check releases', exact: true }).click();
-    await expect(page.getByRole('dialog', { name: 'Could not complete this check' })).toBeVisible();
+    await page.getByRole('button', { name: 'Check Releases', exact: true }).click();
+    await expect(page.getByRole('dialog', { name: 'Check Release' })).toBeVisible();
     await capture(page, `discovery-error-${theme}-${width}`);
   });
 }
@@ -120,14 +120,14 @@ test('stale fake response remains visibly unsaveable', async ({ page }) => {
     const result = response(); result.requestId = sent.requestId; result.seriesId = sent.seriesId; result.summary.requestId = sent.requestId;
     await route.fulfill({ json: result });
   });
-  await page.goto('/'); await page.getByRole('button', { name: 'Check releases', exact: true }).click();
-  await page.getByRole('button', { name: 'Check release', exact: true }).click();
-  await expect(page.getByRole('dialog', { name: 'Checking release details' })).toBeVisible();
+  await page.goto('/'); await page.getByRole('button', { name: 'Check Releases', exact: true }).click();
+  await page.getByRole('button', { name: 'Check', exact: true }).click();
+  await expect(page.getByRole('dialog', { name: 'Check Release' })).toBeVisible();
   // Simulate an in-flight library mutation, as in the existing stale regression.
   await page.evaluate(() => [...document.querySelectorAll<HTMLButtonElement>('button')].find(button => button.textContent === 'Mark finished')!.click());
   release();
-  await expect(page.getByText('The series changed. Check again before saving.')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Save selected changes' })).toHaveCount(0);
+  await expect(page.getByText('The series changed. Check Again before saving.')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Save Selected Changes' })).toHaveCount(0);
   await capture(page, 'discovery-stale-dark-390');
 });
 
@@ -144,7 +144,7 @@ for (const theme of ['light', 'dark'] as const) for (const width of [390, 1024])
     await capture(page, `empty-search-${theme}-${width}`);
     await page.getByLabel('Search series or author').fill('');
     for (const name of ['Settings', 'Backups']) {
-      await page.getByRole('button', { name: name === 'Settings' ? 'Market: CA' : name, exact: true }).click();
+      await page.getByRole('button', { name: name === 'Settings' ? 'Settings' : name, exact: true }).click();
       await expect(page.getByRole('dialog', { name, exact: true })).toBeVisible();
       await capture(page, `${name.toLowerCase()}-${theme}-${width}`); await page.keyboard.press('Escape');
     }

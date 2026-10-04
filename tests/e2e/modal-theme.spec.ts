@@ -33,8 +33,8 @@ for (const theme of ['light', 'dark'] as const) {
     await page.emulateMedia({ forcedColors: 'none' });
     await page.keyboard.press('Escape');
     await expect(page.getByRole('button', { name: 'Add series', exact: true })).toBeFocused();
-    await page.getByRole('button', { name: 'Check releases', exact: true }).first().click();
-    const ready = page.getByRole('dialog', { name: 'Check next release' });
+    await page.getByRole('button', { name: 'Check Releases', exact: true }).first().click();
+    const ready = page.getByRole('dialog', { name: 'Check Release' });
     await expect(ready).toBeVisible();
     await expect(ready.getByRole('checkbox', { name: 'Use DeepSeek for this check' })).toBeDisabled();
     await expect(ready.getByRole('checkbox', { name: 'Use DeepSeek for this check' })).toHaveCSS('opacity', '0.55');

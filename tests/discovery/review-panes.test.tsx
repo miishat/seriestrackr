@@ -57,11 +57,11 @@ test('named portrait cover shows work, provider, format and role, and sends cove
   const choice = await screen.findByRole('button', { name: 'Select cover: Second by Example Author, Hardcover, Book, Next book' });
   expect(choice).toHaveTextContent('Second'); expect(choice).toHaveTextContent('by Example Author'); expect(choice).toHaveTextContent('Hardcover, Book, Next book');
   expect(choice).toHaveAttribute('aria-pressed', 'false');
-  expect(screen.getByRole('button', { name: 'Save selected changes' })).toBeDisabled();
+  expect(screen.getByRole('button', { name: 'Save Selected Changes' })).toBeDisabled();
   await userEvent.click(choice);
   expect(choice).toHaveAttribute('aria-pressed', 'true');
   expect(screen.getByRole('tab', { name: /^Covers/ })).toHaveTextContent('Selected');
-  await userEvent.click(screen.getByRole('button', { name: 'Save selected changes' }));
+  await userEvent.click(screen.getByRole('button', { name: 'Save Selected Changes' }));
   expect(view.props.onAccept).toHaveBeenCalledWith({ title: false, book: false, audio: false, coverId: 'c1' });
 });
 
@@ -88,12 +88,12 @@ test('a cover for a proposed title stays unavailable until that title is selecte
   await open('Covers');
   expect(screen.getByRole('button', { name: /Select cover: Third/ })).toBeEnabled();
   await userEvent.click(screen.getByRole('button', { name: /Select cover: Third/ }));
-  await userEvent.click(screen.getByRole('button', { name: 'Save selected changes' }));
+  await userEvent.click(screen.getByRole('button', { name: 'Save Selected Changes' }));
   expect(view.props.onAccept).toHaveBeenCalledWith({ title: true, book: false, audio: false, coverId: 'h' });
   await open('Next title'); await userEvent.click(screen.getByRole('checkbox', { name: 'Save Next title' }));
   await open('Covers');
   expect(screen.getByRole('button', { name: /Select cover: Third/ })).toBeDisabled();
-  expect(screen.getByRole('button', { name: 'Save selected changes' })).toBeDisabled();
+  expect(screen.getByRole('button', { name: 'Save Selected Changes' })).toBeDisabled();
 });
 
 test('provider trouble is stated even when another source supplied a valid image', async () => {
@@ -144,7 +144,7 @@ test('related works are cited reference items without acceptance and never reach
   expect(screen.getByText('Set before the first book.')).toBeVisible();
   expect(screen.getByText('Continues the series without a number.')).toBeVisible();
   await open('Book'); await userEvent.click(screen.getByRole('checkbox', { name: 'Save Book' }));
-  await userEvent.click(screen.getByRole('button', { name: 'Save selected changes' }));
+  await userEvent.click(screen.getByRole('button', { name: 'Save Selected Changes' }));
   expect(JSON.stringify(vi.mocked(view.props.onAccept).mock.calls)).not.toMatch(/Daughters|Crypt/);
 });
 
@@ -196,8 +196,8 @@ test('outline tabs move with arrow keys and keep the detail pane in step', async
 });
 
 test.each([
-  ['complete', 'Complete', /Every source this run needed was checked/],
-  ['partial', 'Partial', /A source quota, timeout, error or limit affected this run/],
+  ['complete', 'Complete', /Required sources were checked/],
+  ['partial', 'Partial', /Some sources could not be checked/],
   ['failed', 'Failed', /The check failed/],
   ['cancelled', 'Cancelled', /The check was cancelled/],
 ] as const)('coverage pane for a %s check says so', async (status, chip, text) => {
@@ -206,6 +206,6 @@ test.each([
   expect(screen.getByRole('tab', { name: new RegExp(`^Coverage.*${chip}`) })).toBeVisible();
   await open('Coverage');
   expect(screen.getByText(text)).toBeVisible();
-  if (status !== 'complete') expect(screen.queryByText(/Every source this run needed was checked/)).toBeNull();
+  if (status !== 'complete') expect(screen.queryByText(/Required sources were checked/)).toBeNull();
   if (status === 'failed') expect(screen.getByText(/could not be checked/)).toBeVisible();
 });

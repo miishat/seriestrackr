@@ -96,7 +96,7 @@ test('confirmed import replaces series and settings together', async () => {
   await user.click(await screen.findByRole('button', { name: 'Confirm replacement' }));
   expect(JSON.parse(localStorage.getItem(key)!)).toEqual(replacement);
   expect(screen.getByText('<New series>')).toBeVisible();
-  expect(screen.getByRole('button', { name: 'Market: US' })).toBeVisible();
+  expect(screen.getByRole('button', { name: 'Settings' })).toBeVisible();
 });
 
 test('invalid and oversized files never replace the stored document', async () => {

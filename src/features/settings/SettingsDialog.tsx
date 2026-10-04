@@ -3,7 +3,7 @@ import type { LibraryDocument } from '../library/model';
 import { loadBrowserApiKeys, saveBrowserApiKeys, type ApiKeys } from '../../storage/apiKeys';
 
 type Settings = LibraryDocument['settings'];
-export function MarketSelect({ value, onChange, label = 'Default market' }: { value: string; onChange: (value: string) => void; label?: string }) {
+export function MarketSelect({ value, onChange, label = 'Default Market' }: { value: string; onChange: (value: string) => void; label?: string }) {
   const [other, setOther] = useState(!['','CA','US','GB'].includes(value) ? value : '');
   const [choice, setChoice] = useState(['','CA','US','GB'].includes(value) ? value : 'OTHER');
   return <><label>{label}<select required value={choice} onChange={(event) => { setChoice(event.target.value); onChange(event.target.value === 'OTHER' ? other : event.target.value); }}>
@@ -33,20 +33,21 @@ export function SettingsDialog({ settings, onSave, onCancel, error }: { settings
     setSaved(next); setLocalError(null);
   };
   const keyField = (name: keyof ApiKeys, label: string) => <div className="key-field">
-    <label>{label} API key<input type="password" autoComplete="off" spellCheck={false} value={typed[name]} placeholder={saved[name] ? 'Saved. Type to replace.' : 'Optional'} onChange={event => setTyped({ ...typed, [name]: event.target.value })} /></label>
-    {saved[name] && <p className="small">{label} key saved on this device. <button type="button" onClick={() => remove(name)}>Remove {label} key</button></p>}
+    <label htmlFor={`settings-${name}-key`}>{label} Key</label>
+    <div className="key-input-row"><input id={`settings-${name}-key`} type="password" autoComplete="off" spellCheck={false} value={typed[name]} placeholder={saved[name] ? 'Type to Replace' : 'Optional'} onChange={event => setTyped({ ...typed, [name]: event.target.value })} />
+    {saved[name] && <button type="button" onClick={() => remove(name)}>Remove</button>}</div>
   </div>;
-  return <form onSubmit={submit} noValidate><p>Prefer English releases from this country, with per-series overrides. On opening, active series are checked if due after 7 days. Manual checks can search other countries.</p>
+  return <form onSubmit={submit} noValidate><p>Active series are checked on opening when due after 7 days.</p>
     <div className="form-grid"><MarketSelect value={value.market ?? ''} onChange={(market) => setValue({ ...value, market: market || null })} />
       <label>Theme<select value={value.theme} onChange={(event) => setValue({ ...value, theme: event.target.value as Settings['theme'] })}><option value="light">Light</option><option value="dark">Dark</option></select></label>
-      <label>Default view<select value={value.view} onChange={(event) => setValue({ ...value, view: event.target.value as Settings['view'] })}><option value="grid">Bookshelf cards</option><option value="compact">Compact cards</option><option value="list">Release table</option></select></label>
+      <label>Default View<select value={value.view} onChange={(event) => setValue({ ...value, view: event.target.value as Settings['view'] })}><option value="grid">Grid</option><option value="compact">Compact</option><option value="list">Table</option></select></label>
       <label>Covers<select value={value.showCovers ? 'show' : 'hide'} onChange={(event) => setValue({ ...value, showCovers: event.target.value === 'show' })}><option value="show">Show</option><option value="hide">Hide</option></select></label>
     </div>
-    <h3>Your own API keys (optional)</h3>
-    <p className="small">Optional Tavily search and DeepSeek AI use your paid accounts only when enabled. Keys stay in this browser, are excluded from backups, and go only to the local discovery service.</p>
+    <h3>API Keys (Optional)</h3>
+    <p className="small">Tavily search and DeepSeek AI use your accounts when enabled. Keys stay in this browser, outside backups, and are sent only to the local discovery service.</p>
     <div className="form-grid">{keyField('tavily', 'Tavily')}{keyField('deepseek', 'DeepSeek')}</div>
-    <p className="small">Language: English. Book and audiobook tracking can be set for each series.</p>
+    <p className="small">Track Book and Audiobook per series. Language: English.</p>
     {(localError || error) && <p role="alert" className="form-error">{localError || error}</p>}
-    <div className="actions"><button type="button" onClick={onCancel}>Cancel</button><button className="primary" type="submit">Save settings</button></div>
+    <div className="actions dialog-footer"><button type="button" onClick={onCancel}>Close</button><button className="primary" type="submit">Save</button></div>
   </form>;
 }

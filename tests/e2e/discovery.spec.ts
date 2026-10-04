@@ -33,11 +33,11 @@ async function mock(page: Page, makeResult: (sent: CheckRequest) => CheckRespons
   return calls;
 }
 async function check(page: Page) {
-  await page.getByRole('button', { name: 'Check releases', exact: true }).click();
-  await expect(page.getByRole('dialog', { name: 'Check next release' })).toBeVisible();
+  await page.getByRole('button', { name: 'Check Releases', exact: true }).click();
+  await expect(page.getByRole('dialog', { name: 'Check Release' })).toBeVisible();
   await expect(page.getByLabel('Use DeepSeek for this check')).not.toBeChecked();
-  await page.getByRole('button', { name: 'Check release', exact: true }).click();
-  await expect(page.getByRole('dialog', { name: 'Review release details' })).toBeVisible();
+  await page.getByRole('button', { name: 'Check', exact: true }).click();
+  await expect(page.getByRole('dialog', { name: 'Check Release' })).toBeVisible();
 }
 async function stored(page: Page) { return page.evaluate(storageKey => JSON.parse(localStorage.getItem(storageKey)!), key); }
 
@@ -52,7 +52,7 @@ test('completed series has no check action in any view', async ({ page }) => {
   await seed(page, doc); const calls = await mock(page); await page.goto('/');
   for (const view of ['Compact', 'Table', 'Grid']) {
     await page.getByRole('button', { name: view, exact: true }).click();
-    await expect(page.getByRole('button', { name: 'Check releases' })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Check Releases' })).toHaveCount(0);
   }
   expect(calls).toHaveLength(0);
 });
@@ -61,18 +61,18 @@ test('book only preserves manual audio and provenance through reload and all vie
   expect(calls).toHaveLength(1); expect(calls[0].useAi).toBe(false);
   await expect(page.getByLabel('Use DeepSeek for this check')).toBeDisabled();
   await page.getByRole('tab', { name: /^Book/ }).click(); await page.getByRole('checkbox', { name: 'Save Book', exact: true }).check();
-  await page.getByRole('button', { name: 'Save selected changes' }).click();
+  await page.getByRole('button', { name: 'Save Selected Changes' }).click();
   await page.reload(); const doc = await stored(page);
   expect(doc.series[0].releases.book.provenance.sourceMarket).toBe('CA');
   expect(doc.series[0].releases.audio).toEqual(documentFixture().series[0].releases.audio);
   for (const view of ['Compact', 'Table', 'Grid']) {
     await page.getByRole('button', { name: view, exact: true }).click();
-    if (view === 'Compact') await page.getByText('Release details').first().click();
+    if (view === 'Compact') await page.getByText('Release Details').first().click();
     await expect(page.getByText('Source country: CA', { exact: false })).toBeVisible();
     await expect((view === 'Compact' ? page.locator('.compact-details') : page.locator('main')).locator('.release-summary').filter({ hasText: 'Audiobook' }).getByText('2099-04-05', { exact: true })).toBeVisible();
-    await page.getByRole('button', { name: 'Check releases', exact: true }).click();
-    await expect(page.getByRole('dialog', { name: 'Check next release' })).toBeVisible();
-    await page.keyboard.press('Escape'); await expect(page.getByRole('button', { name: 'Check releases', exact: true })).toBeFocused();
+    await page.getByRole('button', { name: 'Check Releases', exact: true }).click();
+    await expect(page.getByRole('dialog', { name: 'Check Release' })).toBeVisible();
+    await page.keyboard.press('Escape'); await expect(page.getByRole('button', { name: 'Check Releases', exact: true })).toBeFocused();
   }
 });
 test('changed title requires title selection and preserves cover while clearing unselected audio', async ({ page }) => {
@@ -93,7 +93,7 @@ test('changed title requires title selection and preserves cover while clearing 
   await page.getByRole('tab', { name: /^Book/ }).click(); await expect(page.getByRole('checkbox', { name: 'Save Book', exact: true })).not.toBeChecked();
   await page.getByRole('tab', { name: /^Next title/ }).click(); await page.getByRole('checkbox', { name: 'Save Next title' }).check();
   await page.getByRole('tab', { name: /^Book/ }).click(); await page.getByRole('checkbox', { name: 'Save Book', exact: true }).check();
-  await page.getByRole('button', { name: 'Save selected changes' }).click(); await page.reload();
+  await page.getByRole('button', { name: 'Save Selected Changes' }).click(); await page.reload();
   const doc = await stored(page); expect(doc.series[0].next.title).toBe('New Second'); expect(doc.series[0].coverUrl).toBe('https://example.com/cover.jpg');
   await expect(page.getByRole('img', { name: 'Cover for New Second' })).toBeVisible();
   expect(doc.series[0].releases.audio).toEqual(emptyRelease());
@@ -105,10 +105,10 @@ test('fallback country attribution agrees in every shelf view', async ({ page })
     return matching(sent, value);
   });
   await page.goto('/'); await check(page); await page.getByRole('tab', { name: /^Book/ }).click(); await expect(page.getByText('Date from GB; no supported CA date found in sources checked.')).toBeVisible();
-  await page.getByRole('tab', { name: /^Book/ }).click(); await page.getByRole('checkbox', { name: 'Save Book', exact: true }).check(); await page.getByRole('button', { name: 'Save selected changes' }).click();
+  await page.getByRole('tab', { name: /^Book/ }).click(); await page.getByRole('checkbox', { name: 'Save Book', exact: true }).check(); await page.getByRole('button', { name: 'Save Selected Changes' }).click();
   for (const view of ['Compact', 'Table', 'Grid']) {
     await page.getByRole('button', { name: view, exact: true }).click();
-    if (view === 'Compact') await page.getByText('Release details').first().click();
+    if (view === 'Compact') await page.getByText('Release Details').first().click();
     await expect(page.getByText('Date from GB; no supported CA date found in sources checked.')).toBeVisible();
   }
 });
@@ -120,7 +120,7 @@ for (const outcome of ['unknown', 'partial', 'failed'] as const) test(`${outcome
       reasons: outcome === 'unknown' ? [] : ['quota'], formats: { book: 'unknown', audio: 'unknown' } };
     return matching(sent, value);
   });
-  await page.goto('/'); await check(page); await expect(page.getByRole('button', { name: 'Save selected changes' })).toBeDisabled();
+  await page.goto('/'); await check(page); await expect(page.getByRole('button', { name: 'Save Selected Changes' })).toBeDisabled();
   await page.keyboard.press('Escape'); await expect(page.getByText('2099-01-02', { exact: true })).toBeVisible();
   const saved = await stored(page); expect(saved.series[0].releases.book).toEqual(doc.series[0].releases.book); expect(saved.series[0].lastCheck).not.toBeNull();
 });
@@ -136,7 +136,7 @@ test('offline check failure leaves edit finish undo and export usable', async ({
   await seed(page); let calls = 0;
   await page.route('**/api/discovery/**', route => { calls++; return route.abort(); });
   await page.goto('/'); expect(calls).toBe(0);
-  await page.getByRole('button', { name: 'Check releases' }).click(); await expect(page.getByRole('dialog', { name: 'Could not complete this check' })).toBeVisible();
+  await page.getByRole('button', { name: 'Check Releases' }).click(); await expect(page.getByRole('dialog', { name: 'Check Release' })).toBeVisible();
   await page.keyboard.press('Escape'); await page.getByRole('button', { name: 'Edit details' }).click();
   await page.getByText('Optional progress and series details', { exact: true }).click();
   await page.getByLabel('Next order note').fill('Manual ordering'); await page.getByRole('button', { name: 'Save series' }).click();
@@ -157,9 +157,9 @@ for (const mutation of ['edit', 'finish-undo', 'equal-import'] as const) test(`d
     sent = route.request().postDataJSON() as CheckRequest;
     await delayed; await route.fulfill({ json: matching(sent) });
   });
-  await page.goto('/'); await page.getByRole('button', { name: 'Check releases' }).click();
-  await page.getByRole('button', { name: 'Check release', exact: true }).click();
-  await expect(page.getByRole('dialog', { name: 'Checking release details' })).toBeVisible();
+  await page.goto('/'); await page.getByRole('button', { name: 'Check Releases' }).click();
+  await page.getByRole('button', { name: 'Check', exact: true }).click();
+  await expect(page.getByRole('dialog', { name: 'Check Release' })).toBeVisible();
   await expect.poll(() => sent).not.toBeNull();
   const invokeShelfAction = (name: string) => page.evaluate(label => {
     const control = [...document.querySelectorAll<HTMLButtonElement>('button')].find(button => button.textContent === label);
@@ -176,9 +176,9 @@ for (const mutation of ['edit', 'finish-undo', 'equal-import'] as const) test(`d
     await page.getByLabel('Choose backup file').setInputFiles({ name: 'equal.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(doc)) });
     await page.getByRole('button', { name: 'Confirm replacement' }).click();
   }
-  release(); await expect(page.getByRole('dialog', { name: 'Could not complete this check' })).toBeVisible();
-  await expect(page.getByText('The series changed. Check again before saving.')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Save selected changes' })).toHaveCount(0);
+  release(); await expect(page.getByRole('dialog', { name: 'Check Release' })).toBeVisible();
+  await expect(page.getByText('The series changed. Check Again before saving.')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Save Selected Changes' })).toHaveCount(0);
   const saved = await stored(page); expect(saved.series[0].lastCheck).toBeNull();
   expect(saved.series[0].releases.book.origin).toBe('manual');
   await page.keyboard.press('Escape'); await page.reload(); expect((await stored(page)).series[0].lastCheck).toBeNull();
@@ -215,7 +215,7 @@ for (const width of [390, 1024]) test(`review pane is keyboard operable, fits ${
   });
   await page.goto('/');
   await check(page);
-  const dialog = page.getByRole('dialog', { name: 'Review release details' });
+  const dialog = page.getByRole('dialog', { name: 'Check Release' });
   const fits = () => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth && [...document.querySelectorAll('dialog')].every(d => d.scrollWidth <= d.clientWidth));
   expect(await fits()).toBe(true);
   const first = dialog.getByRole('tab', { name: /^Next title/ });
@@ -233,13 +233,13 @@ for (const width of [390, 1024]) test(`review pane is keyboard operable, fits ${
   await dialog.getByRole('button', { name: 'Load cover previews' }).click();
   await dialog.getByRole('button', { name: 'Select cover: Second by Example Author, Hardcover, Book, Next book' }).click();
   expect(await fits()).toBe(true);
-  await dialog.getByRole('button', { name: 'Save selected changes' }).click();
+  await dialog.getByRole('button', { name: 'Save Selected Changes' }).click();
   await page.reload();
   const doc = await stored(page);
   expect(doc.series[0].coverUrl).toBe('https://assets.hardcover.app/second.svg');
   expect(doc.series[0].coverAttribution).toMatchObject({ title: 'Second', role: 'next' });
   expect(JSON.stringify(doc)).not.toContain('The Prequel');
-  await page.getByRole('button', { name: 'Check releases', exact: true }).click();
+  await page.getByRole('button', { name: 'Check Releases', exact: true }).click();
   await page.keyboard.press('Escape');
-  await expect(page.getByRole('button', { name: 'Check releases', exact: true })).toBeFocused();
+  await expect(page.getByRole('button', { name: 'Check Releases', exact: true })).toBeFocused();
 });

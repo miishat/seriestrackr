@@ -34,7 +34,7 @@ function ProposalDetails({ proposal, preferredMarket }: { proposal: ReleasePropo
   const market = provenance.sourceMarket;
   return <>
     <p className="small">Status: {releaseLabels[proposal.state]}</p>
-    <p className="small">English {provenance.editionFormat === 'audio' ? 'audiobook' : provenance.editionFormat} · {market ? `Source country: ${market}` : 'source country unspecified'} · Preferred country: {preferredMarket}</p>
+    <p className="small">English {provenance.editionFormat === 'audio' ? 'audiobook' : provenance.editionFormat} · {market ? `Source country: ${market}` : 'source country unspecified'} · Market: {preferredMarket}</p>
     {proposal.date && <p className="small">Earliest supported date in sources checked.</p>}
     {proposal.date && market !== preferredMarket && <p className="small">Date from {market ?? 'an unspecified country'}; no supported {preferredMarket} date found in sources checked.</p>}
     {provenance.editionKey && <p className="small">Edition: {provenance.editionKey}</p>}
@@ -134,8 +134,7 @@ export function DiscoveryDialog({ session, series, preferredMarket, stale, apiKe
       ...(coverOk ? { coverId: selection.coverId } : {}) });
     if (accepted.ok === false) setSaveError(accepted.error);
   };
-  const title = preparing ? 'Preparing release check' : checking ? 'Checking release details' : reviewing ? 'Review release details'
-    : session.phase === 'error' ? 'Could not complete this check' : 'Check next release';
+  const title = 'Check Release';
   const tabs: { id: PaneId; label: string; chip: string; level: 2 | 3 }[] = [
     { id: 'title', label: 'Next title', chip: selection.title && titleAvailable ? 'Selected' : titleAvailable ? 'Change offered' : 'No change', level: 2 },
     ...(['book', 'audio'] as const).filter(format => series.formats[format]).map(format => ({ id: format, label: formatLabels[format], level: 3 as const,
@@ -155,20 +154,20 @@ export function DiscoveryDialog({ session, series, preferredMarket, stale, apiKe
     rail.current?.querySelector<HTMLElement>(`#review-tab-${tabs[next].id}`)?.focus();
   };
   const sourcesFor = (citations: Citation[]) => (result?.sources ?? []).filter(source => citations.some(citation => citation.sourceId === source.id));
-  return <Dialog open title={title} onClose={onClose}>
+  return <Dialog open title={title} onClose={onClose} closable={false}>
     <div className="discovery-content">
-      <p className="small">{series.name} · Book {nextPosition(series)} · Preferred country: {preferredMarket}</p>
+      <p className="small">{series.name} · Book {nextPosition(series)} · Market: {preferredMarket}</p>
       {preparing && <p role="status">Preparing available check options…</p>}
-      {checking && <><div className="note" role="status">Checking catalogs and sources…</div><p>Book and audiobook are checked separately. You can cancel this check.</p></>}
-      {session.phase === 'ready' && <><p>Find supported details for {series.name}, book {nextPosition(series)}. Your saved values stay in place until you choose changes.</p>
+      {checking && <><div className="note" role="status">Checking catalogs and sources…</div><p>Checking each format. Cancel anytime.</p></>}
+      {session.phase === 'ready' && <><p>Find release details. Choose what to save.</p>
         <div className="note">{preferredMarket} is preferred. Each format can use another market when no supported {preferredMarket} date is found.</div></>}
       {session.error && <p className="form-error" role="alert">{session.error}</p>}
-      {session.phase === 'error' && <p>Your saved release details are unchanged. Check again when sources are available.</p>}
+      {session.phase === 'error' && <p>Saved details are unchanged. Try again.</p>}
       {reviewing && <>
-        <p>Choose the changes you want to save. Nothing is saved until you press Save selected changes.</p>
+        <p>Select changes, then save.</p>
         <DiscoverySummary summary={result.summary} />
-        {stale && <div className="note warn" role="status">The series changed. Check again before saving.</div>}
-        {changedTitle && <div className="note warn">Accepting a changed title clears both old release records, then saves the selected new release details. Your selected cover is kept.</div>}
+        {stale && <div className="note warn" role="status">The series changed. Check Again before saving.</div>}
+        {changedTitle && <div className="note warn">A new title replaces old release details. Your selected cover is kept.</div>}
         <div className="review-layout">
           <div className="review-rail-group">
             <span className="eyebrow">{series.name}</span>
@@ -204,7 +203,7 @@ export function DiscoveryDialog({ session, series, preferredMarket, stale, apiKe
                 </Comparison>
               </Pane>;
             })}
-            <Pane id="covers" active={pane === 'covers'} title="Choose a cover" note="Optional · No cover is selected by default · Covers belong to a named work and edition">
+            <Pane id="covers" active={pane === 'covers'} title="Choose a cover" note="Optional · Choose a matching cover">
               <ReviewCovers requestId={result.requestId} candidates={coverCandidates} chosenId={coverOk ? selection.coverId ?? null : null}
                 incomplete={result.summary.status !== 'complete'} onDecoded={setDecoded} reasonFor={coverReason}
                 onChoose={id => setSelection(previous => ({ ...previous, coverId: id }))} />
@@ -213,16 +212,16 @@ export function DiscoveryDialog({ session, series, preferredMarket, stale, apiKe
               <ul className="related-list">{related.map((item, index) => <li key={index} className="note">
                 <span className="chip">{relationLabels[item.relationship]}</span>
                 <h4>{item.title}</h4><p>{item.author}</p>
-                <p className="small">Related work, outside the numbered sequence. It is shown for reference and is never added to your library.</p>
+                <p className="small">Outside the numbered sequence. Shown for reference.</p>
                 <Sources sources={sourcesFor(item.citations)} citations={item.citations} />
               </li>)}</ul>
             </Pane>}
             <Pane id="coverage" active={pane === 'coverage'} title="Coverage and release language" note="What the receipt means">
-              {result.summary.status === 'complete' && <p><strong>Complete coverage.</strong> Every source this run needed was checked. Unknown details are listed in the receipt as incomplete details, not as a partial run.</p>}
-              {result.summary.status === 'partial' && <p><strong>Partial coverage.</strong> A source quota, timeout, error or limit affected this run. Valid dates and announcements can still be reviewed and saved.</p>}
-              {result.summary.status === 'failed' && <p><strong>The check failed.</strong> The sources this run needed could not be checked, so nothing here is confirmed. Try the check again.</p>}
-              {result.summary.status === 'cancelled' && <p><strong>The check was cancelled.</strong> Sources that had not been checked yet are missing. Anything shown comes only from the sources that responded.</p>}
-              <p className="small">Coverage describes which sources were checked, not whether a book or audiobook is available.</p>
+              {result.summary.status === 'complete' && <p><strong>Complete coverage.</strong> Required sources were checked. Some details may remain unknown.</p>}
+              {result.summary.status === 'partial' && <p><strong>Partial coverage.</strong> Some sources could not be checked. Review the available results.</p>}
+              {result.summary.status === 'failed' && <p><strong>The check failed.</strong> Sources could not be checked. Try again.</p>}
+              {result.summary.status === 'cancelled' && <p><strong>The check was cancelled.</strong> Only results received before cancellation are shown.</p>}
+              <p className="small">Coverage reflects sources checked, not availability.</p>
               <ul className="lifecycle">{(['catalogued', 'announced', 'scheduled', 'released'] as const).map(state => <li key={state}><strong>{releaseLabels[state]}.</strong> {lifecycleMeaning[state]}</li>)}</ul>
               {result.sources.length > 0 && <><h4>Sources checked</h4><Sources sources={result.sources} /></>}
             </Pane>
@@ -230,23 +229,22 @@ export function DiscoveryDialog({ session, series, preferredMarket, stale, apiKe
         </div>
       </>}
       <label className="checkbox-label"><input type="checkbox" checked={useAi && aiEnabled} disabled={!aiEnabled} onChange={event => setUseAi(event.target.checked)} />Use DeepSeek for this check</label>
-      {apiKeys.deepseek === null && <p className="small">Add your own DeepSeek key in Settings to use AI. It is billed to you, never to this app.</p>}
-      {apiKeys.deepseek !== null && <p className="small">DeepSeek API usage is billed. At most one extraction request.</p>}
+      {apiKeys.deepseek === null && <p className="small">Add your own DeepSeek key in Settings. Usage is billed to you.</p>}
+      {apiKeys.deepseek !== null && <p className="small">AI reads retrieved sources. One billed request.</p>}
       <label className="checkbox-label"><input type="checkbox" checked={useSearch && searchEnabled} disabled={!searchEnabled} onChange={event => setUseSearch(event.target.checked)} />Use Tavily web search for this check</label>
-      {apiKeys.tavily === null ? <p className="small">Add your own Tavily key in Settings to use web search.</p> : <p className="small">Tavily searches are billed to your key. At most 3 searches.</p>}
-      <label className="checkbox-label"><input type="checkbox" checked={fallbackMarkets && readyToRun} disabled={!readyToRun} onChange={event => setFallbackMarkets(event.target.checked)} />Also search other storefronts (US, UK, Canada). Slower, about 12 s longer.</label>
+      {apiKeys.tavily === null ? <p className="small">Add your own Tavily key in Settings to use web search.</p> : <p className="small">Find author and publisher dates. Up to 3 billed searches.</p>}
+      <label className="checkbox-label"><input type="checkbox" checked={fallbackMarkets && readyToRun} disabled={!readyToRun} onChange={event => setFallbackMarkets(event.target.checked)} />Include US, UK and Canada (+12 s).</label>
       {session.capabilities && <>
-        <p className="small">Estimated maximum AI usage: ${session.capabilities.estimatedMaxAiUsd.toFixed(4)} USD, rates as of {session.capabilities.pricingAsOf}. This estimate is not a guaranteed dollar cap.</p>
-        <p className="small">At most {session.capabilities.limits.ai} extraction request and {session.capabilities.limits.search} searches. Source-only checking is available without optional AI or search keys.</p>
+        <p className="small">Estimated AI cost: ${session.capabilities.estimatedMaxAiUsd.toFixed(4)} USD, rates as of {session.capabilities.pricingAsOf}. Actual cost may vary.</p>
+        <p className="small">Catalog checks work without AI or web search.</p>
       </>}
       {saveError && <p className="form-error" role="alert">{saveError}</p>}
     </div>
-    <div className="actions discovery-footer">
-      {reviewing && <p className="small selection-count" role="status">{count === 0 ? 'No changes selected.' : `${count} ${count === 1 ? 'change' : 'changes'} selected.`}</p>}
-      <button type="button" onClick={onClose}>{checking ? 'Cancel check' : 'Close'}</button>
-      {reviewing && <button type="button" onClick={run}>Check again</button>}
-      {reviewing ? <button type="button" className="primary" disabled={stale || !selected} onClick={save}>Save selected changes</button>
-        : <button type="button" className="primary" disabled={!readyToRun} onClick={run}>{checking ? 'Checking…' : preparing ? 'Preparing…' : session.phase === 'error' ? 'Check again' : 'Check release'}</button>}
+    <div className="actions dialog-footer discovery-footer">
+      <div className="discovery-footer-buttons">{reviewing && <p className="small selection-count" role="status">{count === 0 ? 'No changes selected.' : `${count} ${count === 1 ? 'change' : 'changes'} selected.`}</p>}<button type="button" onClick={onClose}>{checking ? 'Cancel Checking' : 'Close'}</button>
+      {reviewing && <button type="button" onClick={run}>Check Again</button>}
+      {reviewing ? <button type="button" className="primary" disabled={stale || !selected} onClick={save}>Save Selected Changes</button>
+        : <button type="button" className="primary" disabled={!readyToRun} onClick={run}>{checking ? 'Checking…' : preparing ? 'Preparing…' : session.phase === 'error' ? 'Check Again' : 'Check'}</button>}</div>
     </div>
   </Dialog>;
 }

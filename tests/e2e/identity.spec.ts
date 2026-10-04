@@ -233,11 +233,11 @@ for (const theme of ['light', 'dark'] as const) {
       return route.fulfill({ json: result });
     });
     await page.goto('/');
-    await page.getByRole('button', { name: 'Check releases', exact: true }).first().click();
+    await page.getByRole('button', { name: 'Check Releases', exact: true }).first().click();
     await expect(page.getByLabel('Use DeepSeek for this check')).toBeDisabled();
-    await page.getByRole('button', { name: 'Check release', exact: true }).click();
-    await expect(page.getByRole('dialog', { name: 'Review release details' })).toBeVisible();
-    const save = page.getByRole('button', { name: 'Save selected changes', exact: true });
+    await page.getByRole('button', { name: 'Check', exact: true }).click();
+    await expect(page.getByRole('dialog', { name: 'Check Release' })).toBeVisible();
+    const save = page.getByRole('button', { name: 'Save Selected Changes', exact: true });
     await expect(save).toBeDisabled();
     await expect(save).toHaveCSS('opacity', '0.55');
     const measurements: Record<string, number> = {};
@@ -257,7 +257,7 @@ for (const theme of ['light', 'dark'] as const) {
     await page.getByRole('tab', { name: /^Book/ }).click(); await page.getByRole('checkbox', { name: 'Save Book', exact: true }).check();
     await expect(save).toBeEnabled();
     await page.keyboard.press('Escape');
-    await expect(page.getByRole('button', { name: 'Check releases', exact: true }).first()).toBeFocused();
+    await expect(page.getByRole('button', { name: 'Check Releases', exact: true }).first()).toBeFocused();
     await testInfo.attach('rendered-review-contrast', { body: JSON.stringify(measurements, null, 2), contentType: 'application/json' });
     console.log(`${theme} rendered review contrast: ${JSON.stringify(measurements)}`);
   });

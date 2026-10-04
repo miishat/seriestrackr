@@ -110,6 +110,6 @@ export function SeriesForm({ series, market, onCreate, onUpdate, onCancel, onDel
 </fieldset><fieldset><legend>Notes</legend><label>Personal Notes<textarea rows={4} value={value.notes ?? ''} onChange={(event) => update({ notes: event.target.value })} placeholder="Anything you want to remember about this series." /></label></fieldset></section>
     </div>
     {(localError || error) && <p role="alert" className="form-error">{localError || error}</p>}
-    <div className="actions">{series && <button type="button" className="danger-link" onClick={onDelete}>Delete</button>}<button type="button" onClick={onCancel}>Cancel</button><button className="primary" type="submit">Save</button></div>
+    <div className="actions dialog-footer">{series && <button type="button" className="danger-link" onClick={onDelete}>Delete</button>}<button type="button" onClick={onCancel}>Close</button><button className="primary" type="submit">Save</button></div>
   </form>;
 }

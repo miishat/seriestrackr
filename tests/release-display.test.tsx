@@ -91,7 +91,7 @@ test.each([false, true])('release details show only selected format metadata in 
   series.releases.book.provenance = { checkedAt: '2026-10-01T00:00:00Z', sources: [], preferredMarket: 'US', sourceMarket: 'US', language: 'en', editionFormat: 'print', editionKey: null, datePrecision: 'day', interpreted: false };
   series.releases.audio.provenance = { ...series.releases.book.provenance, editionFormat: 'audio', sourceMarket: 'CA' };
   render(<SeriesCard series={series} today="2026-10-04" market="US" showCovers={false} compact={compact} onEdit={vi.fn()} onFinish={vi.fn()} />);
-  fireEvent.click(screen.getByText(compact ? 'Release details' : 'Release Details'));
+  fireEvent.click(screen.getByText(compact ? 'Release Details' : 'Release Details'));
   expect(screen.getByText(/English print/)).toBeVisible();
   expect(screen.queryByText(/English audiobook/)).toBeNull();
   fireEvent.click(screen.getByRole('tab', { name: 'Audiobook' }));
