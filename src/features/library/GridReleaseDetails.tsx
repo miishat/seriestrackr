@@ -1,0 +1,43 @@
+import { useId, useState } from 'react';
+import type { Format, Series } from './model';
+import { DiscoverySummary, formatCheckTime } from '../discovery/DiscoverySummary';
+import { ReleaseEvidence } from './SeriesCard';
+
+
+export function GridReleaseDetails({ series }: {
+  series: Series;
+}) {
+  const id = useId();
+  const formats = (['book', 'audio'] as const).filter(format => series.formats[format]);
+  const [selected, setSelected] = useState<Format>('book');
+  const active = formats.includes(selected) ? selected : formats[0];
+  if (!active) return null;
+  return <details className="grid-release-details">
+    <summary>Release Details<span>{formats.map(format => format === 'book' ? 'Book' : 'Audiobook').join(' & ')}</span></summary>
+    <div role="tablist" aria-label={`Release formats for ${series.name}`} className="grid-release-tabs">
+      {formats.map((format, index) => <button key={format} id={`${id}-${format}`} type="button" role="tab"
+        aria-selected={active === format} aria-controls={`${id}-panel`} tabIndex={active === format ? 0 : -1}
+        onClick={() => setSelected(format)} onKeyDown={event => {
+          let target: number;
+          if (event.key === 'ArrowRight') target = (index + 1) % formats.length;
+          else if (event.key === 'ArrowLeft') target = (index + formats.length - 1) % formats.length;
+          else if (event.key === 'Home') target = 0;
+          else if (event.key === 'End') target = formats.length - 1;
+          else return;
+          event.preventDefault(); setSelected(formats[target]);
+          document.getElementById(`${id}-${formats[target]}`)?.focus();
+        }}>{format === 'book' ? 'Book' : 'Audiobook'}</button>)}
+    </div>
+    <div role="tabpanel" id={`${id}-panel`} aria-labelledby={`${id}-${active}`} tabIndex={0}>
+      
+      <ReleaseEvidence series={series} format={active} />
+      {!series.releases[active].provenance && <p className="small">No saved source metadata for this format.</p>}
+      {series.releases[active].lastCheckedAt && <p className="small">Format checked <time dateTime={series.releases[active].lastCheckedAt!}>{formatCheckTime(series.releases[active].lastCheckedAt!)}</time>.</p>}
+      {series.releases[active].provenance?.sources.filter(source => /^https?:\/\//i.test(source.url)).map(source => <p className="small" key={source.id}><a href={source.url} target="_blank" rel="noreferrer">{source.title}</a></p>)}
+      {series.lastCheck && <div className="grid-check-summary"><p className="small">Latest discovery check across requested formats</p><DiscoverySummary summary={series.lastCheck} /></div>}
+    </div>
+  </details>;
+}
+
+
+

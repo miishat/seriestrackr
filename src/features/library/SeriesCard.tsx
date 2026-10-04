@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Format, Release, Series } from './model';
 import { isCaughtUp, nextPosition } from './progress';
 import { displayRelease, displaySeriesRelease, hasOldAnnouncementEvidence, releaseLabels } from './releases';
+import { GridReleaseDetails } from './GridReleaseDetails';
 import { DiscoverySummary } from '../discovery/DiscoverySummary';
 
 export { releaseLabels };
@@ -23,11 +24,11 @@ export function ReleaseSummary({ format, release, today, compact = false, bookTi
 
   </div>;
 }
-export function ReleaseEvidence({ series }: { series: Series }) {
+export function ReleaseEvidence({ series, format: selectedFormat }: { series: Series; format?: Format }) {
   return <>{(['book', 'audio'] as const).map(format => {
     const release = series.releases[format];
     const provenance = release.provenance;
-    if (!series.formats[format] || !provenance) return null;
+    if ((selectedFormat && selectedFormat !== format) || !series.formats[format] || !provenance) return null;
     return <div className="small release-evidence" key={format}>
       <strong>{format === 'book' ? 'Book' : 'Audiobook'}</strong>
       <div>English {provenance.editionFormat === 'audio' ? 'audiobook' : provenance.editionFormat} · Source country: {provenance.sourceMarket ?? 'unspecified'}</div>
@@ -64,22 +65,39 @@ export function SeriesCard({ series, today, market, showCovers, compact = false,
     </details>
     <div className="card-footer"><button onClick={onEdit}>Edit Details</button>{series.readingStatus !== 'completed' && <><button onClick={onFinish}>Mark Finished</button>{onCheck && <button onClick={onCheck} disabled={checking || checkDisabled}>{checking ? 'Checking…' : 'Check Releases'}</button>}</>}</div>
   </article>;
-  return <article className={`series-card ${compact ? 'compact' : ''}`}>
-    <div className="card-header">
-      {showCovers && series.readingStatus !== 'completed' && <div className="cover-frame"><Cover key={series.coverUrl ?? ''} url={series.coverUrl} title={series.next.title} /></div>}
-      <div><h2>{series.name}</h2><div className="sub">{series.author}</div>{unverifiedCover(series, showCovers) && <div className="sub cover-unverified">Cover unverified</div>}{series.autoUpdate && <div className="sub auto-updated">Updated automatically{onUndoAuto && <> <button type="button" onClick={onUndoAuto} aria-label={`Undo automatic update for ${series.name}`}>Undo</button></>}</div>}<div className="sub">{series.readingStatus[0].toUpperCase() + series.readingStatus.slice(1)} · {series.marketOverride ?? market}</div>
+  return <article className="series-card grid-series-card">
+    <div className="grid-card-heading"><h2>{series.name}</h2><div className="sub">{series.author}</div>
+      <div className="sub">{series.readingStatus[0].toUpperCase() + series.readingStatus.slice(1)} · {series.marketOverride ?? market}</div>
+      {series.autoUpdate && <div className="sub auto-updated">Updated automatically{onUndoAuto && <> <button type="button" onClick={onUndoAuto} aria-label={`Undo automatic update for ${series.name}`}>Undo</button></>}</div>}
+    </div>
+    <div className="grid-reading-trail">
+      <div className="grid-last-finished"><span className="grid-trail-marker" aria-hidden="true">{series.lastFinished ? '✓' : '·'}</span><div>
+        <span className="grid-trail-label">{series.lastFinished ? `Last finished: Book ${series.lastFinished.position}` : 'No books finished'}</span>
+        {series.lastFinished && <p>{series.lastFinished.title}</p>}
+      </div></div>
+      <div className="grid-next-read"><span className="grid-trail-marker" aria-hidden="true">{series.readingStatus === 'completed' ? '✓' : '→'}</span>
+        <div className="grid-next-title">{series.readingStatus === 'completed' ? <strong>Series completed</strong> : <>
+          <div className="position">Next unread · Book {nextPosition(series)}</div><strong>{series.next.title || 'Title not entered'}</strong>
+          {series.next.orderNote && <div className="sub">{series.next.orderNote}</div>}
+          {isCaughtUp(series) && <div className="sub">Caught up with known published books</div>}
+        </>}</div>
+        {showCovers && series.readingStatus !== 'completed' && <div className="grid-next-cover"><div className="cover-frame"><Cover key={series.coverUrl ?? ''} url={series.coverUrl} title={series.next.title} /></div>{unverifiedCover(series, showCovers) && <div className="sub cover-unverified">Cover unverified</div>}</div>}
       </div>
     </div>
-    <div className="card-progress"><span className="small">Last finished: {finished}</span></div>
-    <div className="card-next">
-      {series.readingStatus === 'completed' ? <strong>Series completed</strong> : <><div className="position">Next unread · Book {nextPosition(series)}</div><strong>{series.next.title || 'Title not entered'}</strong>{series.next.orderNote && <div className="sub">{series.next.orderNote}</div>}</>}
-      {isCaughtUp(series) && <div className="sub">Caught up with known published books</div>}
-    </div>
-    {series.readingStatus !== 'completed' && <div className="release-pair">
-      {series.formats.book && <ReleaseSummary series={series} format="book" release={series.releases.book} today={today} onReview={onCheck} reviewDisabled={checking || checkDisabled} />}
-      {series.formats.audio && <ReleaseSummary series={series} format="audio" release={series.releases.audio} today={today} onReview={onCheck} reviewDisabled={checking || checkDisabled} />}
+    {series.readingStatus !== 'completed' && <div className="grid-release-signals">
+      {(['book', 'audio'] as const).filter(format => series.formats[format]).map(format => {
+        const release = series.releases[format];
+        const state = displaySeriesRelease(series, format, today);
+        return <div className="grid-release-signal" key={format}>
+          <span className="grid-release-date">{release.date ? <time dateTime={release.date}>{new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(release.date + 'T00:00:00Z'))}</time> : state === 'not-checked' ? 'No check recorded' : state === 'not-found' ? 'No supported result' : 'Date Unknown'}</span>
+          <span className="grid-format-label">{format === 'book' ? 'Book' : 'Audiobook'}</span>
+          <span className={`badge ${state}`}>{releaseLabels[state]}</span>
+          {hasOldAnnouncementEvidence(release, today) && <span className="grid-old-evidence">Evidence is old{onCheck && <> <button type="button" onClick={onCheck} disabled={checking || checkDisabled} aria-label={`Review ${format === 'book' ? 'book' : 'audiobook'} announcement again for ${series.name}`}>Review again</button></>}</span>}
+          {release.source && /^https?:\/\//i.test(release.source.url) && <a className="grid-release-source" href={release.source.url} title={release.source.title} target="_blank" rel="noreferrer">{series.next.title.trim() || release.source.title}</a>}
+        </div>;
+      })}
     </div>}
-    {(series.lastCheck || Object.values(series.releases).some(release => release.provenance)) && <details className="compact-details"><summary>Check details</summary><ReleaseEvidence series={series} /><DiscoverySummary summary={series.lastCheck} /></details>}
-    <div className="card-footer"><button onClick={onEdit}>Edit Details</button>{series.readingStatus !== 'completed' && <><button onClick={onFinish}>Mark Finished</button>{onCheck && <button onClick={onCheck} disabled={checking || checkDisabled}>{checking ? 'Checking…' : 'Check Releases'}</button>}</>}</div>
+    {series.readingStatus !== 'completed' && <GridReleaseDetails series={series} />}
+    <div className="card-footer"><button onClick={onFinish} disabled={series.readingStatus === 'completed'}>Mark Finished</button>{onCheck && <button onClick={onCheck} disabled={checking || checkDisabled || series.readingStatus === 'completed'}>{checking ? 'Checking…' : 'Check Releases'}</button>}<button onClick={onEdit}>Edit Details</button></div>
   </article>;
 }

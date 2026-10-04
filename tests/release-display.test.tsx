@@ -43,7 +43,7 @@ test('card shows Listed with Date Unknown on the date line', () => {
 });
 
 
-test('source metadata stays behind Check details and links use the saved book title', () => {
+test('source metadata stays behind Release Details and format tabs and links use the saved book title', () => {
   const series = seriesFixture();
   series.releases.audio = {
     ...emptyRelease(), state: 'scheduled', date: '2027-03-01',
@@ -54,8 +54,32 @@ test('source metadata stays behind Check details and links use the saved book ti
   };
   render(<SeriesCard series={series} today="2026-10-01" market="US" showCovers={false} onEdit={vi.fn()} onFinish={vi.fn()} />);
   expect(screen.getByRole('link', { name: 'Second' })).toHaveAttribute('title', 'Second: A Tale of Example');
+  expect(screen.queryByText(/English audiobook/)).toBeNull();
+  fireEvent.click(screen.getByText('Release Details'));
+  fireEvent.click(screen.getByRole('tab', { name: 'Audiobook' }));
   const metadata = screen.getByText(/English audiobook/);
-  expect(metadata).not.toBeVisible();
-  fireEvent.click(screen.getByText('Check details'));
   expect(metadata).toBeVisible();
+  fireEvent.click(screen.getByRole('tab', { name: 'Book' }));
+  expect(screen.queryByText(/English audiobook/)).toBeNull();
+  fireEvent.keyDown(screen.getByRole('tab', { name: 'Book' }), { key: 'ArrowRight' });
+  expect(screen.getByRole('tab', { name: 'Audiobook' })).toHaveFocus();
+  expect(screen.getByText(/English audiobook/)).toBeVisible();
+});
+
+
+test('grid format tabs follow enabled formats and preserve safe actions', () => {
+  const onEdit = vi.fn(), onFinish = vi.fn(), onCheck = vi.fn();
+  const series = seriesFixture({ formats: { book: false, audio: true } });
+  const { rerender } = render(<SeriesCard series={series} today="2026-10-01" market="US" showCovers={false} onEdit={onEdit} onFinish={onFinish} onCheck={onCheck} />);
+  fireEvent.click(screen.getByText('Release Details'));
+  expect(screen.queryByRole('tab', { name: 'Book' })).toBeNull();
+  expect(screen.getByRole('tab', { name: 'Audiobook' })).toHaveAttribute('aria-selected', 'true');
+  fireEvent.click(screen.getByRole('button', { name: 'Mark Finished' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Check Releases' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Edit Details' }));
+  expect(onEdit).toHaveBeenCalledOnce(); expect(onFinish).toHaveBeenCalledOnce(); expect(onCheck).toHaveBeenCalledOnce();
+  rerender(<SeriesCard series={{ ...series, formats: { book: true, audio: false } }} today="2026-10-01" market="US" showCovers={false} onEdit={onEdit} onFinish={onFinish} onCheck={onCheck} checking />);
+  expect(screen.getByRole('tab', { name: 'Book' })).toHaveAttribute('aria-selected', 'true');
+  expect(screen.queryByRole('tab', { name: 'Audiobook' })).toBeNull();
+  expect(screen.getByRole('button', { name: 'Checking…' })).toBeDisabled();
 });
