@@ -37,7 +37,8 @@ export function ReleaseEvidence({ series, format: selectedFormat }: { series: Se
     </div>;
   })}</>;
 }
-export function SeriesCard({ series, today, market, showCovers, compact = false, onEdit, onFinish, onCheck, onUndoAuto, checking = false, checkDisabled = false }: {
+export function SeriesCard({ series, today, market, showCovers, compact = false, onEdit, onFinish, onCheck, onUndoAuto, checking = false, checkDisabled = false, detailsOpen, onDetailsOpenChange }: {
+  detailsOpen?: boolean; onDetailsOpenChange?: (open: boolean) => void;
   series: Series; today: string; market: string; showCovers: boolean; compact?: boolean; onEdit: () => void; onFinish: () => void; onCheck?: () => void; onUndoAuto?: () => void; checking?: boolean; checkDisabled?: boolean;
 }) {
   const finished = series.lastFinished ? `Book ${series.lastFinished.position}: ${series.lastFinished.title}` : 'None yet';
@@ -58,7 +59,7 @@ export function SeriesCard({ series, today, market, showCovers, compact = false,
         {series.formats.audio && <ReleaseSummary series={series} format="audio" release={series.releases.audio} today={today} compact bookTitle={series.next.title} />}
       </>}
     </div>
-    <GridReleaseDetails series={series} compact />
+    <GridReleaseDetails series={series} compact open={detailsOpen} onOpenChange={onDetailsOpenChange} />
     <div className="card-footer"><button onClick={onEdit}>Edit Details</button>{series.readingStatus !== 'completed' && <><button onClick={onFinish}>Mark Finished</button>{onCheck && <button onClick={onCheck} disabled={checking || checkDisabled}>{checking ? 'Checking…' : 'Check Releases'}</button>}</>}</div>
   </article>;
   return <article className="series-card grid-series-card">
@@ -99,7 +100,7 @@ export function SeriesCard({ series, today, market, showCovers, compact = false,
         </div>;
       })}
     </div>}
-    {series.readingStatus !== 'completed' && <GridReleaseDetails series={series} />}
+    {series.readingStatus !== 'completed' && <GridReleaseDetails series={series} open={detailsOpen} onOpenChange={onDetailsOpenChange} />}
     <div className="card-footer"><button onClick={onFinish} disabled={series.readingStatus === 'completed'}>Mark Finished</button>{onCheck && <button onClick={onCheck} disabled={checking || checkDisabled || series.readingStatus === 'completed'}>{checking ? 'Checking…' : 'Check Releases'}</button>}<button onClick={onEdit}>Edit Details</button></div>
   </article>;
 }

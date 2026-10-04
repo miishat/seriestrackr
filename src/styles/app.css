@@ -1345,3 +1345,8 @@ dialog:has(.series-editor) .dialog-head h2 { margin: 0; line-height: 1.25; }
 .compact > .grid-release-details > summary > span { display:none }
 .compact .grid-release-tabs { margin-top:8px }
 .compact .grid-release-tabs button { padding:7px;font-size:11px }
+/* Keep metadata tight and balance the compact disclosure separators. */
+.grid-card-heading > .sub:last-child { margin-top:5px }
+.grid-release-signal a.grid-format-label { text-decoration:none }
+.compact > .grid-release-details { padding-top:10px;padding-bottom:10px }
+.compact > .card-footer { padding-top:10px }

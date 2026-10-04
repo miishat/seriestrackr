@@ -35,6 +35,7 @@ export function LibraryView({ doc, today, onEdit, onFinish, onCheck, checkingSer
   doc: LibraryDocument; today: string; onEdit: (series: Series) => void; onFinish: (series: Series) => void; onCheck?: (series: Series) => void; checkingSeriesId?: string | null; onAdd: () => void; onView: (view: LibraryDocument['settings']['view']) => void;
 }) {
   const [query, setQuery] = useState('');
+  const [releaseDetailsOpen, setReleaseDetailsOpen] = useState(false);
   const [reading, setReading] = useState<ReadingStatus[]>([]);
   const [book, setBook] = useState<ReleaseState[]>([]);
   const [audio, setAudio] = useState<ReleaseState[]>([]);
@@ -77,7 +78,7 @@ export function LibraryView({ doc, today, onEdit, onFinish, onCheck, checkingSer
     {doc.series.length === 0 ? <div className="empty"><div className="eyebrow">A fresh start</div><h2>Your bookshelf is empty</h2><p>Add a series, then keep its next book and audiobook releases in one place.</p><button className="primary" onClick={onAdd}>Add your first series</button></div>
       : filtered.length === 0 ? <div className="empty"><h2>No matching series</h2><p>Try another search or filter.</p></div>
       : doc.settings.view === 'list' ? <SeriesTable series={filtered} today={today} market={doc.settings.market ?? ''} onEdit={onEdit} onFinish={onFinish} onCheck={onCheck} onUndoAuto={onUndoAuto} checkingSeriesId={checkingSeriesId} checkDisabled={batchRunning} showCovers={doc.settings.showCovers} />
-      : <div className={`cards ${doc.settings.view === 'compact' ? 'compact-cards' : ''}`}>{filtered.map((s) => <SeriesCard key={s.id} series={s} today={today} market={doc.settings.market ?? ''} showCovers={doc.settings.showCovers} compact={doc.settings.view === 'compact'} onEdit={() => onEdit(s)} onFinish={() => onFinish(s)} onCheck={onCheck ? () => onCheck(s) : undefined} onUndoAuto={onUndoAuto ? () => onUndoAuto(s) : undefined} checking={checkingSeriesId === s.id} checkDisabled={batchRunning} />)}</div>}
+      : <div className={`cards ${doc.settings.view === 'compact' ? 'compact-cards' : ''}`}>{filtered.map((s) => <SeriesCard detailsOpen={releaseDetailsOpen} onDetailsOpenChange={setReleaseDetailsOpen} key={s.id} series={s} today={today} market={doc.settings.market ?? ''} showCovers={doc.settings.showCovers} compact={doc.settings.view === 'compact'} onEdit={() => onEdit(s)} onFinish={() => onFinish(s)} onCheck={onCheck ? () => onCheck(s) : undefined} onUndoAuto={onUndoAuto ? () => onUndoAuto(s) : undefined} checking={checkingSeriesId === s.id} checkDisabled={batchRunning} />)}</div>}
     <p className="library-note"><span>English releases</span><span>Preferred country: {doc.settings.market ?? 'Market not selected'} unless overridden</span><span>Source countries shown with supported details</span></p>
   </main>;
 }

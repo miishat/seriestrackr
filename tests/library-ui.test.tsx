@@ -346,3 +346,15 @@ test('delete confirmation names the series and cancel preserves it', async () =>
   await user.click(screen.getByRole('button', { name: 'Cancel delete' }));
   expect(screen.getByText('Example')).toBeVisible();
 });
+
+test('release details open and close together across grid and compact cards', async () => {
+  seed([seriesFixture(), seriesFixture({ id: 's2', name: 'Another series' })]);
+  render(<App autoTrack={false} />);
+  const user = userEvent.setup();
+  await user.click(screen.getAllByText('Release Details')[0]);
+  expect([...document.querySelectorAll<HTMLDetailsElement>('.grid-release-details')].every(details => details.open)).toBe(true);
+  await user.click(screen.getByRole('button', { name: 'Compact' }));
+  expect([...document.querySelectorAll<HTMLDetailsElement>('.grid-release-details')].every(details => details.open)).toBe(true);
+  await user.click(screen.getAllByText('Release details')[1]);
+  expect([...document.querySelectorAll<HTMLDetailsElement>('.grid-release-details')].every(details => !details.open)).toBe(true);
+});
