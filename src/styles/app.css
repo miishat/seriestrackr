@@ -1365,3 +1365,8 @@ dialog:has(.series-editor) .dialog-head h2 { margin: 0; line-height: 1.25; }
   border-bottom:1px solid var(--line);
 }
 .compact > .card-footer { border-top:0;padding-top:0 }
+/* Shared compact detail row keeps both dividers aligned when expanded. */
+.compact > .grid-release-details { align-self:stretch }
+.grid-next-title strong { font-size:25px }
+.grid-next-cover { flex-basis:80px;width:80px }
+.grid-next-cover .cover-frame { width:80px;height:120px }
